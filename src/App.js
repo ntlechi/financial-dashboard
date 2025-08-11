@@ -2222,11 +2222,16 @@ export default function App() {
     newData.investmentPortfolio.tfsaContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'tfsa').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     newData.investmentPortfolio.rrspContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'rrsp').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     
-    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + (h.shares * h.currentPrice), 0);
+    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((h.shares || 0) * (h.currentPrice || 0)), 0);
 
-    newData.netWorth.breakdown.find(b => b.name === 'Cash').value = newData.cashOnHand.total;
-    newData.netWorth.breakdown.find(b => b.name === 'Investments').value = newData.investmentPortfolio.totalValue;
-    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + b.value, 0);
+    // Safely update net worth breakdown
+    const cashItem = newData.netWorth.breakdown.find(b => b.name === 'Cash');
+    if (cashItem) cashItem.value = newData.cashOnHand.total;
+    
+    const investmentItem = newData.netWorth.breakdown.find(b => b.name === 'Investments');
+    if (investmentItem) investmentItem.value = newData.investmentPortfolio.totalValue;
+    
+    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + (b.value || 0), 0);
 
     const totalSavings = Math.abs(investmentTransactions.reduce((sum, tx) => sum + tx.amount, 0));
     const totalIncomeForSavingsRate = newData.income.total + newData.businesses.reduce((sum, b) => sum + b.net, 0);
@@ -2439,14 +2444,24 @@ export default function App() {
   };
   
   const handleSaveBusinesses = async (newBusinesses) => {
-    if (!data || !userId) return;
+    console.log("💼 Saving businesses:", newBusinesses);
+    if (!data || !userId) {
+      console.error("❌ Cannot save businesses - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, businesses: newBusinesses };
+    console.log("💼 Updated data with businesses:", updatedData);
     handleSaveData(updatedData);
   };
 
   const handleSaveNetWorth = async (newBreakdown) => {
-    if (!data || !userId) return;
+    console.log("💰 Saving net worth breakdown:", newBreakdown);
+    if (!data || !userId) {
+      console.error("❌ Cannot save net worth - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }};
+    console.log("💰 Updated data with net worth:", updatedData.netWorth);
     handleSaveData(updatedData);
   };
   
@@ -2473,14 +2488,24 @@ export default function App() {
   };
   
   const handleSaveInvestment = async (newPortfolio) => {
-    if (!data || !userId) return;
+    console.log("📊 Saving investment portfolio:", newPortfolio);
+    if (!data || !userId) {
+      console.error("❌ Cannot save investment - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, investmentPortfolio: newPortfolio };
+    console.log("📊 Updated data with investment:", updatedData.investmentPortfolio);
     handleSaveData(updatedData);
   };
 
   const handleSaveHoldings = async (newHoldings) => {
-    if (!data || !userId) return;
+    console.log("🏦 Saving holdings:", newHoldings);
+    if (!data || !userId) {
+      console.error("❌ Cannot save holdings - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, investmentPortfolio: { ...data.investmentPortfolio, holdings: newHoldings }};
+    console.log("🏦 Updated data with holdings:", updatedData.investmentPortfolio);
     handleSaveData(updatedData);
   };
 
