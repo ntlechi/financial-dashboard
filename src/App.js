@@ -2456,11 +2456,14 @@ export default function App() {
         if (fetchedData.allocations) {
             setAllocations(fetchedData.allocations);
         }
+        const view = { timeframe, date: historicalDate };
+        setDisplayData(recalculateTotals(fetchedData, view));
       } else {
         setDoc(userDocRef, initialData)
           .then(() => {
             setData(initialData);
             setAllocations(initialData.allocations);
+            setDisplayData(recalculateTotals(initialData, { timeframe, date: historicalDate }));
           })
           .catch(error => {
             console.error("Error creating initial document:", error);
@@ -2474,6 +2477,31 @@ export default function App() {
 
     return () => unsubscribeSnapshot();
   }, [userId]); // Re-runs when userId changes
+
+  // Auto-save on unload to preserve latest client state
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      try {
+        if (data) localStorage.setItem('financial_dashboard_autosave', JSON.stringify(data));
+      } catch {}
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [data]);
+
+  // On first load (no Firestore yet), hydrate from local autosave to preserve session
+  useEffect(() => {
+    if (!data) {
+      try {
+        const cached = localStorage.getItem('financial_dashboard_autosave');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          setData(parsed);
+          setDisplayData(recalculateTotals(parsed, { timeframe, date: historicalDate }));
+        }
+      } catch {}
+    }
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -2517,6 +2545,11 @@ export default function App() {
       recalculatedData.allocations = allocations;
 
       await setDoc(userDocRef, recalculatedData, { merge: true });
+
+      // Immediately reflect changes locally without waiting for snapshot
+      setData(recalculatedData);
+      const newDisplay = recalculateTotals(recalculatedData, { timeframe, date: historicalDate });
+      setDisplayData(newDisplay);
     } catch (error) {
       console.error("Error saving data:", error);
     }
@@ -2524,60 +2557,60 @@ export default function App() {
   
   const handleSaveBusinesses = async (newBusinesses) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, businesses: newBusinesses };
+    const updatedData = coerceEmptyNumericStrings({ ...data, businesses: newBusinesses });
     handleSaveData(updatedData);
   };
 
   const handleSaveNetWorth = async (newBreakdown) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }});
     handleSaveData(updatedData);
   };
   
   const handleSaveExpenses = async (newCategories) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, expenses: { ...data.expenses, categories: newCategories }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, expenses: { ...data.expenses, categories: newCategories }});
     handleSaveData(updatedData);
   };
   
   const handleSaveCreditScore = async (newScore) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, creditScore: { ...data.creditScore, current: newScore }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, creditScore: { ...data.creditScore, current: newScore }});
     handleSaveData(updatedData);
   };
 
   const handleSaveGoals = async (goals) => {
     if (!data || !userId) return;
-    const updatedData = { 
+    const updatedData = coerceEmptyNumericStrings({ 
         ...data, 
         financialFreedom: { ...data.financialFreedom, targetAmount: goals.ffTarget },
         rainyDayFund: { ...data.rainyDayFund, goal: goals.rdfGoal }
-    };
+    });
     handleSaveData(updatedData);
   };
   
   const handleSaveInvestment = async (newPortfolio) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, investmentPortfolio: newPortfolio };
+    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: newPortfolio });
     handleSaveData(updatedData);
   };
 
   const handleSaveHoldings = async (newHoldings) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, investmentPortfolio: { ...data.investmentPortfolio, holdings: newHoldings }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: { ...data.investmentPortfolio, holdings: newHoldings }});
     handleSaveData(updatedData);
   };
 
   const handleSaveContributionGoals = async (goals) => {
     if (!data || !userId) return;
-    const updatedData = { 
+    const updatedData = coerceEmptyNumericStrings({ 
         ...data, 
         investmentPortfolio: { 
             ...data.investmentPortfolio, 
             tfsaGoal: goals.tfsaGoal,
             rrspGoal: goals.rrspGoal
         }
-    };
+    });
     handleSaveData(updatedData);
   };
 
@@ -2585,8 +2618,10 @@ export default function App() {
       if (!userId || !data) return;
       const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
       try {
-          const updatedData = { ...data, allocations: allocations };
+          const updatedData = coerceEmptyNumericStrings({ ...data, allocations: allocations });
           await setDoc(userDocRef, updatedData, { merge: true });
+          setData(updatedData);
+          setDisplayData(recalculateTotals(updatedData, { timeframe, date: historicalDate }));
       } catch (error) {
           console.error("Error saving allocations:", error);
       }
