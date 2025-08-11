@@ -5,10 +5,10 @@ import * as d3 from 'd3';
 
 // Firebase Imports
 import { db, auth } from './firebase'; // Import the ready-to-use services
-import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
+import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
 
-const appId = process.env.REACT_APP_FIREBASE_APP_ID;
+const appId = process.env.REACT_APP_FIREBASE_APP_ID || 'default';
 
 /* global __initial_auth_token:readonly */
 
