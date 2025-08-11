@@ -4,23 +4,13 @@ import { ArrowUp, ArrowDown, DollarSign, Target, Briefcase, BarChart2, Repeat, S
 import * as d3 from 'd3';
 
 // Firebase Imports
-import { initializeApp } from "firebase/app";
+import { db, auth } from './firebase'; // Import the ready-to-use services
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 
 /* global __initial_auth_token:readonly */
 
-//-///////////////////////////////////////////////////////////////////////////
-// FIREBASE CONFIG & INITIALIZATION
-//-///////////////////////////////////////////////////////////////////////////
 
-const firebaseConfig = process.env.REACT_APP_FIREBASE_CONFIG;
-const appId = process.env.REACT_APP_APP_ID;
-const token = null; 
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 
 //-///////////////////////////////////////////////////////////////////////////
