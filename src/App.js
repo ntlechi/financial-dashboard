@@ -2147,8 +2147,19 @@ export default function App() {
 
   const recalculateTotals = (sourceData, view) => {
     const newData = JSON.parse(JSON.stringify(sourceData)); 
+    
+    // Ensure all required properties exist with default values
     if (!Array.isArray(newData.businesses)) newData.businesses = [];
+    if (!newData.investmentPortfolio) newData.investmentPortfolio = {};
     if (!newData.investmentPortfolio.holdings) newData.investmentPortfolio.holdings = [];
+    if (!Array.isArray(newData.recentTransactions)) newData.recentTransactions = [];
+    if (!newData.income) newData.income = { total: 0, sources: [] };
+    if (!Array.isArray(newData.income.sources)) newData.income.sources = [];
+    if (!newData.expenses) newData.expenses = { total: 0, categories: [] };
+    if (!Array.isArray(newData.expenses.categories)) newData.expenses.categories = [];
+    if (!newData.passiveIncome) newData.passiveIncome = { total: 0 };
+    if (!newData.dividends) newData.dividends = { total: 0 };
+    if (!newData.cashflow) newData.cashflow = { total: 0 };
     const now = new Date();
     
     let filteredTransactions;
@@ -2194,8 +2205,12 @@ export default function App() {
     newData.cashflow.total = newData.income.total - newData.expenses.total + totalInvestmentAmount;
 
     newData.businesses.forEach(business => {
-        business.income = business.incomeSources.reduce((sum, item) => sum + item.amount, 0);
-        business.expenses = business.expenseItems.reduce((sum, item) => sum + item.amount, 0);
+        // Ensure business has required properties
+        if (!Array.isArray(business.incomeSources)) business.incomeSources = [];
+        if (!Array.isArray(business.expenseItems)) business.expenseItems = [];
+        
+        business.income = business.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+        business.expenses = business.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
         business.net = business.income - business.expenses;
     });
 
@@ -2314,6 +2329,30 @@ export default function App() {
     }
   }, [data, timeframe, historicalDate]);
 
+  // Function to clean data and remove undefined values
+  const cleanData = (obj) => {
+    if (obj === null || obj === undefined) return null;
+    if (typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) {
+      return obj.map(cleanData).filter(item => item !== null && item !== undefined);
+    }
+    
+    const cleaned = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value !== undefined && value !== null) {
+        if (typeof value === 'object') {
+          const cleanedValue = cleanData(value);
+          if (cleanedValue !== null && cleanedValue !== undefined) {
+            cleaned[key] = cleanedValue;
+          }
+        } else {
+          cleaned[key] = value;
+        }
+      }
+    }
+    return cleaned;
+  };
+
   const handleSaveData = async (formData) => {
     console.log("🔄 handleSaveData called with:", { userId, appId, formData });
     
@@ -2362,12 +2401,17 @@ export default function App() {
 
       recalculatedData.allocations = allocations;
 
+      // Clean data to remove undefined values
+      const cleanedData = cleanData(recalculatedData);
+      console.log("🧹 Data cleaned:", cleanedData);
+
       console.log("💾 Attempting to save to Firebase...");
       console.log("📄 Document path:", userDocRef.path);
       console.log("👤 User ID:", userId);
-      console.log("📦 Data to save:", recalculatedData);
+      console.log("📦 Original data:", recalculatedData);
+      console.log("✨ Cleaned data to save:", cleanedData);
       
-      await setDoc(userDocRef, recalculatedData, { merge: true });
+      await setDoc(userDocRef, cleanedData, { merge: true });
       console.log("✅ Data saved successfully!");
       
       // Show user feedback
