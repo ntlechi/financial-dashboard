@@ -1,6 +1,7 @@
 {
   "name": "financial-dashboard",
   "version": "1.0.0",
+  "homepage": ".",
   "private": true,
   "description": "My personal financial dashboard.",
   "main": "index.js",
@@ -35,13 +36,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
-}
-{
-  "name": "financial-dashboard",
-  "version": "1.0.0",
-  "homepage": ".",
-  "scripts": {
-    // your existing scripts
   }
 }
