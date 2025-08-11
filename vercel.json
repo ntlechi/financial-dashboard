@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "script-src 'self' 'unsafe-eval' https://apis.google.com; object-src 'self''unsafe-inliine'"
+          "value": "script-src 'self' 'unsafe-eval' https://apis.google.com; object-src 'self''unsafe-inline'"
         }
       ]
     }
