@@ -642,9 +642,8 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
     const handleItemChange = (id, field, value) => {
         const updated = localBreakdown.map(item => {
             if (item.id === id) {
-                const newValue = field === 'value' ? Number(value) : value;
-                // Ensure liabilities remain negative
-                return { ...item, [field]: item.type === 'liability' ? -Math.abs(newValue) : newValue };
+                const newValue = field === 'value' ? (value === '' ? '' : Number(value)) : value;
+                return { ...item, [field]: item.type === 'liability' && field === 'value' && newValue !== '' ? -Math.abs(newValue) : newValue };
             }
             return item;
         });
@@ -706,7 +705,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
                     </div>
                 </div>
                 <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localBreakdown); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
+                    <button onClick={() => { onSave(coerceEmptyNumericStrings(localBreakdown)); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
                 </div>
             </Card>
         </div>
@@ -843,13 +842,13 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
     if (!isOpen) return null;
 
     const handleValueChange = (value) => {
-        setLocalPortfolio(prev => ({ ...prev, totalValue: Number(value) }));
+        setLocalPortfolio(prev => ({ ...prev, totalValue: value === '' ? '' : Number(value) }));
     };
 
     const handleAllocationChange = (id, field, value) => {
         const updatedAllocation = localPortfolio.allocation.map(item => {
             if (item.id === id) {
-                return { ...item, [field]: field === 'percentage' ? Number(value) : value };
+                return { ...item, [field]: field === 'percentage' ? (value === '' ? '' : Number(value)) : value };
             }
             return item;
         });
@@ -893,7 +892,7 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
                     </div>
                 </div>
                 <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localPortfolio); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
+                    <button onClick={() => { onSave(coerceEmptyNumericStrings(localPortfolio)); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
                 </div>
             </Card>
         </div>
@@ -2858,7 +2857,7 @@ const EditGoalsListModal = ({ isOpen, onClose, onSave, goals }) => {
     if (!isOpen) return null;
 
     const handleChange = (id, field, value) => {
-        setLocalGoals(localGoals.map(g => g.id === id ? { ...g, [field]: field.includes('Amount') ? Number(value) : value } : g));
+        setLocalGoals(localGoals.map(g => g.id === id ? { ...g, [field]: field.includes('Amount') ? (value === '' ? '' : Number(value)) : value } : g));
     };
 
     const addGoal = () => {
@@ -2881,8 +2880,8 @@ const EditGoalsListModal = ({ isOpen, onClose, onSave, goals }) => {
                     {localGoals.map(goal => (
                         <div key={goal.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center bg-gray-900/50 p-3 rounded-lg">
                             <input type="text" value={goal.name} onChange={e => handleChange(goal.id, 'name', e.target.value)} className="md:col-span-2 bg-gray-700 p-2 rounded-md" />
-                            <input type="number" value={goal.currentAmount} onChange={e => handleChange(goal.id, 'currentAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Current $" />
-                            <input type="number" value={goal.targetAmount} onChange={e => handleChange(goal.id, 'targetAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Target $" />
+                            <input type="text" inputMode="decimal" value={goal.currentAmount} onChange={e => handleChange(goal.id, 'currentAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Current $" />
+                            <input type="text" inputMode="decimal" value={goal.targetAmount} onChange={e => handleChange(goal.id, 'targetAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Target $" />
                             <button onClick={() => removeGoal(goal.id)} className="text-rose-500 hover:text-rose-400 justify-self-end"><Trash2 className="w-5 h-5"/></button>
                         </div>
                     ))}
@@ -2891,7 +2890,7 @@ const EditGoalsListModal = ({ isOpen, onClose, onSave, goals }) => {
                     <button onClick={addGoal} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
                         <Plus className="w-4 h-4 mr-2"/> Add Goal
                     </button>
-                    <button onClick={() => { onSave(localGoals); onClose(); }} className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
+                    <button onClick={() => { onSave(coerceEmptyNumericStrings(localGoals)); onClose(); }} className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
                         <Save className="w-4 h-4 mr-2"/> Save Goals
                     </button>
                 </div>
