@@ -37,3 +37,11 @@
     ]
   }
 }
+{
+  "name": "financial-dashboard",
+  "version": "1.0.0",
+  "homepage": ".",
+  "scripts": {
+    // your existing scripts
+  }
+}
