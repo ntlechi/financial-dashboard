@@ -2544,12 +2544,11 @@ export default function App() {
 
       recalculatedData.allocations = allocations;
 
-      await setDoc(userDocRef, recalculatedData, { merge: true });
-
-      // Immediately reflect changes locally without waiting for snapshot
+      // Optimistic UI update
       setData(recalculatedData);
-      const newDisplay = recalculateTotals(recalculatedData, { timeframe, date: historicalDate });
-      setDisplayData(newDisplay);
+      setDisplayData(recalculateTotals(recalculatedData, { timeframe, date: historicalDate }));
+
+      await setDoc(userDocRef, recalculatedData, { merge: true });
     } catch (error) {
       console.error("Error saving data:", error);
     }
@@ -2563,19 +2562,19 @@ export default function App() {
 
   const handleSaveNetWorth = async (newBreakdown) => {
     if (!data || !userId) return;
-    const updatedData = coerceEmptyNumericStrings({ ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }});
+    const updatedData = coerceEmptyNumericStrings({ ...data, netWorth: { ...(data.netWorth || {}), breakdown: newBreakdown }});
     handleSaveData(updatedData);
   };
   
   const handleSaveExpenses = async (newCategories) => {
     if (!data || !userId) return;
-    const updatedData = coerceEmptyNumericStrings({ ...data, expenses: { ...data.expenses, categories: newCategories }});
+    const updatedData = coerceEmptyNumericStrings({ ...data, expenses: { ...(data.expenses || {}), categories: newCategories }});
     handleSaveData(updatedData);
   };
   
   const handleSaveCreditScore = async (newScore) => {
     if (!data || !userId) return;
-    const updatedData = coerceEmptyNumericStrings({ ...data, creditScore: { ...data.creditScore, current: newScore }});
+    const updatedData = coerceEmptyNumericStrings({ ...data, creditScore: { ...(data.creditScore || {}), current: newScore }});
     handleSaveData(updatedData);
   };
 
@@ -2583,21 +2582,21 @@ export default function App() {
     if (!data || !userId) return;
     const updatedData = coerceEmptyNumericStrings({ 
         ...data, 
-        financialFreedom: { ...data.financialFreedom, targetAmount: goals.ffTarget },
-        rainyDayFund: { ...data.rainyDayFund, goal: goals.rdfGoal }
+        financialFreedom: { ...(data.financialFreedom || {}), targetAmount: goals.ffTarget },
+        rainyDayFund: { ...(data.rainyDayFund || {}), goal: goals.rdfGoal }
     });
     handleSaveData(updatedData);
   };
   
   const handleSaveInvestment = async (newPortfolio) => {
     if (!data || !userId) return;
-    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: newPortfolio });
+    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: { ...(data.investmentPortfolio || {}), ...newPortfolio } });
     handleSaveData(updatedData);
   };
 
   const handleSaveHoldings = async (newHoldings) => {
     if (!data || !userId) return;
-    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: { ...data.investmentPortfolio, holdings: newHoldings }});
+    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: { ...(data.investmentPortfolio || {}), holdings: newHoldings }});
     handleSaveData(updatedData);
   };
 
@@ -2606,7 +2605,7 @@ export default function App() {
     const updatedData = coerceEmptyNumericStrings({ 
         ...data, 
         investmentPortfolio: { 
-            ...data.investmentPortfolio, 
+            ...(data.investmentPortfolio || {}), 
             tfsaGoal: goals.tfsaGoal,
             rrspGoal: goals.rrspGoal
         }
@@ -2619,9 +2618,10 @@ export default function App() {
       const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
       try {
           const updatedData = coerceEmptyNumericStrings({ ...data, allocations: allocations });
-          await setDoc(userDocRef, updatedData, { merge: true });
+          // Optimistic UI update
           setData(updatedData);
           setDisplayData(recalculateTotals(updatedData, { timeframe, date: historicalDate }));
+          await setDoc(userDocRef, updatedData, { merge: true });
       } catch (error) {
           console.error("Error saving allocations:", error);
       }
