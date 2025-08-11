@@ -15,6 +15,7 @@ import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIza...", authDomain: "...", projectId: "..." };
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
