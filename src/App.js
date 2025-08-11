@@ -8,6 +8,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 
+/* global __initial_auth_token:readonly */
+
 //-///////////////////////////////////////////////////////////////////////////
 // FIREBASE CONFIG & INITIALIZATION
 //-///////////////////////////////////////////////////////////////////////////
