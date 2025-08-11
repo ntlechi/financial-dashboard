@@ -2296,10 +2296,19 @@ export default function App() {
   }, [data, timeframe, historicalDate]);
 
   const handleSaveData = async (formData) => {
-    if (!userId) return;
+    console.log("🔄 handleSaveData called with:", { userId, appId, formData });
+    
+    if (!userId) {
+      console.error("❌ No userId - authentication failed");
+      return;
+    }
+    
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
+    console.log("📄 Document reference created:", userDocRef.path);
+    
     try {
       const recalculatedData = recalculateTotals(formData, { timeframe, date: historicalDate });
+      console.log("🧮 Data recalculated:", recalculatedData);
       
       const today = new Date().toISOString().split('T')[0];
       
@@ -2328,9 +2337,17 @@ export default function App() {
 
       recalculatedData.allocations = allocations;
 
+      console.log("💾 Attempting to save to Firebase...");
       await setDoc(userDocRef, recalculatedData, { merge: true });
+      console.log("✅ Data saved successfully!");
+      
     } catch (error) {
-      console.error("Error saving data:", error);
+      console.error("❌ Error saving data:", error);
+      console.error("Error details:", {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
     }
   };
   

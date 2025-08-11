@@ -5,7 +5,8 @@ import { getAuth } from 'firebase/auth';
 // Add this line to debug:
 console.log("Firebase API Key from env:", process.env.REACT_APP_FIREBASE_API_KEY);
 
-const firebaseConfig = {
+// Option 1: Environment-based config (preferred for production)
+const firebaseConfigFromEnv = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
@@ -14,13 +15,26 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
+// Option 2: Hardcoded config for testing (replace with your actual Firebase config)
+const firebaseConfigHardcoded = {
+  apiKey: "your-api-key-here",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+
+// Use environment config if available, otherwise fall back to hardcoded
+const firebaseConfig = process.env.REACT_APP_FIREBASE_API_KEY ? firebaseConfigFromEnv : firebaseConfigHardcoded;
+
 // Add these lines to debug each variable:
-console.log("apiKey:", process.env.REACT_APP_FIREBASE_API_KEY);
-console.log("authDomain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
-console.log("projectId:", process.env.REACT_APP_FIREBASE_PROJECT_ID);
-console.log("storageBucket:", process.env.REACT_APP_FIREBASE_STORAGE_BUCKET);
-console.log("messagingSenderId:", process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID);
-console.log("appId:", process.env.REACT_APP_FIREBASE_APP_ID);
+console.log("apiKey:", firebaseConfig.apiKey);
+console.log("authDomain:", firebaseConfig.authDomain);
+console.log("projectId:", firebaseConfig.projectId);
+console.log("storageBucket:", firebaseConfig.storageBucket);
+console.log("messagingSenderId:", firebaseConfig.messagingSenderId);
+console.log("appId:", firebaseConfig.appId);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
