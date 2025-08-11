@@ -2470,10 +2470,18 @@ export default function App() {
     document.body.removeChild(link);
   };
 
+  // Debug logging
+  console.log("App render state:", { loading, displayData: !!displayData, userId, data: !!data });
+
   if (loading || !displayData) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <p className="text-white text-2xl animate-pulse">Loading Your Financial Universe...</p>
+        <div className="text-center">
+          <p className="text-white text-2xl animate-pulse mb-4">Loading Your Financial Universe...</p>
+          <p className="text-gray-400 text-sm">Loading: {loading ? 'true' : 'false'}</p>
+          <p className="text-gray-400 text-sm">User ID: {userId || 'none'}</p>
+          <p className="text-gray-400 text-sm">Display Data: {displayData ? 'loaded' : 'none'}</p>
+        </div>
       </div>
     );
   }
