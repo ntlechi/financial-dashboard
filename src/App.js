@@ -2262,25 +2262,32 @@ export default function App() {
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
     
     const unsubscribeSnapshot = onSnapshot(userDocRef, (doc) => {
+      console.log("📄 Firebase snapshot received:", { exists: doc.exists(), id: doc.id });
+      
       if (doc.exists()) {
         const fetchedData = doc.data();
+        console.log("✅ Data fetched from Firebase:", fetchedData);
+        console.log("📊 Data structure keys:", Object.keys(fetchedData));
         setData(fetchedData);
         if (fetchedData.allocations) {
             setAllocations(fetchedData.allocations);
         }
       } else {
+        console.log("🆕 No document exists, creating initial data...");
         setDoc(userDocRef, initialData)
           .then(() => {
+            console.log("✅ Initial data created successfully");
             setData(initialData);
             setAllocations(initialData.allocations);
           })
           .catch(error => {
-            console.error("Error creating initial document:", error);
+            console.error("❌ Error creating initial document:", error);
           });
       }
+      console.log("🔄 Setting loading to false");
       setLoading(false);
     }, (error) => { 
-      console.error("Firestore snapshot error:", error); 
+      console.error("❌ Firestore snapshot error:", error); 
       setLoading(false); 
     });
 
@@ -2288,10 +2295,22 @@ export default function App() {
   }, [userId]); // Re-runs when userId changes
 
   useEffect(() => {
+    console.log("🔄 DisplayData calculation triggered:", { 
+      hasData: !!data, 
+      timeframe, 
+      historicalDate,
+      dataKeys: data ? Object.keys(data) : 'none'
+    });
+    
     if (data) {
         const view = { timeframe, date: historicalDate };
+        console.log("📊 Recalculating totals with view:", view);
         const newDisplayData = recalculateTotals(data, view);
+        console.log("✅ New display data calculated:", newDisplayData);
+        console.log("📋 Display data keys:", Object.keys(newDisplayData));
         setDisplayData(newDisplayData);
+    } else {
+      console.log("⚠️ No data available for display calculation");
     }
   }, [data, timeframe, historicalDate]);
 
@@ -2471,7 +2490,14 @@ export default function App() {
   };
 
   // Debug logging
-  console.log("App render state:", { loading, displayData: !!displayData, userId, data: !!data });
+  console.log("App render state:", { 
+    loading, 
+    displayData: !!displayData, 
+    userId, 
+    data: !!data,
+    dataKeys: data ? Object.keys(data) : 'none',
+    displayDataKeys: displayData ? Object.keys(displayData) : 'none'
+  });
 
   if (loading || !displayData) {
     return (
