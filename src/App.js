@@ -2230,8 +2230,9 @@ export default function App() {
   useEffect(() => {
     const signInUser = async () => {
       try {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        if (initialAuthToken) {
+          await signInWithCustomToken(auth, initialAuthToken);
         } else {
           await signInAnonymously(auth);
         }
