@@ -2303,6 +2303,12 @@ export default function App() {
       return;
     }
     
+    if (!db) {
+      console.error("❌ Firebase not initialized - check your configuration");
+      alert("Database connection failed. Please check Firebase configuration.");
+      return;
+    }
+    
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
     console.log("📄 Document reference created:", userDocRef.path);
     
