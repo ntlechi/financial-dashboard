@@ -2512,6 +2512,16 @@ export default function App() {
       }
   };
   
+  const handleSaveBudget = async (budget) => {
+      if (!userId) return;
+      const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
+      try {
+          await setDoc(userDocRef, { budget }, { merge: true });
+      } catch (error) {
+          console.error('Error saving budget:', error);
+      }
+  };
+  
   const handleResetData = async () => {
     if (!userId) return;
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
@@ -2584,6 +2594,7 @@ export default function App() {
               <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
               <button onClick={() => setActiveTab('visuals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
               <button onClick={() => setActiveTab('allocations')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'allocations' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Allocations</button>
+              <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Wallet className="w-4 h-4 mr-2"/>Budget</button>
             </div>
           </div>
           {activeTab === 'dashboard' && (
@@ -2649,6 +2660,9 @@ export default function App() {
                 <FinancialFreedomCalculator data={data.financialFreedom} onSave={(newData) => handleSaveData({...data, financialFreedom: newData})} />
                 <DebtPaydownCalculator existingDebts={data.debt.accounts} />
             </>
+          )}
+          {activeTab === 'budget' && (
+            <BudgetTab budget={data.budget} allocations={data.allocations} onSaveBudget={handleSaveBudget} />
           )}
         </main>
         
@@ -2803,6 +2817,126 @@ const EditGoalsListModal = ({ isOpen, onClose, onSave, goals }) => {
                     </button>
                 </div>
             </Card>
+        </div>
+    );
+};
+
+// New: Budget Tab with a simple budget calculator
+const BudgetTab = ({ budget, allocations, onSaveBudget }) => {
+    const defaultBudget = budget || {
+        monthlyIncome: 5000,
+        categories: [
+            { id: 1, name: 'Needs', percent: 50 },
+            { id: 2, name: 'Wants', percent: 30 },
+            { id: 3, name: 'Savings/Debt', percent: 20 },
+        ],
+    };
+
+    const [monthlyIncome, setMonthlyIncome] = useState(defaultBudget.monthlyIncome || 0);
+    const [categories, setCategories] = useState(defaultBudget.categories || []);
+    const totalPercent = categories.reduce((s, c) => s + (Number(c.percent) || 0), 0);
+
+    const setPreset503020 = () => {
+        setCategories([
+            { id: Date.now() + 1, name: 'Needs', percent: 50 },
+            { id: Date.now() + 2, name: 'Wants', percent: 30 },
+            { id: Date.now() + 3, name: 'Savings/Debt', percent: 20 },
+        ]);
+    };
+
+    const setPresetJars = () => {
+        if (!allocations) return;
+        const mapped = Object.entries(allocations).map(([key, percent], idx) => ({
+            id: Date.now() + idx,
+            name: key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()),
+            percent: Number(percent) || 0,
+        }));
+        setCategories(mapped);
+    };
+
+    const handleChange = (id, field, value) => {
+        setCategories(categories.map(c => c.id === id ? { ...c, [field]: field === 'percent' ? Number(value) : value } : c));
+    };
+
+    const addCategory = () => {
+        setCategories([...categories, { id: Date.now(), name: 'New Category', percent: 0 }]);
+    };
+
+    const removeCategory = (id) => {
+        setCategories(categories.filter(c => c.id !== id));
+    };
+
+    const handleSave = () => {
+        onSaveBudget({ monthlyIncome, categories });
+    };
+
+    return (
+        <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+            <div className="flex flex-wrap justify-between items-center gap-4">
+                <h2 className="text-3xl font-bold text-white">Budget Calculator</h2>
+                <div className="flex gap-2">
+                    <button onClick={setPreset503020} className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">50/30/20</button>
+                    <button onClick={setPresetJars} className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">Use Jars</button>
+                    <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm flex items-center"><Save className="w-4 h-4 mr-1"/> Save Budget</button>
+                </div>
+            </div>
+
+            <Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm text-gray-400 mb-2">Monthly Net Income</label>
+                        <input type="number" value={monthlyIncome} onChange={e => setMonthlyIncome(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        {totalPercent !== 100 && (
+                            <div className="mt-3 bg-red-900/50 border border-red-500 text-red-300 p-3 rounded-lg flex items-center">
+                                <AlertTriangle className="w-5 h-5 mr-3"/>
+                                Total percentage is {totalPercent}%. It should be 100%.
+                            </div>
+                        )}
+                        <div className="mt-4">
+                            <button onClick={addCategory} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm flex items-center"><Plus className="w-4 h-4 mr-1"/> Add Category</button>
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <div className="hidden md:grid grid-cols-4 gap-2 text-xs text-gray-400 font-bold px-2">
+                            <span className="col-span-2">Category</span>
+                            <span>%</span>
+                            <span className="text-right">Amount</span>
+                        </div>
+                        <div className="space-y-2 max-h-80 overflow-y-auto pr-2">
+                            {categories.map(c => {
+                                const amount = (monthlyIncome * (Number(c.percent) || 0)) / 100;
+                                return (
+                                    <div key={c.id} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-center bg-gray-900/50 p-2 rounded-lg">
+                                        <input type="text" value={c.name} onChange={e => handleChange(c.id, 'name', e.target.value)} className="md:col-span-2 bg-gray-700 p-2 rounded-md" />
+                                        <input type="number" value={c.percent} onChange={e => handleChange(c.id, 'percent', e.target.value)} className="bg-gray-700 p-2 rounded-md" />
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-mono">${amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                            <button onClick={() => removeCategory(c.id)} className="text-rose-500 hover:text-rose-400 p-1"><Trash2 className="w-4 h-4"/></button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="text-center">
+                    <p className="text-gray-400">Income</p>
+                    <p className="text-3xl font-bold text-white">${monthlyIncome.toLocaleString()}</p>
+                </Card>
+                <Card className="text-center">
+                    <p className="text-gray-400">Planned Spend</p>
+                    <p className="text-3xl font-bold text-amber-400">${(monthlyIncome * Math.min(totalPercent, 100) / 100).toLocaleString()}</p>
+                </Card>
+                <Card className="text-center">
+                    <p className="text-gray-400">Remainder</p>
+                    <p className={`text-3xl font-bold ${monthlyIncome - (monthlyIncome * Math.min(totalPercent, 100) / 100) >= 0 ? 'text-emerald-400' : 'text-red-500'}`}>
+                        ${ (monthlyIncome - (monthlyIncome * Math.min(totalPercent, 100) / 100)).toLocaleString(undefined, {minimumFractionDigits: 2}) }
+                    </p>
+                </Card>
+            </div>
         </div>
     );
 };
