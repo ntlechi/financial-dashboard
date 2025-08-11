@@ -312,10 +312,23 @@ const DonutChart = ({ data, size = 120 }) => {
 // MODAL COMPONENTS
 //-///////////////////////////////////////////////////////////////////////////
 const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
-    const [formData, setFormData] = useState(currentData);
+    const withDefaults = (d) => ({
+        ...emptyData,
+        ...(d || {}),
+        income: { ...emptyData.income, ...(d?.income || {}) },
+        cashOnHand: { ...emptyData.cashOnHand, ...(d?.cashOnHand || {}) },
+        rainyDayFund: { ...emptyData.rainyDayFund, ...(d?.rainyDayFund || {}) },
+        debt: { ...emptyData.debt, ...(d?.debt || {}) },
+        investmentPortfolio: { ...emptyData.investmentPortfolio, ...(d?.investmentPortfolio || {}) },
+        expenses: { ...emptyData.expenses, ...(d?.expenses || {}) },
+        netWorth: { ...emptyData.netWorth, ...(d?.netWorth || {}) },
+        recentTransactions: Array.isArray(d?.recentTransactions) ? d.recentTransactions : [],
+    });
+
+    const [formData, setFormData] = useState(withDefaults(currentData));
 
     useEffect(() => {
-        setFormData(currentData);
+        setFormData(withDefaults(currentData));
     }, [isOpen, currentData]);
 
     if (!isOpen) return null;
@@ -343,8 +356,8 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const addIncomeSource = () => {
-        const newSource = { id: Date.now(), name: 'New Source', amount: 0, icon: 'dollar', type: 'active' };
-        setFormData(prev => ({...prev, income: {...prev.income, sources: [...prev.income.sources, newSource]}}));
+        const newSource = { id: Date.now(), name: 'New Source', amount: '', icon: 'dollar', type: 'active' };
+        setFormData(prev => ({...prev, income: {...prev.income, sources: [...(prev.income?.sources || []), newSource]}}));
     };
 
     const removeIncomeSource = (id) => {
@@ -363,12 +376,12 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const addAccount = (type) => {
-        const newAccount = { id: Date.now(), name: 'New Account', balance: 0 };
+        const newAccount = { id: Date.now(), name: 'New Account', balance: '' };
         setFormData(prev => ({
             ...prev,
             [type]: {
                 ...prev[type],
-                accounts: [...prev[type].accounts, newAccount]
+                accounts: [...(prev[type]?.accounts || []), newAccount]
             }
         }));
     };
@@ -384,8 +397,8 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const addTransaction = () => {
-        const newTransaction = { id: Date.now(), description: '', amount: 0, type: 'expense', category: 'personal', date: new Date().toISOString().split('T')[0] };
-        setFormData(prev => ({...prev, recentTransactions: [newTransaction, ...prev.recentTransactions] }));
+        const newTransaction = { id: Date.now(), description: '', amount: '', type: 'expense', category: 'personal', date: new Date().toISOString().split('T')[0] };
+        setFormData(prev => ({...prev, recentTransactions: [newTransaction, ...(prev.recentTransactions || [])] }));
     };
 
     const removeTransaction = (id) => {
