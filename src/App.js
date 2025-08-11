@@ -2363,17 +2363,27 @@ export default function App() {
       recalculatedData.allocations = allocations;
 
       console.log("💾 Attempting to save to Firebase...");
+      console.log("📄 Document path:", userDocRef.path);
+      console.log("👤 User ID:", userId);
+      console.log("📦 Data to save:", recalculatedData);
+      
       await setDoc(userDocRef, recalculatedData, { merge: true });
       console.log("✅ Data saved successfully!");
       
-    } catch (error) {
-      console.error("❌ Error saving data:", error);
-      console.error("Error details:", {
-        code: error.code,
-        message: error.message,
-        stack: error.stack
-      });
-    }
+      // Show user feedback
+      alert("✅ Data saved successfully!");
+      
+          } catch (error) {
+        console.error("❌ Error saving data:", error);
+        console.error("Error details:", {
+          code: error.code,
+          message: error.message,
+          stack: error.stack
+        });
+        
+        // Show user feedback
+        alert(`❌ Failed to save data: ${error.message}`);
+      }
   };
   
   const handleSaveBusinesses = async (newBusinesses) => {
