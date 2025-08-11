@@ -1483,6 +1483,36 @@ const SavingsRateCard = ({ savingsRate }) => {
     );
 };
 
+// New: Goals card showing progress toward specific goals
+const GoalsCard = ({ goals }) => {
+    return (
+        <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+            <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+                <Target className="w-6 h-6 mr-3 text-emerald-400" />
+                Goals
+            </h2>
+            {(!goals || goals.length === 0) ? (
+                <div className="text-gray-400">No goals yet.</div>
+            ) : (
+                <div className="space-y-4">
+                    {goals.map(goal => {
+                        const safeTarget = goal.targetAmount || 0;
+                        const safeCurrent = Math.min(goal.currentAmount || 0, safeTarget);
+                        return (
+                            <div key={goal.id}>
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <span className="text-gray-300 font-semibold">{goal.name}</span>
+                                    <span className="text-sm text-gray-400">${safeCurrent.toLocaleString()} / ${safeTarget.toLocaleString()}</span>
+                                </div>
+                                <ProgressBar value={safeCurrent} maxValue={safeTarget} color="bg-emerald-500" />
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </Card>
+    );
+};
 
 const BusinessCard = ({ data, onEdit }) => {
     const isPositive = data.net >= 0;
@@ -1514,7 +1544,6 @@ const BusinessCard = ({ data, onEdit }) => {
         </Card>
     );
 };
-
 
 const InvestmentCard = ({ data, onEdit }) => {
   const { totalValue, allocation } = data;
@@ -1852,7 +1881,7 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
             const startDate = new Date();
             const projectionData = [{ date: startDate.toISOString().split('T')[0], value: currentInvestments }];
 
-            while (futureValue < targetAmount && months < 1200) { // Cap at 100 years
+            while (futureValue < targetAmount && months < 1200) {
                 futureValue = futureValue * (1 + monthlyReturn) + monthlyContribution;
                 months++;
                 if (months % 12 === 0) {
@@ -1861,13 +1890,13 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
                     projectionData.push({ date: futureDate.toISOString().split('T')[0], value: futureValue });
                 }
             }
-             if (futureValue < targetAmount) { // If not reached in 100 years
+            if (futureValue < targetAmount) {
                 setProjection({ years: Infinity, finalValue: futureValue, data: projectionData });
             } else {
                 setProjection({ years: months / 12, finalValue: futureValue, data: projectionData });
             }
         } else {
-             setProjection({ years: 0, finalValue: currentInvestments, data: [{ date: new Date().toISOString().split('T')[0], value: currentInvestments }] });
+            setProjection({ years: 0, finalValue: currentInvestments, data: [{ date: new Date().toISOString().split('T')[0], value: currentInvestments }] });
         }
     }, [inputs]);
 
@@ -1913,7 +1942,7 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
                     </div>
                 </div>
                 <div>
-                     <HistoryChartCard title="Investment Growth" data={projection.data} dataKey="value" color="text-emerald-400" icon={<TrendingUp/>} />
+                    <HistoryChartCard title="Investment Growth" data={projection.data} dataKey="value" color="text-emerald-400" icon={<TrendingUp/>} />
                 </div>
             </div>
         </Card>
@@ -2119,6 +2148,81 @@ const InvestmentTab = ({ portfolio, onSaveHoldings, openEditHoldingsModal }) => 
         </div>
     )
 }
+
+// New: Debt Paydown Calculator (simple aggregate model) for Allocations tab
+const DebtPaydownCalculator = ({ existingDebts = [] }) => {
+    const totalDefault = existingDebts.reduce((sum, d) => sum + (Number(d.balance) || 0), 0);
+    const weightedApr = existingDebts.length > 0
+        ? existingDebts.reduce((sum, d) => sum + (Number(d.balance) || 0) * (Number(d.interestRate) || 0), 0) / (totalDefault || 1)
+        : 18;
+
+    const [totalDebt, setTotalDebt] = useState(totalDefault);
+    const [annualRate, setAnnualRate] = useState(Number(weightedApr.toFixed(2)) || 18);
+    const [monthlyPayment, setMonthlyPayment] = useState(500);
+
+    const monthlyRate = annualRate / 100 / 12;
+
+    let months = 0;
+    let balance = totalDebt;
+    let totalInterest = 0;
+    const maxMonths = 3600; // 300 years cap
+    while (balance > 0 && months < maxMonths) {
+        const interest = balance * monthlyRate;
+        const principal = Math.max(0, monthlyPayment - interest);
+        if (principal <= 0) { months = Infinity; break; }
+        balance = Math.max(0, balance - principal);
+        totalInterest += interest;
+        months++;
+    }
+
+    const years = isFinite(months) ? (months / 12) : Infinity;
+    const payoffDate = isFinite(months) ? (() => { const d = new Date(); d.setMonth(d.getMonth() + months); return d.toLocaleDateString(); })() : 'Never (increase payment)';
+
+    return (
+        <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+            <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
+                <Calculator className="w-6 h-6 mr-3 text-red-400" />
+                Debt Paydown Calculator
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-3">
+                    <div>
+                        <label className="block text-sm text-gray-400">Total Debt ($)</label>
+                        <input type="number" value={totalDebt} onChange={e => setTotalDebt(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-400">Average APR (%)</label>
+                        <input type="number" value={annualRate} onChange={e => setAnnualRate(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-400">Monthly Payment ($)</label>
+                        <input type="number" value={monthlyPayment} onChange={e => setMonthlyPayment(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                    </div>
+                </div>
+                <div className="space-y-3">
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Months to Payoff</p>
+                        <p className="text-3xl font-bold text-white">{isFinite(months) ? months : '—'}</p>
+                    </div>
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Years to Payoff</p>
+                        <p className="text-3xl font-bold text-white">{isFinite(years) ? years.toFixed(1) : '—'}</p>
+                    </div>
+                </div>
+                <div className="space-y-3">
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Total Interest Paid</p>
+                        <p className="text-3xl font-bold text-red-400">${isFinite(totalInterest) ? Math.round(totalInterest).toLocaleString() : '—'}</p>
+                    </div>
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Projected Payoff Date</p>
+                        <p className="text-3xl font-bold text-white">{payoffDate}</p>
+                    </div>
+                </div>
+            </div>
+        </Card>
+    );
+};
 
 //-///////////////////////////////////////////////////////////////////////////
 // MAIN APP
@@ -2502,6 +2606,7 @@ export default function App() {
               <SavingsRateCard savingsRate={displayData.savingsRate || 0} />
               <RainyDayFundCard data={displayData.rainyDayFund} expensesTotal={displayData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
               <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={displayData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
+              <GoalsCard goals={displayData.goals} />
               <TransactionsCard data={data.recentTransactions} />
             </>
           )}
@@ -2532,6 +2637,7 @@ export default function App() {
             <>
                 <AllocationsCalculator allocations={allocations} setAllocations={setAllocations} onSave={handleSaveAllocations} />
                 <FinancialFreedomCalculator data={data.financialFreedom} onSave={(newData) => handleSaveData({...data, financialFreedom: newData})} />
+                <DebtPaydownCalculator existingDebts={data.debt.accounts} />
             </>
           )}
         </main>
