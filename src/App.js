@@ -2499,7 +2499,17 @@ export default function App() {
     displayDataKeys: displayData ? Object.keys(displayData) : 'none'
   });
 
-  if (loading || !displayData) {
+  // More detailed condition debugging
+  console.log("🔍 Render condition check:", {
+    loading: loading,
+    displayDataExists: !!displayData,
+    displayDataType: typeof displayData,
+    displayDataValue: displayData,
+    shouldShowLoading: loading || !displayData
+  });
+
+  // Temporary fix: force render the dashboard since data is working
+  if (loading || (!displayData && !data)) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -2507,10 +2517,14 @@ export default function App() {
           <p className="text-gray-400 text-sm">Loading: {loading ? 'true' : 'false'}</p>
           <p className="text-gray-400 text-sm">User ID: {userId || 'none'}</p>
           <p className="text-gray-400 text-sm">Display Data: {displayData ? 'loaded' : 'none'}</p>
+          <p className="text-gray-400 text-sm">Condition: {loading || (!displayData && !data) ? 'should load' : 'should render'}</p>
         </div>
       </div>
     );
   }
+
+  // Use data as fallback if displayData is not ready yet
+  const renderData = displayData || data;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
@@ -2541,24 +2555,24 @@ export default function App() {
         <main className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-6">
           {activeTab === 'dashboard' && (
             <>
-              <FinancialFreedomCard data={displayData} onEdit={() => setIsEditGoalsModalOpen(true)} />
-              <NetWorthCard data={displayData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
-              <InvestmentCard data={displayData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
-              <IncomeCard data={displayData.income} timeframe={timeframe} historicalDate={historicalDate} />
-              <ExpensesCard data={displayData.expenses} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditExpensesModalOpen(true)} />
-              <CashOnHandCard data={displayData.cashOnHand} />
-              <DebtCard data={displayData.debt} />
-              <InvestmentAccountsCard data={displayData.investmentPortfolio} onEdit={() => setIsEditContributionGoalsModalOpen(true)} />
-              <AccountBreakdownCard holdings={displayData.investmentPortfolio.holdings} />
-              <BusinessCard data={displayData.businesses.reduce((acc, b) => ({
+              <FinancialFreedomCard data={renderData} onEdit={() => setIsEditGoalsModalOpen(true)} />
+              <NetWorthCard data={renderData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
+              <InvestmentCard data={renderData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
+              <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} />
+              <ExpensesCard data={renderData.expenses} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditExpensesModalOpen(true)} />
+              <CashOnHandCard data={renderData.cashOnHand} />
+              <DebtCard data={renderData.debt} />
+              <InvestmentAccountsCard data={renderData.investmentPortfolio} onEdit={() => setIsEditContributionGoalsModalOpen(true)} />
+              <AccountBreakdownCard holdings={renderData.investmentPortfolio.holdings} />
+              <BusinessCard data={renderData.businesses.reduce((acc, b) => ({
                   income: acc.income + b.income,
                   expenses: acc.expenses + b.expenses,
                   net: acc.net + b.net
               }), {income: 0, expenses: 0, net: 0})} onEdit={() => setIsSideHustleModalOpen(true)} />
-              <CreditScoreCard score={displayData.creditScore.current} onEdit={() => setIsEditCreditScoreModalOpen(true)} />
-              <SavingsRateCard savingsRate={displayData.savingsRate || 0} />
-              <RainyDayFundCard data={displayData.rainyDayFund} expensesTotal={displayData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
-              <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={displayData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
+              <CreditScoreCard score={renderData.creditScore.current} onEdit={() => setIsEditCreditScoreModalOpen(true)} />
+              <SavingsRateCard savingsRate={renderData.savingsRate || 0} />
+              <RainyDayFundCard data={renderData.rainyDayFund} expensesTotal={renderData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
+              <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={renderData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
               <TransactionsCard data={data.recentTransactions} />
             </>
           )}
@@ -2571,18 +2585,18 @@ export default function App() {
           )}
           {activeTab === 'investment' && (
             <InvestmentTab 
-                portfolio={displayData.investmentPortfolio} 
+                portfolio={renderData.investmentPortfolio} 
                 onSaveHoldings={handleSaveHoldings}
                 openEditHoldingsModal={() => setIsEditHoldingsModalOpen(true)}
             />
           )}
           {activeTab === 'visuals' && (
             <>
-              <HistoryChartCard title="Net Worth" data={displayData.netWorth.history} dataKey="total" color="text-emerald-400" icon={<DollarSign/>} />
-              <HistoryChartCard title="Cash on Hand" data={displayData.cashOnHand.history} dataKey="total" color="text-sky-400" icon={<Wallet/>} />
-              <HistoryChartCard title="Debt" data={displayData.debt.history} dataKey="total" color="text-red-500" icon={<CreditCard/>} />
-              <HistoryChartCard title="Business Profit" data={displayData.businesses[0]?.history || []} dataKey="net" color="text-violet-500" icon={<Building/>} />
-              <HistoryChartCard title="Credit Score" data={displayData.creditScore.history} dataKey="score" color="text-emerald-400" icon={<ShieldCheck/>} yDomain={[300, 850]} />
+              <HistoryChartCard title="Net Worth" data={renderData.netWorth.history} dataKey="total" color="text-emerald-400" icon={<DollarSign/>} />
+              <HistoryChartCard title="Cash on Hand" data={renderData.cashOnHand.history} dataKey="total" color="text-sky-400" icon={<Wallet/>} />
+              <HistoryChartCard title="Debt" data={renderData.debt.history} dataKey="total" color="text-red-500" icon={<CreditCard/>} />
+              <HistoryChartCard title="Business Profit" data={renderData.businesses[0]?.history || []} dataKey="net" color="text-violet-500" icon={<Building/>} />
+              <HistoryChartCard title="Credit Score" data={renderData.creditScore.history} dataKey="score" color="text-emerald-400" icon={<ShieldCheck/>} yDomain={[300, 850]} />
             </>
           )}
           {activeTab === 'allocations' && (
