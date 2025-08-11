@@ -14,8 +14,13 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
-// Add this line to debug the whole object:
-console.log("Firebase Config Object:", firebaseConfig);
+// Add these lines to debug each variable:
+console.log("apiKey:", process.env.REACT_APP_FIREBASE_API_KEY);
+console.log("authDomain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
+console.log("projectId:", process.env.REACT_APP_FIREBASE_PROJECT_ID);
+console.log("storageBucket:", process.env.REACT_APP_FIREBASE_STORAGE_BUCKET);
+console.log("messagingSenderId:", process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID);
+console.log("appId:", process.env.REACT_APP_FIREBASE_APP_ID);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
