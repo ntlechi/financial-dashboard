@@ -239,10 +239,10 @@ const Card = ({ children, className = '' }) => (
 );
 
 const ProgressBar = ({ value, maxValue, color }) => {
-  const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+  const percentage = maxValue > 0 ? Math.min((value / maxValue) * 100, 100) : 0; // Cap at 100%
   return (
     <div className="w-full bg-gray-700 rounded-full h-2.5">
-      <div className={`${color} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
+      <div className={`${color} h-2.5 rounded-full transition-all duration-300`} style={{ width: `${percentage}%` }}></div>
     </div>
   );
 };
@@ -1130,7 +1130,7 @@ const EditHoldingsModal = ({ isOpen, onClose, onSave, holdings }) => {
 const FinancialFreedomCard = ({ data, onEdit }) => {
   const { targetAmount } = data.financialFreedom;
   const currentSavings = data.netWorth.total;
-  const percentage = targetAmount > 0 ? (currentSavings / targetAmount) * 100 : 0;
+  const percentage = targetAmount > 0 ? Math.min((currentSavings / targetAmount) * 100, 100) : 0; // Cap at 100%
 
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-emerald-900/50 to-green-900/50">
@@ -2277,16 +2277,19 @@ export default function App() {
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
     
     const unsubscribeSnapshot = onSnapshot(userDocRef, (doc) => {
-      console.log("📄 Firebase snapshot received:", { exists: doc.exists(), id: doc.id });
+      console.log("📄 Firebase snapshot received:", { exists: doc.exists(), id: doc.id, timestamp: new Date().toISOString() });
       
       if (doc.exists()) {
         const fetchedData = doc.data();
-        console.log("✅ Data fetched from Firebase:", fetchedData);
+        console.log("✅ Data fetched from Firebase at:", new Date().toISOString());
         console.log("📊 Data structure keys:", Object.keys(fetchedData));
+        console.log("💰 Net Worth from Firebase:", fetchedData.netWorth?.total);
+        console.log("💸 Expenses from Firebase:", fetchedData.expenses?.total);
         setData(fetchedData);
         if (fetchedData.allocations) {
             setAllocations(fetchedData.allocations);
         }
+        console.log("🔄 React state updated with new data");
       } else {
         console.log("🆕 No document exists, creating initial data...");
         setDoc(userDocRef, initialData)
@@ -2321,9 +2324,13 @@ export default function App() {
         const view = { timeframe, date: historicalDate };
         console.log("📊 Recalculating totals with view:", view);
         const newDisplayData = recalculateTotals(data, view);
-        console.log("✅ New display data calculated:", newDisplayData);
+        console.log("✅ New display data calculated at:", new Date().toISOString());
         console.log("📋 Display data keys:", Object.keys(newDisplayData));
+        console.log("💰 Calculated Net Worth:", newDisplayData.netWorth?.total);
+        console.log("💸 Calculated Expenses:", newDisplayData.expenses?.total);
+        console.log("💵 Calculated Income:", newDisplayData.income?.total);
         setDisplayData(newDisplayData);
+        console.log("🔄 DisplayData state updated");
     } else {
       console.log("⚠️ No data available for display calculation");
     }
@@ -2413,6 +2420,7 @@ export default function App() {
       
       await setDoc(userDocRef, cleanedData, { merge: true });
       console.log("✅ Data saved successfully!");
+      console.log("🔄 Waiting for Firebase to trigger data refresh...");
       
       // Show user feedback
       alert("✅ Data saved successfully!");
