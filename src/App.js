@@ -2640,20 +2640,20 @@ export default function App() {
               <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
               <p className="text-gray-400 text-lg">Welcome back, Entrepreneur! Here's your financial snapshot.</p>
             </div>
-            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
-              <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard</button>
-              <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Building className="w-4 h-4 mr-2"/>Side Hustle</button>
-              <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
-              <button onClick={() => setActiveTab('visuals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
-              <button onClick={() => setActiveTab('allocations')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'allocations' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Allocations</button>
-              <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Wallet className="w-4 h-4 mr-2"/>Budget</button>
+            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1 overflow-x-auto max-w-full scrollbar-none md:scrollbar-thin">
+              <button onClick={() => setActiveTab('dashboard')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard</button>
+              <button onClick={() => setActiveTab('side-hustle')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Building className="w-4 h-4 mr-2"/>Side Hustle</button>
+              <button onClick={() => setActiveTab('investment')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
+              <button onClick={() => setActiveTab('visuals')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
+              <button onClick={() => setActiveTab('allocations')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'allocations' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Allocations</button>
+              <button onClick={() => setActiveTab('budget')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Wallet className="w-4 h-4 mr-2"/>Budget</button>
             </div>
           </div>
           {activeTab === 'dashboard' && (
-            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1 mt-4 max-w-min">
-              <button onClick={() => { setTimeframe('monthly'); setHistoricalDate(null); }} className={`px-3 py-1 rounded-full text-sm font-semibold ${timeframe === 'monthly' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>Monthly</button>
-              <button onClick={() => { setTimeframe('annual'); setHistoricalDate(null); }} className={`px-3 py-1 rounded-full text-sm font-semibold ${timeframe === 'annual' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>Annually</button>
-              <button onClick={() => setIsHistoryModalOpen(true)} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${timeframe === 'historical' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calendar className="w-4 h-4 mr-1"/> History</button>
+            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1 mt-4 max-w-full overflow-x-auto scrollbar-none md:scrollbar-thin">
+              <button onClick={() => { setTimeframe('monthly'); setHistoricalDate(null); }} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold ${timeframe === 'monthly' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>Monthly</button>
+              <button onClick={() => { setTimeframe('annual'); setHistoricalDate(null); }} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold ${timeframe === 'annual' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>Annually</button>
+              <button onClick={() => setIsHistoryModalOpen(true)} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${timeframe === 'historical' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Calendar className="w-4 h-4 mr-1"/> History</button>
             </div>
           )}
         </header>
@@ -2922,6 +2922,9 @@ const BudgetTab = ({ budget, allocations, onSaveBudget }) => {
         onSaveBudget({ monthlyIncome, categories });
     };
 
+    const plannedSpend = (monthlyIncome * Math.min(totalPercent, 100)) / 100;
+    const remainder = monthlyIncome - plannedSpend;
+
     return (
         <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
             <div className="flex flex-wrap justify-between items-center gap-4">
@@ -2980,13 +2983,11 @@ const BudgetTab = ({ budget, allocations, onSaveBudget }) => {
                 </Card>
                 <Card className="text-center">
                     <p className="text-gray-400">Planned Spend</p>
-                    <p className="text-3xl font-bold text-amber-400">${(monthlyIncome * Math.min(totalPercent, 100) / 100).toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-amber-400">${plannedSpend.toLocaleString()}</p>
                 </Card>
                 <Card className="text-center">
                     <p className="text-gray-400">Remainder</p>
-                    <p className={`text-3xl font-bold ${monthlyIncome - (monthlyIncome * Math.min(totalPercent, 100) / 100) >= 0 ? 'text-emerald-400' : 'text-red-500'}`}>
-                        ${ (monthlyIncome - (monthlyIncome * Math.min(totalPercent, 100) / 100)).toLocaleString(undefined, {minimumFractionDigits: 2}) }
-                    </p>
+                    <p className={`text-3xl font-bold ${remainder >= 0 ? 'text-emerald-400' : 'text-red-500'}`}>${remainder.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
                 </Card>
             </div>
         </div>
