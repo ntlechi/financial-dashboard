@@ -12,6 +12,32 @@ const appId = process.env.REACT_APP_FIREBASE_APP_ID || 'default';
 
 /* global __initial_auth_token:readonly */
 
+// Helpers for numeric input handling
+const parseNumberInput = (value) => (value === '' ? '' : Number(value));
+const numberLikeKeys = new Set([
+  'amount','balance','value','shares','avgCost','currentPrice','annualDividend','percentage','percent',
+  'targetAmount','currentAmount','interestRate','minPayment','monthlyContribution','annualReturn','totalValue',
+  'tfsaContribution','rrspContribution','tfsaGoal','rrspGoal','total'
+]);
+const coerceEmptyNumericStrings = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(coerceEmptyNumericStrings);
+  } else if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v === '' && numberLikeKeys.has(k)) {
+        out[k] = 0;
+      } else if (typeof v === 'object' && v !== null) {
+        out[k] = coerceEmptyNumericStrings(v);
+      } else {
+        out[k] = v;
+      }
+    }
+    return out;
+  }
+  return obj;
+};
+
 
 
 
@@ -300,7 +326,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
         const updatedTx = { ...newTransactions[index] };
         
         if (field === 'amount') {
-            updatedTx.amount = Number(value);
+            updatedTx.amount = parseNumberInput(value);
         } else {
             updatedTx[field] = value;
         }
@@ -370,7 +396,8 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const handleSave = () => {
-        onSave(formData);
+        const cleaned = coerceEmptyNumericStrings(formData);
+        onSave(cleaned);
         onClose();
     };
 
@@ -403,7 +430,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                     ) : (
                                         <input type="text" value={tx.description} onChange={(e) => handleTransactionChange(e, index, 'description')} placeholder="Description" className="md:col-span-2 bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                     )}
-                                    <input type="number" value={tx.amount} onChange={(e) => handleTransactionChange(e, index, 'amount')} placeholder="Amount" className="bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                    <input type="text" inputMode="decimal" value={tx.amount} onChange={(e) => handleTransactionChange(e, index, 'amount')} placeholder="Amount" className="bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                     <select value={tx.type} onChange={(e) => handleTransactionChange(e, index, 'type')} className="bg-gray-700 text-white p-2 rounded-md border border-gray-600">
                                         <option value="income">Income</option>
                                         <option value="expense">Expense</option>
@@ -455,7 +482,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                 {formData.cashOnHand.accounts.map((acc, index) => (
                                     <div key={acc.id} className="flex items-center gap-2">
                                         <input type="text" value={acc.name} onChange={(e) => handleAccountChange(e, index, 'name', 'cashOnHand')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
-                                        <input type="number" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'cashOnHand')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                        <input type="text" inputMode="decimal" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'cashOnHand')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                         <button onClick={() => removeAccount(acc.id, 'cashOnHand')} className="text-rose-500 hover:text-rose-400 p-2"><Trash2 className="w-4 h-4"/></button>
                                     </div>
                                 ))}
@@ -473,7 +500,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                 {formData.debt.accounts.map((acc, index) => (
                                     <div key={acc.id} className="flex items-center gap-2">
                                         <input type="text" value={acc.name} onChange={(e) => handleAccountChange(e, index, 'name', 'debt')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
-                                        <input type="number" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'debt')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                        <input type="text" inputMode="decimal" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'debt')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                         <button onClick={() => removeAccount(acc.id, 'debt')} className="text-rose-500 hover:text-rose-400 p-2"><Trash2 className="w-4 h-4"/></button>
                                     </div>
                                 ))}
@@ -491,7 +518,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                 {formData.rainyDayFund.accounts.map((acc, index) => (
                                     <div key={acc.id} className="flex items-center gap-2">
                                         <input type="text" value={acc.name} onChange={(e) => handleAccountChange(e, index, 'name', 'rainyDayFund')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
-                                        <input type="number" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'rainyDayFund')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                        <input type="text" inputMode="decimal" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'rainyDayFund')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                         <button onClick={() => removeAccount(acc.id, 'rainyDayFund')} className="text-rose-500 hover:text-rose-400 p-2"><Trash2 className="w-4 h-4"/></button>
                                     </div>
                                 ))}
@@ -656,7 +683,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
                             {localBreakdown.filter(i => i.type === 'asset').map(item => (
                                 <div key={item.id} className="flex items-center gap-2">
                                     <input type="text" value={item.name} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                                    <input type="number" value={item.value} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
+                                    <input type="text" inputMode="decimal" value={item.value} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
                                     <button onClick={() => removeItem(item.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                                 </div>
                             ))}
@@ -671,7 +698,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
                             {localBreakdown.filter(i => i.type === 'liability').map(item => (
                                 <div key={item.id} className="flex items-center gap-2">
                                     <input type="text" value={item.name} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                                    <input type="number" value={Math.abs(item.value)} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
+                                    <input type="text" inputMode="decimal" value={Math.abs(item.value)} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
                                     <button onClick={() => removeItem(item.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                                 </div>
                             ))}
@@ -719,7 +746,7 @@ const EditExpensesModal = ({ isOpen, onClose, onSave, categories }) => {
                     {localCategories.map(cat => (
                         <div key={cat.id} className="flex items-center gap-2">
                             <input type="text" value={cat.name} onChange={e => handleCategoryChange(cat.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                            <input type="number" value={cat.amount} onChange={e => handleCategoryChange(cat.id, 'amount', Number(e.target.value))} className="w-32 bg-gray-700 p-2 rounded-md" />
+                            <input type="text" inputMode="decimal" value={cat.amount} onChange={e => handleCategoryChange(cat.id, 'amount', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
                             <button onClick={() => removeCategory(cat.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                         </div>
                     ))}
@@ -848,7 +875,7 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">Total Portfolio Value</label>
-                        <input type="number" value={localPortfolio.totalValue} onChange={e => handleValueChange(e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={localPortfolio.totalValue} onChange={e => handleValueChange(e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-gray-300 mb-2">Asset Allocation</h3>
@@ -856,7 +883,7 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
                             {localPortfolio.allocation.map(item => (
                                 <div key={item.id} className="flex items-center gap-2">
                                     <input type="text" value={item.name} onChange={e => handleAllocationChange(item.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                                    <input type="number" value={item.percentage} onChange={e => handleAllocationChange(item.id, 'percentage', e.target.value)} className="w-24 bg-gray-700 p-2 rounded-md" />
+                                    <input type="text" inputMode="decimal" value={item.percentage} onChange={e => handleAllocationChange(item.id, 'percentage', e.target.value)} className="w-24 bg-gray-700 p-2 rounded-md" />
                                     <span className="text-gray-400">%</span>
                                     <button onClick={() => removeAllocation(item.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                                 </div>
@@ -894,11 +921,11 @@ const EditContributionGoalsModal = ({ isOpen, onClose, onSave, tfsaGoal, rrspGoa
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">TFSA Contribution Goal</label>
-                        <input type="number" value={tfsa} onChange={e => setTfsa(Number(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={tfsa} onChange={e => setTfsa(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">RRSP Contribution Goal</label>
-                        <input type="number" value={rrsp} onChange={e => setRrsp(Number(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={rrsp} onChange={e => setRrsp(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                 </div>
                 <div className="mt-8 flex justify-end">
@@ -1008,7 +1035,7 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                                     {business.incomeSources.map(item => (
                                         <div key={item.id} className="flex gap-2 mb-2">
                                             <input type="text" value={item.name} onChange={e => handleItemChange(business.id, item.id, 'incomeSources', 'name', e.target.value)} className="w-full bg-gray-700 p-1 rounded-md text-sm" />
-                                            <input type="number" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'incomeSources', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
+                                            <input type="text" inputMode="decimal" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'incomeSources', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
                                             <button onClick={() => removeItem(business.id, item.id, 'incomeSources')} className="text-rose-500"><X className="w-4 h-4"/></button>
                                         </div>
                                     ))}
@@ -1021,7 +1048,7 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                                     {business.expenseItems.map(item => (
                                         <div key={item.id} className="flex gap-2 mb-2">
                                             <input type="text" value={item.name} onChange={e => handleItemChange(business.id, item.id, 'expenseItems', 'name', e.target.value)} className="w-full bg-gray-700 p-1 rounded-md text-sm" />
-                                            <input type="number" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'expenseItems', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
+                                            <input type="text" inputMode="decimal" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'expenseItems', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
                                             <button onClick={() => removeItem(business.id, item.id, 'expenseItems')} className="text-rose-500"><X className="w-4 h-4"/></button>
                                         </div>
                                     ))}
@@ -1933,19 +1960,19 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400">Freedom Number ($)</label>
-                        <input type="number" value={inputs.targetAmount} onChange={e => handleInputChange('targetAmount', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.targetAmount} onChange={e => handleInputChange('targetAmount', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Current Investments ($)</label>
-                        <input type="number" value={inputs.currentInvestments} onChange={e => handleInputChange('currentInvestments', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.currentInvestments} onChange={e => handleInputChange('currentInvestments', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Monthly Contribution ($)</label>
-                        <input type="number" value={inputs.monthlyContribution} onChange={e => handleInputChange('monthlyContribution', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.monthlyContribution} onChange={e => handleInputChange('monthlyContribution', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Expected Annual Return (%)</label>
-                        <input type="number" value={inputs.annualReturn} onChange={e => handleInputChange('annualReturn', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.annualReturn} onChange={e => handleInputChange('annualReturn', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div className="text-center bg-gray-900/50 p-4 rounded-lg">
                         <p className="text-gray-400">Time to Freedom</p>
@@ -2201,15 +2228,15 @@ const DebtPaydownCalculator = ({ existingDebts = [] }) => {
                 <div className="space-y-3">
                     <div>
                         <label className="block text-sm text-gray-400">Total Debt ($)</label>
-                        <input type="number" value={totalDebt} onChange={e => setTotalDebt(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={totalDebt} onChange={e => setTotalDebt(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Average APR (%)</label>
-                        <input type="number" value={annualRate} onChange={e => setAnnualRate(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={annualRate} onChange={e => setAnnualRate(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Monthly Payment ($)</label>
-                        <input type="number" value={monthlyPayment} onChange={e => setMonthlyPayment(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={monthlyPayment} onChange={e => setMonthlyPayment(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                 </div>
                 <div className="space-y-3">
@@ -2315,7 +2342,7 @@ export default function App() {
     const expenseTransactions = filteredTransactions.filter(tx => tx.type === 'expense');
     const investmentTransactions = filteredTransactions.filter(tx => tx.type === 'investment');
     
-    newData.income.sources.forEach(s => s.amount = 0);
+    newData.income.sources.forEach(s => s.amount = Number(s.amount) || 0);
     incomeTransactions.forEach(tx => {
         const source = newData.income.sources.find(s => s.name === tx.description);
         if (source) {
@@ -2940,7 +2967,7 @@ const BudgetTab = ({ budget, allocations, onSaveBudget }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">Monthly Net Income</label>
-                        <input type="number" value={monthlyIncome} onChange={e => setMonthlyIncome(Number(e.target.value) || 0)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={monthlyIncome} onChange={e => setMonthlyIncome(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                         {totalPercent !== 100 && (
                             <div className="mt-3 bg-red-900/50 border border-red-500 text-red-300 p-3 rounded-lg flex items-center">
                                 <AlertTriangle className="w-5 h-5 mr-3"/>
@@ -2963,7 +2990,7 @@ const BudgetTab = ({ budget, allocations, onSaveBudget }) => {
                                 return (
                                     <div key={c.id} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-center bg-gray-900/50 p-2 rounded-lg">
                                         <input type="text" value={c.name} onChange={e => handleChange(c.id, 'name', e.target.value)} className="md:col-span-2 bg-gray-700 p-2 rounded-md" />
-                                        <input type="number" value={c.percent} onChange={e => handleChange(c.id, 'percent', e.target.value)} className="bg-gray-700 p-2 rounded-md" />
+                                        <input type="text" inputMode="decimal" value={c.percent} onChange={e => handleChange(c.id, 'percent', e.target.value)} className="bg-gray-700 p-2 rounded-md" />
                                         <div className="flex items-center justify-between">
                                             <span className="font-mono">${amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                             <button onClick={() => removeCategory(c.id)} className="text-rose-500 hover:text-rose-400 p-1"><Trash2 className="w-4 h-4"/></button>
