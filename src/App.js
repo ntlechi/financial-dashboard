@@ -12,9 +12,9 @@ import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 // FIREBASE CONFIG & INITIALIZATION
 //-///////////////////////////////////////////////////////////////////////////
 
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIza...", authDomain: "...", projectId: "..." };
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
+const firebaseConfig = process.env.REACT_APP_FIREBASE_CONFIG;
+const appId = process.env.REACT_APP_APP_ID;
+const initialAuthToken = process.env.REACT_APP_INITIAL_AUTH_TOKEN;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
