@@ -14,6 +14,9 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
+// Add this line to debug the whole object:
+console.log("Firebase Config Object:", firebaseConfig);
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
