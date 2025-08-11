@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* App background fallback to ensure readable contrast before Tailwind loads */
+html, body, #root {
+  height: 100%;
+}
+body {
+  background-color: #111827; /* gray-900 */
+  color: #ffffff;
+}
