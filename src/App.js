@@ -558,6 +558,7 @@ const HistoryModal = ({ isOpen, onClose, onViewHistory, transactions }) => {
 };
 
 const ResetConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+    const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     if (!isOpen) return null;
 
     return (
@@ -569,8 +570,17 @@ const ResetConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
                     </div>
                     <h2 className="mt-4 text-2xl font-bold text-white">Reset All Data?</h2>
                     <p className="mt-2 text-gray-400">
-                        Are you sure you want to reset all your financial data? This action is irreversible and will restore the dashboard to a blank state.
+                        Choose the date you want to start tracking from. This will clear current data and seed baselines at your chosen start date.
                     </p>
+                </div>
+                <div className="mt-6">
+                    <label className="block text-sm text-gray-400 mb-2">Start Tracking From</label>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600"
+                    />
                 </div>
                 <div className="mt-8 grid grid-cols-2 gap-4">
                     <button
@@ -583,7 +593,7 @@ const ResetConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
                     <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-                        onClick={onConfirm}
+                        onClick={() => onConfirm(startDate)}
                     >
                         Reset Data
                     </button>
@@ -2522,13 +2532,24 @@ export default function App() {
       }
   };
   
-  const handleResetData = async () => {
+  const handleResetData = async (startDateStr) => {
     if (!userId) return;
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
     try {
-        await setDoc(userDocRef, emptyData);
-        setData(JSON.parse(JSON.stringify(emptyData)));
-        setAllocations(emptyData.allocations);
+        const baselineDate = startDateStr || new Date().toISOString().split('T')[0];
+        const seeded = JSON.parse(JSON.stringify(emptyData));
+        // seed baseline histories
+        seeded.debt.history = [{ date: baselineDate, total: 0 }];
+        seeded.netWorth.history = [{ date: baselineDate, total: 0 }];
+        seeded.cashOnHand.history = [{ date: baselineDate, total: 0 }];
+        seeded.rainyDayFund.history = [{ date: baselineDate, total: 0 }];
+        seeded.creditScore.history = [];
+        seeded.investmentPortfolio.history = [{ date: baselineDate, total: 0 }];
+        // also persist chosen start date
+        seeded.startDate = baselineDate;
+        await setDoc(userDocRef, seeded);
+        setData(JSON.parse(JSON.stringify(seeded)));
+        setAllocations(seeded.allocations);
         setTimeframe('monthly');
         setHistoricalDate(null);
         setActiveTab('dashboard');
