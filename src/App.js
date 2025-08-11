@@ -8,6 +8,8 @@ import { db, auth } from './firebase'; // Import the ready-to-use services
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 
+const appId = process.env.REACT_APP_FIREBASE_APP_ID;
+
 /* global __initial_auth_token:readonly */
 
 
