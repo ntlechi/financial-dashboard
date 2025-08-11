@@ -2266,7 +2266,34 @@ export default function App() {
   const recalculateTotals = (sourceData, view) => {
     const newData = JSON.parse(JSON.stringify(sourceData)); 
     if (!Array.isArray(newData.businesses)) newData.businesses = [];
-    if (!newData.investmentPortfolio.holdings) newData.investmentPortfolio.holdings = [];
+    if (!newData.investmentPortfolio) newData.investmentPortfolio = { totalValue: 0, allocation: [], holdings: [], history: [], tfsaContribution: 0, rrspContribution: 0 };
+    if (!Array.isArray(newData.investmentPortfolio.holdings)) newData.investmentPortfolio.holdings = [];
+    if (!newData.netWorth) newData.netWorth = { total: 0, breakdown: [], history: [] };
+    if (!Array.isArray(newData.netWorth.breakdown)) newData.netWorth.breakdown = [];
+    if (!newData.cashOnHand) newData.cashOnHand = { total: 0, accounts: [], history: [] };
+    if (!Array.isArray(newData.cashOnHand.accounts)) newData.cashOnHand.accounts = [];
+    if (!newData.rainyDayFund) newData.rainyDayFund = { total: 0, accounts: [], goal: 0, history: [] };
+    if (!Array.isArray(newData.rainyDayFund.accounts)) newData.rainyDayFund.accounts = [];
+    if (!newData.debt) newData.debt = { total: 0, accounts: [], history: [] };
+    if (!Array.isArray(newData.debt.accounts)) newData.debt.accounts = [];
+    if (!newData.expenses) newData.expenses = { total: 0, categories: [] };
+    if (!Array.isArray(newData.expenses.categories)) newData.expenses.categories = [];
+    if (!newData.income) newData.income = { total: 0, sources: [] };
+    if (!Array.isArray(newData.income.sources)) newData.income.sources = [];
+    if (!Array.isArray(newData.recentTransactions)) newData.recentTransactions = [];
+
+    const ensureBreakdownItem = (name, type, color) => {
+        let item = newData.netWorth.breakdown.find(b => b.name === name);
+        if (!item) {
+            item = { id: Date.now() + Math.floor(Math.random() * 1000), name, value: 0, color, type };
+            newData.netWorth.breakdown.push(item);
+        }
+        return item;
+    };
+
+    const cashItem = ensureBreakdownItem('Cash', 'asset', 'bg-sky-500');
+    const investmentsItem = ensureBreakdownItem('Investments', 'asset', 'bg-violet-500');
+
     const now = new Date();
     
     let filteredTransactions;
@@ -2299,40 +2326,44 @@ export default function App() {
     newData.income.total = incomeTransactions.filter(tx => tx.category !== 'business').reduce((sum, tx) => sum + tx.amount, 0);
     
     if (view.timeframe === 'monthly') {
-        newData.expenses.total = newData.expenses.categories.reduce((sum, cat) => sum + cat.amount, 0);
+        newData.expenses.total = newData.expenses.categories.reduce((sum, cat) => sum + (Number(cat.amount) || 0), 0);
     } else {
         newData.expenses.total = expenseTransactions.filter(tx => tx.category !== 'business').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     }
     
     const totalInvestmentAmount = investmentTransactions.reduce((sum, tx) => sum + tx.amount, 0);
     
-    newData.passiveIncome.total = newData.income.sources.filter(s => s.type === 'passive').reduce((sum, s) => sum + s.amount, 0);
-    newData.dividends.total = newData.income.sources.filter(s => s.type === 'dividend').reduce((sum, s) => sum + s.amount, 0);
+    newData.passiveIncome = newData.passiveIncome || { total: 0 };
+    newData.dividends = newData.dividends || { total: 0 };
+    newData.cashflow = newData.cashflow || { total: 0 };
+
+    newData.passiveIncome.total = newData.income.sources.filter(s => s.type === 'passive').reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+    newData.dividends.total = newData.income.sources.filter(s => s.type === 'dividend').reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
     
     newData.cashflow.total = newData.income.total - newData.expenses.total + totalInvestmentAmount;
 
     newData.businesses.forEach(business => {
-        business.income = business.incomeSources.reduce((sum, item) => sum + item.amount, 0);
-        business.expenses = business.expenseItems.reduce((sum, item) => sum + item.amount, 0);
+        business.income = (business.incomeSources || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+        business.expenses = (business.expenseItems || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
         business.net = business.income - business.expenses;
     });
 
-    newData.cashOnHand.total = newData.cashOnHand.accounts.reduce((sum, acc) => sum + acc.balance, 0);
-    newData.rainyDayFund.total = newData.rainyDayFund.accounts.reduce((sum, acc) => sum + acc.balance, 0);
-    newData.debt.total = newData.debt.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    newData.cashOnHand.total = newData.cashOnHand.accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
+    newData.rainyDayFund.total = newData.rainyDayFund.accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
+    newData.debt.total = newData.debt.accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
 
     const allInvestmentTransactions = newData.recentTransactions.filter(tx => tx.type === 'investment');
     newData.investmentPortfolio.tfsaContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'tfsa').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     newData.investmentPortfolio.rrspContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'rrsp').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     
-    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + (h.shares * h.currentPrice), 0);
+    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((Number(h.shares) || 0) * (Number(h.currentPrice) || 0)), 0);
 
-    newData.netWorth.breakdown.find(b => b.name === 'Cash').value = newData.cashOnHand.total;
-    newData.netWorth.breakdown.find(b => b.name === 'Investments').value = newData.investmentPortfolio.totalValue;
-    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + b.value, 0);
+    cashItem.value = newData.cashOnHand.total;
+    investmentsItem.value = newData.investmentPortfolio.totalValue;
+    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + (Number(b.value) || 0), 0);
 
     const totalSavings = Math.abs(investmentTransactions.reduce((sum, tx) => sum + tx.amount, 0));
-    const totalIncomeForSavingsRate = newData.income.total + newData.businesses.reduce((sum, b) => sum + b.net, 0);
+    const totalIncomeForSavingsRate = newData.income.total + newData.businesses.reduce((sum, b) => sum + (Number(b.net) || 0), 0);
     newData.savingsRate = totalIncomeForSavingsRate > 0 ? (totalSavings / totalIncomeForSavingsRate) * 100 : 0;
 
     return newData;
