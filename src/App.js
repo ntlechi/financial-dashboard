@@ -1484,13 +1484,16 @@ const SavingsRateCard = ({ savingsRate }) => {
 };
 
 // New: Goals card showing progress toward specific goals
-const GoalsCard = ({ goals }) => {
+const GoalsCard = ({ goals, onEdit }) => {
     return (
         <Card className="col-span-1 md:col-span-3 lg:col-span-3">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-                <Target className="w-6 h-6 mr-3 text-emerald-400" />
-                Goals
-            </h2>
+            <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-bold text-white flex items-center">
+                    <Target className="w-6 h-6 mr-3 text-emerald-400" />
+                    Goals
+                </h2>
+                <button onClick={onEdit} className="text-gray-400 hover:text-white"><Edit size={18}/></button>
+            </div>
             {(!goals || goals.length === 0) ? (
                 <div className="text-gray-400">No goals yet.</div>
             ) : (
@@ -2248,6 +2251,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [allocations, setAllocations] = useState(initialData.allocations);
+  const [isEditGoalsListModalOpen, setIsEditGoalsListModalOpen] = useState(false);
 
   const recalculateTotals = (sourceData, view) => {
     const newData = JSON.parse(JSON.stringify(sourceData)); 
@@ -2551,6 +2555,12 @@ export default function App() {
     document.body.removeChild(link);
   };
 
+  const handleSaveGoalsList = async (newGoals) => {
+    if (!data || !userId) return;
+    const updatedData = { ...data, goals: newGoals };
+    handleSaveData(updatedData);
+  };
+
   if (loading || !displayData) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -2606,7 +2616,7 @@ export default function App() {
               <SavingsRateCard savingsRate={displayData.savingsRate || 0} />
               <RainyDayFundCard data={displayData.rainyDayFund} expensesTotal={displayData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
               <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={displayData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
-              <GoalsCard goals={displayData.goals} />
+              <GoalsCard goals={displayData.goals} onEdit={() => setIsEditGoalsListModalOpen(true)} />
               <TransactionsCard data={data.recentTransactions} />
             </>
           )}
@@ -2733,7 +2743,66 @@ export default function App() {
             onSave={handleSaveHoldings}
             holdings={data.investmentPortfolio.holdings}
         />}
+        {isEditGoalsListModalOpen && <EditGoalsListModal
+            isOpen={isEditGoalsListModalOpen}
+            onClose={() => setIsEditGoalsListModalOpen(false)}
+            onSave={handleSaveGoalsList}
+            goals={data.goals}
+        />}
       </div>
     </div>
   );
 }
+
+// New: Edit Goals List Modal for creating/updating/removing specific goals
+const EditGoalsListModal = ({ isOpen, onClose, onSave, goals }) => {
+    const [localGoals, setLocalGoals] = useState(goals || []);
+
+    useEffect(() => {
+        setLocalGoals(goals || []);
+    }, [isOpen, goals]);
+
+    if (!isOpen) return null;
+
+    const handleChange = (id, field, value) => {
+        setLocalGoals(localGoals.map(g => g.id === id ? { ...g, [field]: field.includes('Amount') ? Number(value) : value } : g));
+    };
+
+    const addGoal = () => {
+        const newGoal = { id: Date.now(), name: 'New Goal', targetAmount: 0, currentAmount: 0 };
+        setLocalGoals([...localGoals, newGoal]);
+    };
+
+    const removeGoal = (id) => {
+        setLocalGoals(localGoals.filter(g => g.id !== id));
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white">Edit Goals</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-6 h-6" /></button>
+                </div>
+                <div className="space-y-2">
+                    {localGoals.map(goal => (
+                        <div key={goal.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center bg-gray-900/50 p-3 rounded-lg">
+                            <input type="text" value={goal.name} onChange={e => handleChange(goal.id, 'name', e.target.value)} className="md:col-span-2 bg-gray-700 p-2 rounded-md" />
+                            <input type="number" value={goal.currentAmount} onChange={e => handleChange(goal.id, 'currentAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Current $" />
+                            <input type="number" value={goal.targetAmount} onChange={e => handleChange(goal.id, 'targetAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Target $" />
+                            <button onClick={() => removeGoal(goal.id)} className="text-rose-500 hover:text-rose-400 justify-self-end"><Trash2 className="w-5 h-5"/></button>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                    <button onClick={addGoal} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                        <Plus className="w-4 h-4 mr-2"/> Add Goal
+                    </button>
+                    <button onClick={() => { onSave(localGoals); onClose(); }} className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
+                        <Save className="w-4 h-4 mr-2"/> Save Goals
+                    </button>
+                </div>
+            </Card>
+        </div>
+    );
+};
