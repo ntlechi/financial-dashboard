@@ -1,7 +1,7 @@
 {
   "name": "financial-dashboard",
   "version": "1.0.0",
-  "homepage": "https://github.com/ntlechi/financial-dashboard",
+  
   "private": true,
   "description": "My personal financial dashboard.",
   "main": "index.js",
