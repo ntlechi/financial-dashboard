@@ -14,7 +14,7 @@ import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 
 const firebaseConfig = process.env.REACT_APP_FIREBASE_CONFIG;
 const appId = process.env.REACT_APP_APP_ID;
-const initialAuthToken = process.env.REACT_APP_INITIAL_AUTH_TOKEN;
+const token = null; 
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
