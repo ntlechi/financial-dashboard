@@ -24,9 +24,9 @@ const initialData = {
   cashOnHand: {
     total: 75000,
     accounts: [
-        { id: 1, name: 'CIBC Chequing', balance: 15000 },
-        { id: 2, name: 'Tangerine Savings', balance: 45000 },
-        { id: 3, name: 'Wealthsimple Cash', balance: 15000 },
+        { id: 1, name: 'CIBC Chequing', balance: 15000, type: 'Checking' },
+        { id: 2, name: 'Tangerine Savings', balance: 45000, type: 'Savings' },
+        { id: 3, name: 'Wealthsimple Cash', balance: 15000, type: 'Investment Cash' },
     ],
     history: [ { date: '2025-08-09', total: 75000 } ]
   },
@@ -315,7 +315,7 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 };
 
 // Financial Freedom Goal Card
-const FinancialFreedomCard = ({ data }) => {
+const FinancialFreedomCard = ({ data, onEdit }) => {
   const progressPercentage = (data.currentInvestments / data.targetAmount) * 100;
   const monthsToGoal = data.monthlyContribution > 0 
     ? Math.ceil((data.targetAmount - data.currentInvestments) / data.monthlyContribution) 
@@ -330,6 +330,12 @@ const FinancialFreedomCard = ({ data }) => {
           <Target className="w-6 h-6 mr-3 text-emerald-400" />
           Financial Freedom Goal
         </h2>
+        <button
+          onClick={() => onEdit('financialFreedom', data)}
+          className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
         <span className="text-emerald-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
       </div>
       
@@ -365,7 +371,7 @@ const FinancialFreedomCard = ({ data }) => {
 };
 
 // Savings Rate Card
-const SavingsRateCard = ({ data }) => {
+const SavingsRateCard = ({ data, onEdit }) => {
   const getRateColor = (rate) => {
     if (rate >= 50) return 'text-emerald-400';
     if (rate >= 30) return 'text-yellow-400';
@@ -381,10 +387,18 @@ const SavingsRateCard = ({ data }) => {
 
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
-      <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-        <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
-        Savings Rate
-      </h2>
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+          Savings Rate
+        </h2>
+        <button
+          onClick={() => onEdit('savingsRate', data)}
+          className="text-gray-400 hover:text-blue-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </div>
       
       <div className="space-y-4">
         <div className="text-center">
@@ -415,7 +429,7 @@ const SavingsRateCard = ({ data }) => {
 };
 
 // Rainy Day Fund Card
-const RainyDayFundCard = ({ data }) => {
+const RainyDayFundCard = ({ data, onEdit }) => {
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = data.total / 6500; // Assuming monthly expenses
   
@@ -434,7 +448,15 @@ const RainyDayFundCard = ({ data }) => {
           <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
           Rainy Day Fund
         </h2>
-        <span className="text-purple-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+        <div className="flex items-center gap-2">
+          <span className="text-purple-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+          <button
+            onClick={() => onEdit('rainyDayFund', data)}
+            className="text-gray-400 hover:text-purple-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </div>
       </div>
       
       <div className="space-y-4">
@@ -471,7 +493,7 @@ const RainyDayFundCard = ({ data }) => {
 };
 
 // Credit Score Card
-const CreditScoreCard = ({ data }) => {
+const CreditScoreCard = ({ data, onEdit }) => {
   const getScoreColor = (score) => {
     if (score >= 800) return 'text-emerald-400';
     if (score >= 740) return 'text-green-400';
@@ -492,10 +514,18 @@ const CreditScoreCard = ({ data }) => {
 
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-indigo-900/40 to-blue-900/40">
-      <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-        <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
-        Credit Score
-      </h2>
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
+          Credit Score
+        </h2>
+        <button
+          onClick={() => onEdit('creditScore', data)}
+          className="text-gray-400 hover:text-indigo-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </div>
       
       <div className="space-y-4">
         <div className="text-center">
@@ -530,13 +560,21 @@ const CreditScoreCard = ({ data }) => {
 };
 
 // Goals Card
-const GoalsCard = ({ data }) => {
+const GoalsCard = ({ data, onEdit }) => {
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
-      <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-        <Calendar className="w-6 h-6 mr-3 text-amber-400" />
-        Financial Goals
-      </h2>
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <Calendar className="w-6 h-6 mr-3 text-amber-400" />
+          Financial Goals
+        </h2>
+        <button
+          onClick={() => onEdit('goals', data)}
+          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {data.map(goal => {
@@ -585,12 +623,20 @@ const GoalsCard = ({ data }) => {
 };
 
 // Net Worth Card
-const NetWorthCard = ({ data }) => (
+const NetWorthCard = ({ data, onEdit }) => (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3">
-    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
-      Net Worth
-    </h2>
+    <div className="flex justify-between items-start mb-2">
+      <h2 className="text-xl font-bold text-white flex items-center">
+        <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+        Net Worth
+      </h2>
+      <button
+        onClick={() => onEdit('netWorth', data)}
+        className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+      >
+        <Edit className="w-4 h-4" />
+      </button>
+    </div>
     <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     <div className="mt-4 space-y-2">
       {data.breakdown.filter(item => item.type === 'asset').map((item) => (
@@ -602,6 +648,41 @@ const NetWorthCard = ({ data }) => (
           <span className="font-semibold text-white">${item.value.toLocaleString()}</span>
         </div>
       ))}
+    </div>
+  </Card>
+);
+
+// Cash on Hand Card
+const CashOnHandCard = ({ data, onEdit }) => (
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
+    <div className="flex justify-between items-start mb-2">
+      <h2 className="text-xl font-bold text-white flex items-center">
+        <Wallet className="w-6 h-6 mr-3 text-teal-400" />
+        Cash on Hand
+      </h2>
+      <button
+        onClick={() => onEdit('cashOnHand', data)}
+        className="text-gray-400 hover:text-teal-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+      >
+        <Edit className="w-4 h-4" />
+      </button>
+    </div>
+    <div className="text-3xl font-bold text-teal-400 mb-4">
+      ${data.total.toLocaleString()}
+    </div>
+    <div className="space-y-2 mb-4">
+      {data.accounts.map(account => (
+        <div key={account.id} className="flex justify-between items-center text-sm">
+          <div>
+            <span className="text-white font-medium">{account.name}</span>
+            <span className="text-gray-400 ml-2">({account.type})</span>
+          </div>
+          <span className="text-teal-300">${account.balance.toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+    <div className="text-xs text-gray-400">
+      {data.accounts.length} accounts • Last updated {new Date().toLocaleDateString()}
     </div>
   </Card>
 );
@@ -648,14 +729,22 @@ const ExpensesCard = ({ data }) => (
 );
 
 // Cash Flow Card
-const CashFlowCard = ({ data }) => {
+const CashFlowCard = ({ data, onEdit }) => {
   const isPositive = data.total >= 0;
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
-      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-        <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
-        Cash Flow
-      </h2>
+      <div className="flex justify-between items-start mb-2">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+          Cash Flow
+        </h2>
+        <button
+          onClick={() => onEdit('cashflow', data)}
+          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </div>
       <p className={`text-5xl font-extrabold ${isPositive ? 'text-amber-400' : 'text-red-500'}`}>
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
@@ -2655,6 +2744,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
+  
+  // Modal states for dashboard cards
+  const [editingCard, setEditingCard] = useState(null);
+  const [tempCardData, setTempCardData] = useState({});
 
   useEffect(() => {
     const signInUser = async () => {
@@ -2704,6 +2797,31 @@ export default function App() {
 
     return () => unsubscribeSnapshot();
   }, [userId]);
+
+  // Card editing functions
+  const openCardEditor = (cardType, currentData) => {
+    setEditingCard(cardType);
+    setTempCardData(currentData);
+  };
+
+  const closeCardEditor = () => {
+    setEditingCard(null);
+    setTempCardData({});
+  };
+
+  const saveCardData = async () => {
+    if (!editingCard || !data) return;
+    
+    const updatedData = { ...data, [editingCard]: tempCardData };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      closeCardEditor();
+    } catch (error) {
+      console.error('Error saving card data:', error);
+    }
+  };
 
   // CSV Export Functions
   const exportToCSV = (filename, data) => {
@@ -2911,21 +3029,24 @@ export default function App() {
               )}
               
               {/* Top Row - Financial Freedom Goal */}
-              <FinancialFreedomCard data={displayData.financialFreedom} />
-              <SavingsRateCard data={displayData.savingsRate} />
+              <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+              <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
               
-              {/* Second Row - Core Metrics */}
-              <NetWorthCard data={displayData.netWorth} />
+              {/* Second Row - Net Worth and Cash on Hand */}
+              <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
+              <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+              
+              {/* Third Row - Income and Expenses Side by Side */}
               <IncomeCard data={displayData.income} />
               <ExpensesCard data={displayData.expenses} />
-              <CashFlowCard data={displayData.cashflow} />
               
-              {/* Third Row - Additional Metrics */}
-              <RainyDayFundCard data={displayData.rainyDayFund} />
-              <CreditScoreCard data={displayData.creditScore} />
+              {/* Fourth Row - Cash Flow and Rainy Day Fund */}
+              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
+              <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
               
-              {/* Fourth Row - Goals */}
-              <GoalsCard data={displayData.goals} />
+              {/* Fifth Row - Credit Score and Goals */}
+              <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
+              <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
             </>
           )}
           
@@ -2951,6 +3072,416 @@ export default function App() {
           </div>
         </footer>
       </div>
+
+      {/* Card Editing Modals */}
+      {editingCard && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">
+                Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
+                     editingCard === 'savingsRate' ? 'Savings Rate' :
+                     editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
+                     editingCard === 'creditScore' ? 'Credit Score' :
+                     editingCard === 'netWorth' ? 'Net Worth' :
+                     editingCard === 'cashOnHand' ? 'Cash on Hand' :
+                     editingCard === 'cashflow' ? 'Cash Flow' :
+                     editingCard === 'goals' ? 'Financial Goals' : editingCard}
+              </h3>
+              <button
+                onClick={closeCardEditor}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Financial Freedom Goal Modal */}
+              {editingCard === 'financialFreedom' && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
+                      <input
+                        type="number"
+                        value={tempCardData.targetAmount || ''}
+                        onChange={(e) => setTempCardData({...tempCardData, targetAmount: Number(e.target.value)})}
+                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-300 mb-1">Current Investments</label>
+                      <input
+                        type="number"
+                        value={tempCardData.currentInvestments || ''}
+                        onChange={(e) => setTempCardData({...tempCardData, currentInvestments: Number(e.target.value)})}
+                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-300 mb-1">Monthly Contribution</label>
+                      <input
+                        type="number"
+                        value={tempCardData.monthlyContribution || ''}
+                        onChange={(e) => setTempCardData({...tempCardData, monthlyContribution: Number(e.target.value)})}
+                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-300 mb-1">Annual Return %</label>
+                      <input
+                        type="number"
+                        value={tempCardData.annualReturn || ''}
+                        onChange={(e) => setTempCardData({...tempCardData, annualReturn: Number(e.target.value)})}
+                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Cash on Hand Modal */}
+              {editingCard === 'cashOnHand' && (
+                <>
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-lg font-semibold text-white">Bank Accounts</h4>
+                      <button
+                        onClick={() => {
+                          const newAccount = {
+                            id: Date.now(),
+                            name: '',
+                            balance: 0,
+                            type: 'Checking'
+                          };
+                          setTempCardData({
+                            ...tempCardData,
+                            accounts: [...(tempCardData.accounts || []), newAccount]
+                          });
+                        }}
+                        className="text-teal-400 hover:text-teal-300 text-sm flex items-center gap-1"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Account
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {(tempCardData.accounts || []).map((account, index) => (
+                        <div key={account.id} className="bg-gray-700/50 rounded-lg p-3">
+                          <div className="grid grid-cols-12 gap-2 items-center">
+                            <div className="col-span-4">
+                              <input
+                                type="text"
+                                placeholder="Account Name"
+                                value={account.name}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, name: e.target.value};
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-3">
+                              <select
+                                value={account.type}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, type: e.target.value};
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
+                              >
+                                <option value="Checking">Checking</option>
+                                <option value="Savings">Savings</option>
+                                <option value="Investment Cash">Investment Cash</option>
+                                <option value="Money Market">Money Market</option>
+                                <option value="CD">CD</option>
+                              </select>
+                            </div>
+                            <div className="col-span-4">
+                              <input
+                                type="number"
+                                placeholder="Balance"
+                                value={account.balance}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, balance: Number(e.target.value)};
+                                  const newTotal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts, total: newTotal});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-1">
+                              <button
+                                onClick={() => {
+                                  const updatedAccounts = tempCardData.accounts.filter((_, i) => i !== index);
+                                  const newTotal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts, total: newTotal});
+                                }}
+                                className="text-red-400 hover:text-red-300 p-1"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-3 p-3 bg-teal-900/20 rounded-lg border border-teal-600/30">
+                      <div className="text-teal-400 font-semibold">
+                        Total Cash on Hand: ${(tempCardData.total || 0).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Savings Rate Modal */}
+              {editingCard === 'savingsRate' && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Current Rate %</label>
+                    <input
+                      type="number"
+                      value={tempCardData.current || ''}
+                      onChange={(e) => setTempCardData({...tempCardData, current: Number(e.target.value)})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Target Rate %</label>
+                    <input
+                      type="number"
+                      value={tempCardData.target || ''}
+                      onChange={(e) => setTempCardData({...tempCardData, target: Number(e.target.value)})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Rainy Day Fund Modal */}
+              {editingCard === 'rainyDayFund' && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Current Amount</label>
+                    <input
+                      type="number"
+                      value={tempCardData.total || ''}
+                      onChange={(e) => setTempCardData({...tempCardData, total: Number(e.target.value)})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Goal Amount</label>
+                    <input
+                      type="number"
+                      value={tempCardData.goal || ''}
+                      onChange={(e) => setTempCardData({...tempCardData, goal: Number(e.target.value)})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Credit Score Modal */}
+              {editingCard === 'creditScore' && (
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Current Credit Score</label>
+                  <input
+                    type="number"
+                    min="300"
+                    max="850"
+                    value={tempCardData.current || ''}
+                    onChange={(e) => setTempCardData({...tempCardData, current: Number(e.target.value)})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                  />
+                  <div className="text-xs text-gray-400 mt-1">Range: 300-850</div>
+                </div>
+              )}
+
+              {/* Net Worth Modal */}
+              {editingCard === 'netWorth' && (
+                <>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Total Net Worth</label>
+                    <input
+                      type="number"
+                      value={tempCardData.total || ''}
+                      onChange={(e) => setTempCardData({...tempCardData, total: Number(e.target.value)})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+                    />
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-2">Assets & Liabilities</h4>
+                    <div className="space-y-2">
+                      {(tempCardData.breakdown || []).map((item, index) => (
+                        <div key={item.id} className="grid grid-cols-12 gap-2 items-center bg-gray-700/50 rounded p-2">
+                          <div className="col-span-4">
+                            <input
+                              type="text"
+                              value={item.name}
+                              onChange={(e) => {
+                                const updatedBreakdown = [...tempCardData.breakdown];
+                                updatedBreakdown[index] = {...item, name: e.target.value};
+                                setTempCardData({...tempCardData, breakdown: updatedBreakdown});
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            />
+                          </div>
+                          <div className="col-span-3">
+                            <select
+                              value={item.type}
+                              onChange={(e) => {
+                                const updatedBreakdown = [...tempCardData.breakdown];
+                                updatedBreakdown[index] = {...item, type: e.target.value};
+                                setTempCardData({...tempCardData, breakdown: updatedBreakdown});
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            >
+                              <option value="asset">Asset</option>
+                              <option value="liability">Liability</option>
+                            </select>
+                          </div>
+                          <div className="col-span-4">
+                            <input
+                              type="number"
+                              value={Math.abs(item.value)}
+                              onChange={(e) => {
+                                const updatedBreakdown = [...tempCardData.breakdown];
+                                const value = Number(e.target.value);
+                                updatedBreakdown[index] = {...item, value: item.type === 'liability' ? -value : value};
+                                const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
+                                setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            />
+                          </div>
+                          <div className="col-span-1">
+                            <button
+                              onClick={() => {
+                                const updatedBreakdown = tempCardData.breakdown.filter((_, i) => i !== index);
+                                const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
+                                setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
+                              }}
+                              className="text-red-400 hover:text-red-300 p-1"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Cash Flow Modal */}
+              {editingCard === 'cashflow' && (
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Monthly Cash Flow</label>
+                  <input
+                    type="number"
+                    value={tempCardData.total || ''}
+                    onChange={(e) => setTempCardData({...tempCardData, total: Number(e.target.value)})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-500 focus:outline-none"
+                  />
+                  <div className="text-xs text-gray-400 mt-1">Positive for surplus, negative for deficit</div>
+                </div>
+              )}
+
+              {/* Goals Modal */}
+              {editingCard === 'goals' && (
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Financial Goals</h4>
+                  <div className="space-y-3">
+                    {(tempCardData || []).map((goal, index) => (
+                      <div key={goal.id} className="bg-gray-700/50 rounded-lg p-3">
+                        <div className="grid grid-cols-12 gap-2 items-center">
+                          <div className="col-span-4">
+                            <input
+                              type="text"
+                              placeholder="Goal Name"
+                              value={goal.name}
+                              onChange={(e) => {
+                                const updatedGoals = [...tempCardData];
+                                updatedGoals[index] = {...goal, name: e.target.value};
+                                setTempCardData(updatedGoals);
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            />
+                          </div>
+                          <div className="col-span-3">
+                            <input
+                              type="number"
+                              placeholder="Target Amount"
+                              value={goal.targetAmount}
+                              onChange={(e) => {
+                                const updatedGoals = [...tempCardData];
+                                updatedGoals[index] = {...goal, targetAmount: Number(e.target.value)};
+                                setTempCardData(updatedGoals);
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            />
+                          </div>
+                          <div className="col-span-3">
+                            <input
+                              type="number"
+                              placeholder="Current Amount"
+                              value={goal.currentAmount}
+                              onChange={(e) => {
+                                const updatedGoals = [...tempCardData];
+                                updatedGoals[index] = {...goal, currentAmount: Number(e.target.value)};
+                                setTempCardData(updatedGoals);
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <input
+                              type="date"
+                              value={goal.deadline}
+                              onChange={(e) => {
+                                const updatedGoals = [...tempCardData];
+                                updatedGoals[index] = {...goal, deadline: e.target.value};
+                                setTempCardData(updatedGoals);
+                              }}
+                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={closeCardEditor}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveCardData}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
