@@ -239,10 +239,10 @@ const Card = ({ children, className = '' }) => (
 );
 
 const ProgressBar = ({ value, maxValue, color }) => {
-  const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+  const percentage = maxValue > 0 ? Math.min((value / maxValue) * 100, 100) : 0; // Cap at 100%
   return (
     <div className="w-full bg-gray-700 rounded-full h-2.5">
-      <div className={`${color} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
+      <div className={`${color} h-2.5 rounded-full transition-all duration-300`} style={{ width: `${percentage}%` }}></div>
     </div>
   );
 };
@@ -676,54 +676,9 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
     );
 };
 
-const EditExpensesModal = ({ isOpen, onClose, onSave, categories }) => {
-    const [localCategories, setLocalCategories] = useState(categories);
 
-    useEffect(() => {
-        setLocalCategories(categories);
-    }, [isOpen, categories]);
 
-    if (!isOpen) return null;
 
-    const handleCategoryChange = (id, field, value) => {
-        setLocalCategories(localCategories.map(cat => cat.id === id ? { ...cat, [field]: value } : cat));
-    };
-
-    const addCategory = () => {
-        const newCategory = { id: Date.now(), name: 'New Expense', amount: 0, color: 'bg-gray-400' };
-        setLocalCategories([...localCategories, newCategory]);
-    };
-
-    const removeCategory = (id) => {
-        setLocalCategories(localCategories.filter(cat => cat.id !== id));
-    };
-
-    return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-lg">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-white">Edit Fixed Monthly Expenses</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-6 h-6" /></button>
-                </div>
-                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
-                    {localCategories.map(cat => (
-                        <div key={cat.id} className="flex items-center gap-2">
-                            <input type="text" value={cat.name} onChange={e => handleCategoryChange(cat.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                            <input type="number" value={cat.amount} onChange={e => handleCategoryChange(cat.id, 'amount', Number(e.target.value))} className="w-32 bg-gray-700 p-2 rounded-md" />
-                            <button onClick={() => removeCategory(cat.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-4">
-                    <button onClick={addCategory} className="bg-blue-600 text-white w-full py-2 rounded-md">Add Expense Category</button>
-                </div>
-                <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localCategories); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
-                </div>
-            </Card>
-        </div>
-    );
-};
 
 const EditCreditScoreModal = ({ isOpen, onClose, onSave, currentScore }) => {
     const [score, setScore] = useState(currentScore);
@@ -920,9 +875,10 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
             expenses: 0,
             net: 0,
             history: [],
-            incomeSources: [],
-            expenseItems: []
+            incomeSources: [{ id: Date.now() + 1, name: "Revenue Source", amount: 0 }],
+            expenseItems: [{ id: Date.now() + 2, name: "Business Expense", amount: 0 }]
         };
+        console.log("➕ Adding new business:", newBusiness);
         setLocalBusinesses([...localBusinesses, newBusiness]);
     };
 
@@ -931,15 +887,31 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
     };
 
     const handleItemChange = (businessId, itemId, type, field, value) => {
+        console.log(`📝 Updating ${type} item:`, { businessId, itemId, field, value });
         setLocalBusinesses(localBusinesses.map(b => {
             if (b.id === businessId) {
                 const items = b[type].map(item => {
                     if (item.id === itemId) {
-                        return { ...item, [field]: field === 'amount' ? Number(value) : value };
+                        const updatedItem = { ...item, [field]: field === 'amount' ? Number(value) : value };
+                        console.log(`✏️ Item updated:`, updatedItem);
+                        return updatedItem;
                     }
                     return item;
                 });
-                return { ...b, [type]: items };
+                
+                // Recalculate business totals
+                const updatedBusiness = { ...b, [type]: items };
+                updatedBusiness.income = updatedBusiness.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.expenses = updatedBusiness.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.net = updatedBusiness.income - updatedBusiness.expenses;
+                
+                console.log(`📊 Business totals recalculated:`, {
+                    income: updatedBusiness.income,
+                    expenses: updatedBusiness.expenses,
+                    net: updatedBusiness.net
+                });
+                
+                return updatedBusiness;
             }
             return b;
         }));
@@ -949,7 +921,13 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
         const newItem = { id: Date.now(), name: "New Item", amount: 0 };
         setLocalBusinesses(localBusinesses.map(b => {
             if (b.id === businessId) {
-                return { ...b, [type]: [...b[type], newItem] };
+                const updatedBusiness = { ...b, [type]: [...b[type], newItem] };
+                // Recalculate totals
+                updatedBusiness.income = updatedBusiness.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.expenses = updatedBusiness.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.net = updatedBusiness.income - updatedBusiness.expenses;
+                console.log(`➕ Added ${type} item, new totals:`, { income: updatedBusiness.income, expenses: updatedBusiness.expenses, net: updatedBusiness.net });
+                return updatedBusiness;
             }
             return b;
         }));
@@ -958,14 +936,22 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
     const removeItem = (businessId, itemId, type) => {
         setLocalBusinesses(localBusinesses.map(b => {
             if (b.id === businessId) {
-                return { ...b, [type]: b[type].filter(item => item.id !== itemId) };
+                const updatedBusiness = { ...b, [type]: b[type].filter(item => item.id !== itemId) };
+                // Recalculate totals
+                updatedBusiness.income = updatedBusiness.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.expenses = updatedBusiness.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.net = updatedBusiness.income - updatedBusiness.expenses;
+                console.log(`🗑️ Removed ${type} item, new totals:`, { income: updatedBusiness.income, expenses: updatedBusiness.expenses, net: updatedBusiness.net });
+                return updatedBusiness;
             }
             return b;
         }));
     };
     
     const handleSave = () => {
+        console.log("💼 Side Hustle Modal - Saving businesses:", localBusinesses);
         onSave(localBusinesses);
+        alert("✅ Side hustles saved successfully!");
         onClose();
     };
 
@@ -1015,6 +1001,24 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                                             <button onClick={() => removeItem(business.id, item.id, 'expenseItems')} className="text-rose-500"><X className="w-4 h-4"/></button>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+                            
+                            {/* Business Totals Display */}
+                            <div className="mt-6 grid grid-cols-3 gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                                <div className="text-center">
+                                    <p className="text-emerald-400 font-semibold text-sm">Total Income</p>
+                                    <p className="text-white text-xl font-bold">${business.income.toLocaleString()}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-red-400 font-semibold text-sm">Total Expenses</p>
+                                    <p className="text-white text-xl font-bold">${business.expenses.toLocaleString()}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-violet-400 font-semibold text-sm">Net Profit</p>
+                                    <p className={`text-xl font-bold ${business.net >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                        ${business.net.toLocaleString()}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -1130,7 +1134,7 @@ const EditHoldingsModal = ({ isOpen, onClose, onSave, holdings }) => {
 const FinancialFreedomCard = ({ data, onEdit }) => {
   const { targetAmount } = data.financialFreedom;
   const currentSavings = data.netWorth.total;
-  const percentage = targetAmount > 0 ? (currentSavings / targetAmount) * 100 : 0;
+  const percentage = targetAmount > 0 ? Math.min((currentSavings / targetAmount) * 100, 100) : 0; // Cap at 100%
 
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-emerald-900/50 to-green-900/50">
@@ -1242,10 +1246,13 @@ const IncomeCard = ({ data, timeframe, historicalDate }) => {
     }
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
-      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-        <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
-        {displayTitle}
-      </h2>
+      <div className="flex justify-between items-start">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+          {displayTitle}
+        </h2>
+
+      </div>
       <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
       <div className="mt-4 space-y-2">
         {data.sources.map(source => (
@@ -1259,7 +1266,7 @@ const IncomeCard = ({ data, timeframe, historicalDate }) => {
   );
 };
 
-const ExpensesCard = ({ data, timeframe, historicalDate, onEdit }) => {
+const ExpensesCard = ({ data, timeframe, historicalDate }) => {
     let displayTitle = "Monthly Expenses";
     if (timeframe === 'historical') {
         displayTitle = "Expenses (from transactions)";
@@ -1273,7 +1280,7 @@ const ExpensesCard = ({ data, timeframe, historicalDate, onEdit }) => {
             <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
             {displayTitle}
         </h2>
-        {timeframe === 'monthly' && <button onClick={onEdit} className="text-gray-400 hover:text-white"><Edit size={18}/></button>}
+
       </div>
       <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
        <div className="mt-4 space-y-2">
@@ -1920,6 +1927,602 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
     );
 };
 
+      const BudgetCalculatorTab = () => {
+  const [budgetType, setBudgetType] = useState('50-30-20');
+  const [monthlyIncome, setMonthlyIncome] = useState(5000);
+  
+  // Income Sources State
+  const [incomeSources, setIncomeSources] = useState([
+    { id: 1, name: 'Primary Job', amount: 4000, type: 'active' },
+    { id: 2, name: 'Side Hustle', amount: 1000, type: 'active' }
+  ]);
+  
+  // Expense Sources State
+  const [expenseSources, setExpenseSources] = useState([
+    { id: 1, name: 'Rent/Mortgage', amount: 1500, category: 'needs' },
+    { id: 2, name: 'Groceries', amount: 400, category: 'needs' },
+    { id: 3, name: 'Utilities', amount: 200, category: 'needs' },
+    { id: 4, name: 'Transportation', amount: 300, category: 'needs' },
+    { id: 5, name: 'Entertainment', amount: 300, category: 'wants' },
+    { id: 6, name: 'Dining Out', amount: 200, category: 'wants' },
+    { id: 7, name: 'Emergency Fund', amount: 500, category: 'savings' },
+    { id: 8, name: 'Investments', amount: 500, category: 'savings' }
+  ]);
+  
+  // Calculate totals from manual entries
+  const totalIncomeFromSources = incomeSources.reduce((sum, source) => sum + source.amount, 0);
+  const totalExpensesFromSources = expenseSources.reduce((sum, expense) => sum + expense.amount, 0);
+  
+  // Use manual income if sources exist, otherwise use input
+  const effectiveIncome = incomeSources.length > 0 ? totalIncomeFromSources : monthlyIncome;
+  
+  // 50/30/20 Budget
+  const fiftyThirtyTwenty = {
+    needs: Math.round(effectiveIncome * 0.5),
+    wants: Math.round(effectiveIncome * 0.3),
+    savings: Math.round(effectiveIncome * 0.2)
+  };
+  
+  // 6 Jars System
+  const sixJars = {
+    necessities: Math.round(effectiveIncome * 0.55),
+    financialFreedom: Math.round(effectiveIncome * 0.10),
+    longTermSavings: Math.round(effectiveIncome * 0.10),
+    education: Math.round(effectiveIncome * 0.10),
+    play: Math.round(effectiveIncome * 0.10),
+    give: Math.round(effectiveIncome * 0.05)
+  };
+  
+  // Calculate actual expenses by category
+  const actualExpenses = {
+    needs: expenseSources.filter(e => e.category === 'needs').reduce((sum, e) => sum + e.amount, 0),
+    wants: expenseSources.filter(e => e.category === 'wants').reduce((sum, e) => sum + e.amount, 0),
+    savings: expenseSources.filter(e => e.category === 'savings').reduce((sum, e) => sum + e.amount, 0)
+  };
+  
+  // Add/Edit/Delete Income Sources
+  const addIncomeSource = () => {
+    const newSource = { 
+      id: Date.now(), 
+      name: 'New Income Source', 
+      amount: 0, 
+      type: 'active' 
+    };
+    setIncomeSources([...incomeSources, newSource]);
+  };
+  
+  const updateIncomeSource = (id, field, value) => {
+    setIncomeSources(incomeSources.map(source => 
+      source.id === id ? { ...source, [field]: value } : source
+    ));
+  };
+  
+  const deleteIncomeSource = (id) => {
+    setIncomeSources(incomeSources.filter(source => source.id !== id));
+  };
+  
+  // Add/Edit/Delete Expense Sources
+  const addExpenseSource = () => {
+    const newExpense = { 
+      id: Date.now(), 
+      name: 'New Expense', 
+      amount: 0, 
+      category: 'needs' 
+    };
+    setExpenseSources([...expenseSources, newExpense]);
+  };
+  
+  const updateExpenseSource = (id, field, value) => {
+    setExpenseSources(expenseSources.map(expense => 
+      expense.id === id ? { ...expense, [field]: value } : expense
+    ));
+  };
+  
+  const deleteExpenseSource = (id) => {
+    setExpenseSources(expenseSources.filter(expense => expense.id !== id));
+  };
+
+  return (
+    <div className="space-y-8 w-full max-w-none px-4 lg:px-12 xl:px-20">
+      {/* Budget Calculator Section */}
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-12 xl:p-16 shadow-xl w-full">
+        {/* Header and Controls Row */}
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-8">
+          <div className="lg:flex-1">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">💰 Budget Calculator</h2>
+            <p className="text-gray-400 text-lg">Plan your finances with proven budgeting methods</p>
+          </div>
+          
+          {/* Budget Type Selector - Horizontal */}
+          <div className="flex gap-6 lg:flex-shrink-0">
+            <button
+              onClick={() => setBudgetType('50-30-20')}
+              className={`px-8 py-4 rounded-xl text-lg font-semibold transition-colors min-w-[160px] ${
+                budgetType === '50-30-20' 
+                  ? 'bg-blue-600 text-white shadow-lg' 
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              50/30/20 Rule
+            </button>
+            <button
+              onClick={() => setBudgetType('6-jars')}
+              className={`px-8 py-4 rounded-xl text-lg font-semibold transition-colors min-w-[160px] ${
+                budgetType === '6-jars' 
+                  ? 'bg-blue-600 text-white shadow-lg' 
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              6 Jars System
+            </button>
+          </div>
+        </div>
+        
+        {/* Income Input and Summary Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16 mb-12">
+          <div className="bg-gray-700/30 rounded-xl p-6 lg:p-8 xl:p-10 border border-gray-600/30">
+            <label className="block text-white text-lg font-bold mb-4">Monthly Income Input</label>
+            <input
+              type="number"
+              value={monthlyIncome}
+              onChange={(e) => setMonthlyIncome(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white text-xl p-4 lg:p-5 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              placeholder="Enter your monthly income"
+            />
+          </div>
+          
+          <div className="bg-green-900/20 rounded-xl p-6 lg:p-8 xl:p-10 border-2 border-green-800/40">
+            <label className="block text-green-400 text-lg font-bold mb-4">Effective Monthly Income</label>
+            <div className="text-3xl lg:text-4xl font-bold text-white mb-2">${effectiveIncome.toLocaleString()}</div>
+            <p className="text-gray-400 text-base">
+              {incomeSources.length > 0 ? 'From income sources' : 'From manual input'}
+            </p>
+          </div>
+          
+          <div className="bg-blue-900/20 rounded-xl p-6 lg:p-8 xl:p-10 border-2 border-blue-800/40">
+            <label className="block text-blue-400 text-lg font-bold mb-4">Net Income</label>
+            <div className="text-3xl lg:text-4xl font-bold text-white mb-2">${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}</div>
+            <p className="text-gray-400 text-base">Income - Expenses</p>
+          </div>
+        </div>
+        
+        {/* Budget Breakdown - 50/30/20 */}
+        {budgetType === '50-30-20' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16 mb-12">
+            <div className="bg-green-900/30 rounded-xl p-6 lg:p-8 xl:p-10 border-2 border-green-800/40">
+              <div className="mb-6">
+                <h3 className="text-2xl lg:text-3xl font-bold text-green-400 mb-3">💡 Needs (50%)</h3>
+                <p className="text-gray-300 text-base lg:text-lg">Essential expenses</p>
+              </div>
+              <div className="mb-6">
+                <div className="text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
+                <div className="text-green-400 font-semibold text-lg">Target Amount</div>
+              </div>
+              <div className="bg-green-800/20 rounded-xl p-4 lg:p-6 space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-green-300 font-medium text-base lg:text-lg">Actual:</span>
+                  <span className="text-green-300 font-bold text-lg lg:text-xl">${actualExpenses.needs.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-green-300 font-medium text-base lg:text-lg">Difference:</span>
+                  <span className="text-green-300 font-bold text-lg lg:text-xl">
+                    {actualExpenses.needs <= fiftyThirtyTwenty.needs ? '✅' : '⚠️'} 
+                    ${Math.abs(fiftyThirtyTwenty.needs - actualExpenses.needs).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-yellow-900/30 rounded-xl p-12 lg:p-16 xl:p-20 border-2 border-yellow-800/40">
+              <div className="mb-10">
+                <h3 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-yellow-400 mb-4">🎯 Wants (30%)</h3>
+                <p className="text-gray-300 text-lg lg:text-xl xl:text-2xl">Discretionary spending</p>
+              </div>
+              <div className="mb-10">
+                <div className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">${fiftyThirtyTwenty.wants.toLocaleString()}</div>
+                <div className="text-yellow-400 font-semibold text-xl lg:text-2xl">Target Amount</div>
+              </div>
+              <div className="bg-yellow-800/20 rounded-xl p-8 lg:p-10 space-y-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-yellow-300 font-medium text-lg lg:text-xl xl:text-2xl">Actual:</span>
+                  <span className="text-yellow-300 font-bold text-xl lg:text-2xl xl:text-3xl">${actualExpenses.wants.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-yellow-300 font-medium text-lg lg:text-xl xl:text-2xl">Difference:</span>
+                  <span className="text-yellow-300 font-bold text-xl lg:text-2xl xl:text-3xl">
+                    {actualExpenses.wants <= fiftyThirtyTwenty.wants ? '✅' : '⚠️'} 
+                    ${Math.abs(fiftyThirtyTwenty.wants - actualExpenses.wants).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-blue-900/30 rounded-xl p-12 lg:p-16 xl:p-20 border-2 border-blue-800/40">
+              <div className="mb-10">
+                <h3 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-blue-400 mb-4">💰 Savings (20%)</h3>
+                <p className="text-gray-300 text-lg lg:text-xl xl:text-2xl">Future & investments</p>
+              </div>
+              <div className="mb-10">
+                <div className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">${fiftyThirtyTwenty.savings.toLocaleString()}</div>
+                <div className="text-blue-400 font-semibold text-xl lg:text-2xl">Target Amount</div>
+              </div>
+              <div className="bg-blue-800/20 rounded-xl p-8 lg:p-10 space-y-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-300 font-medium text-lg lg:text-xl xl:text-2xl">Actual:</span>
+                  <span className="text-blue-300 font-bold text-xl lg:text-2xl xl:text-3xl">${actualExpenses.savings.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-300 font-medium text-lg lg:text-xl xl:text-2xl">Difference:</span>
+                  <span className="text-blue-300 font-bold text-xl lg:text-2xl xl:text-3xl">
+                    {actualExpenses.savings >= fiftyThirtyTwenty.savings ? '✅' : '⚠️'} 
+                    ${Math.abs(actualExpenses.savings - fiftyThirtyTwenty.savings).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {budgetType === '6-jars' && (
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 mb-12">
+            <div className="bg-green-900/30 rounded-xl p-6 border-2 border-green-800/40 text-center">
+              <h4 className="text-base font-bold text-green-400 mb-3">🏠 Necessities</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.necessities.toLocaleString()}</div>
+              <div className="text-sm text-green-400 font-semibold">55%</div>
+            </div>
+            <div className="bg-purple-900/30 rounded-xl p-6 border-2 border-purple-800/40 text-center">
+              <h4 className="text-base font-bold text-purple-400 mb-3">🚀 Freedom</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.financialFreedom.toLocaleString()}</div>
+              <div className="text-sm text-purple-400 font-semibold">10%</div>
+            </div>
+            <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40 text-center">
+              <h4 className="text-base font-bold text-blue-400 mb-3">🎯 Savings</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.longTermSavings.toLocaleString()}</div>
+              <div className="text-sm text-blue-400 font-semibold">10%</div>
+            </div>
+            <div className="bg-amber-900/30 rounded-xl p-6 border-2 border-amber-800/40 text-center">
+              <h4 className="text-base font-bold text-amber-400 mb-3">📚 Education</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.education.toLocaleString()}</div>
+              <div className="text-sm text-amber-400 font-semibold">10%</div>
+            </div>
+            <div className="bg-pink-900/30 rounded-xl p-6 border-2 border-pink-800/40 text-center">
+              <h4 className="text-base font-bold text-pink-400 mb-3">🎉 Play</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.play.toLocaleString()}</div>
+              <div className="text-sm text-pink-400 font-semibold">10%</div>
+            </div>
+            <div className="bg-teal-900/30 rounded-xl p-6 border-2 border-teal-800/40 text-center">
+              <h4 className="text-base font-bold text-teal-400 mb-3">❤️ Give</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.give.toLocaleString()}</div>
+              <div className="text-sm text-teal-400 font-semibold">5%</div>
+            </div>
+          </div>
+        )}
+        
+        {/* Tips Section */}
+        <div className="bg-gray-700/30 rounded-xl p-8 border-2 border-gray-600/50">
+          <h4 className="text-xl font-bold text-white mb-6">💡 Quick Tips</h4>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-base text-gray-300">
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 text-xl">•</span>
+              <span>Start with 50/30/20 if new to budgeting</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 text-xl">•</span>
+              <span>Use 6 jars for detailed goal allocation</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 text-xl">•</span>
+              <span>Track actual spending in tables below</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Income Sources Table */}
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-12 xl:p-16 shadow-xl w-full">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-8">
+          <div className="text-center lg:text-left lg:flex-1">
+            <h3 className="text-3xl lg:text-4xl font-bold text-white mb-3">💵 Income Sources</h3>
+            <p className="text-gray-400 text-lg lg:text-xl">Track all your income streams</p>
+          </div>
+          <button
+            onClick={addIncomeSource}
+            className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center justify-center gap-3 transition-colors shadow-lg min-w-[160px]"
+          >
+            <Plus className="w-5 h-5" />
+            Add Income
+          </button>
+        </div>
+        
+        {/* Mobile Card View */}
+        <div className="block lg:hidden space-y-6">
+          {incomeSources.map((source) => (
+            <div key={source.id} className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">Source</label>
+                  <input
+                    type="text"
+                    value={source.name}
+                    onChange={(e) => updateIncomeSource(source.id, 'name', e.target.value)}
+                    className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">Amount</label>
+                  <input
+                    type="number"
+                    value={source.amount}
+                    onChange={(e) => updateIncomeSource(source.id, 'amount', Number(e.target.value))}
+                    className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">Type</label>
+                  <select
+                    value={source.type}
+                    onChange={(e) => updateIncomeSource(source.id, 'type', e.target.value)}
+                    className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg"
+                  >
+                    <option value="active">Active</option>
+                    <option value="passive">Passive</option>
+                    <option value="dividend">Dividend</option>
+                  </select>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => deleteIncomeSource(source.id)}
+                    className="text-red-400 hover:text-red-300 p-3 bg-gray-800 rounded-lg"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="bg-green-900/20 rounded-xl p-6 border border-green-600/30">
+            <div className="text-center">
+              <p className="text-green-400 text-lg font-semibold">Total Income</p>
+              <p className="text-4xl font-bold text-white">${totalIncomeFromSources.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b-2 border-gray-600">
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-2/5">Source</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-1/4">Amount</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-1/5">Type</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-[15%]">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {incomeSources.map((source) => (
+                <tr key={source.id} className="border-b border-gray-700/50 hover:bg-gray-700/20 transition-colors">
+                  <td className="py-4 px-6 lg:px-8">
+                    <input
+                      type="text"
+                      value={source.name}
+                      onChange={(e) => updateIncomeSource(source.id, 'name', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-3 lg:p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
+                    />
+                  </td>
+                  <td className="py-4 px-6 lg:px-8">
+                    <input
+                      type="number"
+                      value={source.amount}
+                      onChange={(e) => updateIncomeSource(source.id, 'amount', Number(e.target.value))}
+                      className="w-full bg-gray-700 text-white p-3 lg:p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
+                    />
+                  </td>
+                  <td className="py-4 px-6 lg:px-8">
+                    <select
+                      value={source.type}
+                      onChange={(e) => updateIncomeSource(source.id, 'type', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-3 lg:p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
+                    >
+                      <option value="active">Active</option>
+                      <option value="passive">Passive</option>
+                      <option value="dividend">Dividend</option>
+                    </select>
+                  </td>
+                  <td className="py-4 px-6 lg:px-8">
+                    <button
+                      onClick={() => deleteIncomeSource(source.id)}
+                      className="text-red-400 hover:text-red-300 p-3 lg:p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="border-t-2 border-gray-600 bg-green-900/20">
+                <td className="py-4 px-6 lg:px-8 font-bold text-green-400 text-xl">Total Income:</td>
+                <td className="py-4 px-6 lg:px-8 font-bold text-green-400 text-xl">${totalIncomeFromSources.toLocaleString()}</td>
+                <td className="py-4 px-6 lg:px-8"></td>
+                <td className="py-4 px-6 lg:px-8"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      
+      {/* Expense Sources Table */}
+      <div className="bg-gray-800 rounded-xl p-8 lg:p-12 shadow-xl">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-6">
+          <div className="text-center lg:text-left">
+            <h3 className="text-3xl font-bold text-white mb-2">💳 Expense Sources</h3>
+            <p className="text-gray-400 text-lg">Track all your monthly expenses</p>
+          </div>
+          <button
+            onClick={addExpenseSource}
+            className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center gap-3 transition-colors shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Add Expense
+          </button>
+        </div>
+        
+        {/* Mobile Card View */}
+        <div className="block lg:hidden space-y-6">
+          {expenseSources.map((expense) => (
+            <div key={expense.id} className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">Expense</label>
+                  <input
+                    type="text"
+                    value={expense.name}
+                    onChange={(e) => updateExpenseSource(expense.id, 'name', e.target.value)}
+                    className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">Amount</label>
+                  <input
+                    type="number"
+                    value={expense.amount}
+                    onChange={(e) => updateExpenseSource(expense.id, 'amount', Number(e.target.value))}
+                    className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">Category</label>
+                  <select
+                    value={expense.category}
+                    onChange={(e) => updateExpenseSource(expense.id, 'category', e.target.value)}
+                    className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg"
+                  >
+                    <option value="needs">Needs</option>
+                    <option value="wants">Wants</option>
+                    <option value="savings">Savings</option>
+                  </select>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => deleteExpenseSource(expense.id)}
+                    className="text-red-400 hover:text-red-300 p-3 bg-gray-800 rounded-lg"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Mobile Summary Cards */}
+          <div className="space-y-4">
+            <div className="bg-red-900/20 rounded-xl p-6 border border-red-600/30">
+              <div className="text-center">
+                <p className="text-red-400 text-lg font-semibold">Total Expenses</p>
+                <p className="text-4xl font-bold text-white">${totalExpensesFromSources.toLocaleString()}</p>
+              </div>
+            </div>
+            <div className="bg-blue-900/20 rounded-xl p-6 border border-blue-600/30">
+              <div className="text-center">
+                <p className="text-blue-400 text-lg font-semibold">Net Income</p>
+                <p className="text-4xl font-bold text-white">${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b-2 border-gray-600">
+                <th className="text-left text-gray-300 font-bold py-6 px-6 text-lg">Expense</th>
+                <th className="text-left text-gray-300 font-bold py-6 px-6 text-lg">Amount</th>
+                <th className="text-left text-gray-300 font-bold py-6 px-6 text-lg">Category</th>
+                <th className="text-left text-gray-300 font-bold py-6 px-6 text-lg">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenseSources.map((expense) => (
+                <tr key={expense.id} className="border-b border-gray-700/50 hover:bg-gray-700/20 transition-colors">
+                  <td className="py-6 px-6">
+                    <input
+                      type="text"
+                      value={expense.name}
+                      onChange={(e) => updateExpenseSource(expense.id, 'name', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
+                    />
+                  </td>
+                  <td className="py-6 px-6">
+                    <input
+                      type="number"
+                      value={expense.amount}
+                      onChange={(e) => updateExpenseSource(expense.id, 'amount', Number(e.target.value))}
+                      className="w-full bg-gray-700 text-white p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
+                    />
+                  </td>
+                  <td className="py-6 px-6">
+                    <select
+                      value={expense.category}
+                      onChange={(e) => updateExpenseSource(expense.id, 'category', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
+                    >
+                      <option value="needs">Needs</option>
+                      <option value="wants">Wants</option>
+                      <option value="savings">Savings</option>
+                    </select>
+                  </td>
+                  <td className="py-6 px-6">
+                    <button
+                      onClick={() => deleteExpenseSource(expense.id)}
+                      className="text-red-400 hover:text-red-300 p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="border-t-2 border-gray-600 bg-red-900/20">
+                <td className="py-6 px-6 font-bold text-red-400 text-xl">Total Expenses:</td>
+                <td className="py-6 px-6 font-bold text-red-400 text-xl">${totalExpensesFromSources.toLocaleString()}</td>
+                <td className="py-6 px-6"></td>
+                <td className="py-6 px-6"></td>
+              </tr>
+              <tr className="bg-blue-900/20">
+                <td className="py-6 px-6 font-bold text-white text-xl">Net Income:</td>
+                <td className="py-6 px-6 font-bold text-white text-xl">
+                  ${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}
+                </td>
+                <td className="py-6 px-6"></td>
+                <td className="py-6 px-6"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+        {/* Desktop Expense Breakdown */}
+        <div className="hidden lg:block mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="bg-green-900/20 rounded-2xl p-8 border-2 border-green-800/30 text-center">
+            <h4 className="text-green-400 font-bold text-2xl mb-4">Needs</h4>
+            <p className="text-4xl font-bold text-white">${actualExpenses.needs.toLocaleString()}</p>
+          </div>
+          <div className="bg-yellow-900/20 rounded-2xl p-8 border-2 border-yellow-800/30 text-center">
+            <h4 className="text-yellow-400 font-bold text-2xl mb-4">Wants</h4>
+            <p className="text-4xl font-bold text-white">${actualExpenses.wants.toLocaleString()}</p>
+          </div>
+          <div className="bg-blue-900/20 rounded-2xl p-8 border-2 border-blue-800/30 text-center">
+            <h4 className="text-blue-400 font-bold text-2xl mb-4">Savings</h4>
+            <p className="text-4xl font-bold text-white">${actualExpenses.savings.toLocaleString()}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
     const [selectedYear, setSelectedYear] = useState('all');
     const [annualData, setAnnualData] = useState([]);
@@ -1930,7 +2533,26 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
 
     useEffect(() => {
         const calculatedData = businesses.map(business => {
+            // Ensure business has required properties
+            if (!Array.isArray(business.incomeSources)) business.incomeSources = [];
+            if (!Array.isArray(business.expenseItems)) business.expenseItems = [];
+            
+            // Calculate totals directly from income sources and expense items
+            const totalIncomeFromSources = business.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const totalExpensesFromItems = business.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const netFromSources = totalIncomeFromSources - totalExpensesFromItems;
+            
+            console.log(`📊 ${business.name} calculations:`, {
+                incomeSources: business.incomeSources,
+                expenseItems: business.expenseItems,
+                totalIncome: totalIncomeFromSources,
+                totalExpenses: totalExpensesFromItems,
+                net: netFromSources
+            });
+
+            // Also get transactions for historical display (optional)
             const businessIncomeSources = business.incomeSources.map(s => s.name);
+            const businessExpenseItems = business.expenseItems.map(e => e.name);
 
             const incomeTransactions = allTransactions.filter(tx => 
                 tx.type === 'income' &&
@@ -1938,8 +2560,6 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
                 businessIncomeSources.includes(tx.description) &&
                 (selectedYear === 'all' || new Date(tx.date).getFullYear() === parseInt(selectedYear))
             );
-            
-            const businessExpenseItems = business.expenseItems.map(e => e.name);
 
             const expenseTransactions = allTransactions.filter(tx =>
                 tx.type === 'expense' &&
@@ -1948,14 +2568,11 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
                 (selectedYear === 'all' || new Date(tx.date).getFullYear() === parseInt(selectedYear))
             );
 
-            const totalIncome = incomeTransactions.reduce((sum, tx) => sum + tx.amount, 0);
-            const totalExpenses = expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
-
             return {
                 ...business,
-                income: totalIncome,
-                expenses: totalExpenses,
-                net: totalIncome - totalExpenses,
+                income: totalIncomeFromSources,
+                expenses: totalExpensesFromItems,
+                net: netFromSources,
                 filteredIncomeTransactions: incomeTransactions,
                 filteredExpenseTransactions: expenseTransactions
             };
@@ -2004,25 +2621,33 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h4 className="font-semibold text-gray-300 mb-2">Income Transactions</h4>
+                                <h4 className="font-semibold text-emerald-400 mb-2">Income Sources</h4>
                                 <div className="space-y-1 max-h-48 overflow-y-auto pr-2">
-                                    {business.filteredIncomeTransactions.map(item => (
-                                        <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
-                                            <span>{item.description} <span className="text-gray-500 text-xs">{item.date}</span></span>
-                                            <span className="font-mono text-emerald-400">${item.amount.toLocaleString()}</span>
-                                        </div>
-                                    ))}
+                                    {business.incomeSources && business.incomeSources.length > 0 ? (
+                                        business.incomeSources.map(item => (
+                                            <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
+                                                <span className="text-gray-300">{item.name}</span>
+                                                <span className="font-mono text-emerald-400">${(item.amount || 0).toLocaleString()}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-gray-500 text-sm p-2">No income sources configured</div>
+                                    )}
                                 </div>
                             </div>
                              <div>
-                                <h4 className="font-semibold text-gray-300 mb-2">Expense Transactions</h4>
+                                <h4 className="font-semibold text-red-400 mb-2">Expense Items</h4>
                                 <div className="space-y-1 max-h-48 overflow-y-auto pr-2">
-                                    {business.filteredExpenseTransactions.map(item => (
-                                        <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
-                                            <span>{item.description} <span className="text-gray-500 text-xs">{item.date}</span></span>
-                                            <span className="font-mono text-red-500">${Math.abs(item.amount).toLocaleString()}</span>
-                                        </div>
-                                    ))}
+                                    {business.expenseItems && business.expenseItems.length > 0 ? (
+                                        business.expenseItems.map(item => (
+                                            <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
+                                                <span className="text-gray-300">{item.name}</span>
+                                                <span className="font-mono text-red-500">${(item.amount || 0).toLocaleString()}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-gray-500 text-sm p-2">No expense items configured</div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -2134,7 +2759,8 @@ export default function App() {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditNetWorthModalOpen, setIsEditNetWorthModalOpen] = useState(false);
-  const [isEditExpensesModalOpen, setIsEditExpensesModalOpen] = useState(false);
+
+
   const [isEditCreditScoreModalOpen, setIsEditCreditScoreModalOpen] = useState(false);
   const [isEditGoalsModalOpen, setIsEditGoalsModalOpen] = useState(false);
   const [isEditInvestmentModalOpen, setIsEditInvestmentModalOpen] = useState(false);
@@ -2147,8 +2773,19 @@ export default function App() {
 
   const recalculateTotals = (sourceData, view) => {
     const newData = JSON.parse(JSON.stringify(sourceData)); 
+    
+    // Ensure all required properties exist with default values
     if (!Array.isArray(newData.businesses)) newData.businesses = [];
+    if (!newData.investmentPortfolio) newData.investmentPortfolio = {};
     if (!newData.investmentPortfolio.holdings) newData.investmentPortfolio.holdings = [];
+    if (!Array.isArray(newData.recentTransactions)) newData.recentTransactions = [];
+    if (!newData.income) newData.income = { total: 0, sources: [] };
+    if (!Array.isArray(newData.income.sources)) newData.income.sources = [];
+    if (!newData.expenses) newData.expenses = { total: 0, categories: [] };
+    if (!Array.isArray(newData.expenses.categories)) newData.expenses.categories = [];
+    if (!newData.passiveIncome) newData.passiveIncome = { total: 0 };
+    if (!newData.dividends) newData.dividends = { total: 0 };
+    if (!newData.cashflow) newData.cashflow = { total: 0 };
     const now = new Date();
     
     let filteredTransactions;
@@ -2194,8 +2831,12 @@ export default function App() {
     newData.cashflow.total = newData.income.total - newData.expenses.total + totalInvestmentAmount;
 
     newData.businesses.forEach(business => {
-        business.income = business.incomeSources.reduce((sum, item) => sum + item.amount, 0);
-        business.expenses = business.expenseItems.reduce((sum, item) => sum + item.amount, 0);
+        // Ensure business has required properties
+        if (!Array.isArray(business.incomeSources)) business.incomeSources = [];
+        if (!Array.isArray(business.expenseItems)) business.expenseItems = [];
+        
+        business.income = business.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+        business.expenses = business.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
         business.net = business.income - business.expenses;
     });
 
@@ -2207,11 +2848,25 @@ export default function App() {
     newData.investmentPortfolio.tfsaContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'tfsa').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     newData.investmentPortfolio.rrspContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'rrsp').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     
-    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + (h.shares * h.currentPrice), 0);
+    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((h.shares || 0) * (h.currentPrice || 0)), 0);
 
-    newData.netWorth.breakdown.find(b => b.name === 'Cash').value = newData.cashOnHand.total;
-    newData.netWorth.breakdown.find(b => b.name === 'Investments').value = newData.investmentPortfolio.totalValue;
-    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + b.value, 0);
+    // Safely update net worth breakdown
+    const cashItem = newData.netWorth.breakdown.find(b => b.name === 'Cash');
+    if (cashItem) {
+      cashItem.value = newData.cashOnHand.total;
+      console.log("💰 Auto-updated Cash value:", cashItem.value);
+    }
+    
+    const investmentItem = newData.netWorth.breakdown.find(b => b.name === 'Investments');
+    if (investmentItem) {
+      investmentItem.value = newData.investmentPortfolio.totalValue;
+      console.log("💰 Auto-updated Investment value:", investmentItem.value);
+    }
+    
+    // Log all breakdown items to debug
+    console.log("💰 Full net worth breakdown:", newData.netWorth.breakdown);
+    
+    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + (b.value || 0), 0);
 
     const totalSavings = Math.abs(investmentTransactions.reduce((sum, tx) => sum + tx.amount, 0));
     const totalIncomeForSavingsRate = newData.income.total + newData.businesses.reduce((sum, b) => sum + b.net, 0);
@@ -2262,25 +2917,35 @@ export default function App() {
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
     
     const unsubscribeSnapshot = onSnapshot(userDocRef, (doc) => {
+      console.log("📄 Firebase snapshot received:", { exists: doc.exists(), id: doc.id, timestamp: new Date().toISOString() });
+      
       if (doc.exists()) {
         const fetchedData = doc.data();
+        console.log("✅ Data fetched from Firebase at:", new Date().toISOString());
+        console.log("📊 Data structure keys:", Object.keys(fetchedData));
+        console.log("💰 Net Worth from Firebase:", fetchedData.netWorth?.total);
+        console.log("💸 Expenses from Firebase:", fetchedData.expenses?.total);
         setData(fetchedData);
         if (fetchedData.allocations) {
             setAllocations(fetchedData.allocations);
         }
+        console.log("🔄 React state updated with new data");
       } else {
+        console.log("🆕 No document exists, creating initial data...");
         setDoc(userDocRef, initialData)
           .then(() => {
+            console.log("✅ Initial data created successfully");
             setData(initialData);
             setAllocations(initialData.allocations);
           })
           .catch(error => {
-            console.error("Error creating initial document:", error);
+            console.error("❌ Error creating initial document:", error);
           });
       }
+      console.log("🔄 Setting loading to false");
       setLoading(false);
     }, (error) => { 
-      console.error("Firestore snapshot error:", error); 
+      console.error("❌ Firestore snapshot error:", error); 
       setLoading(false); 
     });
 
@@ -2288,18 +2953,73 @@ export default function App() {
   }, [userId]); // Re-runs when userId changes
 
   useEffect(() => {
+    console.log("🔄 DisplayData calculation triggered:", { 
+      hasData: !!data, 
+      timeframe, 
+      historicalDate,
+      dataKeys: data ? Object.keys(data) : 'none'
+    });
+    
     if (data) {
         const view = { timeframe, date: historicalDate };
+        console.log("📊 Recalculating totals with view:", view);
         const newDisplayData = recalculateTotals(data, view);
+        console.log("✅ New display data calculated at:", new Date().toISOString());
+        console.log("📋 Display data keys:", Object.keys(newDisplayData));
+        console.log("💰 Calculated Net Worth:", newDisplayData.netWorth?.total);
+        console.log("💸 Calculated Expenses:", newDisplayData.expenses?.total);
+        console.log("💵 Calculated Income:", newDisplayData.income?.total);
         setDisplayData(newDisplayData);
+        console.log("🔄 DisplayData state updated");
+    } else {
+      console.log("⚠️ No data available for display calculation");
     }
   }, [data, timeframe, historicalDate]);
 
+  // Function to clean data and remove undefined values
+  const cleanData = (obj) => {
+    if (obj === null || obj === undefined) return null;
+    if (typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) {
+      return obj.map(cleanData).filter(item => item !== null && item !== undefined);
+    }
+    
+    const cleaned = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value !== undefined && value !== null) {
+        if (typeof value === 'object') {
+          const cleanedValue = cleanData(value);
+          if (cleanedValue !== null && cleanedValue !== undefined) {
+            cleaned[key] = cleanedValue;
+          }
+        } else {
+          cleaned[key] = value;
+        }
+      }
+    }
+    return cleaned;
+  };
+
   const handleSaveData = async (formData) => {
-    if (!userId) return;
+    console.log("🔄 handleSaveData called with:", { userId, appId, formData });
+    
+    if (!userId) {
+      console.error("❌ No userId - authentication failed");
+      return;
+    }
+    
+    if (!db) {
+      console.error("❌ Firebase not initialized - check your configuration");
+      alert("Database connection failed. Please check Firebase configuration.");
+      return;
+    }
+    
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
+    console.log("📄 Document reference created:", userDocRef.path);
+    
     try {
       const recalculatedData = recalculateTotals(formData, { timeframe, date: historicalDate });
+      console.log("🧮 Data recalculated:", recalculatedData);
       
       const today = new Date().toISOString().split('T')[0];
       
@@ -2328,29 +3048,61 @@ export default function App() {
 
       recalculatedData.allocations = allocations;
 
-      await setDoc(userDocRef, recalculatedData, { merge: true });
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
+      // Clean data to remove undefined values
+      const cleanedData = cleanData(recalculatedData);
+      console.log("🧹 Data cleaned:", cleanedData);
+
+      console.log("💾 Attempting to save to Firebase...");
+      console.log("📄 Document path:", userDocRef.path);
+      console.log("👤 User ID:", userId);
+      console.log("📦 Original data:", recalculatedData);
+      console.log("✨ Cleaned data to save:", cleanedData);
+      
+      await setDoc(userDocRef, cleanedData, { merge: true });
+      console.log("✅ Data saved successfully!");
+      console.log("🔄 Waiting for Firebase to trigger data refresh...");
+      
+      // Show user feedback
+      alert("✅ Data saved successfully!");
+      
+          } catch (error) {
+        console.error("❌ Error saving data:", error);
+        console.error("Error details:", {
+          code: error.code,
+          message: error.message,
+          stack: error.stack
+        });
+        
+        // Show user feedback
+        alert(`❌ Failed to save data: ${error.message}`);
+      }
   };
   
   const handleSaveBusinesses = async (newBusinesses) => {
-    if (!data || !userId) return;
+    console.log("💼 Saving businesses:", newBusinesses);
+    if (!data || !userId) {
+      console.error("❌ Cannot save businesses - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, businesses: newBusinesses };
+    console.log("💼 Updated data with businesses:", updatedData);
     handleSaveData(updatedData);
   };
 
   const handleSaveNetWorth = async (newBreakdown) => {
-    if (!data || !userId) return;
+    console.log("💰 Saving net worth breakdown:", newBreakdown);
+    if (!data || !userId) {
+      console.error("❌ Cannot save net worth - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }};
+    console.log("💰 Updated data with net worth:", updatedData.netWorth);
     handleSaveData(updatedData);
   };
   
-  const handleSaveExpenses = async (newCategories) => {
-    if (!data || !userId) return;
-    const updatedData = { ...data, expenses: { ...data.expenses, categories: newCategories }};
-    handleSaveData(updatedData);
-  };
+
+  
+
   
   const handleSaveCreditScore = async (newScore) => {
     if (!data || !userId) return;
@@ -2369,14 +3121,24 @@ export default function App() {
   };
   
   const handleSaveInvestment = async (newPortfolio) => {
-    if (!data || !userId) return;
+    console.log("📊 Saving investment portfolio:", newPortfolio);
+    if (!data || !userId) {
+      console.error("❌ Cannot save investment - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, investmentPortfolio: newPortfolio };
+    console.log("📊 Updated data with investment:", updatedData.investmentPortfolio);
     handleSaveData(updatedData);
   };
 
   const handleSaveHoldings = async (newHoldings) => {
-    if (!data || !userId) return;
+    console.log("🏦 Saving holdings:", newHoldings);
+    if (!data || !userId) {
+      console.error("❌ Cannot save holdings - missing data or userId");
+      return;
+    }
     const updatedData = { ...data, investmentPortfolio: { ...data.investmentPortfolio, holdings: newHoldings }};
+    console.log("🏦 Updated data with holdings:", updatedData.investmentPortfolio);
     handleSaveData(updatedData);
   };
 
@@ -2447,13 +3209,42 @@ export default function App() {
     document.body.removeChild(link);
   };
 
-  if (loading || !displayData) {
+  // Debug logging
+  console.log("App render state:", { 
+    loading, 
+    displayData: !!displayData, 
+    userId, 
+    data: !!data,
+    dataKeys: data ? Object.keys(data) : 'none',
+    displayDataKeys: displayData ? Object.keys(displayData) : 'none'
+  });
+
+  // More detailed condition debugging
+  console.log("🔍 Render condition check:", {
+    loading: loading,
+    displayDataExists: !!displayData,
+    displayDataType: typeof displayData,
+    displayDataValue: displayData,
+    shouldShowLoading: loading || !displayData
+  });
+
+  // Temporary fix: force render the dashboard since data is working
+  if (loading || (!displayData && !data)) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <p className="text-white text-2xl animate-pulse">Loading Your Financial Universe...</p>
+        <div className="text-center">
+          <p className="text-white text-2xl animate-pulse mb-4">Loading Your Financial Universe...</p>
+          <p className="text-gray-400 text-sm">Loading: {loading ? 'true' : 'false'}</p>
+          <p className="text-gray-400 text-sm">User ID: {userId || 'none'}</p>
+          <p className="text-gray-400 text-sm">Display Data: {displayData ? 'loaded' : 'none'}</p>
+          <p className="text-gray-400 text-sm">Condition: {loading || (!displayData && !data) ? 'should load' : 'should render'}</p>
+        </div>
       </div>
     );
   }
+
+  // Use data as fallback if displayData is not ready yet
+  const renderData = displayData || data;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
@@ -2466,6 +3257,7 @@ export default function App() {
             </div>
             <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
               <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard</button>
+              <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Budget</button>
               <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Building className="w-4 h-4 mr-2"/>Side Hustle</button>
               <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
               <button onClick={() => setActiveTab('visuals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
@@ -2484,26 +3276,29 @@ export default function App() {
         <main className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-6">
           {activeTab === 'dashboard' && (
             <>
-              <FinancialFreedomCard data={displayData} onEdit={() => setIsEditGoalsModalOpen(true)} />
-              <NetWorthCard data={displayData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
-              <InvestmentCard data={displayData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
-              <IncomeCard data={displayData.income} timeframe={timeframe} historicalDate={historicalDate} />
-              <ExpensesCard data={displayData.expenses} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditExpensesModalOpen(true)} />
-              <CashOnHandCard data={displayData.cashOnHand} />
-              <DebtCard data={displayData.debt} />
-              <InvestmentAccountsCard data={displayData.investmentPortfolio} onEdit={() => setIsEditContributionGoalsModalOpen(true)} />
-              <AccountBreakdownCard holdings={displayData.investmentPortfolio.holdings} />
-              <BusinessCard data={displayData.businesses.reduce((acc, b) => ({
+              <FinancialFreedomCard data={renderData} onEdit={() => setIsEditGoalsModalOpen(true)} />
+              <NetWorthCard data={renderData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
+              <InvestmentCard data={renderData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
+              <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} />
+              <ExpensesCard data={renderData.expenses} timeframe={timeframe} historicalDate={historicalDate} />
+              <CashOnHandCard data={renderData.cashOnHand} />
+              <DebtCard data={renderData.debt} />
+              <InvestmentAccountsCard data={renderData.investmentPortfolio} onEdit={() => setIsEditContributionGoalsModalOpen(true)} />
+              <AccountBreakdownCard holdings={renderData.investmentPortfolio.holdings} />
+              <BusinessCard data={renderData.businesses.reduce((acc, b) => ({
                   income: acc.income + b.income,
                   expenses: acc.expenses + b.expenses,
                   net: acc.net + b.net
               }), {income: 0, expenses: 0, net: 0})} onEdit={() => setIsSideHustleModalOpen(true)} />
-              <CreditScoreCard score={displayData.creditScore.current} onEdit={() => setIsEditCreditScoreModalOpen(true)} />
-              <SavingsRateCard savingsRate={displayData.savingsRate || 0} />
-              <RainyDayFundCard data={displayData.rainyDayFund} expensesTotal={displayData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
-              <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={displayData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
+              <CreditScoreCard score={renderData.creditScore.current} onEdit={() => setIsEditCreditScoreModalOpen(true)} />
+              <SavingsRateCard savingsRate={renderData.savingsRate || 0} />
+              <RainyDayFundCard data={renderData.rainyDayFund} expensesTotal={renderData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
+              <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={renderData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
               <TransactionsCard data={data.recentTransactions} />
             </>
+          )}
+          {activeTab === 'budget' && (
+            <BudgetCalculatorTab />
           )}
           {activeTab === 'side-hustle' && (
             <SideHustleTab 
@@ -2514,18 +3309,18 @@ export default function App() {
           )}
           {activeTab === 'investment' && (
             <InvestmentTab 
-                portfolio={displayData.investmentPortfolio} 
+                portfolio={renderData.investmentPortfolio} 
                 onSaveHoldings={handleSaveHoldings}
                 openEditHoldingsModal={() => setIsEditHoldingsModalOpen(true)}
             />
           )}
           {activeTab === 'visuals' && (
             <>
-              <HistoryChartCard title="Net Worth" data={displayData.netWorth.history} dataKey="total" color="text-emerald-400" icon={<DollarSign/>} />
-              <HistoryChartCard title="Cash on Hand" data={displayData.cashOnHand.history} dataKey="total" color="text-sky-400" icon={<Wallet/>} />
-              <HistoryChartCard title="Debt" data={displayData.debt.history} dataKey="total" color="text-red-500" icon={<CreditCard/>} />
-              <HistoryChartCard title="Business Profit" data={displayData.businesses[0]?.history || []} dataKey="net" color="text-violet-500" icon={<Building/>} />
-              <HistoryChartCard title="Credit Score" data={displayData.creditScore.history} dataKey="score" color="text-emerald-400" icon={<ShieldCheck/>} yDomain={[300, 850]} />
+              <HistoryChartCard title="Net Worth" data={renderData.netWorth.history} dataKey="total" color="text-emerald-400" icon={<DollarSign/>} />
+              <HistoryChartCard title="Cash on Hand" data={renderData.cashOnHand.history} dataKey="total" color="text-sky-400" icon={<Wallet/>} />
+              <HistoryChartCard title="Debt" data={renderData.debt.history} dataKey="total" color="text-red-500" icon={<CreditCard/>} />
+              <HistoryChartCard title="Business Profit" data={renderData.businesses[0]?.history || []} dataKey="net" color="text-violet-500" icon={<Building/>} />
+              <HistoryChartCard title="Credit Score" data={renderData.creditScore.history} dataKey="score" color="text-emerald-400" icon={<ShieldCheck/>} yDomain={[300, 850]} />
             </>
           )}
           {activeTab === 'allocations' && (
@@ -2583,12 +3378,8 @@ export default function App() {
             onSave={handleSaveNetWorth} 
             breakdown={data.netWorth.breakdown} 
         />}
-        {isEditExpensesModalOpen && <EditExpensesModal 
-            isOpen={isEditExpensesModalOpen} 
-            onClose={() => setIsEditExpensesModalOpen(false)} 
-            onSave={handleSaveExpenses} 
-            categories={data.expenses.categories} 
-        />}
+
+        
         {isEditCreditScoreModalOpen && <EditCreditScoreModal
             isOpen={isEditCreditScoreModalOpen}
             onClose={() => setIsEditCreditScoreModalOpen(false)}
