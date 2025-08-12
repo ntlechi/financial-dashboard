@@ -1,22 +1,30 @@
 # Dependencies
-/node_modules
+node_modules/
+/.pnp
+.pnp.js
 
-# Production build folder
+# Testing
+/coverage
+
+# Production
 /build
 
-# Environment variables
-.env
+# Misc
+.DS_Store
 .env.local
-.env.development
-.env.test
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+.env
 
-# Log files
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment variables
-.env
-.env.local
-.env.production
+# Vercel
+.vercel
+
+# IDE
+.vscode/
+.idea/
