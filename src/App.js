@@ -4287,20 +4287,124 @@ export default function App() {
     }
   };
 
+  // Calculate income and expenses from transactions
+  const calculateIncomeExpenses = (transactions) => {
+    if (!transactions || transactions.length === 0) {
+      return {
+        income: { total: 0, sources: [] },
+        expenses: { total: 0, categories: [] }
+      };
+    }
+
+    // Calculate total income and expenses
+    const totalIncome = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    
+    const totalExpenses = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+    // Group income by subcategory
+    const incomeByCategory = {};
+    transactions
+      .filter(t => t.type === 'income')
+      .forEach(t => {
+        const category = t.subcategory || 'Other';
+        if (!incomeByCategory[category]) {
+          incomeByCategory[category] = 0;
+        }
+        incomeByCategory[category] += Math.abs(t.amount);
+      });
+
+    // Group expenses by subcategory
+    const expensesByCategory = {};
+    transactions
+      .filter(t => t.type === 'expense')
+      .forEach(t => {
+        const category = t.subcategory || 'Other';
+        if (!expensesByCategory[category]) {
+          expensesByCategory[category] = 0;
+        }
+        expensesByCategory[category] += Math.abs(t.amount);
+      });
+
+    // Convert to array format
+    const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => ({
+      id: index + 1,
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      amount,
+      type: 'active'
+    }));
+
+    const expenseCategories = Object.entries(expensesByCategory).map(([name, amount], index) => ({
+      id: index + 1,
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      amount,
+      color: `bg-red-${500 + (index % 3) * 100}`
+    }));
+
+    return {
+      income: {
+        total: totalIncome,
+        sources: incomeSources
+      },
+      expenses: {
+        total: totalExpenses,
+        categories: expenseCategories
+      }
+    };
+  };
+
   // Calculate annual values
   const getAnnualizedData = () => {
     if (!data) return data;
     
+    const calculatedData = calculateIncomeExpenses(data.transactions);
+    
     return {
       ...data,
-      income: { ...data.income, total: data.income.total * 12 },
-      expenses: { ...data.expenses, total: data.expenses.total * 12 },
-      cashflow: { total: data.cashflow.total * 12 },
-      savingsRate: { ...data.savingsRate, monthly: data.savingsRate.monthly * 12, monthlyIncome: data.savingsRate.monthlyIncome * 12 }
+      income: { 
+        ...calculatedData.income, 
+        total: calculatedData.income.total * 12,
+        sources: calculatedData.income.sources.map(s => ({...s, amount: s.amount * 12}))
+      },
+      expenses: { 
+        ...calculatedData.expenses, 
+        total: calculatedData.expenses.total * 12,
+        categories: calculatedData.expenses.categories.map(c => ({...c, amount: c.amount * 12}))
+      },
+      cashflow: { 
+        total: (calculatedData.income.total - calculatedData.expenses.total) * 12,
+        monthly: (calculatedData.income.total - calculatedData.expenses.total) * 12
+      },
+      savingsRate: { 
+        ...data.savingsRate, 
+        current: calculatedData.income.total > 0 ? 
+          ((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) : 0
+      }
     };
   };
 
-  const displayData = viewMode === 'annual' ? getAnnualizedData() : data;
+  const getDisplayData = () => {
+    if (!data) return data;
+    
+    const calculatedData = calculateIncomeExpenses(data.transactions);
+    const baseData = {
+      ...data,
+      income: calculatedData.income,
+      expenses: calculatedData.expenses,
+      cashflow: {
+        ...data.cashflow,
+        total: calculatedData.income.total - calculatedData.expenses.total,
+        monthly: calculatedData.income.total - calculatedData.expenses.total
+      }
+    };
+    
+    return viewMode === 'annual' ? getAnnualizedData() : baseData;
+  };
+
+  const displayData = getDisplayData();
 
   if (loading || !data) {
     return (
