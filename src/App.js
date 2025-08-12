@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat } from 'lucide-react';
+import * as d3 from 'd3';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -90,6 +91,132 @@ const initialData = {
     { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
     { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
   ],
+  businesses: [
+    {
+      id: 1,
+      name: "Trading Business",
+      description: "Stock and crypto trading",
+      startDate: "2024-01-01",
+      totalIncome: 15000,
+      totalExpenses: 2500,
+      netProfit: 12500,
+      incomeItems: [
+        { id: 1, description: "Q4 Trading Profits", amount: 8000, date: "2025-01-10" },
+        { id: 2, description: "Crypto Gains", amount: 4500, date: "2025-01-08" },
+        { id: 3, description: "Dividend Income", amount: 2500, date: "2025-01-05" }
+      ],
+      expenseItems: [
+        { id: 1, description: "Trading Platform Fees", amount: 1200, date: "2025-01-12" },
+        { id: 2, description: "Market Data Subscription", amount: 800, date: "2025-01-01" },
+        { id: 3, description: "Tax Preparation", amount: 500, date: "2025-01-15" }
+      ]
+    },
+    {
+      id: 2,
+      name: "Consulting Services",
+      description: "Tech consulting and advisory",
+      startDate: "2023-06-01",
+      totalIncome: 25000,
+      totalExpenses: 3500,
+      netProfit: 21500,
+      incomeItems: [
+        { id: 1, description: "Client A - Project Completion", amount: 15000, date: "2025-01-14" },
+        { id: 2, description: "Client B - Monthly Retainer", amount: 5000, date: "2025-01-01" },
+        { id: 3, description: "Client C - Strategy Session", amount: 5000, date: "2025-01-07" }
+      ],
+      expenseItems: [
+        { id: 1, description: "Business License Renewal", amount: 1500, date: "2025-01-03" },
+        { id: 2, description: "Professional Development", amount: 1200, date: "2025-01-11" },
+        { id: 3, description: "Office Supplies", amount: 800, date: "2025-01-09" }
+      ]
+    }
+  ],
+  investments: {
+    totalValue: 450000,
+    portfolioAllocation: [
+      { id: 1, name: 'Stocks', value: 270000, percentage: 60, color: '#3B82F6' },
+      { id: 2, name: 'Bonds', value: 90000, percentage: 20, color: '#10B981' },
+      { id: 3, name: 'Real Estate', value: 45000, percentage: 10, color: '#F59E0B' },
+      { id: 4, name: 'Crypto', value: 45000, percentage: 10, color: '#8B5CF6' }
+    ],
+    holdings: [
+      {
+        id: 1,
+        symbol: 'VTI',
+        name: 'Vanguard Total Stock Market ETF',
+        shares: 1200,
+        avgCost: 180.50,
+        currentPrice: 225.00,
+        totalValue: 270000,
+        dividendYield: 1.8,
+        annualDividend: 4860,
+        nextDividendDate: '2025-03-15',
+        dripEnabled: true,
+        dividendAccumulated: 1215,
+        dripProgress: 27.0 // 27% towards next share
+      },
+      {
+        id: 2,
+        symbol: 'BND',
+        name: 'Vanguard Total Bond Market ETF',
+        shares: 1125,
+        avgCost: 75.00,
+        currentPrice: 80.00,
+        totalValue: 90000,
+        dividendYield: 4.2,
+        annualDividend: 3780,
+        nextDividendDate: '2025-02-28',
+        dripEnabled: true,
+        dividendAccumulated: 65,
+        dripProgress: 81.3 // 81% towards next share
+      },
+      {
+        id: 3,
+        symbol: 'VNQ',
+        name: 'Vanguard Real Estate ETF',
+        shares: 500,
+        avgCost: 85.00,
+        currentPrice: 90.00,
+        totalValue: 45000,
+        dividendYield: 3.5,
+        annualDividend: 1575,
+        nextDividendDate: '2025-03-20',
+        dripEnabled: false,
+        dividendAccumulated: 262,
+        dripProgress: 0 // DRIP disabled
+      },
+      {
+        id: 4,
+        symbol: 'BTC',
+        name: 'Bitcoin',
+        shares: 0.5,
+        avgCost: 45000,
+        currentPrice: 90000,
+        totalValue: 45000,
+        dividendYield: 0,
+        annualDividend: 0,
+        nextDividendDate: null,
+        dripEnabled: false,
+        dividendAccumulated: 0,
+        dripProgress: 0
+      }
+    ],
+    performanceHistory: [
+      { date: '2024-01-01', value: 380000 },
+      { date: '2024-02-01', value: 385000 },
+      { date: '2024-03-01', value: 392000 },
+      { date: '2024-04-01', value: 388000 },
+      { date: '2024-05-01', value: 395000 },
+      { date: '2024-06-01', value: 402000 },
+      { date: '2024-07-01', value: 410000 },
+      { date: '2024-08-01', value: 415000 },
+      { date: '2024-09-01', value: 425000 },
+      { date: '2024-10-01', value: 435000 },
+      { date: '2024-11-01', value: 440000 },
+      { date: '2024-12-01', value: 445000 },
+      { date: '2025-01-01', value: 450000 }
+    ]
+  },
   transactions: [
     { id: 1, date: '2025-01-15', description: 'Main Job Salary', amount: 8000, type: 'income', category: 'personal', subcategory: 'salary' },
     { id: 2, date: '2025-01-15', description: 'Rent Payment', amount: -2500, type: 'expense', category: 'personal', subcategory: 'housing' },
@@ -587,6 +714,702 @@ const BudgetCalculatorTab = () => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+// Side Hustle Management Component
+const SideHustleTab = ({ data, setData, userId }) => {
+  const [showAddBusiness, setShowAddBusiness] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [showAddItem, setShowAddItem] = useState(false);
+  const [itemType, setItemType] = useState('income');
+  
+  const [newBusiness, setNewBusiness] = useState({
+    name: '',
+    description: '',
+    startDate: new Date().toISOString().split('T')[0]
+  });
+  
+  const [newItem, setNewItem] = useState({
+    description: '',
+    amount: '',
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  const totalBusinessIncome = data.businesses.reduce((sum, business) => sum + business.totalIncome, 0);
+  const totalBusinessExpenses = data.businesses.reduce((sum, business) => sum + business.totalExpenses, 0);
+  const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
+
+  const handleAddBusiness = async () => {
+    if (!newBusiness.name) return;
+    
+    const business = {
+      id: Date.now(),
+      ...newBusiness,
+      totalIncome: 0,
+      totalExpenses: 0,
+      netProfit: 0,
+      incomeItems: [],
+      expenseItems: []
+    };
+    
+    const updatedBusinesses = [...data.businesses, business];
+    const updatedData = { ...data, businesses: updatedBusinesses };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
+      setShowAddBusiness(false);
+    } catch (error) {
+      console.error('Error adding business:', error);
+    }
+  };
+
+  const handleAddItem = async () => {
+    if (!newItem.description || !newItem.amount || !selectedBusiness) return;
+    
+    const amount = parseFloat(newItem.amount);
+    const item = {
+      id: Date.now(),
+      ...newItem,
+      amount
+    };
+    
+    const updatedBusinesses = data.businesses.map(business => {
+      if (business.id === selectedBusiness.id) {
+        const updatedBusiness = { ...business };
+        
+        if (itemType === 'income') {
+          updatedBusiness.incomeItems = [item, ...business.incomeItems];
+          updatedBusiness.totalIncome = business.totalIncome + amount;
+        } else {
+          updatedBusiness.expenseItems = [item, ...business.expenseItems];
+          updatedBusiness.totalExpenses = business.totalExpenses + amount;
+        }
+        
+        updatedBusiness.netProfit = updatedBusiness.totalIncome - updatedBusiness.totalExpenses;
+        return updatedBusiness;
+      }
+      return business;
+    });
+    
+    const updatedData = { ...data, businesses: updatedBusinesses };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0] });
+      setShowAddItem(false);
+    } catch (error) {
+      console.error('Error adding item:', error);
+    }
+  };
+
+  const handleDeleteItem = async (businessId, itemId, type) => {
+    const updatedBusinesses = data.businesses.map(business => {
+      if (business.id === businessId) {
+        const updatedBusiness = { ...business };
+        
+        if (type === 'income') {
+          const item = business.incomeItems.find(i => i.id === itemId);
+          updatedBusiness.incomeItems = business.incomeItems.filter(i => i.id !== itemId);
+          updatedBusiness.totalIncome = business.totalIncome - (item?.amount || 0);
+        } else {
+          const item = business.expenseItems.find(i => i.id === itemId);
+          updatedBusiness.expenseItems = business.expenseItems.filter(i => i.id !== itemId);
+          updatedBusiness.totalExpenses = business.totalExpenses - (item?.amount || 0);
+        }
+        
+        updatedBusiness.netProfit = updatedBusiness.totalIncome - updatedBusiness.totalExpenses;
+        return updatedBusiness;
+      }
+      return business;
+    });
+    
+    const updatedData = { ...data, businesses: updatedBusinesses };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
+
+  return (
+    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+      {/* Business Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
+            Total Business Income
+          </h3>
+          <p className="text-3xl font-bold text-green-400">${totalBusinessIncome.toLocaleString()}</p>
+          <p className="text-sm text-gray-300 mt-2">From {data.businesses.length} businesses</p>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-red-900/40 to-rose-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
+            Total Business Expenses
+          </h3>
+          <p className="text-3xl font-bold text-red-400">${totalBusinessExpenses.toLocaleString()}</p>
+          <p className="text-sm text-gray-300 mt-2">Operating costs</p>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
+            Total Net Profit
+          </h3>
+          <p className={`text-3xl font-bold ${totalNetProfit >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+            ${totalNetProfit.toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-300 mt-2">
+            {totalNetProfit >= 0 ? 'Profitable' : 'Loss'}
+          </p>
+        </Card>
+      </div>
+
+      {/* Header and Add Business */}
+      <Card>
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center mb-2">
+              <Building className="w-6 h-6 mr-3 text-violet-400" />
+              Side Hustle Management
+            </h2>
+            <p className="text-gray-400">Track income and expenses for all your businesses</p>
+          </div>
+          <button
+            onClick={() => setShowAddBusiness(true)}
+            className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Business
+          </button>
+        </div>
+      </Card>
+
+      {/* Add Business Form */}
+      {showAddBusiness && (
+        <Card className="border-violet-500/30">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-white">Add New Business</h3>
+            <button
+              onClick={() => setShowAddBusiness(false)}
+              className="text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Business Name"
+              value={newBusiness.name}
+              onChange={(e) => setNewBusiness({...newBusiness, name: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+            />
+            
+            <input
+              type="date"
+              value={newBusiness.startDate}
+              onChange={(e) => setNewBusiness({...newBusiness, startDate: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+            />
+          </div>
+          
+          <textarea
+            placeholder="Business Description"
+            value={newBusiness.description}
+            onChange={(e) => setNewBusiness({...newBusiness, description: e.target.value})}
+            className="w-full mt-4 bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+            rows="3"
+          />
+          
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              onClick={() => setShowAddBusiness(false)}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddBusiness}
+              className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Add Business
+            </button>
+          </div>
+        </Card>
+      )}
+
+      {/* Business List */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {data.businesses.map(business => (
+          <Card key={business.id} className="space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-xl font-bold text-white">{business.name}</h3>
+                <p className="text-gray-400 text-sm">{business.description}</p>
+                <p className="text-gray-500 text-xs">Since {new Date(business.startDate).toLocaleDateString()}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedBusiness(business);
+                  setShowAddItem(true);
+                }}
+                className="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
+              >
+                <Plus className="w-3 h-3 mr-1" />
+                Add Item
+              </button>
+            </div>
+            
+            {/* Business Summary */}
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="bg-green-900/30 rounded-lg p-3">
+                <div className="text-lg font-bold text-green-400">${business.totalIncome.toLocaleString()}</div>
+                <div className="text-xs text-green-300">Income</div>
+              </div>
+              <div className="bg-red-900/30 rounded-lg p-3">
+                <div className="text-lg font-bold text-red-400">${business.totalExpenses.toLocaleString()}</div>
+                <div className="text-xs text-red-300">Expenses</div>
+              </div>
+              <div className="bg-blue-900/30 rounded-lg p-3">
+                <div className={`text-lg font-bold ${business.netProfit >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                  ${business.netProfit.toLocaleString()}
+                </div>
+                <div className="text-xs text-blue-300">Net Profit</div>
+              </div>
+            </div>
+            
+            {/* Recent Items */}
+            <div className="space-y-2">
+              <h4 className="font-semibold text-gray-300">Recent Activity</h4>
+              <div className="max-h-32 overflow-y-auto space-y-1">
+                {[...business.incomeItems, ...business.expenseItems]
+                  .sort((a, b) => new Date(b.date) - new Date(a.date))
+                  .slice(0, 5)
+                  .map(item => {
+                    const isIncome = business.incomeItems.includes(item);
+                    return (
+                      <div key={`${isIncome ? 'income' : 'expense'}-${item.id}`} className="flex items-center justify-between bg-gray-700/30 rounded p-2">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                          <span className="text-sm text-white">{item.description}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-semibold ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
+                            {isIncome ? '+' : '-'}${item.amount.toLocaleString()}
+                          </span>
+                          <button
+                            onClick={() => handleDeleteItem(business.id, item.id, isIncome ? 'income' : 'expense')}
+                            className="text-gray-400 hover:text-red-400 p-1"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Add Item Modal */}
+      {showAddItem && selectedBusiness && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-violet-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">
+                Add Item to {selectedBusiness.name}
+              </h3>
+              <button
+                onClick={() => setShowAddItem(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setItemType('income')}
+                  className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
+                    itemType === 'income' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Income
+                </button>
+                <button
+                  onClick={() => setItemType('expense')}
+                  className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
+                    itemType === 'expense' 
+                      ? 'bg-red-600 text-white' 
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Expense
+                </button>
+              </div>
+              
+              <input
+                type="text"
+                placeholder="Description"
+                value={newItem.description}
+                onChange={(e) => setNewItem({...newItem, description: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+              />
+              
+              <input
+                type="number"
+                placeholder="Amount"
+                value={newItem.amount}
+                onChange={(e) => setNewItem({...newItem, amount: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+              />
+              
+              <input
+                type="date"
+                value={newItem.date}
+                onChange={(e) => setNewItem({...newItem, date: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+              />
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setShowAddItem(false)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddItem}
+                className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Add {itemType === 'income' ? 'Income' : 'Expense'}
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Investment Portfolio Component with Charts
+const InvestmentTab = ({ data, setData, userId }) => {
+  const pieChartRef = useRef(null);
+  const lineChartRef = useRef(null);
+
+  useEffect(() => {
+    // Pie Chart
+    if (pieChartRef.current && data.investments.portfolioAllocation) {
+      const svg = d3.select(pieChartRef.current);
+      svg.selectAll("*").remove();
+      
+      const width = 300;
+      const height = 300;
+      const radius = Math.min(width, height) / 2;
+      
+      const color = d3.scaleOrdinal()
+        .domain(data.investments.portfolioAllocation.map(d => d.name))
+        .range(data.investments.portfolioAllocation.map(d => d.color));
+      
+      const pie = d3.pie()
+        .value(d => d.value)
+        .sort(null);
+      
+      const arc = d3.arc()
+        .innerRadius(60)
+        .outerRadius(radius);
+      
+      const g = svg
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width/2},${height/2})`);
+      
+      const arcs = g.selectAll(".arc")
+        .data(pie(data.investments.portfolioAllocation))
+        .enter().append("g")
+        .attr("class", "arc");
+      
+      arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => color(d.data.name))
+        .attr("stroke", "#1f2937")
+        .attr("stroke-width", 2);
+      
+      arcs.append("text")
+        .attr("transform", d => `translate(${arc.centroid(d)})`)
+        .attr("dy", "0.35em")
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("fill", "white")
+        .style("font-weight", "bold")
+        .text(d => `${d.data.percentage}%`);
+    }
+    
+    // Line Chart
+    if (lineChartRef.current && data.investments.performanceHistory) {
+      const svg = d3.select(lineChartRef.current);
+      svg.selectAll("*").remove();
+      
+      const margin = { top: 20, right: 30, bottom: 40, left: 60 };
+      const width = 600 - margin.left - margin.right;
+      const height = 300 - margin.top - margin.bottom;
+      
+      const parseDate = d3.timeParse("%Y-%m-%d");
+      const data_parsed = data.investments.performanceHistory.map(d => ({
+        date: parseDate(d.date),
+        value: d.value
+      }));
+      
+      const x = d3.scaleTime()
+        .domain(d3.extent(data_parsed, d => d.date))
+        .range([0, width]);
+      
+      const y = d3.scaleLinear()
+        .domain(d3.extent(data_parsed, d => d.value))
+        .nice()
+        .range([height, 0]);
+      
+      const line = d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d.value))
+        .curve(d3.curveMonotoneX);
+      
+      const g = svg
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+      
+      // Add axes
+      g.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b %Y")))
+        .selectAll("text")
+        .style("fill", "#9CA3AF")
+        .style("font-size", "12px");
+      
+      g.append("g")
+        .call(d3.axisLeft(y).tickFormat(d => `$${d/1000}k`))
+        .selectAll("text")
+        .style("fill", "#9CA3AF")
+        .style("font-size", "12px");
+      
+      // Add grid lines
+      g.selectAll(".grid-line-y")
+        .data(y.ticks())
+        .enter()
+        .append("line")
+        .attr("class", "grid-line-y")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", d => y(d))
+        .attr("y2", d => y(d))
+        .attr("stroke", "#374151")
+        .attr("stroke-opacity", 0.3);
+      
+      // Add line
+      g.append("path")
+        .datum(data_parsed)
+        .attr("fill", "none")
+        .attr("stroke", "#3B82F6")
+        .attr("stroke-width", 3)
+        .attr("d", line);
+      
+      // Add dots
+      g.selectAll(".dot")
+        .data(data_parsed)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("cx", d => x(d.date))
+        .attr("cy", d => y(d.value))
+        .attr("r", 4)
+        .attr("fill", "#3B82F6");
+    }
+  }, [data.investments]);
+
+  const totalGainLoss = data.investments.holdings.reduce((sum, holding) => {
+    return sum + ((holding.currentPrice - holding.avgCost) * holding.shares);
+  }, 0);
+  
+  const totalGainLossPercent = data.investments.holdings.reduce((sum, holding) => {
+    const cost = holding.avgCost * holding.shares;
+    return sum + cost;
+  }, 0);
+  
+  const gainLossPercent = totalGainLossPercent > 0 ? (totalGainLoss / totalGainLossPercent) * 100 : 0;
+
+  return (
+    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+      {/* Portfolio Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <Briefcase className="w-5 h-5 mr-2 text-blue-400" />
+            Total Value
+          </h3>
+          <p className="text-3xl font-bold text-blue-400">${data.investments.totalValue.toLocaleString()}</p>
+          <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} holdings</p>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <TrendingUp className="w-5 h-5 mr-2 text-green-400" />
+            Total Gain/Loss
+          </h3>
+          <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toLocaleString()}
+          </p>
+          <p className={`text-sm mt-2 ${gainLossPercent >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+            {gainLossPercent >= 0 ? '+' : ''}{gainLossPercent.toFixed(2)}%
+          </p>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <Repeat className="w-5 h-5 mr-2 text-purple-400" />
+            Annual Dividends
+          </h3>
+          <p className="text-2xl font-bold text-purple-400">
+            ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-300 mt-2">
+            {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / data.investments.totalValue * 100).toFixed(2)}% yield
+          </p>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <BarChart3 className="w-5 h-5 mr-2 text-amber-400" />
+            DRIP Progress
+          </h3>
+          <p className="text-2xl font-bold text-amber-400">
+            {data.investments.holdings.filter(h => h.dripEnabled).length} Active
+          </p>
+          <p className="text-sm text-gray-300 mt-2">
+            ${data.investments.holdings.reduce((sum, h) => sum + h.dividendAccumulated, 0).toLocaleString()} accumulated
+          </p>
+        </Card>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+            <PieChart className="w-6 h-6 mr-3 text-blue-400" />
+            Portfolio Allocation
+          </h3>
+          <div className="flex justify-center">
+            <svg ref={pieChartRef}></svg>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {data.investments.portfolioAllocation.map(item => (
+              <div key={item.id} className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="text-sm text-gray-300">{item.name}</span>
+                <span className="text-sm text-white font-semibold ml-auto">
+                  ${(item.value/1000).toFixed(0)}k
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
+        
+        <Card>
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+            <BarChart3 className="w-6 h-6 mr-3 text-green-400" />
+            Performance History
+          </h3>
+          <svg ref={lineChartRef}></svg>
+        </Card>
+      </div>
+
+      {/* Holdings with DRIP */}
+      <Card>
+        <h3 className="text-xl font-bold text-white mb-4">Holdings & DRIP Calculator</h3>
+        <div className="space-y-4">
+          {data.investments.holdings.map(holding => (
+            <div key={holding.id} className="bg-gray-700/30 rounded-lg p-4">
+              <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 items-center">
+                <div className="lg:col-span-2">
+                  <h4 className="font-bold text-white">{holding.symbol}</h4>
+                  <p className="text-sm text-gray-400">{holding.name}</p>
+                  <p className="text-xs text-gray-500">{holding.shares} shares</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">${holding.currentPrice.toFixed(2)}</div>
+                  <div className="text-xs text-gray-400">Current</div>
+                  <div className={`text-xs ${holding.currentPrice >= holding.avgCost ? 'text-green-400' : 'text-red-400'}`}>
+                    {((holding.currentPrice - holding.avgCost) / holding.avgCost * 100).toFixed(1)}%
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">${holding.totalValue.toLocaleString()}</div>
+                  <div className="text-xs text-gray-400">Total Value</div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-lg font-bold text-purple-400">${holding.annualDividend.toLocaleString()}</div>
+                  <div className="text-xs text-gray-400">Annual Dividend</div>
+                  <div className="text-xs text-purple-300">{holding.dividendYield}% yield</div>
+                </div>
+                
+                <div className="text-center">
+                  {holding.dripEnabled ? (
+                    <div>
+                      <div className="text-sm font-semibold text-green-400">DRIP ON</div>
+                      <div className="w-full bg-gray-600 rounded-full h-2 mt-1">
+                        <div 
+                          className="bg-green-500 h-2 rounded-full transition-all duration-300" 
+                          style={{ width: `${holding.dripProgress}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        ${holding.dividendAccumulated} / ${holding.currentPrice.toFixed(0)} 
+                        ({holding.dripProgress.toFixed(1)}%)
+                      </div>
+                      {holding.nextDividendDate && (
+                        <div className="text-xs text-blue-400">
+                          Next: {new Date(holding.nextDividendDate).toLocaleDateString()}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="text-sm font-semibold text-gray-400">DRIP OFF</div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        ${holding.dividendAccumulated} cash
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 };
@@ -1159,25 +1982,9 @@ export default function App() {
           
           {activeTab === 'budget' && <BudgetCalculatorTab />}
           
-          {activeTab === 'side-hustle' && (
-            <Card className="col-span-1 md:col-span-6 lg:col-span-6">
-              <div className="text-center py-12">
-                <Building className="w-16 h-16 text-violet-400 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-white mb-4">Side Hustle Tracking</h2>
-                <p className="text-gray-400">Track your business income and expenses with real-time calculations.</p>
-              </div>
-            </Card>
-          )}
+          {activeTab === 'side-hustle' && <SideHustleTab data={data} setData={setData} userId={userId} />}
           
-          {activeTab === 'investment' && (
-            <Card className="col-span-1 md:col-span-6 lg:col-span-6">
-              <div className="text-center py-12">
-                <Briefcase className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-white mb-4">Investment Portfolio</h2>
-                <p className="text-gray-400">Manage your investment holdings and track performance.</p>
-              </div>
-            </Card>
-          )}
+          {activeTab === 'investment' && <InvestmentTab data={data} setData={setData} userId={userId} />}
           
           {activeTab === 'transactions' && <TransactionsTab data={data} setData={setData} userId={userId} />}
         </main>
