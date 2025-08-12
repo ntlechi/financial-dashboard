@@ -165,7 +165,7 @@ const initialData = {
         shares: 1200,
         avgCost: 180.50,
         currentPrice: 225.00,
-        totalValue: 270000,
+        totalValue: 270000, // 1200 * 225 = 270000 ✅
         dividendYield: 1.8,
         annualDividend: 4860,
         nextDividendDate: '2025-03-15',
@@ -184,7 +184,7 @@ const initialData = {
         shares: 1125,
         avgCost: 75.00,
         currentPrice: 80.00,
-        totalValue: 90000,
+        totalValue: 90000, // 1125 * 80 = 90000 ✅
         dividendYield: 4.2,
         annualDividend: 3780,
         nextDividendDate: '2025-02-28',
@@ -203,7 +203,7 @@ const initialData = {
         shares: 500,
         avgCost: 85.00,
         currentPrice: 90.00,
-        totalValue: 45000,
+        totalValue: 45000, // 500 * 90 = 45000 ✅
         dividendYield: 3.5,
         annualDividend: 1575,
         nextDividendDate: '2025-03-20',
@@ -222,7 +222,7 @@ const initialData = {
         shares: 0.5,
         avgCost: 45000,
         currentPrice: 90000,
-        totalValue: 45000,
+        totalValue: 45000, // 0.5 * 90000 = 45000 ✅
         dividendYield: 0,
         annualDividend: 0,
         nextDividendDate: null,
@@ -1448,8 +1448,8 @@ const SideHustleTab = ({ data, setData, userId }) => {
     date: new Date().toISOString().split('T')[0]
   });
 
-  const totalBusinessIncome = data.businesses.reduce((sum, business) => sum + business.totalIncome, 0);
-  const totalBusinessExpenses = data.businesses.reduce((sum, business) => sum + business.totalExpenses, 0);
+  const totalBusinessIncome = data.businesses.reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
+  const totalBusinessExpenses = data.businesses.reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
   const handleAddBusiness = async () => {
@@ -2088,12 +2088,12 @@ const InvestmentTab = ({ data, setData, userId }) => {
     return sum + ((holding.currentPrice - holding.avgCost) * holding.shares);
   }, 0);
   
-  const totalGainLossPercent = data.investments.holdings.reduce((sum, holding) => {
+  const totalCost = data.investments.holdings.reduce((sum, holding) => {
     const cost = holding.avgCost * holding.shares;
     return sum + cost;
   }, 0);
   
-  const gainLossPercent = totalGainLossPercent > 0 ? (totalGainLoss / totalGainLossPercent) * 100 : 0;
+  const totalGainLossPercent = totalCost > 0 ? (totalGainLoss / totalCost) * 100 : 0;
 
   const handleAddHolding = async () => {
     if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) return;
@@ -2122,7 +2122,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
       currentPrice,
       totalValue: shares * currentPrice,
       dividendYield,
-      annualDividend: shares * currentPrice * (dividendYield / 100),
+      annualDividend: shares * currentPrice * (dividendYield / 100), // This is correct for dividend yield %
       nextDividendDate: null,
       dripEnabled: newHolding.dripEnabled,
       dividendAccumulated: 0,
@@ -2209,7 +2209,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
       currentPrice,
       totalValue: shares * currentPrice,
       dividendYield,
-      annualDividend: shares * currentPrice * (dividendYield / 100)
+      annualDividend: shares * currentPrice * (dividendYield / 100) // Correct: yield% * totalValue
     };
     
     const updatedHoldings = data.investments.holdings.map(h => 
@@ -2256,8 +2256,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
           <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toLocaleString()}
           </p>
-          <p className={`text-sm mt-2 ${gainLossPercent >= 0 ? 'text-green-300' : 'text-red-300'}`}>
-            {gainLossPercent >= 0 ? '+' : ''}{gainLossPercent.toFixed(2)}%
+          <p className={`text-sm mt-2 ${totalGainLossPercent >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+            {totalGainLossPercent >= 0 ? '+' : ''}{totalGainLossPercent.toFixed(2)}%
           </p>
         </Card>
         
@@ -3282,12 +3282,18 @@ const TravelTab = ({ data, setData, userId }) => {
   const convertCurrency = (amount, fromCurrency, toCurrency = data.travel?.homeCurrency || 'CAD') => {
     if (fromCurrency === toCurrency) return amount;
     const rates = data.travel?.exchangeRates || {};
+    
+    // rates[currency] represents how many CAD = 1 unit of that currency
+    // So USD: 1.35 means 1 USD = 1.35 CAD
+    
     if (fromCurrency === 'CAD') {
+      // CAD to foreign: divide by rate (1 CAD = rate/1 foreign)
       return amount / (rates[toCurrency] || 1);
     } else if (toCurrency === 'CAD') {
+      // Foreign to CAD: multiply by rate (1 foreign = rate CAD)
       return amount * (rates[fromCurrency] || 1);
     } else {
-      // Convert through CAD
+      // Foreign to foreign: convert through CAD
       const inCAD = amount * (rates[fromCurrency] || 1);
       return inCAD / (rates[toCurrency] || 1);
     }
