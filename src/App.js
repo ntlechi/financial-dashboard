@@ -676,54 +676,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
     );
 };
 
-const EditExpensesModal = ({ isOpen, onClose, onSave, categories }) => {
-    const [localCategories, setLocalCategories] = useState(categories);
 
-    useEffect(() => {
-        setLocalCategories(categories);
-    }, [isOpen, categories]);
-
-    if (!isOpen) return null;
-
-    const handleCategoryChange = (id, field, value) => {
-        setLocalCategories(localCategories.map(cat => cat.id === id ? { ...cat, [field]: value } : cat));
-    };
-
-    const addCategory = () => {
-        const newCategory = { id: Date.now(), name: 'New Expense', amount: 0, color: 'bg-gray-400' };
-        setLocalCategories([...localCategories, newCategory]);
-    };
-
-    const removeCategory = (id) => {
-        setLocalCategories(localCategories.filter(cat => cat.id !== id));
-    };
-
-    return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-lg">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-white">Edit Fixed Monthly Expenses</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-6 h-6" /></button>
-                </div>
-                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
-                    {localCategories.map(cat => (
-                        <div key={cat.id} className="flex items-center gap-2">
-                            <input type="text" value={cat.name} onChange={e => handleCategoryChange(cat.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                            <input type="number" value={cat.amount} onChange={e => handleCategoryChange(cat.id, 'amount', Number(e.target.value))} className="w-32 bg-gray-700 p-2 rounded-md" />
-                            <button onClick={() => removeCategory(cat.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-4">
-                    <button onClick={addCategory} className="bg-blue-600 text-white w-full py-2 rounded-md">Add Expense Category</button>
-                </div>
-                <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localCategories); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
-                </div>
-            </Card>
-        </div>
-    );
-};
 
 
 
@@ -1264,7 +1217,7 @@ const IncomeCard = ({ data, timeframe, historicalDate }) => {
   );
 };
 
-const ExpensesCard = ({ data, timeframe, historicalDate, onEdit }) => {
+const ExpensesCard = ({ data, timeframe, historicalDate }) => {
     let displayTitle = "Monthly Expenses";
     if (timeframe === 'historical') {
         displayTitle = "Expenses (from transactions)";
@@ -1278,7 +1231,7 @@ const ExpensesCard = ({ data, timeframe, historicalDate, onEdit }) => {
             <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
             {displayTitle}
         </h2>
-        {timeframe === 'monthly' && <button onClick={onEdit} className="text-gray-400 hover:text-white"><Edit size={18}/></button>}
+
       </div>
       <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
        <div className="mt-4 space-y-2">
@@ -2269,7 +2222,7 @@ export default function App() {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditNetWorthModalOpen, setIsEditNetWorthModalOpen] = useState(false);
-  const [isEditExpensesModalOpen, setIsEditExpensesModalOpen] = useState(false);
+
 
   const [isEditCreditScoreModalOpen, setIsEditCreditScoreModalOpen] = useState(false);
   const [isEditGoalsModalOpen, setIsEditGoalsModalOpen] = useState(false);
@@ -2610,11 +2563,7 @@ export default function App() {
     handleSaveData(updatedData);
   };
   
-  const handleSaveExpenses = async (newCategories) => {
-    if (!data || !userId) return;
-    const updatedData = { ...data, expenses: { ...data.expenses, categories: newCategories }};
-    handleSaveData(updatedData);
-  };
+
   
 
   
@@ -2794,7 +2743,7 @@ export default function App() {
               <NetWorthCard data={renderData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
               <InvestmentCard data={renderData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
               <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} />
-              <ExpensesCard data={renderData.expenses} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditExpensesModalOpen(true)} />
+              <ExpensesCard data={renderData.expenses} timeframe={timeframe} historicalDate={historicalDate} />
               <CashOnHandCard data={renderData.cashOnHand} />
               <DebtCard data={renderData.debt} />
               <InvestmentAccountsCard data={renderData.investmentPortfolio} onEdit={() => setIsEditContributionGoalsModalOpen(true)} />
@@ -2892,12 +2841,7 @@ export default function App() {
             onSave={handleSaveNetWorth} 
             breakdown={data.netWorth.breakdown} 
         />}
-        {isEditExpensesModalOpen && <EditExpensesModal 
-            isOpen={isEditExpensesModalOpen} 
-            onClose={() => setIsEditExpensesModalOpen(false)} 
-            onSave={handleSaveExpenses} 
-            categories={data.expenses.categories} 
-        />}
+
         
         {isEditCreditScoreModalOpen && <EditCreditScoreModal
             isOpen={isEditCreditScoreModalOpen}
