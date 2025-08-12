@@ -228,6 +228,74 @@ const initialData = {
     { id: 8, date: '2025-01-10', description: 'Dividend Payment', amount: 500, type: 'income', category: 'personal', subcategory: 'investment' },
     { id: 9, date: '2025-01-10', description: 'Coffee Shop', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
     { id: 10, date: '2025-01-09', description: 'Business Lunch', amount: -75, type: 'expense', category: 'business', subcategory: 'meals' },
+  ],
+  monthlyHistory: [
+    { 
+      month: '2025-01', 
+      netWorth: 550000, 
+      income: 12500, 
+      expenses: 6500, 
+      cashflow: 6000, 
+      businessIncome: 4500, 
+      businessExpenses: 1000,
+      investmentValue: 450000,
+      savingsRate: 48
+    },
+    { 
+      month: '2024-12', 
+      netWorth: 535000, 
+      income: 11800, 
+      expenses: 6200, 
+      cashflow: 5600, 
+      businessIncome: 4200, 
+      businessExpenses: 950,
+      investmentValue: 445000,
+      savingsRate: 47
+    },
+    { 
+      month: '2024-11', 
+      netWorth: 528000, 
+      income: 12200, 
+      expenses: 6400, 
+      cashflow: 5800, 
+      businessIncome: 4400, 
+      businessExpenses: 1100,
+      investmentValue: 440000,
+      savingsRate: 48
+    },
+    { 
+      month: '2024-10', 
+      netWorth: 522000, 
+      income: 11900, 
+      expenses: 6300, 
+      cashflow: 5600, 
+      businessIncome: 4100, 
+      businessExpenses: 980,
+      investmentValue: 435000,
+      savingsRate: 47
+    },
+    { 
+      month: '2024-09', 
+      netWorth: 515000, 
+      income: 12000, 
+      expenses: 6100, 
+      cashflow: 5900, 
+      businessIncome: 4300, 
+      businessExpenses: 920,
+      investmentValue: 425000,
+      savingsRate: 49
+    },
+    { 
+      month: '2024-08', 
+      netWorth: 508000, 
+      income: 11700, 
+      expenses: 5900, 
+      cashflow: 5800, 
+      businessIncome: 4000, 
+      businessExpenses: 850,
+      investmentValue: 415000,
+      savingsRate: 50
+    }
   ]
 };
 
@@ -1421,6 +1489,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
   const [filterType, setFilterType] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [sortBy, setSortBy] = useState('date');
+  const [showTransactionHistory, setShowTransactionHistory] = useState(false);
   
   const [newTransaction, setNewTransaction] = useState({
     description: '',
@@ -1638,8 +1707,80 @@ const TransactionsTab = ({ data, setData, userId }) => {
             <option value="amount">Sort by Amount</option>
             <option value="description">Sort by Description</option>
           </select>
+          
+          <button
+            onClick={() => setShowTransactionHistory(!showTransactionHistory)}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center transition-colors ${
+              showTransactionHistory ? 'bg-green-600 text-white' : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            <Calendar className="w-4 h-4 mr-2" />
+            {showTransactionHistory ? 'Hide History' : 'Monthly History'}
+          </button>
         </div>
       </Card>
+
+      {/* Transaction History by Month */}
+      {showTransactionHistory && (
+        <Card>
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+            <Calendar className="w-6 h-6 mr-3 text-purple-400" />
+            Transaction History by Month
+          </h3>
+          <div className="space-y-4">
+            {Object.entries(
+              data.transactions.reduce((acc, transaction) => {
+                const month = transaction.date.substring(0, 7); // YYYY-MM
+                if (!acc[month]) acc[month] = [];
+                acc[month].push(transaction);
+                return acc;
+              }, {})
+            )
+              .sort(([a], [b]) => b.localeCompare(a))
+              .slice(0, 6)
+              .map(([month, transactions]) => {
+                const monthIncome = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+                const monthExpenses = transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                const monthNet = monthIncome - monthExpenses;
+                
+                return (
+                  <div key={month} className="bg-gray-700/30 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-3">
+                      <h4 className="text-lg font-semibold text-white">
+                        {new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </h4>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-green-400">Income: ${monthIncome.toLocaleString()}</span>
+                        <span className="text-red-400">Expenses: ${monthExpenses.toLocaleString()}</span>
+                        <span className={`font-semibold ${monthNet >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                          Net: ${monthNet.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                      {transactions.slice(0, 6).map(transaction => (
+                        <div key={transaction.id} className="flex justify-between items-center bg-gray-600/30 rounded p-2">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${transaction.amount > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                            <span className="text-gray-300">{transaction.description}</span>
+                          </div>
+                          <span className={`font-semibold ${transaction.amount > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {transaction.amount > 0 ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                      {transactions.length > 6 && (
+                        <div className="text-center text-gray-400 text-xs col-span-2">
+                          +{transactions.length - 6} more transactions
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </Card>
+      )}
 
       {/* Add Transaction Form */}
       {showAddForm && (
@@ -1868,6 +2009,8 @@ export default function App() {
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     const signInUser = async () => {
@@ -1918,6 +2061,91 @@ export default function App() {
     return () => unsubscribeSnapshot();
   }, [userId]);
 
+  // CSV Export Functions
+  const exportToCSV = (filename, data) => {
+    const csvContent = data.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const exportAllData = () => {
+    if (!data) return;
+    
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    // Export Transactions
+    const transactionData = [
+      ['Date', 'Description', 'Amount', 'Type', 'Category', 'Subcategory'],
+      ...data.transactions.map(t => [
+        t.date, t.description, t.amount, t.type, t.category, t.subcategory || ''
+      ])
+    ];
+    exportToCSV(`transactions_${timestamp}.csv`, transactionData);
+    
+    // Export Business Data
+    if (data.businesses?.length > 0) {
+      setTimeout(() => {
+        const businessData = [
+          ['Business Name', 'Description', 'Start Date', 'Total Income', 'Total Expenses', 'Net Profit'],
+          ...data.businesses.map(b => [
+            b.name, b.description, b.startDate, b.totalIncome, b.totalExpenses, b.netProfit
+          ])
+        ];
+        exportToCSV(`businesses_${timestamp}.csv`, businessData);
+      }, 500);
+    }
+    
+    // Export Investment Holdings
+    if (data.investments?.holdings?.length > 0) {
+      setTimeout(() => {
+        const investmentData = [
+          ['Symbol', 'Name', 'Shares', 'Avg Cost', 'Current Price', 'Total Value', 'Annual Dividend', 'DRIP Enabled'],
+          ...data.investments.holdings.map(h => [
+            h.symbol, h.name, h.shares, h.avgCost, h.currentPrice, h.totalValue, h.annualDividend, h.dripEnabled
+          ])
+        ];
+        exportToCSV(`investments_${timestamp}.csv`, investmentData);
+      }, 1000);
+    }
+    
+    // Export Monthly History
+    if (data.monthlyHistory?.length > 0) {
+      setTimeout(() => {
+        const historyData = [
+          ['Month', 'Net Worth', 'Income', 'Expenses', 'Cash Flow', 'Business Income', 'Business Expenses', 'Investment Value', 'Savings Rate'],
+          ...data.monthlyHistory.map(h => [
+            h.month, h.netWorth, h.income, h.expenses, h.cashflow, h.businessIncome, h.businessExpenses, h.investmentValue, h.savingsRate
+          ])
+        ];
+        exportToCSV(`monthly_history_${timestamp}.csv`, historyData);
+      }, 1500);
+    }
+  };
+
+  // Calculate annual values
+  const getAnnualizedData = () => {
+    if (!data) return data;
+    
+    return {
+      ...data,
+      income: { ...data.income, total: data.income.total * 12 },
+      expenses: { ...data.expenses, total: data.expenses.total * 12 },
+      cashflow: { total: data.cashflow.total * 12 },
+      savingsRate: { ...data.savingsRate, monthly: data.savingsRate.monthly * 12, monthlyIncome: data.savingsRate.monthlyIncome * 12 }
+    };
+  };
+
+  const displayData = viewMode === 'annual' ? getAnnualizedData() : data;
+
   if (loading || !data) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -1936,8 +2164,43 @@ export default function App() {
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
-              <p className="text-gray-400 text-lg">Welcome back, Entrepreneur! Here's your financial snapshot.</p>
+              <p className="text-gray-400 text-lg">Welcome back, Entrepreneur! Here's your {viewMode} snapshot.</p>
             </div>
+            
+            {/* View Controls - Only show on dashboard tab */}
+            {activeTab === 'dashboard' && (
+              <div className="flex flex-wrap gap-2">
+                <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
+                  <button
+                    onClick={() => setViewMode('monthly')}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setViewMode('annual')}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      viewMode === 'annual' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
+                    }`}
+                  >
+                    Annual
+                  </button>
+                </div>
+                
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
+                    showHistory ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  {showHistory ? 'Hide History' : 'Show History'}
+                </button>
+              </div>
+            )}
+            
             <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
               <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                 <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
@@ -1961,22 +2224,64 @@ export default function App() {
         <main className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-6">
           {activeTab === 'dashboard' && (
             <>
+              {/* Monthly History View */}
+              {showHistory && data.monthlyHistory && (
+                <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
+                    <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
+                    Monthly History
+                  </h2>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-700">
+                          <th className="text-left py-2 text-gray-300">Month</th>
+                          <th className="text-right py-2 text-gray-300">Net Worth</th>
+                          <th className="text-right py-2 text-gray-300">Income</th>
+                          <th className="text-right py-2 text-gray-300">Expenses</th>
+                          <th className="text-right py-2 text-gray-300">Cash Flow</th>
+                          <th className="text-right py-2 text-gray-300">Business Profit</th>
+                          <th className="text-right py-2 text-gray-300">Investment Value</th>
+                          <th className="text-right py-2 text-gray-300">Savings Rate</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.monthlyHistory.map(month => (
+                          <tr key={month.month} className="border-b border-gray-700/50 hover:bg-gray-700/20">
+                            <td className="py-2 text-white font-semibold">{month.month}</td>
+                            <td className="py-2 text-right text-emerald-400 font-semibold">${month.netWorth.toLocaleString()}</td>
+                            <td className="py-2 text-right text-blue-400">${month.income.toLocaleString()}</td>
+                            <td className="py-2 text-right text-red-400">${month.expenses.toLocaleString()}</td>
+                            <td className={`py-2 text-right font-semibold ${month.cashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              ${month.cashflow.toLocaleString()}
+                            </td>
+                            <td className="py-2 text-right text-violet-400">${(month.businessIncome - month.businessExpenses).toLocaleString()}</td>
+                            <td className="py-2 text-right text-purple-400">${month.investmentValue.toLocaleString()}</td>
+                            <td className="py-2 text-right text-amber-400">{month.savingsRate}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card>
+              )}
+              
               {/* Top Row - Financial Freedom Goal */}
-              <FinancialFreedomCard data={data.financialFreedom} />
-              <SavingsRateCard data={data.savingsRate} />
+              <FinancialFreedomCard data={displayData.financialFreedom} />
+              <SavingsRateCard data={displayData.savingsRate} />
               
               {/* Second Row - Core Metrics */}
-              <NetWorthCard data={data.netWorth} />
-              <IncomeCard data={data.income} />
-              <ExpensesCard data={data.expenses} />
-              <CashFlowCard data={data.cashflow} />
+              <NetWorthCard data={displayData.netWorth} />
+              <IncomeCard data={displayData.income} />
+              <ExpensesCard data={displayData.expenses} />
+              <CashFlowCard data={displayData.cashflow} />
               
               {/* Third Row - Additional Metrics */}
-              <RainyDayFundCard data={data.rainyDayFund} />
-              <CreditScoreCard data={data.creditScore} />
+              <RainyDayFundCard data={displayData.rainyDayFund} />
+              <CreditScoreCard data={displayData.creditScore} />
               
               {/* Fourth Row - Goals */}
-              <GoalsCard data={data.goals} />
+              <GoalsCard data={displayData.goals} />
             </>
           )}
           
@@ -1991,7 +2296,15 @@ export default function App() {
 
         <footer className="text-center mt-12 text-gray-500">
           <p>Dashboard for the modern hustler. Keep building.</p>
-          <p className="text-xs mt-2">User ID: {userId}</p>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <p className="text-xs">User ID: {userId}</p>
+            <button
+              onClick={exportAllData}
+              className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
+            >
+              Export Data to CSV
+            </button>
+          </div>
         </footer>
       </div>
     </div>
