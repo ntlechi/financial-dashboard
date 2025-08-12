@@ -30,6 +30,24 @@ const initialData = {
     ],
     history: [ { date: '2025-08-09', total: 75000 } ]
   },
+  registeredAccounts: {
+    tfsa: {
+      currentBalance: 45000,
+      contributionRoom: 88000,
+      contributionLimit: 95000,
+      annualContributionLimit: 7000,
+      withdrawals: 0,
+      contributionsThisYear: 7000
+    },
+    rrsp: {
+      currentBalance: 85000,
+      contributionRoom: 42000,
+      contributionLimit: 127000,
+      annualContributionLimit: 31560, // 18% of income up to max
+      contributionsThisYear: 15000,
+      carryForward: 8500
+    }
+  },
   rainyDayFund: {
     total: 20000,
     goal: 30000,
@@ -651,6 +669,138 @@ const NetWorthCard = ({ data, onEdit }) => (
     </div>
   </Card>
 );
+
+// Canadian Registered Accounts Card
+const RegisteredAccountsCard = ({ data, onEdit }) => {
+  const tfsaProgress = (data.tfsa.currentBalance / data.tfsa.contributionLimit) * 100;
+  const rrspProgress = (data.rrsp.currentBalance / data.rrsp.contributionLimit) * 100;
+  const tfsaRoomUsed = ((data.tfsa.contributionLimit - data.tfsa.contributionRoom) / data.tfsa.contributionLimit) * 100;
+  const rrspRoomUsed = ((data.rrsp.contributionLimit - data.rrsp.contributionRoom) / data.rrsp.contributionLimit) * 100;
+
+  return (
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30 border-red-600/30">
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <Building className="w-6 h-6 mr-3 text-red-400" />
+          Canadian Registered Accounts
+        </h2>
+        <button
+          onClick={() => onEdit('registeredAccounts', data)}
+          className="text-gray-400 hover:text-red-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* TFSA Section */}
+        <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-lg font-bold text-green-400">TFSA</h3>
+            <span className="text-green-300 text-sm font-semibold">
+              {tfsaProgress.toFixed(1)}% Full
+            </span>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white mb-1">
+                ${data.tfsa.currentBalance.toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-300">Current Balance</div>
+            </div>
+            
+            <div>
+              <div className="flex justify-between text-xs text-gray-300 mb-1">
+                <span>Room Used: ${(data.tfsa.contributionLimit - data.tfsa.contributionRoom).toLocaleString()}</span>
+                <span>Limit: ${data.tfsa.contributionLimit.toLocaleString()}</span>
+              </div>
+              <ProgressBar 
+                value={data.tfsa.contributionLimit - data.tfsa.contributionRoom} 
+                maxValue={data.tfsa.contributionLimit} 
+                color="bg-green-500"
+              />
+              <div className="text-xs text-green-400 mt-1">
+                Room Available: ${data.tfsa.contributionRoom.toLocaleString()}
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-gray-700/50 rounded p-2">
+                <div className="text-gray-300">This Year</div>
+                <div className="text-green-400 font-semibold">
+                  ${data.tfsa.contributionsThisYear.toLocaleString()}
+                </div>
+              </div>
+              <div className="bg-gray-700/50 rounded p-2">
+                <div className="text-gray-300">Annual Limit</div>
+                <div className="text-green-400 font-semibold">
+                  ${data.tfsa.annualContributionLimit.toLocaleString()}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RRSP Section */}
+        <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-lg font-bold text-blue-400">RRSP</h3>
+            <span className="text-blue-300 text-sm font-semibold">
+              {rrspProgress.toFixed(1)}% Full
+            </span>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white mb-1">
+                ${data.rrsp.currentBalance.toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-300">Current Balance</div>
+            </div>
+            
+            <div>
+              <div className="flex justify-between text-xs text-gray-300 mb-1">
+                <span>Room Used: ${(data.rrsp.contributionLimit - data.rrsp.contributionRoom).toLocaleString()}</span>
+                <span>Limit: ${data.rrsp.contributionLimit.toLocaleString()}</span>
+              </div>
+              <ProgressBar 
+                value={data.rrsp.contributionLimit - data.rrsp.contributionRoom} 
+                maxValue={data.rrsp.contributionLimit} 
+                color="bg-blue-500"
+              />
+              <div className="text-xs text-blue-400 mt-1">
+                Room Available: ${data.rrsp.contributionRoom.toLocaleString()}
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-gray-700/50 rounded p-2">
+                <div className="text-gray-300">This Year</div>
+                <div className="text-blue-400 font-semibold">
+                  ${data.rrsp.contributionsThisYear.toLocaleString()}
+                </div>
+              </div>
+              <div className="bg-gray-700/50 rounded p-2">
+                <div className="text-gray-300">Carry Forward</div>
+                <div className="text-blue-400 font-semibold">
+                  ${data.rrsp.carryForward.toLocaleString()}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-4 text-center">
+        <div className="text-sm text-gray-400">
+          Total Registered: ${(data.tfsa.currentBalance + data.rrsp.currentBalance).toLocaleString()} • 
+          Combined Room: ${(data.tfsa.contributionRoom + data.rrsp.contributionRoom).toLocaleString()}
+        </div>
+      </div>
+    </Card>
+  );
+};
 
 // Cash on Hand Card
 const CashOnHandCard = ({ data, onEdit }) => (
@@ -3047,6 +3197,9 @@ export default function App() {
               {/* Fifth Row - Credit Score and Goals */}
               <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
               <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+              
+              {/* Sixth Row - Canadian Registered Accounts */}
+              <RegisteredAccountsCard data={displayData.registeredAccounts} onEdit={openCardEditor} />
             </>
           )}
           
@@ -3086,6 +3239,7 @@ export default function App() {
                      editingCard === 'netWorth' ? 'Net Worth' :
                      editingCard === 'cashOnHand' ? 'Cash on Hand' :
                      editingCard === 'cashflow' ? 'Cash Flow' :
+                     editingCard === 'registeredAccounts' ? 'Registered Accounts' :
                      editingCard === 'goals' ? 'Financial Goals' : editingCard}
               </h3>
               <button
@@ -3310,75 +3464,145 @@ export default function App() {
               {/* Net Worth Modal */}
               {editingCard === 'netWorth' && (
                 <>
-                  <div>
-                    <label className="block text-sm text-gray-300 mb-1">Total Net Worth</label>
-                    <input
-                      type="number"
-                      value={tempCardData.total || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, total: Number(e.target.value)})}
-                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold text-white mb-2">Assets & Liabilities</h4>
-                    <div className="space-y-2">
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-lg font-semibold text-white">Assets & Liabilities</h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            const newAsset = {
+                              id: Date.now(),
+                              name: '',
+                              value: 0,
+                              type: 'asset',
+                              color: 'bg-emerald-500'
+                            };
+                            setTempCardData({
+                              ...tempCardData,
+                              breakdown: [...(tempCardData.breakdown || []), newAsset]
+                            });
+                          }}
+                          className="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-1 px-2 py-1 rounded bg-emerald-900/20"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Asset
+                        </button>
+                        <button
+                          onClick={() => {
+                            const newLiability = {
+                              id: Date.now() + 1,
+                              name: '',
+                              value: 0,
+                              type: 'liability',
+                              color: 'bg-red-500'
+                            };
+                            setTempCardData({
+                              ...tempCardData,
+                              breakdown: [...(tempCardData.breakdown || []), newLiability]
+                            });
+                          }}
+                          className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1 px-2 py-1 rounded bg-red-900/20"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Liability
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
                       {(tempCardData.breakdown || []).map((item, index) => (
-                        <div key={item.id} className="grid grid-cols-12 gap-2 items-center bg-gray-700/50 rounded p-2">
-                          <div className="col-span-4">
-                            <input
-                              type="text"
-                              value={item.name}
-                              onChange={(e) => {
-                                const updatedBreakdown = [...tempCardData.breakdown];
-                                updatedBreakdown[index] = {...item, name: e.target.value};
-                                setTempCardData({...tempCardData, breakdown: updatedBreakdown});
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            />
-                          </div>
-                          <div className="col-span-3">
-                            <select
-                              value={item.type}
-                              onChange={(e) => {
-                                const updatedBreakdown = [...tempCardData.breakdown];
-                                updatedBreakdown[index] = {...item, type: e.target.value};
-                                setTempCardData({...tempCardData, breakdown: updatedBreakdown});
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            >
-                              <option value="asset">Asset</option>
-                              <option value="liability">Liability</option>
-                            </select>
-                          </div>
-                          <div className="col-span-4">
-                            <input
-                              type="number"
-                              value={Math.abs(item.value)}
-                              onChange={(e) => {
-                                const updatedBreakdown = [...tempCardData.breakdown];
-                                const value = Number(e.target.value);
-                                updatedBreakdown[index] = {...item, value: item.type === 'liability' ? -value : value};
-                                const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
-                                setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            />
-                          </div>
-                          <div className="col-span-1">
-                            <button
-                              onClick={() => {
-                                const updatedBreakdown = tempCardData.breakdown.filter((_, i) => i !== index);
-                                const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
-                                setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
-                              }}
-                              className="text-red-400 hover:text-red-300 p-1"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                        <div key={item.id} className="bg-gray-700/50 rounded-lg p-3">
+                          <div className="grid grid-cols-12 gap-2 items-center">
+                            <div className="col-span-5">
+                              <label className="block text-xs text-gray-400 mb-1">Name</label>
+                              <input
+                                type="text"
+                                placeholder={item.type === 'asset' ? 'Asset name' : 'Liability name'}
+                                value={item.name}
+                                onChange={(e) => {
+                                  const updatedBreakdown = [...tempCardData.breakdown];
+                                  updatedBreakdown[index] = {...item, name: e.target.value};
+                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-2">
+                              <label className="block text-xs text-gray-400 mb-1">Type</label>
+                              <select
+                                value={item.type}
+                                onChange={(e) => {
+                                  const updatedBreakdown = [...tempCardData.breakdown];
+                                  const newType = e.target.value;
+                                  updatedBreakdown[index] = {
+                                    ...item, 
+                                    type: newType,
+                                    color: newType === 'asset' ? 'bg-emerald-500' : 'bg-red-500',
+                                    value: newType === 'liability' ? -Math.abs(item.value) : Math.abs(item.value)
+                                  };
+                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
+                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
+                              >
+                                <option value="asset">Asset</option>
+                                <option value="liability">Liability</option>
+                              </select>
+                            </div>
+                            <div className="col-span-4">
+                              <label className="block text-xs text-gray-400 mb-1">Value</label>
+                              <input
+                                type="number"
+                                placeholder="Enter amount"
+                                value={Math.abs(item.value)}
+                                onChange={(e) => {
+                                  const updatedBreakdown = [...tempCardData.breakdown];
+                                  const value = Number(e.target.value);
+                                  updatedBreakdown[index] = {
+                                    ...item, 
+                                    value: item.type === 'liability' ? -value : value
+                                  };
+                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
+                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-1">
+                              <label className="block text-xs text-gray-400 mb-1">&nbsp;</label>
+                              <button
+                                onClick={() => {
+                                  const updatedBreakdown = tempCardData.breakdown.filter((_, i) => i !== index);
+                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
+                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
+                                }}
+                                className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-900/20"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ))}
+                      
+                      {(!tempCardData.breakdown || tempCardData.breakdown.length === 0) && (
+                        <div className="text-center text-gray-400 py-4 border-2 border-dashed border-gray-600 rounded-lg">
+                          No assets or liabilities added yet. Use the buttons above to get started.
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-emerald-900/20 rounded-lg border border-emerald-600/30">
+                      <div className="flex justify-between items-center">
+                        <span className="text-emerald-400 font-semibold">Total Net Worth:</span>
+                        <span className="text-2xl font-bold text-white">
+                          ${(tempCardData.total || 0).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} • 
+                        Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0)).toLocaleString()}
+                      </div>
                     </div>
                   </div>
                 </>
@@ -3396,6 +3620,159 @@ export default function App() {
                   />
                   <div className="text-xs text-gray-400 mt-1">Positive for surplus, negative for deficit</div>
                 </div>
+              )}
+
+              {/* Registered Accounts Modal */}
+              {editingCard === 'registeredAccounts' && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* TFSA Section */}
+                    <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
+                      <h4 className="text-lg font-semibold text-green-400 mb-3">TFSA</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
+                          <input
+                            type="number"
+                            value={tempCardData.tfsa?.currentBalance || ''}
+                            onChange={(e) => setTempCardData({
+                              ...tempCardData,
+                              tfsa: {...tempCardData.tfsa, currentBalance: Number(e.target.value)}
+                            })}
+                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-300 mb-1">Contribution Room Available</label>
+                          <input
+                            type="number"
+                            value={tempCardData.tfsa?.contributionRoom || ''}
+                            onChange={(e) => setTempCardData({
+                              ...tempCardData,
+                              tfsa: {...tempCardData.tfsa, contributionRoom: Number(e.target.value)}
+                            })}
+                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-300 mb-1">Total Contribution Limit</label>
+                          <input
+                            type="number"
+                            value={tempCardData.tfsa?.contributionLimit || ''}
+                            onChange={(e) => setTempCardData({
+                              ...tempCardData,
+                              tfsa: {...tempCardData.tfsa, contributionLimit: Number(e.target.value)}
+                            })}
+                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-sm text-gray-300 mb-1">Annual Limit</label>
+                            <input
+                              type="number"
+                              value={tempCardData.tfsa?.annualContributionLimit || ''}
+                              onChange={(e) => setTempCardData({
+                                ...tempCardData,
+                                tfsa: {...tempCardData.tfsa, annualContributionLimit: Number(e.target.value)}
+                              })}
+                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm text-gray-300 mb-1">This Year</label>
+                            <input
+                              type="number"
+                              value={tempCardData.tfsa?.contributionsThisYear || ''}
+                              onChange={(e) => setTempCardData({
+                                ...tempCardData,
+                                tfsa: {...tempCardData.tfsa, contributionsThisYear: Number(e.target.value)}
+                              })}
+                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* RRSP Section */}
+                    <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
+                      <h4 className="text-lg font-semibold text-blue-400 mb-3">RRSP</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
+                          <input
+                            type="number"
+                            value={tempCardData.rrsp?.currentBalance || ''}
+                            onChange={(e) => setTempCardData({
+                              ...tempCardData,
+                              rrsp: {...tempCardData.rrsp, currentBalance: Number(e.target.value)}
+                            })}
+                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-300 mb-1">Contribution Room Available</label>
+                          <input
+                            type="number"
+                            value={tempCardData.rrsp?.contributionRoom || ''}
+                            onChange={(e) => setTempCardData({
+                              ...tempCardData,
+                              rrsp: {...tempCardData.rrsp, contributionRoom: Number(e.target.value)}
+                            })}
+                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-300 mb-1">Total Contribution Limit</label>
+                          <input
+                            type="number"
+                            value={tempCardData.rrsp?.contributionLimit || ''}
+                            onChange={(e) => setTempCardData({
+                              ...tempCardData,
+                              rrsp: {...tempCardData.rrsp, contributionLimit: Number(e.target.value)}
+                            })}
+                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-sm text-gray-300 mb-1">This Year</label>
+                            <input
+                              type="number"
+                              value={tempCardData.rrsp?.contributionsThisYear || ''}
+                              onChange={(e) => setTempCardData({
+                                ...tempCardData,
+                                rrsp: {...tempCardData.rrsp, contributionsThisYear: Number(e.target.value)}
+                              })}
+                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm text-gray-300 mb-1">Carry Forward</label>
+                            <input
+                              type="number"
+                              value={tempCardData.rrsp?.carryForward || ''}
+                              onChange={(e) => setTempCardData({
+                                ...tempCardData,
+                                rrsp: {...tempCardData.rrsp, carryForward: Number(e.target.value)}
+                              })}
+                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                    <div className="text-red-400 font-semibold mb-1">Canadian Tax-Advantaged Accounts</div>
+                    <div className="text-sm text-gray-300">
+                      Total Registered: ${((tempCardData.tfsa?.currentBalance || 0) + (tempCardData.rrsp?.currentBalance || 0)).toLocaleString()} • 
+                      Combined Room: ${((tempCardData.tfsa?.contributionRoom || 0) + (tempCardData.rrsp?.contributionRoom || 0)).toLocaleString()}
+                    </div>
+                  </div>
+                </>
               )}
 
               {/* Goals Modal */}
