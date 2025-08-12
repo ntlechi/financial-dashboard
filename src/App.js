@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar } from 'lucide-react';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -10,25 +10,86 @@ import { doc, setDoc, onSnapshot } from "firebase/firestore";
 const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 const initialData = {
-  netWorth: { total: 550000, breakdown: [
-    { id: 1, name: 'Cash', value: 75000, color: 'bg-sky-500', type: 'asset' },
-    { id: 2, name: 'Investments', value: 350000, color: 'bg-violet-500', type: 'asset' },
-    { id: 3, name: 'Real Estate', value: 250000, color: 'bg-emerald-500', type: 'asset' },
-    { id: 4, name: 'Liabilities', value: -125000, color: 'bg-red-500', type: 'liability' },
-  ]},
-  income: { total: 12500, sources: [
-    { id: 1, name: 'Main Job', amount: 8000, type: 'active' },
-    { id: 2, name: 'Trading', amount: 2500, type: 'passive' },
-    { id: 3, name: 'Side Business', amount: 2000, type: 'passive' },
-  ]},
-  expenses: { total: 6500, categories: [
-    { id: 1, name: 'Housing', amount: 2500, color: 'bg-red-500' },
-    { id: 2, name: 'Transport', amount: 800, color: 'bg-yellow-500' },
-    { id: 3, name: 'Food', amount: 1200, color: 'bg-green-500' },
-    { id: 4, name: 'Entertainment', amount: 1000, color: 'bg-purple-500' },
-    { id: 5, name: 'Other', amount: 1000, color: 'bg-gray-400' },
-  ]},
-  cashflow: { total: 6000 }
+  financialFreedom: {
+    targetAmount: 2000000,
+    currentInvestments: 450000,
+    monthlyContribution: 1500,
+    annualReturn: 7,
+  },
+  creditScore: {
+    current: 750,
+    history: [ { date: '2025-06-30', score: 720 }, { date: '2025-08-09', score: 750 } ]
+  },
+  cashOnHand: {
+    total: 75000,
+    accounts: [
+        { id: 1, name: 'CIBC Chequing', balance: 15000 },
+        { id: 2, name: 'Tangerine Savings', balance: 45000 },
+        { id: 3, name: 'Wealthsimple Cash', balance: 15000 },
+    ],
+    history: [ { date: '2025-08-09', total: 75000 } ]
+  },
+  rainyDayFund: {
+    total: 20000,
+    goal: 30000,
+    accounts: [
+        { id: 1, name: 'Emergency Fund', balance: 20000 }
+    ],
+    history: [ { date: '2025-08-09', total: 20000 } ]
+  },
+  debt: {
+    total: 45000,
+    accounts: [
+        { id: 1, name: 'Visa Card', balance: 5000, interestRate: 19.99, minPayment: 100 },
+        { id: 2, name: 'Mastercard', balance: 10000, interestRate: 22.99, minPayment: 200 },
+        { id: 3, name: 'Line of Credit', balance: 30000, interestRate: 8.5, minPayment: 300 },
+    ],
+    history: [
+        { date: '2025-06-30', total: 50000 },
+        { date: '2025-07-31', total: 48000 },
+        { date: '2025-08-09', total: 45000 },
+    ]
+  },
+  netWorth: { 
+    total: 550000, 
+    breakdown: [
+      { id: 1, name: 'Cash', value: 75000, color: 'bg-sky-500', type: 'asset' },
+      { id: 2, name: 'Investments', value: 350000, color: 'bg-violet-500', type: 'asset' },
+      { id: 3, name: 'Real Estate', value: 250000, color: 'bg-emerald-500', type: 'asset' },
+      { id: 4, name: 'Liabilities', value: -125000, color: 'bg-red-500', type: 'liability' },
+    ],
+    history: [ { date: '2025-08-09', total: 550000 } ]
+  },
+  income: { 
+    total: 12500, 
+    sources: [
+      { id: 1, name: 'Main Job', amount: 8000, type: 'active' },
+      { id: 2, name: 'Trading', amount: 2500, type: 'passive' },
+      { id: 3, name: 'Side Business', amount: 2000, type: 'passive' },
+    ]
+  },
+  expenses: { 
+    total: 6500, 
+    categories: [
+      { id: 1, name: 'Housing', amount: 2500, color: 'bg-red-500' },
+      { id: 2, name: 'Transport', amount: 800, color: 'bg-yellow-500' },
+      { id: 3, name: 'Food', amount: 1200, color: 'bg-green-500' },
+      { id: 4, name: 'Entertainment', amount: 1000, color: 'bg-purple-500' },
+      { id: 5, name: 'Other', amount: 1000, color: 'bg-gray-400' },
+    ]
+  },
+  cashflow: { total: 6000 },
+  savingsRate: { 
+    current: 48, // 48% savings rate
+    target: 50,
+    monthly: 6000,
+    monthlyIncome: 12500
+  },
+  goals: [
+    { id: 1, name: 'House Down Payment', targetAmount: 75000, currentAmount: 25000, targetDate: '2025-12-31' },
+    { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
+    { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
+  ]
 };
 
 const Card = ({ children, className = '' }) => (
@@ -36,6 +97,365 @@ const Card = ({ children, className = '' }) => (
     {children}
   </div>
 );
+
+const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
+  const percentage = maxValue > 0 ? Math.min((value / maxValue) * 100, 100) : 0;
+  return (
+    <div className={`w-full bg-gray-700 rounded-full ${height}`}>
+      <div className={`${color} ${height} rounded-full transition-all duration-300`} style={{ width: `${percentage}%` }}></div>
+    </div>
+  );
+};
+
+// Financial Freedom Goal Card
+const FinancialFreedomCard = ({ data }) => {
+  const progressPercentage = (data.currentInvestments / data.targetAmount) * 100;
+  const monthsToGoal = data.monthlyContribution > 0 
+    ? Math.ceil((data.targetAmount - data.currentInvestments) / data.monthlyContribution) 
+    : 0;
+  const yearsToGoal = Math.floor(monthsToGoal / 12);
+  const remainingMonths = monthsToGoal % 12;
+
+  return (
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-emerald-900/40 to-teal-900/40">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <Target className="w-6 h-6 mr-3 text-emerald-400" />
+          Financial Freedom Goal
+        </h2>
+        <span className="text-emerald-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+      </div>
+      
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between text-sm text-gray-300 mb-2">
+            <span>Current: ${data.currentInvestments.toLocaleString()}</span>
+            <span>Target: ${data.targetAmount.toLocaleString()}</span>
+          </div>
+          <ProgressBar 
+            value={data.currentInvestments} 
+            maxValue={data.targetAmount} 
+            color="bg-emerald-500"
+            height="h-3"
+          />
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4 text-center">
+          <div className="bg-emerald-900/30 rounded-lg p-3">
+            <div className="text-lg font-bold text-white">${data.monthlyContribution.toLocaleString()}</div>
+            <div className="text-xs text-emerald-400">Monthly Contribution</div>
+          </div>
+          <div className="bg-emerald-900/30 rounded-lg p-3">
+            <div className="text-lg font-bold text-white">
+              {yearsToGoal}y {remainingMonths}m
+            </div>
+            <div className="text-xs text-emerald-400">Time to Goal</div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+// Savings Rate Card
+const SavingsRateCard = ({ data }) => {
+  const getRateColor = (rate) => {
+    if (rate >= 50) return 'text-emerald-400';
+    if (rate >= 30) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const getRateStatus = (rate) => {
+    if (rate >= 50) return 'Excellent';
+    if (rate >= 30) return 'Good';
+    if (rate >= 20) return 'Fair';
+    return 'Needs Work';
+  };
+
+  return (
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+      <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+        <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+        Savings Rate
+      </h2>
+      
+      <div className="space-y-4">
+        <div className="text-center">
+          <div className={`text-4xl font-extrabold ${getRateColor(data.current)}`}>
+            {data.current}%
+          </div>
+          <div className="text-gray-400 text-sm">{getRateStatus(data.current)}</div>
+        </div>
+        
+        <div>
+          <div className="flex justify-between text-sm text-gray-300 mb-2">
+            <span>Current: {data.current}%</span>
+            <span>Target: {data.target}%</span>
+          </div>
+          <ProgressBar 
+            value={data.current} 
+            maxValue={data.target} 
+            color="bg-blue-500"
+          />
+        </div>
+        
+        <div className="text-center text-sm text-gray-300">
+          Saving ${data.monthly.toLocaleString()} of ${data.monthlyIncome.toLocaleString()} monthly income
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+// Rainy Day Fund Card
+const RainyDayFundCard = ({ data }) => {
+  const progressPercentage = (data.total / data.goal) * 100;
+  const monthsOfExpenses = data.total / 6500; // Assuming monthly expenses
+  
+  const getFundStatus = (months) => {
+    if (months >= 6) return { status: 'Excellent', color: 'text-emerald-400' };
+    if (months >= 3) return { status: 'Good', color: 'text-yellow-400' };
+    return { status: 'Build More', color: 'text-red-400' };
+  };
+
+  const { status, color } = getFundStatus(monthsOfExpenses);
+
+  return (
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold text-white flex items-center">
+          <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
+          Rainy Day Fund
+        </h2>
+        <span className="text-purple-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+      </div>
+      
+      <div className="space-y-4">
+        <div className="text-center">
+          <div className="text-3xl font-extrabold text-white mb-1">
+            ${data.total.toLocaleString()}
+          </div>
+          <div className={`text-sm font-semibold ${color}`}>
+            {monthsOfExpenses.toFixed(1)} months • {status}
+          </div>
+        </div>
+        
+        <div>
+          <div className="flex justify-between text-sm text-gray-300 mb-2">
+            <span>Current: ${data.total.toLocaleString()}</span>
+            <span>Goal: ${data.goal.toLocaleString()}</span>
+          </div>
+          <ProgressBar 
+            value={data.total} 
+            maxValue={data.goal} 
+            color="bg-purple-500"
+            height="h-3"
+          />
+        </div>
+        
+        <div className="bg-purple-900/30 rounded-lg p-3 text-center">
+          <div className="text-sm text-gray-300">
+            Target: 6 months of expenses (${(6500 * 6).toLocaleString()})
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+// Credit Score Card
+const CreditScoreCard = ({ data }) => {
+  const getScoreColor = (score) => {
+    if (score >= 800) return 'text-emerald-400';
+    if (score >= 740) return 'text-green-400';
+    if (score >= 670) return 'text-yellow-400';
+    if (score >= 580) return 'text-orange-400';
+    return 'text-red-400';
+  };
+
+  const getScoreStatus = (score) => {
+    if (score >= 800) return 'Exceptional';
+    if (score >= 740) return 'Very Good';
+    if (score >= 670) return 'Good';
+    if (score >= 580) return 'Fair';
+    return 'Poor';
+  };
+
+  const getScoreProgress = (score) => (score / 850) * 100;
+
+  return (
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-indigo-900/40 to-blue-900/40">
+      <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+        <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
+        Credit Score
+      </h2>
+      
+      <div className="space-y-4">
+        <div className="text-center">
+          <div className={`text-4xl font-extrabold ${getScoreColor(data.current)}`}>
+            {data.current}
+          </div>
+          <div className="text-gray-400 text-sm">{getScoreStatus(data.current)}</div>
+        </div>
+        
+        <div>
+          <div className="flex justify-between text-sm text-gray-300 mb-2">
+            <span>Score: {data.current}</span>
+            <span>Max: 850</span>
+          </div>
+          <ProgressBar 
+            value={data.current} 
+            maxValue={850} 
+            color={data.current >= 740 ? 'bg-green-500' : data.current >= 670 ? 'bg-yellow-500' : 'bg-red-500'}
+          />
+        </div>
+        
+        <div className="grid grid-cols-5 gap-1 text-xs text-center">
+          <div className="text-red-400">Poor<br/>300-579</div>
+          <div className="text-orange-400">Fair<br/>580-669</div>
+          <div className="text-yellow-400">Good<br/>670-739</div>
+          <div className="text-green-400">V.Good<br/>740-799</div>
+          <div className="text-emerald-400">Exceptional<br/>800-850</div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+// Goals Card
+const GoalsCard = ({ data }) => {
+  return (
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+      <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+        <Calendar className="w-6 h-6 mr-3 text-amber-400" />
+        Financial Goals
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {data.map(goal => {
+          const progressPercentage = (goal.currentAmount / goal.targetAmount) * 100;
+          const remaining = goal.targetAmount - goal.currentAmount;
+          
+          return (
+            <div key={goal.id} className="bg-gray-700/30 rounded-xl p-4">
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="font-semibold text-white">{goal.name}</h3>
+                <span className="text-amber-400 text-sm font-semibold">
+                  {progressPercentage.toFixed(0)}%
+                </span>
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-sm text-gray-300 mb-1">
+                    <span>${goal.currentAmount.toLocaleString()}</span>
+                    <span>${goal.targetAmount.toLocaleString()}</span>
+                  </div>
+                  <ProgressBar 
+                    value={goal.currentAmount} 
+                    maxValue={goal.targetAmount} 
+                    color="bg-amber-500"
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">
+                    ${remaining.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-gray-400">remaining</div>
+                </div>
+                
+                <div className="text-center text-xs text-gray-400">
+                  Target: {new Date(goal.targetDate).toLocaleDateString()}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+};
+
+// Net Worth Card
+const NetWorthCard = ({ data }) => (
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+      <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+      Net Worth
+    </h2>
+    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
+    <div className="mt-4 space-y-2">
+      {data.breakdown.filter(item => item.type === 'asset').map((item) => (
+        <div key={item.id} className="flex items-center justify-between text-sm">
+          <div className="flex items-center">
+            <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
+            <span className="text-gray-300">{item.name}</span>
+          </div>
+          <span className="font-semibold text-white">${item.value.toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+  </Card>
+);
+
+// Income Card
+const IncomeCard = ({ data }) => (
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
+    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+      <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+      Monthly Income
+    </h2>
+    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
+    <div className="mt-4 space-y-2">
+      {data.sources.map(source => (
+        <div key={source.id} className="flex justify-between items-center text-sm">
+          <span className="text-gray-300">{source.name}</span>
+          <span className="font-semibold text-white">${source.amount.toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+  </Card>
+);
+
+// Expenses Card
+const ExpensesCard = ({ data }) => (
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
+    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+      <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
+      Monthly Expenses
+    </h2>
+    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
+    <div className="mt-4 space-y-2">
+      {data.categories.map(cat => (
+        <div key={cat.id} className="flex justify-between items-center text-sm">
+          <div className="flex items-center">
+            <span className={`w-2.5 h-2.5 rounded-full mr-2 ${cat.color}`}></span>
+            <span className="text-gray-300">{cat.name}</span>
+          </div>
+          <span className="font-semibold text-white">${cat.amount.toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+  </Card>
+);
+
+// Cash Flow Card
+const CashFlowCard = ({ data }) => {
+  const isPositive = data.total >= 0;
+  return (
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+        <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+        Cash Flow
+      </h2>
+      <p className={`text-5xl font-extrabold ${isPositive ? 'text-amber-400' : 'text-red-500'}`}>
+        {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
+      </p>
+      <p className="text-gray-400 mt-2">Monthly income minus expenses</p>
+    </Card>
+  );
+};
 
 // Budget Calculator Component with the critical layout fix
 const BudgetCalculatorTab = () => {
@@ -159,83 +579,6 @@ const BudgetCalculatorTab = () => {
   );
 };
 
-// Dashboard Cards
-const NetWorthCard = ({ data }) => (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3">
-    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
-      Net Worth
-    </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-2">
-      {data.breakdown.filter(item => item.type === 'asset').map((item) => (
-        <div key={item.id} className="flex items-center justify-between text-sm">
-          <div className="flex items-center">
-            <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
-            <span className="text-gray-300">{item.name}</span>
-          </div>
-          <span className="font-semibold text-white">${item.value.toLocaleString()}</span>
-        </div>
-      ))}
-    </div>
-  </Card>
-);
-
-const IncomeCard = ({ data }) => (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
-    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
-      Monthly Income
-    </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-2">
-      {data.sources.map(source => (
-        <div key={source.id} className="flex justify-between items-center text-sm">
-          <span className="text-gray-300">{source.name}</span>
-          <span className="font-semibold text-white">${source.amount.toLocaleString()}</span>
-        </div>
-      ))}
-    </div>
-  </Card>
-);
-
-const ExpensesCard = ({ data }) => (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
-    <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
-      Monthly Expenses
-    </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-2">
-      {data.categories.map(cat => (
-        <div key={cat.id} className="flex justify-between items-center text-sm">
-          <div className="flex items-center">
-            <span className={`w-2.5 h-2.5 rounded-full mr-2 ${cat.color}`}></span>
-            <span className="text-gray-300">{cat.name}</span>
-          </div>
-          <span className="font-semibold text-white">${cat.amount.toLocaleString()}</span>
-        </div>
-      ))}
-    </div>
-  </Card>
-);
-
-const CashFlowCard = ({ data }) => {
-  const isPositive = data.total >= 0;
-  return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
-      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-        <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
-        Cash Flow
-      </h2>
-      <p className={`text-5xl font-extrabold ${isPositive ? 'text-amber-400' : 'text-red-500'}`}>
-        {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
-      </p>
-      <p className="text-gray-400 mt-2">Monthly income minus expenses</p>
-    </Card>
-  );
-};
-
 export default function App() {
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -331,29 +674,22 @@ export default function App() {
         <main className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-6">
           {activeTab === 'dashboard' && (
             <>
+              {/* Top Row - Financial Freedom Goal */}
+              <FinancialFreedomCard data={data.financialFreedom} />
+              <SavingsRateCard data={data.savingsRate} />
+              
+              {/* Second Row - Core Metrics */}
               <NetWorthCard data={data.netWorth} />
               <IncomeCard data={data.income} />
               <ExpensesCard data={data.expenses} />
               <CashFlowCard data={data.cashflow} />
               
-              <Card className="col-span-1 md:col-span-6 lg:col-span-6">
-                <div className="text-center py-8">
-                  <h2 className="text-2xl font-bold text-white mb-4">🎉 Dashboard Working!</h2>
-                  <p className="text-gray-400 mb-4">
-                    Your financial dashboard is connected to Firebase and displaying real data.
-                  </p>
-                  <div className="bg-green-900/20 rounded-lg p-4 text-left max-w-md mx-auto">
-                    <h3 className="text-green-400 font-semibold mb-2">✅ What's Working:</h3>
-                    <ul className="text-gray-300 text-sm space-y-1">
-                      <li>• Firebase Authentication ✅</li>
-                      <li>• Firestore Database ✅</li>
-                      <li>• Real-time data sync ✅</li>
-                      <li>• Responsive design ✅</li>
-                      <li>• Budget Calculator layout fix ✅</li>
-                    </ul>
-                  </div>
-                </div>
-              </Card>
+              {/* Third Row - Additional Metrics */}
+              <RainyDayFundCard data={data.rainyDayFund} />
+              <CreditScoreCard data={data.creditScore} />
+              
+              {/* Fourth Row - Goals */}
+              <GoalsCard data={data.goals} />
             </>
           )}
           
