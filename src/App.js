@@ -898,7 +898,20 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                     }
                     return item;
                 });
-                return { ...b, [type]: items };
+                
+                // Recalculate business totals
+                const updatedBusiness = { ...b, [type]: items };
+                updatedBusiness.income = updatedBusiness.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.expenses = updatedBusiness.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.net = updatedBusiness.income - updatedBusiness.expenses;
+                
+                console.log(`📊 Business totals recalculated:`, {
+                    income: updatedBusiness.income,
+                    expenses: updatedBusiness.expenses,
+                    net: updatedBusiness.net
+                });
+                
+                return updatedBusiness;
             }
             return b;
         }));
@@ -908,7 +921,13 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
         const newItem = { id: Date.now(), name: "New Item", amount: 0 };
         setLocalBusinesses(localBusinesses.map(b => {
             if (b.id === businessId) {
-                return { ...b, [type]: [...b[type], newItem] };
+                const updatedBusiness = { ...b, [type]: [...b[type], newItem] };
+                // Recalculate totals
+                updatedBusiness.income = updatedBusiness.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.expenses = updatedBusiness.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.net = updatedBusiness.income - updatedBusiness.expenses;
+                console.log(`➕ Added ${type} item, new totals:`, { income: updatedBusiness.income, expenses: updatedBusiness.expenses, net: updatedBusiness.net });
+                return updatedBusiness;
             }
             return b;
         }));
@@ -917,7 +936,13 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
     const removeItem = (businessId, itemId, type) => {
         setLocalBusinesses(localBusinesses.map(b => {
             if (b.id === businessId) {
-                return { ...b, [type]: b[type].filter(item => item.id !== itemId) };
+                const updatedBusiness = { ...b, [type]: b[type].filter(item => item.id !== itemId) };
+                // Recalculate totals
+                updatedBusiness.income = updatedBusiness.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.expenses = updatedBusiness.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+                updatedBusiness.net = updatedBusiness.income - updatedBusiness.expenses;
+                console.log(`🗑️ Removed ${type} item, new totals:`, { income: updatedBusiness.income, expenses: updatedBusiness.expenses, net: updatedBusiness.net });
+                return updatedBusiness;
             }
             return b;
         }));
@@ -976,6 +1001,24 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                                             <button onClick={() => removeItem(business.id, item.id, 'expenseItems')} className="text-rose-500"><X className="w-4 h-4"/></button>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+                            
+                            {/* Business Totals Display */}
+                            <div className="mt-6 grid grid-cols-3 gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                                <div className="text-center">
+                                    <p className="text-emerald-400 font-semibold text-sm">Total Income</p>
+                                    <p className="text-white text-xl font-bold">${business.income.toLocaleString()}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-red-400 font-semibold text-sm">Total Expenses</p>
+                                    <p className="text-white text-xl font-bold">${business.expenses.toLocaleString()}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-violet-400 font-semibold text-sm">Net Profit</p>
+                                    <p className={`text-xl font-bold ${business.net >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                        ${business.net.toLocaleString()}
+                                    </p>
                                 </div>
                             </div>
                         </div>
