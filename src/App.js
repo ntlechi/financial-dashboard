@@ -330,7 +330,67 @@ const initialData = {
       investmentValue: 415000,
       savingsRate: 50
     }
-  ]
+  ],
+  travel: {
+    totalSavings: 85000,
+    homeCurrency: 'CAD',
+    exchangeRates: {
+      'USD': 0.75,
+      'EUR': 0.68,
+      'THB': 26.5,
+      'COP': 4200,
+      'PEN': 3.8,
+      'VND': 24500,
+      'MXN': 18.2
+    },
+    trips: [
+      {
+        id: 1,
+        name: "Southeast Asia Adventure 2025",
+        description: "3 months backpacking through Thailand, Vietnam, Cambodia",
+        targetBudget: 45000,
+        currentSavings: 32000,
+        startDate: "2025-06-01",
+        endDate: "2025-09-01",
+        estimatedDailySpend: 500, // in CAD
+        countries: ["Thailand", "Vietnam", "Cambodia"],
+        status: "planning",
+        expenses: [
+          { id: 1, date: "2025-01-15", description: "Flight to Bangkok", amount: 1200, currency: "CAD", category: "transport" },
+          { id: 2, date: "2025-01-10", description: "Travel Insurance", amount: 450, currency: "CAD", category: "insurance" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Colombia & Peru 2026",
+        description: "6 weeks exploring South American culture and coffee",
+        targetBudget: 28000,
+        currentSavings: 8500,
+        startDate: "2026-03-15",
+        endDate: "2026-05-01",
+        estimatedDailySpend: 350,
+        countries: ["Colombia", "Peru"],
+        status: "saving",
+        expenses: []
+      }
+    ],
+    runwayCalculation: {
+      averageDailySpend: 425, // Average across all travel styles
+      totalAvailableFunds: 85000,
+      estimatedDaysRemaining: 200,
+      lastUpdated: "2025-01-15"
+    },
+    expenseCategories: [
+      { name: "accommodation", color: "bg-blue-500", icon: "🏨" },
+      { name: "food", color: "bg-green-500", icon: "🍽️" },
+      { name: "transport", color: "bg-yellow-500", icon: "🚌" },
+      { name: "activities", color: "bg-purple-500", icon: "🎯" },
+      { name: "shopping", color: "bg-pink-500", icon: "🛍️" },
+      { name: "insurance", color: "bg-red-500", icon: "🛡️" },
+      { name: "visa", color: "bg-orange-500", icon: "📋" },
+      { name: "other", color: "bg-gray-500", icon: "💫" }
+    ]
+  }
 };
 
 const Card = ({ children, className = '' }) => (
@@ -3183,6 +3243,343 @@ const TransactionsTab = ({ data, setData, userId }) => {
   );
 };
 
+// Travel Tab Component with Trip Budgeting
+const TravelTab = ({ data, setData, userId }) => {
+  const [showAddTrip, setShowAddTrip] = useState(false);
+  const [editingTrip, setEditingTrip] = useState(null);
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  
+  const [newTrip, setNewTrip] = useState({
+    name: '',
+    description: '',
+    targetBudget: '',
+    startDate: '',
+    endDate: '',
+    estimatedDailySpend: '',
+    countries: []
+  });
+
+  const [newExpense, setNewExpense] = useState({
+    description: '',
+    amount: '',
+    currency: data.travel?.homeCurrency || 'CAD',
+    category: 'other',
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  // Travel Runway Calculation
+  const calculateRunway = () => {
+    const totalFunds = data.travel?.totalSavings || 0;
+    const averageDaily = data.travel?.runwayCalculation?.averageDailySpend || 425;
+    const daysRemaining = Math.floor(totalFunds / averageDaily);
+    const weeksRemaining = Math.floor(daysRemaining / 7);
+    const monthsRemaining = Math.floor(daysRemaining / 30);
+    
+    return { daysRemaining, weeksRemaining, monthsRemaining, totalFunds, averageDaily };
+  };
+
+  const convertCurrency = (amount, fromCurrency, toCurrency = data.travel?.homeCurrency || 'CAD') => {
+    if (fromCurrency === toCurrency) return amount;
+    const rates = data.travel?.exchangeRates || {};
+    if (fromCurrency === 'CAD') {
+      return amount / (rates[toCurrency] || 1);
+    } else if (toCurrency === 'CAD') {
+      return amount * (rates[fromCurrency] || 1);
+    } else {
+      // Convert through CAD
+      const inCAD = amount * (rates[fromCurrency] || 1);
+      return inCAD / (rates[toCurrency] || 1);
+    }
+  };
+
+  const handleAddTrip = async () => {
+    if (!newTrip.name || !newTrip.targetBudget) return;
+
+    const trip = {
+      id: Date.now(),
+      ...newTrip,
+      targetBudget: Number(newTrip.targetBudget),
+      estimatedDailySpend: Number(newTrip.estimatedDailySpend),
+      currentSavings: 0,
+      status: 'saving',
+      expenses: [],
+      countries: newTrip.countries.filter(c => c.trim())
+    };
+
+    const updatedTrips = [...(data.travel?.trips || []), trip];
+    const updatedTravel = { ...data.travel, trips: updatedTrips };
+    const updatedData = { ...data, travel: updatedTravel };
+
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
+      setShowAddTrip(false);
+    } catch (error) {
+      console.error('Error adding trip:', error);
+    }
+  };
+
+  const runway = calculateRunway();
+
+  return (
+    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+      {/* Travel Runway Calculator - Hero Section */}
+      <Card className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
+          <p className="text-blue-200 mb-6">How long can you keep traveling with your current funds?</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="bg-blue-800/30 rounded-lg p-4">
+              <div className="text-3xl font-bold text-blue-300">{runway.daysRemaining}</div>
+              <div className="text-blue-200">Days Remaining</div>
+            </div>
+            <div className="bg-blue-800/30 rounded-lg p-4">
+              <div className="text-3xl font-bold text-blue-300">{runway.weeksRemaining}</div>
+              <div className="text-blue-200">Weeks Remaining</div>
+            </div>
+            <div className="bg-blue-800/30 rounded-lg p-4">
+              <div className="text-3xl font-bold text-blue-300">{runway.monthsRemaining}</div>
+              <div className="text-blue-200">Months Remaining</div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="bg-blue-700/20 rounded-lg p-3">
+              <div className="text-blue-200">Total Travel Funds</div>
+              <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} CAD</div>
+            </div>
+            <div className="bg-blue-700/20 rounded-lg p-3">
+              <div className="text-blue-200">Average Daily Spend</div>
+              <div className="text-xl font-bold text-white">${runway.averageDaily} CAD/day</div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Trip Planning Header */}
+      <Card>
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center mb-2">
+              🗺️ Trip Planning & Budgets
+            </h2>
+            <p className="text-gray-400">Manage your travel budgets and track expenses by trip</p>
+          </div>
+          <button
+            onClick={() => setShowAddTrip(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Plan New Trip
+          </button>
+        </div>
+      </Card>
+
+      {/* Trip Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {(data.travel?.trips || []).map(trip => {
+          const progress = trip.targetBudget > 0 ? (trip.currentSavings / trip.targetBudget) * 100 : 0;
+          const totalExpenses = trip.expenses?.reduce((sum, exp) => {
+            return sum + convertCurrency(exp.amount, exp.currency, 'CAD');
+          }, 0) || 0;
+          const remainingBudget = trip.targetBudget - totalExpenses;
+          
+          return (
+            <Card key={trip.id} className="border-blue-500/30">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-white">{trip.name}</h3>
+                  <p className="text-gray-400 text-sm">{trip.description}</p>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {trip.countries?.map(country => (
+                      <span key={country} className="text-xs bg-blue-600/30 text-blue-200 px-2 py-1 rounded">
+                        {country}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setSelectedTrip(trip);
+                      setShowExpenseModal(true);
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Add Expense
+                  </button>
+                  <button className="text-blue-400 hover:text-blue-300 p-1">
+                    <Edit className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm text-gray-300 mb-1">
+                    <span>Savings Progress</span>
+                    <span>{Math.round(progress)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div 
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.min(progress, 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>${trip.currentSavings.toLocaleString()}</span>
+                    <span>${trip.targetBudget.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="bg-gray-700/30 rounded-lg p-2">
+                    <div className="text-sm text-gray-400">Start Date</div>
+                    <div className="text-white font-medium">{new Date(trip.startDate).toLocaleDateString()}</div>
+                  </div>
+                  <div className="bg-gray-700/30 rounded-lg p-2">
+                    <div className="text-sm text-gray-400">Daily Budget</div>
+                    <div className="text-white font-medium">${trip.estimatedDailySpend}</div>
+                  </div>
+                  <div className="bg-gray-700/30 rounded-lg p-2">
+                    <div className="text-sm text-gray-400">Remaining</div>
+                    <div className={`font-medium ${remainingBudget >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      ${remainingBudget.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+
+                {trip.expenses && trip.expenses.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
+                    <div className="space-y-1 max-h-24 overflow-y-auto">
+                      {trip.expenses.slice(0, 3).map(expense => (
+                        <div key={expense.id} className="flex justify-between text-xs">
+                          <span className="text-gray-400">{expense.description}</span>
+                          <span className="text-white">
+                            {expense.amount} {expense.currency}
+                            {expense.currency !== 'CAD' && (
+                              <span className="text-gray-500 ml-1">
+                                (${convertCurrency(expense.amount, expense.currency, 'CAD').toFixed(0)} CAD)
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Add Trip Modal */}
+      {showAddTrip && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl border-blue-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">Plan New Trip</h3>
+              <button
+                onClick={() => setShowAddTrip(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Southeast Asia Adventure"
+                    value={newTrip.name}
+                    onChange={(e) => setNewTrip({...newTrip, name: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Target Budget (CAD)</label>
+                  <input
+                    type="number"
+                    placeholder="45000"
+                    value={newTrip.targetBudget}
+                    onChange={(e) => setNewTrip({...newTrip, targetBudget: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">Description</label>
+                <textarea
+                  placeholder="Brief description of your trip..."
+                  value={newTrip.description}
+                  onChange={(e) => setNewTrip({...newTrip, description: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  rows="2"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Start Date</label>
+                  <input
+                    type="date"
+                    value={newTrip.startDate}
+                    onChange={(e) => setNewTrip({...newTrip, startDate: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">End Date</label>
+                  <input
+                    type="date"
+                    value={newTrip.endDate}
+                    onChange={(e) => setNewTrip({...newTrip, endDate: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Daily Budget (CAD)</label>
+                  <input
+                    type="number"
+                    placeholder="500"
+                    value={newTrip.estimatedDailySpend}
+                    onChange={(e) => setNewTrip({...newTrip, estimatedDailySpend: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowAddTrip(false)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddTrip}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Create Trip
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -3625,6 +4022,9 @@ export default function App() {
               <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                 <CreditCard className="w-4 h-4 mr-2"/>Transactions
               </button>
+              <button onClick={() => setActiveTab('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                🌍 Travel
+              </button>
             </div>
           </div>
         </header>
@@ -3706,6 +4106,8 @@ export default function App() {
           {activeTab === 'investment' && <InvestmentTab data={data} setData={setData} userId={userId} />}
           
           {activeTab === 'transactions' && <TransactionsTab data={data} setData={setData} userId={userId} />}
+          
+          {activeTab === 'travel' && <TravelTab data={data} setData={setData} userId={userId} />}
         </main>
 
         <footer className="text-center mt-12 text-gray-500">
