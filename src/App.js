@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle } from 'lucide-react';
 import * as d3 from 'd3';
 
 // Firebase Imports
@@ -1373,6 +1373,8 @@ const SideHustleTab = ({ data, setData, userId }) => {
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [showAddItem, setShowAddItem] = useState(false);
   const [itemType, setItemType] = useState('income');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [businessToDelete, setBusinessToDelete] = useState(null);
   
   const [newBusiness, setNewBusiness] = useState({
     name: '',
@@ -1453,6 +1455,32 @@ const SideHustleTab = ({ data, setData, userId }) => {
       setShowAddItem(false);
     } catch (error) {
       console.error('Error adding item:', error);
+    }
+  };
+
+  const initiateDeleteBusiness = (business) => {
+    setBusinessToDelete(business);
+    setShowDeleteConfirm(true);
+  };
+
+  const cancelDelete = () => {
+    setBusinessToDelete(null);
+    setShowDeleteConfirm(false);
+  };
+
+  const confirmDeleteBusiness = async () => {
+    if (!businessToDelete) return;
+
+    const updatedBusinesses = data.businesses.filter(business => business.id !== businessToDelete.id);
+    const updatedData = { ...data, businesses: updatedBusinesses };
+
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setBusinessToDelete(null);
+      setShowDeleteConfirm(false);
+    } catch (error) {
+      console.error('Error deleting business:', error);
     }
   };
 
@@ -1608,16 +1636,24 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 <p className="text-gray-400 text-sm">{business.description}</p>
                 <p className="text-gray-500 text-xs">Since {new Date(business.startDate).toLocaleDateString()}</p>
               </div>
-              <button
-                onClick={() => {
-                  setSelectedBusiness(business);
-                  setShowAddItem(true);
-                }}
-                className="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
-              >
-                <Plus className="w-3 h-3 mr-1" />
-                Add Item
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setSelectedBusiness(business);
+                    setShowAddItem(true);
+                  }}
+                  className="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
+                >
+                  <Plus className="w-3 h-3 mr-1" />
+                  Add Item
+                </button>
+                <button
+                  onClick={() => initiateDeleteBusiness(business)}
+                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
             </div>
             
             {/* Business Summary */}
@@ -1749,6 +1785,84 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Add {itemType === 'income' ? 'Income' : 'Expense'}
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && businessToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-red-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">Delete Business</h3>
+              <button
+                onClick={cancelDelete}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-red-900/20 rounded-lg border border-red-600/30">
+                <div className="flex items-start gap-3">
+                  <div className="text-red-400 mt-0.5">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-red-400 font-semibold mb-1">Warning: Permanent Action</h4>
+                    <p className="text-sm text-gray-300">
+                      Are you sure you want to delete "<span className="font-semibold text-white">{businessToDelete.name}</span>"?
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      This will permanently remove all income and expense records for this business. This action cannot be undone.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-700/30 rounded-lg p-3">
+                <h5 className="text-white font-medium mb-2">Business Details:</h5>
+                <div className="text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Total Income:</span>
+                    <span className="text-green-400">${businessToDelete.totalIncome.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Total Expenses:</span>
+                    <span className="text-red-400">${businessToDelete.totalExpenses.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Net Profit:</span>
+                    <span className={`${businessToDelete.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      ${businessToDelete.netProfit.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Records:</span>
+                    <span className="text-gray-300">
+                      {(businessToDelete.incomeItems?.length || 0) + (businessToDelete.expenseItems?.length || 0)} items
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={cancelDelete}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteBusiness}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete Business
               </button>
             </div>
           </Card>
