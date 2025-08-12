@@ -3199,6 +3199,14 @@ export default function App() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetStartDate, setResetStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [resetToSample, setResetToSample] = useState(false);
+  
+  // Quick expense logging states
+  const [showQuickExpense, setShowQuickExpense] = useState(false);
+  const [quickExpense, setQuickExpense] = useState({
+    description: '',
+    amount: '',
+    date: new Date().toISOString().split('T')[0]
+  });
 
   useEffect(() => {
     const signInUser = async () => {
@@ -3485,6 +3493,52 @@ export default function App() {
     }
   };
 
+  const openQuickExpense = () => {
+    setShowQuickExpense(true);
+    setQuickExpense({
+      description: '',
+      amount: '',
+      date: new Date().toISOString().split('T')[0]
+    });
+  };
+
+  const closeQuickExpense = () => {
+    setShowQuickExpense(false);
+    setQuickExpense({
+      description: '',
+      amount: '',
+      date: new Date().toISOString().split('T')[0]
+    });
+  };
+
+  const confirmQuickExpense = async () => {
+    if (!quickExpense.description || !quickExpense.amount || !userId) return;
+
+    const amount = parseFloat(quickExpense.amount);
+    if (isNaN(amount) || amount <= 0) return;
+
+    const transaction = {
+      id: Date.now(),
+      description: quickExpense.description,
+      amount: -Math.abs(amount), // Always negative for expenses
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'cash',
+      date: quickExpense.date
+    };
+
+    const updatedTransactions = [transaction, ...(data.transactions || [])];
+    const updatedData = { ...data, transactions: updatedTransactions };
+
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      closeQuickExpense();
+    } catch (error) {
+      console.error('Error adding quick expense:', error);
+    }
+  };
+
   // Calculate annual values
   const getAnnualizedData = () => {
     if (!data) return data;
@@ -3674,6 +3728,97 @@ export default function App() {
           </div>
         </footer>
       </div>
+
+      {/* Floating Quick Expense Button */}
+      <button
+        onClick={openQuickExpense}
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-40 group"
+        title="Quick Expense Log"
+      >
+        <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
+      </button>
+
+      {/* Quick Expense Modal */}
+      {showQuickExpense && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-red-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="text-xl font-bold text-white">⚡ Quick Expense</h3>
+                <p className="text-xs text-gray-400">Log cash expenses fast!</p>
+              </div>
+              <button
+                onClick={closeQuickExpense}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">What did you spend on?</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Coffee, Lunch, Gas, Groceries..."
+                  value={quickExpense.description}
+                  onChange={(e) => setQuickExpense({...quickExpense, description: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none placeholder-gray-400"
+                  autoFocus
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Amount</label>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    value={quickExpense.amount}
+                    onChange={(e) => setQuickExpense({...quickExpense, amount: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Date</label>
+                  <input
+                    type="date"
+                    value={quickExpense.date}
+                    onChange={(e) => setQuickExpense({...quickExpense, date: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-red-900/20 rounded-lg p-3 border border-red-600/30">
+                <div className="text-xs text-red-200">
+                  💡 <strong>Quick Tip:</strong> This logs to your personal cash expenses. 
+                  For business expenses or other categories, use the full Transaction tab.
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={closeQuickExpense}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmQuickExpense}
+                disabled={!quickExpense.description || !quickExpense.amount}
+                className="bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Log Expense
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
 
       {/* Card Editing Modals */}
       {editingCard && (
@@ -4227,66 +4372,141 @@ export default function App() {
               {/* Goals Modal */}
               {editingCard === 'goals' && (
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-2">Financial Goals</h4>
-                  <div className="space-y-3">
-                    {(tempCardData || []).map((goal, index) => (
-                      <div key={goal.id} className="bg-gray-700/50 rounded-lg p-3">
-                        <div className="grid grid-cols-12 gap-2 items-center">
-                          <div className="col-span-4">
-                            <input
-                              type="text"
-                              placeholder="Goal Name"
-                              value={goal.name}
-                              onChange={(e) => {
-                                const updatedGoals = [...tempCardData];
-                                updatedGoals[index] = {...goal, name: e.target.value};
-                                setTempCardData(updatedGoals);
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            />
-                          </div>
-                          <div className="col-span-3">
-                            <input
-                              type="number"
-                              placeholder="Target Amount"
-                              value={goal.targetAmount}
-                              onChange={(e) => {
-                                const updatedGoals = [...tempCardData];
-                                updatedGoals[index] = {...goal, targetAmount: Number(e.target.value)};
-                                setTempCardData(updatedGoals);
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            />
-                          </div>
-                          <div className="col-span-3">
-                            <input
-                              type="number"
-                              placeholder="Current Amount"
-                              value={goal.currentAmount}
-                              onChange={(e) => {
-                                const updatedGoals = [...tempCardData];
-                                updatedGoals[index] = {...goal, currentAmount: Number(e.target.value)};
-                                setTempCardData(updatedGoals);
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            />
-                          </div>
-                          <div className="col-span-2">
-                            <input
-                              type="date"
-                              value={goal.deadline}
-                              onChange={(e) => {
-                                const updatedGoals = [...tempCardData];
-                                updatedGoals[index] = {...goal, deadline: e.target.value};
-                                setTempCardData(updatedGoals);
-                              }}
-                              className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-lg font-semibold text-white">Financial Goals</h4>
+                    <button
+                      onClick={() => {
+                        const newGoal = {
+                          id: Date.now(),
+                          name: '',
+                          targetAmount: 0,
+                          currentAmount: 0,
+                          deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
+                        };
+                        setTempCardData([...(tempCardData || []), newGoal]);
+                      }}
+                      className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Add Goal
+                    </button>
                   </div>
+                  
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {(tempCardData || []).length === 0 ? (
+                      <div className="text-center py-8 text-gray-400">
+                        <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                        <p>No financial goals yet.</p>
+                        <p className="text-sm">Click "Add Goal" to create your first one!</p>
+                      </div>
+                    ) : (
+                      (tempCardData || []).map((goal, index) => (
+                        <div key={goal.id} className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                          <div className="flex justify-between items-start mb-3">
+                            <h5 className="text-white font-medium">Goal #{index + 1}</h5>
+                            <button
+                              onClick={() => {
+                                const updatedGoals = tempCardData.filter((_, i) => i !== index);
+                                setTempCardData(updatedGoals);
+                              }}
+                              className="text-red-400 hover:text-red-300 p-1 hover:bg-red-900/20 rounded transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs text-gray-400 mb-1">Goal Name</label>
+                              <input
+                                type="text"
+                                placeholder="e.g., New MacBook, Vacation, Car..."
+                                value={goal.name}
+                                onChange={(e) => {
+                                  const updatedGoals = [...tempCardData];
+                                  updatedGoals[index] = {...goal, name: e.target.value};
+                                  setTempCardData(updatedGoals);
+                                }}
+                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-xs text-gray-400 mb-1">Target Amount</label>
+                              <input
+                                type="number"
+                                placeholder="0"
+                                value={goal.targetAmount}
+                                onChange={(e) => {
+                                  const updatedGoals = [...tempCardData];
+                                  updatedGoals[index] = {...goal, targetAmount: Number(e.target.value)};
+                                  setTempCardData(updatedGoals);
+                                }}
+                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-xs text-gray-400 mb-1">Current Progress</label>
+                              <input
+                                type="number"
+                                placeholder="0"
+                                value={goal.currentAmount}
+                                onChange={(e) => {
+                                  const updatedGoals = [...tempCardData];
+                                  updatedGoals[index] = {...goal, currentAmount: Number(e.target.value)};
+                                  setTempCardData(updatedGoals);
+                                }}
+                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-xs text-gray-400 mb-1">Target Date</label>
+                              <input
+                                type="date"
+                                value={goal.deadline}
+                                onChange={(e) => {
+                                  const updatedGoals = [...tempCardData];
+                                  updatedGoals[index] = {...goal, deadline: e.target.value};
+                                  setTempCardData(updatedGoals);
+                                }}
+                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                          
+                          {goal.targetAmount > 0 && (
+                            <div className="mt-3">
+                              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                                <span>Progress</span>
+                                <span>{Math.round((goal.currentAmount / goal.targetAmount) * 100)}%</span>
+                              </div>
+                              <div className="w-full bg-gray-700 rounded-full h-2">
+                                <div 
+                                  className="bg-amber-500 h-2 rounded-full transition-all duration-300" 
+                                  style={{ width: `${Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)}%` }}
+                                ></div>
+                              </div>
+                              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <span>${goal.currentAmount.toLocaleString()}</span>
+                                <span>${goal.targetAmount.toLocaleString()}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  
+                  {(tempCardData || []).length > 0 && (
+                    <div className="mt-4 p-3 bg-amber-900/20 rounded-lg border border-amber-600/30">
+                      <div className="text-sm text-amber-200">
+                        <strong>💡 Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
+                        Breaking big goals into smaller milestones helps maintain motivation!
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
