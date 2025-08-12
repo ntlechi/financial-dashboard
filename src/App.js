@@ -2239,22 +2239,15 @@ export default function App() {
     const expenseTransactions = filteredTransactions.filter(tx => tx.type === 'expense');
     const investmentTransactions = filteredTransactions.filter(tx => tx.type === 'investment');
     
-    // Only recalculate income from transactions if not manually edited
-    if (view.timeframe !== 'income-edit') {
-      newData.income.sources.forEach(s => s.amount = 0);
-      incomeTransactions.forEach(tx => {
-          const source = newData.income.sources.find(s => s.name === tx.description);
-          if (source) {
-              source.amount += tx.amount;
-          }
-      });
-      newData.income.total = incomeTransactions.filter(tx => tx.category !== 'business').reduce((sum, tx) => sum + tx.amount, 0);
-      console.log("💵 Auto-calculated income from transactions");
-    } else {
-      // Preserve manually edited income sources and calculate total from sources
-      newData.income.total = newData.income.sources.reduce((sum, s) => sum + (s.amount || 0), 0);
-      console.log("💵 Preserving manually edited income sources, total:", newData.income.total);
-    }
+    newData.income.sources.forEach(s => s.amount = 0);
+    incomeTransactions.forEach(tx => {
+        const source = newData.income.sources.find(s => s.name === tx.description);
+        if (source) {
+            source.amount += tx.amount;
+        }
+    });
+
+    newData.income.total = incomeTransactions.filter(tx => tx.category !== 'business').reduce((sum, tx) => sum + tx.amount, 0);
     
     if (view.timeframe === 'monthly') {
         newData.expenses.total = newData.expenses.categories.reduce((sum, cat) => sum + cat.amount, 0);
@@ -2287,24 +2280,17 @@ export default function App() {
     newData.investmentPortfolio.tfsaContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'tfsa').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     newData.investmentPortfolio.rrspContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'rrsp').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     
-    // Only auto-calculate total value from holdings if not manually edited
-    if (view.timeframe !== 'investment-edit') {
-      newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((h.shares || 0) * (h.currentPrice || 0)), 0);
-      console.log("📊 Auto-calculated portfolio total:", newData.investmentPortfolio.totalValue);
-    } else {
-      console.log("📊 Preserving manually edited portfolio total:", newData.investmentPortfolio.totalValue);
-    }
+    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((h.shares || 0) * (h.currentPrice || 0)), 0);
 
-    // Only auto-update specific items, preserve user-edited values
-    // Only update if the calculation is being triggered by non-net-worth changes
+    // Safely update net worth breakdown
     const cashItem = newData.netWorth.breakdown.find(b => b.name === 'Cash');
-    if (cashItem && view.timeframe !== 'net-worth-edit') {
+    if (cashItem) {
       cashItem.value = newData.cashOnHand.total;
       console.log("💰 Auto-updated Cash value:", cashItem.value);
     }
     
     const investmentItem = newData.netWorth.breakdown.find(b => b.name === 'Investments');
-    if (investmentItem && view.timeframe !== 'net-worth-edit') {
+    if (investmentItem) {
       investmentItem.value = newData.investmentPortfolio.totalValue;
       console.log("💰 Auto-updated Investment value:", investmentItem.value);
     }
@@ -2543,28 +2529,7 @@ export default function App() {
     }
     const updatedData = { ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }};
     console.log("💰 Updated data with net worth:", updatedData.netWorth);
-    
-    // Use special recalculation that preserves net worth edits
-    const savedData = { ...updatedData };
-    const recalculatedData = recalculateTotals(savedData, { timeframe: 'net-worth-edit' });
-    
-    // Save directly to Firebase
-    if (!db) {
-      console.error("❌ Firebase not initialized");
-      return;
-    }
-    
-    const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
-    const cleanedData = cleanData(recalculatedData);
-    
-    try {
-      await setDoc(userDocRef, cleanedData, { merge: true });
-      console.log("✅ Net worth data saved successfully!");
-      alert("✅ Net worth saved successfully!");
-    } catch (error) {
-      console.error("❌ Error saving net worth:", error);
-      alert(`❌ Failed to save net worth: ${error.message}`);
-    }
+    handleSaveData(updatedData);
   };
   
   const handleSaveExpenses = async (newCategories) => {
@@ -2581,28 +2546,7 @@ export default function App() {
     }
     const updatedData = { ...data, income: { ...data.income, sources: newSources }};
     console.log("💵 Updated data with income:", updatedData.income);
-    
-    // Use special recalculation that preserves income edits
-    const savedData = { ...updatedData };
-    const recalculatedData = recalculateTotals(savedData, { timeframe: 'income-edit' });
-    
-    // Save directly to Firebase
-    if (!db) {
-      console.error("❌ Firebase not initialized");
-      return;
-    }
-    
-    const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
-    const cleanedData = cleanData(recalculatedData);
-    
-    try {
-      await setDoc(userDocRef, cleanedData, { merge: true });
-      console.log("✅ Income data saved successfully!");
-      alert("✅ Income sources saved successfully!");
-    } catch (error) {
-      console.error("❌ Error saving income:", error);
-      alert(`❌ Failed to save income: ${error.message}`);
-    }
+    handleSaveData(updatedData);
   };
   
   const handleSaveCreditScore = async (newScore) => {
@@ -2629,28 +2573,7 @@ export default function App() {
     }
     const updatedData = { ...data, investmentPortfolio: newPortfolio };
     console.log("📊 Updated data with investment:", updatedData.investmentPortfolio);
-    
-    // Use special recalculation that preserves investment edits
-    const savedData = { ...updatedData };
-    const recalculatedData = recalculateTotals(savedData, { timeframe: 'investment-edit' });
-    
-    // Save directly to Firebase
-    if (!db) {
-      console.error("❌ Firebase not initialized");
-      return;
-    }
-    
-    const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
-    const cleanedData = cleanData(recalculatedData);
-    
-    try {
-      await setDoc(userDocRef, cleanedData, { merge: true });
-      console.log("✅ Investment data saved successfully!");
-      alert("✅ Investment portfolio saved successfully!");
-    } catch (error) {
-      console.error("❌ Error saving investment:", error);
-      alert(`❌ Failed to save investment: ${error.message}`);
-    }
+    handleSaveData(updatedData);
   };
 
   const handleSaveHoldings = async (newHoldings) => {
