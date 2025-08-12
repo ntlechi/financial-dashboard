@@ -2023,21 +2023,21 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
   };
 
   return (
-    <div className="space-y-12 w-full px-6 lg:px-16 xl:px-24">
+    <div className="space-y-8 w-full max-w-none px-4 lg:px-12 xl:px-20">
       {/* Budget Calculator Section */}
-      <div className="bg-gray-800 rounded-xl p-8 lg:p-20 xl:p-24 shadow-xl w-full">
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-12 xl:p-16 shadow-xl w-full">
         {/* Header and Controls Row */}
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-16 gap-12">
-          <div className="lg:flex-1 lg:pr-16">
-            <h2 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">💰 Budget Calculator</h2>
-            <p className="text-gray-400 text-lg lg:text-xl xl:text-2xl">Plan your finances with proven budgeting methods</p>
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-8">
+          <div className="lg:flex-1">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">💰 Budget Calculator</h2>
+            <p className="text-gray-400 text-lg">Plan your finances with proven budgeting methods</p>
           </div>
           
           {/* Budget Type Selector - Horizontal */}
-          <div className="flex gap-8 lg:flex-shrink-0">
+          <div className="flex gap-6 lg:flex-shrink-0">
             <button
               onClick={() => setBudgetType('50-30-20')}
-              className={`px-12 py-6 rounded-xl text-lg xl:text-xl font-semibold transition-colors min-w-[180px] lg:min-w-[220px] ${
+              className={`px-8 py-4 rounded-xl text-lg font-semibold transition-colors min-w-[160px] ${
                 budgetType === '50-30-20' 
                   ? 'bg-blue-600 text-white shadow-lg' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -2047,7 +2047,7 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
             </button>
             <button
               onClick={() => setBudgetType('6-jars')}
-              className={`px-12 py-6 rounded-xl text-lg xl:text-xl font-semibold transition-colors min-w-[180px] lg:min-w-[220px] ${
+              className={`px-8 py-4 rounded-xl text-lg font-semibold transition-colors min-w-[160px] ${
                 budgetType === '6-jars' 
                   ? 'bg-blue-600 text-white shadow-lg' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -2059,53 +2059,53 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
         </div>
         
         {/* Income Input and Summary Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 xl:gap-20 mb-20">
-          <div className="bg-gray-700/30 rounded-xl p-12 lg:p-16 border border-gray-600/30">
-            <label className="block text-white text-xl lg:text-2xl font-bold mb-8">Monthly Income Input</label>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16 mb-12">
+          <div className="bg-gray-700/30 rounded-xl p-6 lg:p-8 xl:p-10 border border-gray-600/30">
+            <label className="block text-white text-lg font-bold mb-4">Monthly Income Input</label>
             <input
               type="number"
               value={monthlyIncome}
               onChange={(e) => setMonthlyIncome(Number(e.target.value))}
-              className="w-full bg-gray-700 text-white text-2xl lg:text-3xl p-6 lg:p-8 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-gray-700 text-white text-xl p-4 lg:p-5 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               placeholder="Enter your monthly income"
             />
           </div>
           
-          <div className="bg-green-900/20 rounded-xl p-12 lg:p-16 border-2 border-green-800/40">
-            <label className="block text-green-400 text-xl lg:text-2xl font-bold mb-8">Effective Monthly Income</label>
-            <div className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">${effectiveIncome.toLocaleString()}</div>
-            <p className="text-gray-400 text-lg lg:text-xl">
+          <div className="bg-green-900/20 rounded-xl p-6 lg:p-8 xl:p-10 border-2 border-green-800/40">
+            <label className="block text-green-400 text-lg font-bold mb-4">Effective Monthly Income</label>
+            <div className="text-3xl lg:text-4xl font-bold text-white mb-2">${effectiveIncome.toLocaleString()}</div>
+            <p className="text-gray-400 text-base">
               {incomeSources.length > 0 ? 'From income sources' : 'From manual input'}
             </p>
           </div>
           
-          <div className="bg-blue-900/20 rounded-xl p-12 lg:p-16 border-2 border-blue-800/40">
-            <label className="block text-blue-400 text-xl lg:text-2xl font-bold mb-8">Net Income</label>
-            <div className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}</div>
-            <p className="text-gray-400 text-lg lg:text-xl">Income - Expenses</p>
+          <div className="bg-blue-900/20 rounded-xl p-6 lg:p-8 xl:p-10 border-2 border-blue-800/40">
+            <label className="block text-blue-400 text-lg font-bold mb-4">Net Income</label>
+            <div className="text-3xl lg:text-4xl font-bold text-white mb-2">${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}</div>
+            <p className="text-gray-400 text-base">Income - Expenses</p>
           </div>
         </div>
         
         {/* Budget Breakdown - 50/30/20 */}
         {budgetType === '50-30-20' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 xl:gap-20 mb-20">
-            <div className="bg-green-900/30 rounded-xl p-12 lg:p-16 xl:p-20 border-2 border-green-800/40">
-              <div className="mb-10">
-                <h3 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-green-400 mb-4">💡 Needs (50%)</h3>
-                <p className="text-gray-300 text-lg lg:text-xl xl:text-2xl">Essential expenses</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16 mb-12">
+            <div className="bg-green-900/30 rounded-xl p-6 lg:p-8 xl:p-10 border-2 border-green-800/40">
+              <div className="mb-6">
+                <h3 className="text-2xl lg:text-3xl font-bold text-green-400 mb-3">💡 Needs (50%)</h3>
+                <p className="text-gray-300 text-base lg:text-lg">Essential expenses</p>
               </div>
-              <div className="mb-10">
-                <div className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
-                <div className="text-green-400 font-semibold text-xl lg:text-2xl">Target Amount</div>
+              <div className="mb-6">
+                <div className="text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
+                <div className="text-green-400 font-semibold text-lg">Target Amount</div>
               </div>
-              <div className="bg-green-800/20 rounded-xl p-8 lg:p-10 space-y-6">
+              <div className="bg-green-800/20 rounded-xl p-4 lg:p-6 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-green-300 font-medium text-lg lg:text-xl xl:text-2xl">Actual:</span>
-                  <span className="text-green-300 font-bold text-xl lg:text-2xl xl:text-3xl">${actualExpenses.needs.toLocaleString()}</span>
+                  <span className="text-green-300 font-medium text-base lg:text-lg">Actual:</span>
+                  <span className="text-green-300 font-bold text-lg lg:text-xl">${actualExpenses.needs.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-green-300 font-medium text-lg lg:text-xl xl:text-2xl">Difference:</span>
-                  <span className="text-green-300 font-bold text-xl lg:text-2xl xl:text-3xl">
+                  <span className="text-green-300 font-medium text-base lg:text-lg">Difference:</span>
+                  <span className="text-green-300 font-bold text-lg lg:text-xl">
                     {actualExpenses.needs <= fiftyThirtyTwenty.needs ? '✅' : '⚠️'} 
                     ${Math.abs(fiftyThirtyTwenty.needs - actualExpenses.needs).toLocaleString()}
                   </span>
@@ -2219,17 +2219,17 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
       </div>
       
       {/* Income Sources Table */}
-      <div className="bg-gray-800 rounded-xl p-12 lg:p-20 xl:p-24 shadow-xl w-full">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-16 gap-12">
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-12 xl:p-16 shadow-xl w-full">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-8">
           <div className="text-center lg:text-left lg:flex-1">
-            <h3 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4">💵 Income Sources</h3>
-            <p className="text-gray-400 text-xl lg:text-2xl xl:text-3xl">Track all your income streams</p>
+            <h3 className="text-3xl lg:text-4xl font-bold text-white mb-3">💵 Income Sources</h3>
+            <p className="text-gray-400 text-lg lg:text-xl">Track all your income streams</p>
           </div>
           <button
             onClick={addIncomeSource}
-            className="bg-green-600 hover:bg-green-700 text-white px-12 py-6 rounded-xl text-xl lg:text-2xl font-semibold flex items-center justify-center gap-4 transition-colors shadow-lg min-w-[200px]"
+            className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center justify-center gap-3 transition-colors shadow-lg min-w-[160px]"
           >
-            <Plus className="w-6 h-6 lg:w-8 lg:h-8" />
+            <Plus className="w-5 h-5" />
             Add Income
           </button>
         </div>
@@ -2290,51 +2290,51 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
         
         {/* Desktop Table View */}
         <div className="hidden lg:block overflow-x-auto">
-          <table className="w-full table-fixed">
+          <table className="w-full">
             <thead>
               <tr className="border-b-2 border-gray-600">
-                <th className="text-left text-gray-300 font-bold py-8 px-8 lg:px-12 text-xl lg:text-2xl w-2/5">Source</th>
-                <th className="text-left text-gray-300 font-bold py-8 px-8 lg:px-12 text-xl lg:text-2xl w-1/5">Amount</th>
-                <th className="text-left text-gray-300 font-bold py-8 px-8 lg:px-12 text-xl lg:text-2xl w-1/5">Type</th>
-                <th className="text-left text-gray-300 font-bold py-8 px-8 lg:px-12 text-xl lg:text-2xl w-1/5">Actions</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-2/5">Source</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-1/4">Amount</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-1/5">Type</th>
+                <th className="text-left text-gray-300 font-bold py-4 px-6 lg:px-8 text-lg w-[15%]">Actions</th>
               </tr>
             </thead>
             <tbody>
               {incomeSources.map((source) => (
                 <tr key={source.id} className="border-b border-gray-700/50 hover:bg-gray-700/20 transition-colors">
-                  <td className="py-8 px-8 lg:px-12">
+                  <td className="py-4 px-6 lg:px-8">
                     <input
                       type="text"
                       value={source.name}
                       onChange={(e) => updateIncomeSource(source.id, 'name', e.target.value)}
-                      className="w-full bg-gray-700 text-white p-6 lg:p-8 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-xl lg:text-2xl transition-colors"
+                      className="w-full bg-gray-700 text-white p-3 lg:p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
                     />
                   </td>
-                  <td className="py-8 px-8 lg:px-12">
+                  <td className="py-4 px-6 lg:px-8">
                     <input
                       type="number"
                       value={source.amount}
                       onChange={(e) => updateIncomeSource(source.id, 'amount', Number(e.target.value))}
-                      className="w-full bg-gray-700 text-white p-6 lg:p-8 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-xl lg:text-2xl transition-colors"
+                      className="w-full bg-gray-700 text-white p-3 lg:p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
                     />
                   </td>
-                  <td className="py-8 px-8 lg:px-12">
+                  <td className="py-4 px-6 lg:px-8">
                     <select
                       value={source.type}
                       onChange={(e) => updateIncomeSource(source.id, 'type', e.target.value)}
-                      className="w-full bg-gray-700 text-white p-6 lg:p-8 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-xl lg:text-2xl transition-colors"
+                      className="w-full bg-gray-700 text-white p-3 lg:p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-lg transition-colors"
                     >
                       <option value="active">Active</option>
                       <option value="passive">Passive</option>
                       <option value="dividend">Dividend</option>
                     </select>
                   </td>
-                  <td className="py-8 px-8 lg:px-12">
+                  <td className="py-4 px-6 lg:px-8">
                     <button
                       onClick={() => deleteIncomeSource(source.id)}
-                      className="text-red-400 hover:text-red-300 p-6 lg:p-8 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                      className="text-red-400 hover:text-red-300 p-3 lg:p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
                     >
-                      <Trash2 className="w-6 h-6 lg:w-8 lg:h-8" />
+                      <Trash2 className="w-5 h-5" />
                     </button>
                   </td>
                 </tr>
@@ -2342,10 +2342,10 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
             </tbody>
             <tfoot>
               <tr className="border-t-2 border-gray-600 bg-green-900/20">
-                <td className="py-8 px-8 lg:px-12 font-bold text-green-400 text-2xl lg:text-3xl">Total Income:</td>
-                <td className="py-8 px-8 lg:px-12 font-bold text-green-400 text-2xl lg:text-3xl">${totalIncomeFromSources.toLocaleString()}</td>
-                <td className="py-8 px-8 lg:px-12"></td>
-                <td className="py-8 px-8 lg:px-12"></td>
+                <td className="py-4 px-6 lg:px-8 font-bold text-green-400 text-xl">Total Income:</td>
+                <td className="py-4 px-6 lg:px-8 font-bold text-green-400 text-xl">${totalIncomeFromSources.toLocaleString()}</td>
+                <td className="py-4 px-6 lg:px-8"></td>
+                <td className="py-4 px-6 lg:px-8"></td>
               </tr>
             </tfoot>
           </table>
