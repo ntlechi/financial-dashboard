@@ -1974,23 +1974,23 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
   };
 
   return (
-    <div className="space-y-12 max-w-full px-4 lg:px-8">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 lg:px-8">
       {/* Budget Calculator Section */}
-      <div className="bg-gray-800 rounded-xl p-6 lg:p-8 shadow-xl">
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-12 shadow-xl">
         {/* Header and Controls Row */}
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-6">
-          <div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-2">💰 Budget Calculator</h2>
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-12 gap-8">
+          <div className="lg:flex-1">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">💰 Budget Calculator</h2>
             <p className="text-gray-400 text-lg">Plan your finances with proven budgeting methods</p>
           </div>
           
           {/* Budget Type Selector - Horizontal */}
-          <div className="flex gap-4">
+          <div className="flex gap-6 lg:flex-shrink-0">
             <button
               onClick={() => setBudgetType('50-30-20')}
-              className={`px-6 py-3 rounded-lg text-lg font-semibold transition-colors ${
+              className={`px-8 py-4 rounded-lg text-lg font-semibold transition-colors min-w-[140px] ${
                 budgetType === '50-30-20' 
-                  ? 'bg-blue-600 text-white' 
+                  ? 'bg-blue-600 text-white shadow-lg' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
@@ -1998,9 +1998,9 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
             </button>
             <button
               onClick={() => setBudgetType('6-jars')}
-              className={`px-6 py-3 rounded-lg text-lg font-semibold transition-colors ${
+              className={`px-8 py-4 rounded-lg text-lg font-semibold transition-colors min-w-[140px] ${
                 budgetType === '6-jars' 
-                  ? 'bg-blue-600 text-white' 
+                  ? 'bg-blue-600 text-white shadow-lg' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
@@ -2010,55 +2010,53 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
         </div>
         
         {/* Income Input and Summary Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gray-700/30 rounded-lg p-6">
-            <label className="block text-white text-sm font-bold mb-3">Monthly Income Input</label>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <div className="bg-gray-700/30 rounded-xl p-8 border border-gray-600/30">
+            <label className="block text-white text-base font-bold mb-4">Monthly Income Input</label>
             <input
               type="number"
               value={monthlyIncome}
               onChange={(e) => setMonthlyIncome(Number(e.target.value))}
-              className="w-full bg-gray-700 text-white text-lg p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-gray-700 text-white text-xl p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               placeholder="Enter your monthly income"
             />
           </div>
           
-          <div className="bg-green-900/20 rounded-lg p-6 border border-green-800/30">
-            <label className="block text-green-400 text-sm font-bold mb-3">Effective Monthly Income</label>
-            <div className="text-3xl font-bold text-white">${effectiveIncome.toLocaleString()}</div>
-            <p className="text-gray-400 text-sm mt-2">
+          <div className="bg-green-900/20 rounded-xl p-8 border-2 border-green-800/40">
+            <label className="block text-green-400 text-base font-bold mb-4">Effective Monthly Income</label>
+            <div className="text-4xl font-bold text-white mb-2">${effectiveIncome.toLocaleString()}</div>
+            <p className="text-gray-400 text-sm">
               {incomeSources.length > 0 ? 'From income sources' : 'From manual input'}
             </p>
           </div>
           
-          <div className="bg-blue-900/20 rounded-lg p-6 border border-blue-800/30">
-            <label className="block text-blue-400 text-sm font-bold mb-3">Net Income</label>
-            <div className="text-3xl font-bold text-white">${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}</div>
-            <p className="text-gray-400 text-sm mt-2">Income - Expenses</p>
+          <div className="bg-blue-900/20 rounded-xl p-8 border-2 border-blue-800/40">
+            <label className="block text-blue-400 text-base font-bold mb-4">Net Income</label>
+            <div className="text-4xl font-bold text-white mb-2">${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}</div>
+            <p className="text-gray-400 text-sm">Income - Expenses</p>
           </div>
         </div>
         
         {/* Budget Breakdown - 50/30/20 */}
         {budgetType === '50-30-20' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="bg-green-900/30 rounded-lg p-6 border border-green-800/30">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-green-400">💡 Needs (50%)</h3>
-                  <p className="text-gray-300 text-sm">Essential expenses</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-white">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
-                  <div className="text-sm text-gray-400">Target</div>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div className="bg-green-900/30 rounded-xl p-8 border-2 border-green-800/40">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-green-400 mb-2">💡 Needs (50%)</h3>
+                <p className="text-gray-300">Essential expenses</p>
               </div>
-              <div className="bg-green-800/20 rounded-lg p-4">
+              <div className="mb-6">
+                <div className="text-4xl font-bold text-white mb-1">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
+                <div className="text-green-400 font-semibold">Target Amount</div>
+              </div>
+              <div className="bg-green-800/20 rounded-lg p-6 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-green-300">Actual:</span>
-                  <span className="text-green-300 font-semibold">${actualExpenses.needs.toLocaleString()}</span>
+                  <span className="text-green-300 font-medium">Actual:</span>
+                  <span className="text-green-300 font-bold text-lg">${actualExpenses.needs.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-green-300">Difference:</span>
-                  <span className="text-green-300 font-semibold">
+                <div className="flex justify-between items-center">
+                  <span className="text-green-300 font-medium">Difference:</span>
+                  <span className="text-green-300 font-bold text-lg">
                     {actualExpenses.needs <= fiftyThirtyTwenty.needs ? '✅' : '⚠️'} 
                     ${Math.abs(fiftyThirtyTwenty.needs - actualExpenses.needs).toLocaleString()}
                   </span>
@@ -2066,25 +2064,23 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
               </div>
             </div>
             
-            <div className="bg-yellow-900/30 rounded-lg p-6 border border-yellow-800/30">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-yellow-400">🎯 Wants (30%)</h3>
-                  <p className="text-gray-300 text-sm">Discretionary spending</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-white">${fiftyThirtyTwenty.wants.toLocaleString()}</div>
-                  <div className="text-sm text-gray-400">Target</div>
-                </div>
+            <div className="bg-yellow-900/30 rounded-xl p-8 border-2 border-yellow-800/40">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-yellow-400 mb-2">🎯 Wants (30%)</h3>
+                <p className="text-gray-300">Discretionary spending</p>
               </div>
-              <div className="bg-yellow-800/20 rounded-lg p-4">
+              <div className="mb-6">
+                <div className="text-4xl font-bold text-white mb-1">${fiftyThirtyTwenty.wants.toLocaleString()}</div>
+                <div className="text-yellow-400 font-semibold">Target Amount</div>
+              </div>
+              <div className="bg-yellow-800/20 rounded-lg p-6 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-yellow-300">Actual:</span>
-                  <span className="text-yellow-300 font-semibold">${actualExpenses.wants.toLocaleString()}</span>
+                  <span className="text-yellow-300 font-medium">Actual:</span>
+                  <span className="text-yellow-300 font-bold text-lg">${actualExpenses.wants.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-yellow-300">Difference:</span>
-                  <span className="text-yellow-300 font-semibold">
+                <div className="flex justify-between items-center">
+                  <span className="text-yellow-300 font-medium">Difference:</span>
+                  <span className="text-yellow-300 font-bold text-lg">
                     {actualExpenses.wants <= fiftyThirtyTwenty.wants ? '✅' : '⚠️'} 
                     ${Math.abs(fiftyThirtyTwenty.wants - actualExpenses.wants).toLocaleString()}
                   </span>
@@ -2092,25 +2088,23 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
               </div>
             </div>
             
-            <div className="bg-blue-900/30 rounded-lg p-6 border border-blue-800/30">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-blue-400">💰 Savings (20%)</h3>
-                  <p className="text-gray-300 text-sm">Future & investments</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-white">${fiftyThirtyTwenty.savings.toLocaleString()}</div>
-                  <div className="text-sm text-gray-400">Target</div>
-                </div>
+            <div className="bg-blue-900/30 rounded-xl p-8 border-2 border-blue-800/40">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-blue-400 mb-2">💰 Savings (20%)</h3>
+                <p className="text-gray-300">Future & investments</p>
               </div>
-              <div className="bg-blue-800/20 rounded-lg p-4">
+              <div className="mb-6">
+                <div className="text-4xl font-bold text-white mb-1">${fiftyThirtyTwenty.savings.toLocaleString()}</div>
+                <div className="text-blue-400 font-semibold">Target Amount</div>
+              </div>
+              <div className="bg-blue-800/20 rounded-lg p-6 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-blue-300">Actual:</span>
-                  <span className="text-blue-300 font-semibold">${actualExpenses.savings.toLocaleString()}</span>
+                  <span className="text-blue-300 font-medium">Actual:</span>
+                  <span className="text-blue-300 font-bold text-lg">${actualExpenses.savings.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-blue-300">Difference:</span>
-                  <span className="text-blue-300 font-semibold">
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-300 font-medium">Difference:</span>
+                  <span className="text-blue-300 font-bold text-lg">
                     {actualExpenses.savings >= fiftyThirtyTwenty.savings ? '✅' : '⚠️'} 
                     ${Math.abs(actualExpenses.savings - fiftyThirtyTwenty.savings).toLocaleString()}
                   </span>
@@ -2121,63 +2115,72 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
         )}
         
         {budgetType === '6-jars' && (
-          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-            <div className="bg-green-900/30 rounded-lg p-4 border border-green-800/30">
-              <h4 className="text-sm font-bold text-green-400 mb-2">🏠 Necessities</h4>
-              <div className="text-xl font-bold text-white">${sixJars.necessities.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">55%</div>
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 mb-12">
+            <div className="bg-green-900/30 rounded-xl p-6 border-2 border-green-800/40 text-center">
+              <h4 className="text-base font-bold text-green-400 mb-3">🏠 Necessities</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.necessities.toLocaleString()}</div>
+              <div className="text-sm text-green-400 font-semibold">55%</div>
             </div>
-            <div className="bg-purple-900/30 rounded-lg p-4 border border-purple-800/30">
-              <h4 className="text-sm font-bold text-purple-400 mb-2">🚀 Freedom</h4>
-              <div className="text-xl font-bold text-white">${sixJars.financialFreedom.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">10%</div>
+            <div className="bg-purple-900/30 rounded-xl p-6 border-2 border-purple-800/40 text-center">
+              <h4 className="text-base font-bold text-purple-400 mb-3">🚀 Freedom</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.financialFreedom.toLocaleString()}</div>
+              <div className="text-sm text-purple-400 font-semibold">10%</div>
             </div>
-            <div className="bg-blue-900/30 rounded-lg p-4 border border-blue-800/30">
-              <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 Savings</h4>
-              <div className="text-xl font-bold text-white">${sixJars.longTermSavings.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">10%</div>
+            <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40 text-center">
+              <h4 className="text-base font-bold text-blue-400 mb-3">🎯 Savings</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.longTermSavings.toLocaleString()}</div>
+              <div className="text-sm text-blue-400 font-semibold">10%</div>
             </div>
-            <div className="bg-amber-900/30 rounded-lg p-4 border border-amber-800/30">
-              <h4 className="text-sm font-bold text-amber-400 mb-2">📚 Education</h4>
-              <div className="text-xl font-bold text-white">${sixJars.education.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">10%</div>
+            <div className="bg-amber-900/30 rounded-xl p-6 border-2 border-amber-800/40 text-center">
+              <h4 className="text-base font-bold text-amber-400 mb-3">📚 Education</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.education.toLocaleString()}</div>
+              <div className="text-sm text-amber-400 font-semibold">10%</div>
             </div>
-            <div className="bg-pink-900/30 rounded-lg p-4 border border-pink-800/30">
-              <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 Play</h4>
-              <div className="text-xl font-bold text-white">${sixJars.play.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">10%</div>
+            <div className="bg-pink-900/30 rounded-xl p-6 border-2 border-pink-800/40 text-center">
+              <h4 className="text-base font-bold text-pink-400 mb-3">🎉 Play</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.play.toLocaleString()}</div>
+              <div className="text-sm text-pink-400 font-semibold">10%</div>
             </div>
-            <div className="bg-teal-900/30 rounded-lg p-4 border border-teal-800/30">
-              <h4 className="text-sm font-bold text-teal-400 mb-2">❤️ Give</h4>
-              <div className="text-xl font-bold text-white">${sixJars.give.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">5%</div>
+            <div className="bg-teal-900/30 rounded-xl p-6 border-2 border-teal-800/40 text-center">
+              <h4 className="text-base font-bold text-teal-400 mb-3">❤️ Give</h4>
+              <div className="text-2xl font-bold text-white mb-2">${sixJars.give.toLocaleString()}</div>
+              <div className="text-sm text-teal-400 font-semibold">5%</div>
             </div>
           </div>
         )}
         
         {/* Tips Section */}
-        <div className="bg-gray-700/30 rounded-lg p-6 border border-gray-600/50">
-          <h4 className="text-lg font-bold text-white mb-4">💡 Quick Tips</h4>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm text-gray-300">
-            <div>• Start with 50/30/20 if new to budgeting</div>
-            <div>• Use 6 jars for detailed goal allocation</div>
-            <div>• Track actual spending in tables below</div>
+        <div className="bg-gray-700/30 rounded-xl p-8 border-2 border-gray-600/50">
+          <h4 className="text-xl font-bold text-white mb-6">💡 Quick Tips</h4>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-base text-gray-300">
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 text-xl">•</span>
+              <span>Start with 50/30/20 if new to budgeting</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 text-xl">•</span>
+              <span>Use 6 jars for detailed goal allocation</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 text-xl">•</span>
+              <span>Track actual spending in tables below</span>
+            </div>
           </div>
         </div>
       </div>
       
       {/* Income Sources Table */}
-      <div className="bg-gray-800 rounded-xl p-6 lg:p-8 shadow-xl">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-6 gap-4">
+      <div className="bg-gray-800 rounded-xl p-8 lg:p-12 shadow-xl">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-6">
           <div className="text-center lg:text-left">
-            <h3 className="text-2xl font-bold text-white mb-1">💵 Income Sources</h3>
-            <p className="text-gray-400">Track all your income streams</p>
+            <h3 className="text-3xl font-bold text-white mb-2">💵 Income Sources</h3>
+            <p className="text-gray-400 text-lg">Track all your income streams</p>
           </div>
           <button
             onClick={addIncomeSource}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+            className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center gap-3 transition-colors shadow-lg"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             Add Income
           </button>
         </div>
@@ -2301,17 +2304,17 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
       </div>
       
       {/* Expense Sources Table */}
-      <div className="bg-gray-800 rounded-xl p-6 lg:p-8 shadow-xl">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-6 gap-4">
+      <div className="bg-gray-800 rounded-xl p-8 lg:p-12 shadow-xl">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-10 gap-6">
           <div className="text-center lg:text-left">
-            <h3 className="text-2xl font-bold text-white mb-1">💳 Expense Sources</h3>
-            <p className="text-gray-400">Track all your monthly expenses</p>
+            <h3 className="text-3xl font-bold text-white mb-2">💳 Expense Sources</h3>
+            <p className="text-gray-400 text-lg">Track all your monthly expenses</p>
           </div>
           <button
             onClick={addExpenseSource}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+            className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center gap-3 transition-colors shadow-lg"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             Add Expense
           </button>
         </div>
