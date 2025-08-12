@@ -664,10 +664,297 @@ const CashFlowCard = ({ data }) => {
   );
 };
 
+// Financial Freedom Calculator Component
+const FinancialFreedomCalculator = () => {
+  const [currentAge, setCurrentAge] = useState(30);
+  const [targetAmount, setTargetAmount] = useState(2000000);
+  const [currentSavings, setCurrentSavings] = useState(100000);
+  const [monthlyContribution, setMonthlyContribution] = useState(3000);
+  const [annualReturn, setAnnualReturn] = useState(7);
+  const [monthlyExpenses, setMonthlyExpenses] = useState(5000);
+  const [passiveIncome, setPassiveIncome] = useState(1000);
+  
+  const chartRef = useRef(null);
+
+  // Calculate financial independence
+  const monthlyReturn = annualReturn / 100 / 12;
+  const totalMonths = targetAmount > currentSavings && monthlyContribution > 0
+    ? Math.log((targetAmount * monthlyReturn + monthlyContribution) / (currentSavings * monthlyReturn + monthlyContribution)) / Math.log(1 + monthlyReturn)
+    : 0;
+  
+  const yearsToFI = Math.ceil(totalMonths / 12);
+  const targetAge = currentAge + yearsToFI;
+  const monthlyPassiveNeeded = monthlyExpenses - passiveIncome;
+  const requiredAmountFor4Percent = monthlyPassiveNeeded * 12 / 0.04;
+
+  // Generate projection data
+  const projectionData = [];
+  let amount = currentSavings;
+  for (let month = 0; month <= totalMonths && month <= 600; month++) { // Max 50 years
+    if (month > 0) {
+      amount = amount * (1 + monthlyReturn) + monthlyContribution;
+    }
+    if (month % 12 === 0) {
+      projectionData.push({
+        year: currentAge + Math.floor(month / 12),
+        amount: amount,
+        passiveIncome: amount * 0.04 / 12 // 4% rule monthly
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (chartRef.current && projectionData.length > 0) {
+      const svg = d3.select(chartRef.current);
+      svg.selectAll("*").remove();
+
+      const margin = { top: 20, right: 30, bottom: 40, left: 80 };
+      const width = 600 - margin.left - margin.right;
+      const height = 350 - margin.top - margin.bottom;
+
+      const x = d3.scaleLinear()
+        .domain(d3.extent(projectionData, d => d.year))
+        .range([0, width]);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(projectionData, d => Math.max(d.amount, monthlyExpenses * 12 * 25))])
+        .nice()
+        .range([height, 0]);
+
+      const line = d3.line()
+        .x(d => x(d.year))
+        .y(d => y(d.amount))
+        .curve(d3.curveMonotoneX);
+
+      const passiveLine = d3.line()
+        .x(d => x(d.year))
+        .y(d => y(d.passiveIncome * 12))
+        .curve(d3.curveMonotoneX);
+
+      const g = svg
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      // Add axes
+      g.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+        .selectAll("text")
+        .style("fill", "#9CA3AF")
+        .style("font-size", "12px");
+
+      g.append("g")
+        .call(d3.axisLeft(y).tickFormat(d => `$${(d/1000000).toFixed(1)}M`))
+        .selectAll("text")
+        .style("fill", "#9CA3AF")
+        .style("font-size", "12px");
+
+      // Add grid lines
+      g.selectAll(".grid-line-y")
+        .data(y.ticks())
+        .enter()
+        .append("line")
+        .attr("class", "grid-line-y")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", d => y(d))
+        .attr("y2", d => y(d))
+        .attr("stroke", "#374151")
+        .attr("stroke-opacity", 0.3);
+
+      // Add target line
+      g.append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", y(targetAmount))
+        .attr("y2", y(targetAmount))
+        .attr("stroke", "#10B981")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "5,5");
+
+      // Add expense line
+      g.append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", y(monthlyExpenses * 12))
+        .attr("y2", y(monthlyExpenses * 12))
+        .attr("stroke", "#EF4444")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "3,3");
+
+      // Add wealth accumulation line
+      g.append("path")
+        .datum(projectionData)
+        .attr("fill", "none")
+        .attr("stroke", "#3B82F6")
+        .attr("stroke-width", 3)
+        .attr("d", line);
+
+      // Add passive income line
+      g.append("path")
+        .datum(projectionData)
+        .attr("fill", "none")
+        .attr("stroke", "#8B5CF6")
+        .attr("stroke-width", 2)
+        .attr("d", passiveLine);
+
+      // Add dots for key points
+      g.selectAll(".wealth-dot")
+        .data(projectionData.filter((d, i) => i % 2 === 0))
+        .enter().append("circle")
+        .attr("class", "wealth-dot")
+        .attr("cx", d => x(d.year))
+        .attr("cy", d => y(d.amount))
+        .attr("r", 3)
+        .attr("fill", "#3B82F6");
+
+      // Add labels
+      g.append("text")
+        .attr("x", width - 10)
+        .attr("y", y(targetAmount) - 10)
+        .attr("text-anchor", "end")
+        .style("fill", "#10B981")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .text("Financial Freedom Target");
+    }
+  }, [projectionData, targetAmount, monthlyExpenses]);
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Target className="w-6 h-6 mr-3 text-emerald-400" />
+          Financial Freedom Calculator
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Current Age</label>
+            <input
+              type="number"
+              value={currentAge}
+              onChange={(e) => setCurrentAge(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
+            <input
+              type="number"
+              value={targetAmount}
+              onChange={(e) => setTargetAmount(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Current Savings</label>
+            <input
+              type="number"
+              value={currentSavings}
+              onChange={(e) => setCurrentSavings(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Monthly Contribution</label>
+            <input
+              type="number"
+              value={monthlyContribution}
+              onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Annual Return %</label>
+            <input
+              type="number"
+              value={annualReturn}
+              onChange={(e) => setAnnualReturn(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Monthly Expenses</label>
+            <input
+              type="number"
+              value={monthlyExpenses}
+              onChange={(e) => setMonthlyExpenses(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Current Passive Income</label>
+            <input
+              type="number"
+              value={passiveIncome}
+              onChange={(e) => setPassiveIncome(Number(e.target.value))}
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Financial Independence</label>
+            <div className="bg-emerald-900/30 rounded px-3 py-2 border border-emerald-600">
+              <div className="text-emerald-400 font-bold">{yearsToFI} years</div>
+              <div className="text-xs text-emerald-300">Age {targetAge}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-600/30">
+            <h4 className="text-emerald-400 font-semibold mb-2">Financial Independence</h4>
+            <div className="text-2xl font-bold text-white">${targetAmount.toLocaleString()}</div>
+            <div className="text-sm text-gray-300">Target amount needed</div>
+          </div>
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
+            <h4 className="text-blue-400 font-semibold mb-2">Monthly Passive Needed</h4>
+            <div className="text-2xl font-bold text-white">${monthlyPassiveNeeded.toLocaleString()}</div>
+            <div className="text-sm text-gray-300">To cover expenses</div>
+          </div>
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
+            <h4 className="text-purple-400 font-semibold mb-2">4% Rule Amount</h4>
+            <div className="text-2xl font-bold text-white">${requiredAmountFor4Percent.toLocaleString()}</div>
+            <div className="text-sm text-gray-300">For current lifestyle</div>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        <h4 className="text-lg font-bold text-white mb-4">Financial Freedom Projection</h4>
+        <div className="flex justify-center">
+          <svg ref={chartRef}></svg>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-0.5 bg-blue-500"></div>
+            <span className="text-gray-300">Wealth Accumulation</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-0.5 bg-purple-500"></div>
+            <span className="text-gray-300">Passive Income (4% rule)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-0.5 bg-green-500 border-dashed border border-green-500"></div>
+            <span className="text-gray-300">FI Target</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-0.5 bg-red-500 border-dashed border border-red-500"></div>
+            <span className="text-gray-300">Annual Expenses</span>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 // Budget Calculator Component with the critical layout fix
 const BudgetCalculatorTab = () => {
   const [budgetType, setBudgetType] = useState('50-30-20');
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
+  const [showFFCalculator, setShowFFCalculator] = useState(false);
   
   const fiftyThirtyTwenty = {
     needs: Math.round(monthlyIncome * 0.5),
@@ -696,9 +983,21 @@ const BudgetCalculatorTab = () => {
             </h2>
             <p className="text-gray-400">Plan your finances with proven budgeting methods.</p>
           </div>
-          <div className="flex items-center bg-gray-900/50 rounded-full p-1 space-x-1">
-            <button onClick={() => setBudgetType('50-30-20')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '50-30-20' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>50/30/20 Rule</button>
-            <button onClick={() => setBudgetType('6-jars')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '6-jars' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>6 Jars System</button>
+          <div className="flex flex-wrap gap-2">
+            <div className="flex items-center bg-gray-900/50 rounded-full p-1 space-x-1">
+              <button onClick={() => setBudgetType('50-30-20')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '50-30-20' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>50/30/20 Rule</button>
+              <button onClick={() => setBudgetType('6-jars')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '6-jars' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>6 Jars System</button>
+            </div>
+            
+            <button
+              onClick={() => setShowFFCalculator(!showFFCalculator)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
+                showFFCalculator ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              <Target className="w-4 h-4 mr-2" />
+              {showFFCalculator ? 'Hide FF Calculator' : 'Financial Freedom'}
+            </button>
           </div>
         </div>
       </Card>
@@ -782,6 +1081,9 @@ const BudgetCalculatorTab = () => {
           </div>
         </div>
       )}
+      
+      {/* Financial Freedom Calculator */}
+      {showFFCalculator && <FinancialFreedomCalculator />}
     </div>
   );
 };
@@ -1181,6 +1483,18 @@ const SideHustleTab = ({ data, setData, userId }) => {
 const InvestmentTab = ({ data, setData, userId }) => {
   const pieChartRef = useRef(null);
   const lineChartRef = useRef(null);
+  const [showAddHolding, setShowAddHolding] = useState(false);
+  const [editingHolding, setEditingHolding] = useState(null);
+  
+  const [newHolding, setNewHolding] = useState({
+    symbol: '',
+    name: '',
+    shares: '',
+    avgCost: '',
+    currentPrice: '',
+    dividendYield: '',
+    dripEnabled: true
+  });
 
   useEffect(() => {
     // Pie Chart
@@ -1324,6 +1638,129 @@ const InvestmentTab = ({ data, setData, userId }) => {
   
   const gainLossPercent = totalGainLossPercent > 0 ? (totalGainLoss / totalGainLossPercent) * 100 : 0;
 
+  const handleAddHolding = async () => {
+    if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) return;
+    
+    const shares = parseFloat(newHolding.shares);
+    const avgCost = parseFloat(newHolding.avgCost);
+    const currentPrice = parseFloat(newHolding.currentPrice);
+    const dividendYield = parseFloat(newHolding.dividendYield) || 0;
+    
+    const holding = {
+      id: Date.now(),
+      symbol: newHolding.symbol.toUpperCase(),
+      name: newHolding.name,
+      shares,
+      avgCost,
+      currentPrice,
+      totalValue: shares * currentPrice,
+      dividendYield,
+      annualDividend: shares * currentPrice * (dividendYield / 100),
+      nextDividendDate: null,
+      dripEnabled: newHolding.dripEnabled,
+      dividendAccumulated: 0,
+      dripProgress: 0
+    };
+    
+    const updatedHoldings = [...data.investments.holdings, holding];
+    const newTotalValue = updatedHoldings.reduce((sum, h) => sum + h.totalValue, 0);
+    
+    const updatedInvestments = {
+      ...data.investments,
+      holdings: updatedHoldings,
+      totalValue: newTotalValue
+    };
+    
+    const updatedData = { ...data, investments: updatedInvestments };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setNewHolding({ symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', dripEnabled: true });
+      setShowAddHolding(false);
+    } catch (error) {
+      console.error('Error adding holding:', error);
+    }
+  };
+
+  const handleDeleteHolding = async (holdingId) => {
+    const updatedHoldings = data.investments.holdings.filter(h => h.id !== holdingId);
+    const newTotalValue = updatedHoldings.reduce((sum, h) => sum + h.totalValue, 0);
+    
+    const updatedInvestments = {
+      ...data.investments,
+      holdings: updatedHoldings,
+      totalValue: newTotalValue
+    };
+    
+    const updatedData = { ...data, investments: updatedInvestments };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error deleting holding:', error);
+    }
+  };
+
+  const handleToggleDRIP = async (holdingId) => {
+    const updatedHoldings = data.investments.holdings.map(holding => {
+      if (holding.id === holdingId) {
+        return { ...holding, dripEnabled: !holding.dripEnabled };
+      }
+      return holding;
+    });
+    
+    const updatedInvestments = { ...data.investments, holdings: updatedHoldings };
+    const updatedData = { ...data, investments: updatedInvestments };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error toggling DRIP:', error);
+    }
+  };
+
+  const handleEditHolding = async (holding) => {
+    const shares = parseFloat(holding.shares);
+    const avgCost = parseFloat(holding.avgCost);
+    const currentPrice = parseFloat(holding.currentPrice);
+    const dividendYield = parseFloat(holding.dividendYield) || 0;
+    
+    const updatedHolding = {
+      ...holding,
+      shares,
+      avgCost,
+      currentPrice,
+      totalValue: shares * currentPrice,
+      dividendYield,
+      annualDividend: shares * currentPrice * (dividendYield / 100)
+    };
+    
+    const updatedHoldings = data.investments.holdings.map(h => 
+      h.id === holding.id ? updatedHolding : h
+    );
+    
+    const newTotalValue = updatedHoldings.reduce((sum, h) => sum + h.totalValue, 0);
+    
+    const updatedInvestments = {
+      ...data.investments,
+      holdings: updatedHoldings,
+      totalValue: newTotalValue
+    };
+    
+    const updatedData = { ...data, investments: updatedInvestments };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setEditingHolding(null);
+    } catch (error) {
+      console.error('Error editing holding:', error);
+    }
+  };
+
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Portfolio Summary */}
@@ -1414,11 +1851,20 @@ const InvestmentTab = ({ data, setData, userId }) => {
 
       {/* Holdings with DRIP */}
       <Card>
-        <h3 className="text-xl font-bold text-white mb-4">Holdings & DRIP Calculator</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold text-white">Holdings & DRIP Calculator</h3>
+          <button
+            onClick={() => setShowAddHolding(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Holding
+          </button>
+        </div>
         <div className="space-y-4">
           {data.investments.holdings.map(holding => (
             <div key={holding.id} className="bg-gray-700/30 rounded-lg p-4">
-              <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-7 gap-4 items-center">
                 <div className="lg:col-span-2">
                   <h4 className="font-bold text-white">{holding.symbol}</h4>
                   <p className="text-sm text-gray-400">{holding.name}</p>
@@ -1445,9 +1891,19 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div className="text-center">
+                  <button
+                    onClick={() => handleToggleDRIP(holding.id)}
+                    className={`px-2 py-1 rounded text-xs font-semibold mb-2 transition-colors ${
+                      holding.dripEnabled 
+                        ? 'bg-green-600 text-white hover:bg-green-700' 
+                        : 'bg-gray-600 text-white hover:bg-gray-700'
+                    }`}
+                  >
+                    DRIP {holding.dripEnabled ? 'ON' : 'OFF'}
+                  </button>
+                  
                   {holding.dripEnabled ? (
                     <div>
-                      <div className="text-sm font-semibold text-green-400">DRIP ON</div>
                       <div className="w-full bg-gray-600 rounded-full h-2 mt-1">
                         <div 
                           className="bg-green-500 h-2 rounded-full transition-all duration-300" 
@@ -1465,22 +1921,210 @@ const InvestmentTab = ({ data, setData, userId }) => {
                       )}
                     </div>
                   ) : (
-                    <div>
-                      <div className="text-sm font-semibold text-gray-400">DRIP OFF</div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        ${holding.dividendAccumulated} cash
-                      </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      ${holding.dividendAccumulated} cash
                     </div>
                   )}
+                </div>
+                
+                <div className="text-center">
+                  <div className="flex gap-1 justify-center">
+                    <button
+                      onClick={() => setEditingHolding(holding)}
+                      className="text-gray-400 hover:text-blue-400 p-1"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteHolding(holding.id)}
+                      className="text-gray-400 hover:text-red-400 p-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
-        </div>
-      </Card>
-    </div>
-  );
-};
+                  </div>
+        </Card>
+
+        {/* Add Holding Modal */}
+        {showAddHolding && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md border-blue-500/30">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-white">Add New Holding</h3>
+                <button
+                  onClick={() => setShowAddHolding(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Symbol (e.g., AAPL)"
+                  value={newHolding.symbol}
+                  onChange={(e) => setNewHolding({...newHolding, symbol: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
+                
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  value={newHolding.name}
+                  onChange={(e) => setNewHolding({...newHolding, name: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="number"
+                    placeholder="Shares"
+                    value={newHolding.shares}
+                    onChange={(e) => setNewHolding({...newHolding, shares: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                  
+                  <input
+                    type="number"
+                    placeholder="Avg Cost"
+                    value={newHolding.avgCost}
+                    onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="number"
+                    placeholder="Current Price"
+                    value={newHolding.currentPrice}
+                    onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                  
+                  <input
+                    type="number"
+                    placeholder="Dividend Yield %"
+                    value={newHolding.dividendYield}
+                    onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={newHolding.dripEnabled}
+                    onChange={(e) => setNewHolding({...newHolding, dripEnabled: e.target.checked})}
+                    className="rounded"
+                  />
+                  <label className="text-white">Enable DRIP</label>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end gap-2">
+                <button
+                  onClick={() => setShowAddHolding(false)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddHolding}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Add Holding
+                </button>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Edit Holding Modal */}
+        {editingHolding && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md border-blue-500/30">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-white">Edit {editingHolding.symbol}</h3>
+                <button
+                  onClick={() => setEditingHolding(null)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  value={editingHolding.name}
+                  onChange={(e) => setEditingHolding({...editingHolding, name: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="number"
+                    placeholder="Shares"
+                    value={editingHolding.shares}
+                    onChange={(e) => setEditingHolding({...editingHolding, shares: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                  
+                  <input
+                    type="number"
+                    placeholder="Avg Cost"
+                    value={editingHolding.avgCost}
+                    onChange={(e) => setEditingHolding({...editingHolding, avgCost: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="number"
+                    placeholder="Current Price"
+                    value={editingHolding.currentPrice}
+                    onChange={(e) => setEditingHolding({...editingHolding, currentPrice: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                  
+                  <input
+                    type="number"
+                    placeholder="Dividend Yield %"
+                    value={editingHolding.dividendYield}
+                    onChange={(e) => setEditingHolding({...editingHolding, dividendYield: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end gap-2">
+                <button
+                  onClick={() => setEditingHolding(null)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleEditHolding(editingHolding)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </Card>
+          </div>
+        )}
+      </div>
+    );
+  };
 
 // Transaction Management Component
 const TransactionsTab = ({ data, setData, userId }) => {
