@@ -3293,7 +3293,78 @@ const TravelTab = ({ data, setData, userId }) => {
     }
   };
 
-  const handleAddTrip = async () => {
+     const handleAddExpense = async () => {
+     if (!newExpense.description || !newExpense.amount || !selectedTrip) return;
+
+     const amount = parseFloat(newExpense.amount);
+     if (isNaN(amount) || amount <= 0) return;
+
+     const expense = {
+       id: Date.now(),
+       ...newExpense,
+       amount,
+       tripId: selectedTrip.id
+     };
+
+     const updatedTrips = data.travel.trips.map(trip => {
+       if (trip.id === selectedTrip.id) {
+         return {
+           ...trip,
+           expenses: [...(trip.expenses || []), expense]
+         };
+       }
+       return trip;
+     });
+
+     const updatedTravel = { ...data.travel, trips: updatedTrips };
+     const updatedData = { ...data, travel: updatedTravel };
+
+     try {
+       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       setData(updatedData);
+       setNewExpense({
+         description: '',
+         amount: '',
+         currency: data.travel?.homeCurrency || 'CAD',
+         category: 'other',
+         date: new Date().toISOString().split('T')[0]
+       });
+       setShowExpenseModal(false);
+       setSelectedTrip(null);
+     } catch (error) {
+       console.error('Error adding expense:', error);
+     }
+   };
+
+   const handleEditTrip = async () => {
+     if (!editingTrip || !editingTrip.name || !editingTrip.targetBudget) return;
+
+     const updatedTrips = data.travel.trips.map(trip => {
+       if (trip.id === editingTrip.id) {
+         return {
+           ...trip,
+           ...editingTrip,
+           targetBudget: Number(editingTrip.targetBudget),
+           estimatedDailySpend: Number(editingTrip.estimatedDailySpend),
+           countries: editingTrip.countries.filter(c => c.trim())
+         };
+       }
+       return trip;
+     });
+
+     const updatedTravel = { ...data.travel, trips: updatedTrips };
+     const updatedData = { ...data, travel: updatedTravel };
+
+     try {
+       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       setData(updatedData);
+       setEditingTrip(null);
+     } catch (error) {
+       console.error('Error editing trip:', error);
+     }
+   };
+
+   const handleAddTrip = async () => {
     if (!newTrip.name || !newTrip.targetBudget) return;
 
     const trip = {
@@ -3411,7 +3482,10 @@ const TravelTab = ({ data, setData, userId }) => {
                   >
                     Add Expense
                   </button>
-                  <button className="text-blue-400 hover:text-blue-300 p-1">
+                  <button 
+                    onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
+                    className="text-blue-400 hover:text-blue-300 p-1"
+                  >
                     <Edit className="w-4 h-4" />
                   </button>
                 </div>
@@ -3576,11 +3650,262 @@ const TravelTab = ({ data, setData, userId }) => {
           </Card>
         </div>
       )}
-    </div>
-  );
-};
+
+      {/* Add Expense Modal */}
+      {showExpenseModal && selectedTrip && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-green-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="text-xl font-bold text-white">Add Expense</h3>
+                <p className="text-sm text-gray-400">{selectedTrip.name}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowExpenseModal(false);
+                  setSelectedTrip(null);
+                }}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">Description</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Hotel in Bangkok, Street food, Train ticket..."
+                  value={newExpense.description}
+                  onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                  autoFocus
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Amount</label>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    value={newExpense.amount}
+                    onChange={(e) => setNewExpense({...newExpense, amount: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Currency</label>
+                  <select
+                    value={newExpense.currency}
+                    onChange={(e) => setNewExpense({...newExpense, currency: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                  >
+                    <option value="CAD">CAD</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="THB">THB (Thai Baht)</option>
+                    <option value="COP">COP (Colombian Peso)</option>
+                    <option value="PEN">PEN (Peruvian Sol)</option>
+                    <option value="VND">VND (Vietnamese Dong)</option>
+                    <option value="MXN">MXN (Mexican Peso)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Category</label>
+                  <select
+                    value={newExpense.category}
+                    onChange={(e) => setNewExpense({...newExpense, category: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                  >
+                    {(data.travel?.expenseCategories || []).map(cat => (
+                      <option key={cat.name} value={cat.name}>
+                        {cat.icon} {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Date</label>
+                  <input
+                    type="date"
+                    value={newExpense.date}
+                    onChange={(e) => setNewExpense({...newExpense, date: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {newExpense.currency !== 'CAD' && newExpense.amount && (
+                <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
+                  <div className="text-sm text-blue-200">
+                    💱 <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ≈ 
+                    <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowExpenseModal(false);
+                  setSelectedTrip(null);
+                }}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddExpense}
+                disabled={!newExpense.description || !newExpense.amount}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                                 <Plus className="w-4 h-4" />
+                 Add Expense
+               </button>
+             </div>
+           </Card>
+         </div>
+       )}
+
+       {/* Edit Trip Modal */}
+       {editingTrip && (
+         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+           <Card className="w-full max-w-2xl border-blue-500/30">
+             <div className="flex justify-between items-center mb-4">
+               <h3 className="text-xl font-bold text-white">Edit Trip</h3>
+               <button
+                 onClick={() => setEditingTrip(null)}
+                 className="text-gray-400 hover:text-white"
+               >
+                 <X className="w-5 h-5" />
+               </button>
+             </div>
+             
+             <div className="space-y-4">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                   <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
+                   <input
+                     type="text"
+                     placeholder="e.g., Southeast Asia Adventure"
+                     value={editingTrip.name}
+                     onChange={(e) => setEditingTrip({...editingTrip, name: e.target.value})}
+                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm text-gray-300 mb-1">Target Budget (CAD)</label>
+                   <input
+                     type="number"
+                     placeholder="45000"
+                     value={editingTrip.targetBudget}
+                     onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value})}
+                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                   />
+                 </div>
+               </div>
+
+               <div>
+                 <label className="block text-sm text-gray-300 mb-1">Description</label>
+                 <textarea
+                   placeholder="Brief description of your trip..."
+                   value={editingTrip.description}
+                   onChange={(e) => setEditingTrip({...editingTrip, description: e.target.value})}
+                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                   rows="2"
+                 />
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                 <div>
+                   <label className="block text-sm text-gray-300 mb-1">Start Date</label>
+                   <input
+                     type="date"
+                     value={editingTrip.startDate}
+                     onChange={(e) => setEditingTrip({...editingTrip, startDate: e.target.value})}
+                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm text-gray-300 mb-1">End Date</label>
+                   <input
+                     type="date"
+                     value={editingTrip.endDate}
+                     onChange={(e) => setEditingTrip({...editingTrip, endDate: e.target.value})}
+                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm text-gray-300 mb-1">Daily Budget (CAD)</label>
+                   <input
+                     type="number"
+                     placeholder="500"
+                     value={editingTrip.estimatedDailySpend}
+                     onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value})}
+                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                   />
+                 </div>
+               </div>
+
+               <div>
+                 <label className="block text-sm text-gray-300 mb-1">Current Savings (CAD)</label>
+                 <input
+                   type="number"
+                   placeholder="0"
+                   value={editingTrip.currentSavings}
+                   onChange={(e) => setEditingTrip({...editingTrip, currentSavings: Number(e.target.value)})}
+                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                 />
+               </div>
+             </div>
+             
+             <div className="mt-6 flex justify-end gap-3">
+               <button
+                 onClick={() => setEditingTrip(null)}
+                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+               >
+                 Cancel
+               </button>
+               <button
+                 onClick={handleEditTrip}
+                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+               >
+                 Save Changes
+               </button>
+             </div>
+           </Card>
+         </div>
+       )}
+     </div>
+   );
+ };
 
 export default function App() {
+  // Add CSS for scrollbar hiding
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -4006,25 +4331,29 @@ export default function App() {
               </div>
             )}
             
-            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
-              <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
-              </button>
-              <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                <Calculator className="w-4 h-4 mr-2"/>Budget
-              </button>
-              <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                <Building className="w-4 h-4 mr-2"/>Side Hustle
-              </button>
-              <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                <Briefcase className="w-4 h-4 mr-2"/>Investment
-              </button>
-              <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                <CreditCard className="w-4 h-4 mr-2"/>Transactions
-              </button>
-              <button onClick={() => setActiveTab('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                🌍 Travel
-              </button>
+            <div className="bg-gray-800 rounded-full p-1 overflow-hidden">
+              <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
+                <div className="flex space-x-1 min-w-max">
+                  <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
+                  </button>
+                  <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <Calculator className="w-4 h-4 mr-2"/>Budget
+                  </button>
+                  <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <Building className="w-4 h-4 mr-2"/>Side Hustle
+                  </button>
+                  <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <Briefcase className="w-4 h-4 mr-2"/>Investment
+                  </button>
+                  <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <CreditCard className="w-4 h-4 mr-2"/>Transactions
+                  </button>
+                  <button onClick={() => setActiveTab('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    🌍 Travel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </header>
