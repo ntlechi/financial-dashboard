@@ -2533,7 +2533,26 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
 
     useEffect(() => {
         const calculatedData = businesses.map(business => {
+            // Ensure business has required properties
+            if (!Array.isArray(business.incomeSources)) business.incomeSources = [];
+            if (!Array.isArray(business.expenseItems)) business.expenseItems = [];
+            
+            // Calculate totals directly from income sources and expense items
+            const totalIncomeFromSources = business.incomeSources.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const totalExpensesFromItems = business.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const netFromSources = totalIncomeFromSources - totalExpensesFromItems;
+            
+            console.log(`📊 ${business.name} calculations:`, {
+                incomeSources: business.incomeSources,
+                expenseItems: business.expenseItems,
+                totalIncome: totalIncomeFromSources,
+                totalExpenses: totalExpensesFromItems,
+                net: netFromSources
+            });
+
+            // Also get transactions for historical display (optional)
             const businessIncomeSources = business.incomeSources.map(s => s.name);
+            const businessExpenseItems = business.expenseItems.map(e => e.name);
 
             const incomeTransactions = allTransactions.filter(tx => 
                 tx.type === 'income' &&
@@ -2541,8 +2560,6 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
                 businessIncomeSources.includes(tx.description) &&
                 (selectedYear === 'all' || new Date(tx.date).getFullYear() === parseInt(selectedYear))
             );
-            
-            const businessExpenseItems = business.expenseItems.map(e => e.name);
 
             const expenseTransactions = allTransactions.filter(tx =>
                 tx.type === 'expense' &&
@@ -2551,14 +2568,11 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
                 (selectedYear === 'all' || new Date(tx.date).getFullYear() === parseInt(selectedYear))
             );
 
-            const totalIncome = incomeTransactions.reduce((sum, tx) => sum + tx.amount, 0);
-            const totalExpenses = expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
-
             return {
                 ...business,
-                income: totalIncome,
-                expenses: totalExpenses,
-                net: totalIncome - totalExpenses,
+                income: totalIncomeFromSources,
+                expenses: totalExpensesFromItems,
+                net: netFromSources,
                 filteredIncomeTransactions: incomeTransactions,
                 filteredExpenseTransactions: expenseTransactions
             };
@@ -2607,25 +2621,33 @@ const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h4 className="font-semibold text-gray-300 mb-2">Income Transactions</h4>
+                                <h4 className="font-semibold text-emerald-400 mb-2">Income Sources</h4>
                                 <div className="space-y-1 max-h-48 overflow-y-auto pr-2">
-                                    {business.filteredIncomeTransactions.map(item => (
-                                        <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
-                                            <span>{item.description} <span className="text-gray-500 text-xs">{item.date}</span></span>
-                                            <span className="font-mono text-emerald-400">${item.amount.toLocaleString()}</span>
-                                        </div>
-                                    ))}
+                                    {business.incomeSources && business.incomeSources.length > 0 ? (
+                                        business.incomeSources.map(item => (
+                                            <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
+                                                <span className="text-gray-300">{item.name}</span>
+                                                <span className="font-mono text-emerald-400">${(item.amount || 0).toLocaleString()}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-gray-500 text-sm p-2">No income sources configured</div>
+                                    )}
                                 </div>
                             </div>
                              <div>
-                                <h4 className="font-semibold text-gray-300 mb-2">Expense Transactions</h4>
+                                <h4 className="font-semibold text-red-400 mb-2">Expense Items</h4>
                                 <div className="space-y-1 max-h-48 overflow-y-auto pr-2">
-                                    {business.filteredExpenseTransactions.map(item => (
-                                        <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
-                                            <span>{item.description} <span className="text-gray-500 text-xs">{item.date}</span></span>
-                                            <span className="font-mono text-red-500">${Math.abs(item.amount).toLocaleString()}</span>
-                                        </div>
-                                    ))}
+                                    {business.expenseItems && business.expenseItems.length > 0 ? (
+                                        business.expenseItems.map(item => (
+                                            <div key={item.id} className="flex justify-between text-sm p-2 bg-gray-800/50 rounded">
+                                                <span className="text-gray-300">{item.name}</span>
+                                                <span className="font-mono text-red-500">${(item.amount || 0).toLocaleString()}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-gray-500 text-sm p-2">No expense items configured</div>
+                                    )}
                                 </div>
                             </div>
                         </div>
