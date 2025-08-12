@@ -5,12 +5,38 @@ import * as d3 from 'd3';
 
 // Firebase Imports
 import { db, auth } from './firebase'; // Import the ready-to-use services
-import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
+import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
 
-const appId = process.env.REACT_APP_FIREBASE_APP_ID;
+const appId = process.env.REACT_APP_FIREBASE_APP_ID || 'default';
 
 /* global __initial_auth_token:readonly */
+
+// Helpers for numeric input handling
+const parseNumberInput = (value) => (value === '' ? '' : Number(value));
+const numberLikeKeys = new Set([
+  'amount','balance','value','shares','avgCost','currentPrice','annualDividend','percentage','percent',
+  'targetAmount','currentAmount','interestRate','minPayment','monthlyContribution','annualReturn','totalValue',
+  'tfsaContribution','rrspContribution','tfsaGoal','rrspGoal','total'
+]);
+const coerceEmptyNumericStrings = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(coerceEmptyNumericStrings);
+  } else if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v === '' && numberLikeKeys.has(k)) {
+        out[k] = 0;
+      } else if (typeof v === 'object' && v !== null) {
+        out[k] = coerceEmptyNumericStrings(v);
+      } else {
+        out[k] = v;
+      }
+    }
+    return out;
+  }
+  return obj;
+};
 
 
 
@@ -286,10 +312,23 @@ const DonutChart = ({ data, size = 120 }) => {
 // MODAL COMPONENTS
 //-///////////////////////////////////////////////////////////////////////////
 const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
-    const [formData, setFormData] = useState(currentData);
+    const withDefaults = (d) => ({
+        ...emptyData,
+        ...(d || {}),
+        income: { ...emptyData.income, ...(d?.income || {}) },
+        cashOnHand: { ...emptyData.cashOnHand, ...(d?.cashOnHand || {}) },
+        rainyDayFund: { ...emptyData.rainyDayFund, ...(d?.rainyDayFund || {}) },
+        debt: { ...emptyData.debt, ...(d?.debt || {}) },
+        investmentPortfolio: { ...emptyData.investmentPortfolio, ...(d?.investmentPortfolio || {}) },
+        expenses: { ...emptyData.expenses, ...(d?.expenses || {}) },
+        netWorth: { ...emptyData.netWorth, ...(d?.netWorth || {}) },
+        recentTransactions: Array.isArray(d?.recentTransactions) ? d.recentTransactions : [],
+    });
+
+    const [formData, setFormData] = useState(withDefaults(currentData));
 
     useEffect(() => {
-        setFormData(currentData);
+        setFormData(withDefaults(currentData));
     }, [isOpen, currentData]);
 
     if (!isOpen) return null;
@@ -300,7 +339,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
         const updatedTx = { ...newTransactions[index] };
         
         if (field === 'amount') {
-            updatedTx.amount = Number(value);
+            updatedTx.amount = parseNumberInput(value);
         } else {
             updatedTx[field] = value;
         }
@@ -317,8 +356,8 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const addIncomeSource = () => {
-        const newSource = { id: Date.now(), name: 'New Source', amount: 0, icon: 'dollar', type: 'active' };
-        setFormData(prev => ({...prev, income: {...prev.income, sources: [...prev.income.sources, newSource]}}));
+        const newSource = { id: Date.now(), name: 'New Source', amount: '', icon: 'dollar', type: 'active' };
+        setFormData(prev => ({...prev, income: {...prev.income, sources: [...(prev.income?.sources || []), newSource]}}));
     };
 
     const removeIncomeSource = (id) => {
@@ -337,12 +376,12 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const addAccount = (type) => {
-        const newAccount = { id: Date.now(), name: 'New Account', balance: 0 };
+        const newAccount = { id: Date.now(), name: 'New Account', balance: '' };
         setFormData(prev => ({
             ...prev,
             [type]: {
                 ...prev[type],
-                accounts: [...prev[type].accounts, newAccount]
+                accounts: [...(prev[type]?.accounts || []), newAccount]
             }
         }));
     };
@@ -358,8 +397,8 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const addTransaction = () => {
-        const newTransaction = { id: Date.now(), description: '', amount: 0, type: 'expense', category: 'personal', date: new Date().toISOString().split('T')[0] };
-        setFormData(prev => ({...prev, recentTransactions: [newTransaction, ...prev.recentTransactions] }));
+        const newTransaction = { id: Date.now(), description: '', amount: '', type: 'expense', category: 'personal', date: new Date().toISOString().split('T')[0] };
+        setFormData(prev => ({...prev, recentTransactions: [newTransaction, ...(prev.recentTransactions || [])] }));
     };
 
     const removeTransaction = (id) => {
@@ -370,7 +409,8 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
     };
 
     const handleSave = () => {
-        onSave(formData);
+        const cleaned = coerceEmptyNumericStrings(formData);
+        onSave(cleaned);
         onClose();
     };
 
@@ -403,7 +443,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                     ) : (
                                         <input type="text" value={tx.description} onChange={(e) => handleTransactionChange(e, index, 'description')} placeholder="Description" className="md:col-span-2 bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                     )}
-                                    <input type="number" value={tx.amount} onChange={(e) => handleTransactionChange(e, index, 'amount')} placeholder="Amount" className="bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                    <input type="text" inputMode="decimal" value={tx.amount} onChange={(e) => handleTransactionChange(e, index, 'amount')} placeholder="Amount" className="bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                     <select value={tx.type} onChange={(e) => handleTransactionChange(e, index, 'type')} className="bg-gray-700 text-white p-2 rounded-md border border-gray-600">
                                         <option value="income">Income</option>
                                         <option value="expense">Expense</option>
@@ -455,7 +495,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                 {formData.cashOnHand.accounts.map((acc, index) => (
                                     <div key={acc.id} className="flex items-center gap-2">
                                         <input type="text" value={acc.name} onChange={(e) => handleAccountChange(e, index, 'name', 'cashOnHand')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
-                                        <input type="number" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'cashOnHand')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                        <input type="text" inputMode="decimal" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'cashOnHand')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                         <button onClick={() => removeAccount(acc.id, 'cashOnHand')} className="text-rose-500 hover:text-rose-400 p-2"><Trash2 className="w-4 h-4"/></button>
                                     </div>
                                 ))}
@@ -473,7 +513,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                 {formData.debt.accounts.map((acc, index) => (
                                     <div key={acc.id} className="flex items-center gap-2">
                                         <input type="text" value={acc.name} onChange={(e) => handleAccountChange(e, index, 'name', 'debt')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
-                                        <input type="number" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'debt')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                        <input type="text" inputMode="decimal" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'debt')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                         <button onClick={() => removeAccount(acc.id, 'debt')} className="text-rose-500 hover:text-rose-400 p-2"><Trash2 className="w-4 h-4"/></button>
                                     </div>
                                 ))}
@@ -491,7 +531,7 @@ const AddDataModal = ({ isOpen, onClose, onSave, currentData }) => {
                                 {formData.rainyDayFund.accounts.map((acc, index) => (
                                     <div key={acc.id} className="flex items-center gap-2">
                                         <input type="text" value={acc.name} onChange={(e) => handleAccountChange(e, index, 'name', 'rainyDayFund')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
-                                        <input type="number" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'rainyDayFund')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
+                                        <input type="text" inputMode="decimal" value={acc.balance} onChange={(e) => handleAccountChange(e, index, 'balance', 'rainyDayFund')} className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600" />
                                         <button onClick={() => removeAccount(acc.id, 'rainyDayFund')} className="text-rose-500 hover:text-rose-400 p-2"><Trash2 className="w-4 h-4"/></button>
                                     </div>
                                 ))}
@@ -558,6 +598,7 @@ const HistoryModal = ({ isOpen, onClose, onViewHistory, transactions }) => {
 };
 
 const ResetConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+    const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     if (!isOpen) return null;
 
     return (
@@ -569,8 +610,17 @@ const ResetConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
                     </div>
                     <h2 className="mt-4 text-2xl font-bold text-white">Reset All Data?</h2>
                     <p className="mt-2 text-gray-400">
-                        Are you sure you want to reset all your financial data? This action is irreversible and will restore the dashboard to a blank state.
+                        Choose the date you want to start tracking from. This will clear current data and seed baselines at your chosen start date.
                     </p>
+                </div>
+                <div className="mt-6">
+                    <label className="block text-sm text-gray-400 mb-2">Start Tracking From</label>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600"
+                    />
                 </div>
                 <div className="mt-8 grid grid-cols-2 gap-4">
                     <button
@@ -583,7 +633,7 @@ const ResetConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
                     <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-                        onClick={onConfirm}
+                        onClick={() => onConfirm(startDate)}
                     >
                         Reset Data
                     </button>
@@ -605,9 +655,8 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
     const handleItemChange = (id, field, value) => {
         const updated = localBreakdown.map(item => {
             if (item.id === id) {
-                const newValue = field === 'value' ? Number(value) : value;
-                // Ensure liabilities remain negative
-                return { ...item, [field]: item.type === 'liability' ? -Math.abs(newValue) : newValue };
+                const newValue = field === 'value' ? (value === '' ? '' : Number(value)) : value;
+                return { ...item, [field]: item.type === 'liability' && field === 'value' && newValue !== '' ? -Math.abs(newValue) : newValue };
             }
             return item;
         });
@@ -646,7 +695,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
                             {localBreakdown.filter(i => i.type === 'asset').map(item => (
                                 <div key={item.id} className="flex items-center gap-2">
                                     <input type="text" value={item.name} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                                    <input type="number" value={item.value} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
+                                    <input type="text" inputMode="decimal" value={item.value} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
                                     <button onClick={() => removeItem(item.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                                 </div>
                             ))}
@@ -661,7 +710,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
                             {localBreakdown.filter(i => i.type === 'liability').map(item => (
                                 <div key={item.id} className="flex items-center gap-2">
                                     <input type="text" value={item.name} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                                    <input type="number" value={Math.abs(item.value)} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
+                                    <input type="text" inputMode="decimal" value={Math.abs(item.value)} onChange={e => handleItemChange(item.id, 'value', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
                                     <button onClick={() => removeItem(item.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                                 </div>
                             ))}
@@ -669,7 +718,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onSave, breakdown }) => {
                     </div>
                 </div>
                 <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localBreakdown); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
+                    <button onClick={() => { onSave(coerceEmptyNumericStrings(localBreakdown)); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
                 </div>
             </Card>
         </div>
@@ -709,7 +758,7 @@ const EditExpensesModal = ({ isOpen, onClose, onSave, categories }) => {
                     {localCategories.map(cat => (
                         <div key={cat.id} className="flex items-center gap-2">
                             <input type="text" value={cat.name} onChange={e => handleCategoryChange(cat.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                            <input type="number" value={cat.amount} onChange={e => handleCategoryChange(cat.id, 'amount', Number(e.target.value))} className="w-32 bg-gray-700 p-2 rounded-md" />
+                            <input type="text" inputMode="decimal" value={cat.amount} onChange={e => handleCategoryChange(cat.id, 'amount', e.target.value)} className="w-32 bg-gray-700 p-2 rounded-md" />
                             <button onClick={() => removeCategory(cat.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                         </div>
                     ))}
@@ -806,13 +855,13 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
     if (!isOpen) return null;
 
     const handleValueChange = (value) => {
-        setLocalPortfolio(prev => ({ ...prev, totalValue: Number(value) }));
+        setLocalPortfolio(prev => ({ ...prev, totalValue: value === '' ? '' : Number(value) }));
     };
 
     const handleAllocationChange = (id, field, value) => {
         const updatedAllocation = localPortfolio.allocation.map(item => {
             if (item.id === id) {
-                return { ...item, [field]: field === 'percentage' ? Number(value) : value };
+                return { ...item, [field]: field === 'percentage' ? (value === '' ? '' : Number(value)) : value };
             }
             return item;
         });
@@ -838,7 +887,7 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">Total Portfolio Value</label>
-                        <input type="number" value={localPortfolio.totalValue} onChange={e => handleValueChange(e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={localPortfolio.totalValue} onChange={e => handleValueChange(e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-gray-300 mb-2">Asset Allocation</h3>
@@ -846,7 +895,7 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
                             {localPortfolio.allocation.map(item => (
                                 <div key={item.id} className="flex items-center gap-2">
                                     <input type="text" value={item.name} onChange={e => handleAllocationChange(item.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                                    <input type="number" value={item.percentage} onChange={e => handleAllocationChange(item.id, 'percentage', e.target.value)} className="w-24 bg-gray-700 p-2 rounded-md" />
+                                    <input type="text" inputMode="decimal" value={item.percentage} onChange={e => handleAllocationChange(item.id, 'percentage', e.target.value)} className="w-24 bg-gray-700 p-2 rounded-md" />
                                     <span className="text-gray-400">%</span>
                                     <button onClick={() => removeAllocation(item.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
                                 </div>
@@ -856,7 +905,7 @@ const EditInvestmentModal = ({ isOpen, onClose, onSave, portfolio }) => {
                     </div>
                 </div>
                 <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localPortfolio); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
+                    <button onClick={() => { onSave(coerceEmptyNumericStrings(localPortfolio)); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
                 </div>
             </Card>
         </div>
@@ -884,11 +933,11 @@ const EditContributionGoalsModal = ({ isOpen, onClose, onSave, tfsaGoal, rrspGoa
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">TFSA Contribution Goal</label>
-                        <input type="number" value={tfsa} onChange={e => setTfsa(Number(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={tfsa} onChange={e => setTfsa(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">RRSP Contribution Goal</label>
-                        <input type="number" value={rrsp} onChange={e => setRrsp(Number(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={rrsp} onChange={e => setRrsp(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                 </div>
                 <div className="mt-8 flex justify-end">
@@ -998,7 +1047,7 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                                     {business.incomeSources.map(item => (
                                         <div key={item.id} className="flex gap-2 mb-2">
                                             <input type="text" value={item.name} onChange={e => handleItemChange(business.id, item.id, 'incomeSources', 'name', e.target.value)} className="w-full bg-gray-700 p-1 rounded-md text-sm" />
-                                            <input type="number" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'incomeSources', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
+                                            <input type="text" inputMode="decimal" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'incomeSources', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
                                             <button onClick={() => removeItem(business.id, item.id, 'incomeSources')} className="text-rose-500"><X className="w-4 h-4"/></button>
                                         </div>
                                     ))}
@@ -1011,7 +1060,7 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
                                     {business.expenseItems.map(item => (
                                         <div key={item.id} className="flex gap-2 mb-2">
                                             <input type="text" value={item.name} onChange={e => handleItemChange(business.id, item.id, 'expenseItems', 'name', e.target.value)} className="w-full bg-gray-700 p-1 rounded-md text-sm" />
-                                            <input type="number" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'expenseItems', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
+                                            <input type="text" inputMode="decimal" value={item.amount} onChange={e => handleItemChange(business.id, item.id, 'expenseItems', 'amount', e.target.value)} className="w-24 bg-gray-700 p-1 rounded-md text-sm" />
                                             <button onClick={() => removeItem(business.id, item.id, 'expenseItems')} className="text-rose-500"><X className="w-4 h-4"/></button>
                                         </div>
                                     ))}
@@ -1483,6 +1532,39 @@ const SavingsRateCard = ({ savingsRate }) => {
     );
 };
 
+// New: Goals card showing progress toward specific goals
+const GoalsCard = ({ goals, onEdit }) => {
+    return (
+        <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+            <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-bold text-white flex items-center">
+                    <Target className="w-6 h-6 mr-3 text-emerald-400" />
+                    Goals
+                </h2>
+                <button onClick={onEdit} className="text-gray-400 hover:text-white"><Edit size={18}/></button>
+            </div>
+            {(!goals || goals.length === 0) ? (
+                <div className="text-gray-400">No goals yet.</div>
+            ) : (
+                <div className="space-y-4">
+                    {goals.map(goal => {
+                        const safeTarget = goal.targetAmount || 0;
+                        const safeCurrent = Math.min(goal.currentAmount || 0, safeTarget);
+                        return (
+                            <div key={goal.id}>
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <span className="text-gray-300 font-semibold">{goal.name}</span>
+                                    <span className="text-sm text-gray-400">${safeCurrent.toLocaleString()} / ${safeTarget.toLocaleString()}</span>
+                                </div>
+                                <ProgressBar value={safeCurrent} maxValue={safeTarget} color="bg-emerald-500" />
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </Card>
+    );
+};
 
 const BusinessCard = ({ data, onEdit }) => {
     const isPositive = data.net >= 0;
@@ -1514,7 +1596,6 @@ const BusinessCard = ({ data, onEdit }) => {
         </Card>
     );
 };
-
 
 const InvestmentCard = ({ data, onEdit }) => {
   const { totalValue, allocation } = data;
@@ -1852,7 +1933,7 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
             const startDate = new Date();
             const projectionData = [{ date: startDate.toISOString().split('T')[0], value: currentInvestments }];
 
-            while (futureValue < targetAmount && months < 1200) { // Cap at 100 years
+            while (futureValue < targetAmount && months < 1200) {
                 futureValue = futureValue * (1 + monthlyReturn) + monthlyContribution;
                 months++;
                 if (months % 12 === 0) {
@@ -1861,13 +1942,13 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
                     projectionData.push({ date: futureDate.toISOString().split('T')[0], value: futureValue });
                 }
             }
-             if (futureValue < targetAmount) { // If not reached in 100 years
+            if (futureValue < targetAmount) {
                 setProjection({ years: Infinity, finalValue: futureValue, data: projectionData });
             } else {
                 setProjection({ years: months / 12, finalValue: futureValue, data: projectionData });
             }
         } else {
-             setProjection({ years: 0, finalValue: currentInvestments, data: [{ date: new Date().toISOString().split('T')[0], value: currentInvestments }] });
+            setProjection({ years: 0, finalValue: currentInvestments, data: [{ date: new Date().toISOString().split('T')[0], value: currentInvestments }] });
         }
     }, [inputs]);
 
@@ -1891,19 +1972,19 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400">Freedom Number ($)</label>
-                        <input type="number" value={inputs.targetAmount} onChange={e => handleInputChange('targetAmount', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.targetAmount} onChange={e => handleInputChange('targetAmount', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Current Investments ($)</label>
-                        <input type="number" value={inputs.currentInvestments} onChange={e => handleInputChange('currentInvestments', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.currentInvestments} onChange={e => handleInputChange('currentInvestments', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Monthly Contribution ($)</label>
-                        <input type="number" value={inputs.monthlyContribution} onChange={e => handleInputChange('monthlyContribution', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.monthlyContribution} onChange={e => handleInputChange('monthlyContribution', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div>
                         <label className="block text-sm text-gray-400">Expected Annual Return (%)</label>
-                        <input type="number" value={inputs.annualReturn} onChange={e => handleInputChange('annualReturn', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                        <input type="text" inputMode="decimal" value={inputs.annualReturn} onChange={e => handleInputChange('annualReturn', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
                     </div>
                     <div className="text-center bg-gray-900/50 p-4 rounded-lg">
                         <p className="text-gray-400">Time to Freedom</p>
@@ -1913,7 +1994,7 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
                     </div>
                 </div>
                 <div>
-                     <HistoryChartCard title="Investment Growth" data={projection.data} dataKey="value" color="text-emerald-400" icon={<TrendingUp/>} />
+                    <HistoryChartCard title="Investment Growth" data={projection.data} dataKey="value" color="text-emerald-400" icon={<TrendingUp/>} />
                 </div>
             </div>
         </Card>
@@ -2120,6 +2201,81 @@ const InvestmentTab = ({ portfolio, onSaveHoldings, openEditHoldingsModal }) => 
     )
 }
 
+// New: Debt Paydown Calculator (simple aggregate model) for Allocations tab
+const DebtPaydownCalculator = ({ existingDebts = [] }) => {
+    const totalDefault = existingDebts.reduce((sum, d) => sum + (Number(d.balance) || 0), 0);
+    const weightedApr = existingDebts.length > 0
+        ? existingDebts.reduce((sum, d) => sum + (Number(d.balance) || 0) * (Number(d.interestRate) || 0), 0) / (totalDefault || 1)
+        : 18;
+
+    const [totalDebt, setTotalDebt] = useState(totalDefault);
+    const [annualRate, setAnnualRate] = useState(Number(weightedApr.toFixed(2)) || 18);
+    const [monthlyPayment, setMonthlyPayment] = useState(500);
+
+    const monthlyRate = annualRate / 100 / 12;
+
+    let months = 0;
+    let balance = totalDebt;
+    let totalInterest = 0;
+    const maxMonths = 3600; // 300 years cap
+    while (balance > 0 && months < maxMonths) {
+        const interest = balance * monthlyRate;
+        const principal = Math.max(0, monthlyPayment - interest);
+        if (principal <= 0) { months = Infinity; break; }
+        balance = Math.max(0, balance - principal);
+        totalInterest += interest;
+        months++;
+    }
+
+    const years = isFinite(months) ? (months / 12) : Infinity;
+    const payoffDate = isFinite(months) ? (() => { const d = new Date(); d.setMonth(d.getMonth() + months); return d.toLocaleDateString(); })() : 'Never (increase payment)';
+
+    return (
+        <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+            <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
+                <Calculator className="w-6 h-6 mr-3 text-red-400" />
+                Debt Paydown Calculator
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-3">
+                    <div>
+                        <label className="block text-sm text-gray-400">Total Debt ($)</label>
+                        <input type="text" inputMode="decimal" value={totalDebt} onChange={e => setTotalDebt(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-400">Average APR (%)</label>
+                        <input type="text" inputMode="decimal" value={annualRate} onChange={e => setAnnualRate(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-400">Monthly Payment ($)</label>
+                        <input type="text" inputMode="decimal" value={monthlyPayment} onChange={e => setMonthlyPayment(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                    </div>
+                </div>
+                <div className="space-y-3">
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Months to Payoff</p>
+                        <p className="text-3xl font-bold text-white">{isFinite(months) ? months : '—'}</p>
+                    </div>
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Years to Payoff</p>
+                        <p className="text-3xl font-bold text-white">{isFinite(years) ? years.toFixed(1) : '—'}</p>
+                    </div>
+                </div>
+                <div className="space-y-3">
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Total Interest Paid</p>
+                        <p className="text-3xl font-bold text-red-400">${isFinite(totalInterest) ? Math.round(totalInterest).toLocaleString() : '—'}</p>
+                    </div>
+                    <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-gray-400">Projected Payoff Date</p>
+                        <p className="text-3xl font-bold text-white">{payoffDate}</p>
+                    </div>
+                </div>
+            </div>
+        </Card>
+    );
+};
+
 //-///////////////////////////////////////////////////////////////////////////
 // MAIN APP
 //-///////////////////////////////////////////////////////////////////////////
@@ -2144,11 +2300,39 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [allocations, setAllocations] = useState(initialData.allocations);
+  const [isEditGoalsListModalOpen, setIsEditGoalsListModalOpen] = useState(false);
 
   const recalculateTotals = (sourceData, view) => {
     const newData = JSON.parse(JSON.stringify(sourceData)); 
     if (!Array.isArray(newData.businesses)) newData.businesses = [];
-    if (!newData.investmentPortfolio.holdings) newData.investmentPortfolio.holdings = [];
+    if (!newData.investmentPortfolio) newData.investmentPortfolio = { totalValue: 0, allocation: [], holdings: [], history: [], tfsaContribution: 0, rrspContribution: 0 };
+    if (!Array.isArray(newData.investmentPortfolio.holdings)) newData.investmentPortfolio.holdings = [];
+    if (!newData.netWorth) newData.netWorth = { total: 0, breakdown: [], history: [] };
+    if (!Array.isArray(newData.netWorth.breakdown)) newData.netWorth.breakdown = [];
+    if (!newData.cashOnHand) newData.cashOnHand = { total: 0, accounts: [], history: [] };
+    if (!Array.isArray(newData.cashOnHand.accounts)) newData.cashOnHand.accounts = [];
+    if (!newData.rainyDayFund) newData.rainyDayFund = { total: 0, accounts: [], goal: 0, history: [] };
+    if (!Array.isArray(newData.rainyDayFund.accounts)) newData.rainyDayFund.accounts = [];
+    if (!newData.debt) newData.debt = { total: 0, accounts: [], history: [] };
+    if (!Array.isArray(newData.debt.accounts)) newData.debt.accounts = [];
+    if (!newData.expenses) newData.expenses = { total: 0, categories: [] };
+    if (!Array.isArray(newData.expenses.categories)) newData.expenses.categories = [];
+    if (!newData.income) newData.income = { total: 0, sources: [] };
+    if (!Array.isArray(newData.income.sources)) newData.income.sources = [];
+    if (!Array.isArray(newData.recentTransactions)) newData.recentTransactions = [];
+
+    const ensureBreakdownItem = (name, type, color) => {
+        let item = newData.netWorth.breakdown.find(b => b.name === name);
+        if (!item) {
+            item = { id: Date.now() + Math.floor(Math.random() * 1000), name, value: 0, color, type };
+            newData.netWorth.breakdown.push(item);
+        }
+        return item;
+    };
+
+    const cashItem = ensureBreakdownItem('Cash', 'asset', 'bg-sky-500');
+    const investmentsItem = ensureBreakdownItem('Investments', 'asset', 'bg-violet-500');
+
     const now = new Date();
     
     let filteredTransactions;
@@ -2170,7 +2354,7 @@ export default function App() {
     const expenseTransactions = filteredTransactions.filter(tx => tx.type === 'expense');
     const investmentTransactions = filteredTransactions.filter(tx => tx.type === 'investment');
     
-    newData.income.sources.forEach(s => s.amount = 0);
+    newData.income.sources.forEach(s => s.amount = Number(s.amount) || 0);
     incomeTransactions.forEach(tx => {
         const source = newData.income.sources.find(s => s.name === tx.description);
         if (source) {
@@ -2181,40 +2365,44 @@ export default function App() {
     newData.income.total = incomeTransactions.filter(tx => tx.category !== 'business').reduce((sum, tx) => sum + tx.amount, 0);
     
     if (view.timeframe === 'monthly') {
-        newData.expenses.total = newData.expenses.categories.reduce((sum, cat) => sum + cat.amount, 0);
+        newData.expenses.total = newData.expenses.categories.reduce((sum, cat) => sum + (Number(cat.amount) || 0), 0);
     } else {
         newData.expenses.total = expenseTransactions.filter(tx => tx.category !== 'business').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     }
     
     const totalInvestmentAmount = investmentTransactions.reduce((sum, tx) => sum + tx.amount, 0);
     
-    newData.passiveIncome.total = newData.income.sources.filter(s => s.type === 'passive').reduce((sum, s) => sum + s.amount, 0);
-    newData.dividends.total = newData.income.sources.filter(s => s.type === 'dividend').reduce((sum, s) => sum + s.amount, 0);
+    newData.passiveIncome = newData.passiveIncome || { total: 0 };
+    newData.dividends = newData.dividends || { total: 0 };
+    newData.cashflow = newData.cashflow || { total: 0 };
+
+    newData.passiveIncome.total = newData.income.sources.filter(s => s.type === 'passive').reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+    newData.dividends.total = newData.income.sources.filter(s => s.type === 'dividend').reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
     
     newData.cashflow.total = newData.income.total - newData.expenses.total + totalInvestmentAmount;
 
     newData.businesses.forEach(business => {
-        business.income = business.incomeSources.reduce((sum, item) => sum + item.amount, 0);
-        business.expenses = business.expenseItems.reduce((sum, item) => sum + item.amount, 0);
+        business.income = (business.incomeSources || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+        business.expenses = (business.expenseItems || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
         business.net = business.income - business.expenses;
     });
 
-    newData.cashOnHand.total = newData.cashOnHand.accounts.reduce((sum, acc) => sum + acc.balance, 0);
-    newData.rainyDayFund.total = newData.rainyDayFund.accounts.reduce((sum, acc) => sum + acc.balance, 0);
-    newData.debt.total = newData.debt.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    newData.cashOnHand.total = newData.cashOnHand.accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
+    newData.rainyDayFund.total = newData.rainyDayFund.accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
+    newData.debt.total = newData.debt.accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
 
     const allInvestmentTransactions = newData.recentTransactions.filter(tx => tx.type === 'investment');
     newData.investmentPortfolio.tfsaContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'tfsa').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     newData.investmentPortfolio.rrspContribution = allInvestmentTransactions.filter(tx => tx.investmentType === 'rrsp').reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     
-    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + (h.shares * h.currentPrice), 0);
+    newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((Number(h.shares) || 0) * (Number(h.currentPrice) || 0)), 0);
 
-    newData.netWorth.breakdown.find(b => b.name === 'Cash').value = newData.cashOnHand.total;
-    newData.netWorth.breakdown.find(b => b.name === 'Investments').value = newData.investmentPortfolio.totalValue;
-    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + b.value, 0);
+    cashItem.value = newData.cashOnHand.total;
+    investmentsItem.value = newData.investmentPortfolio.totalValue;
+    newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + (Number(b.value) || 0), 0);
 
     const totalSavings = Math.abs(investmentTransactions.reduce((sum, tx) => sum + tx.amount, 0));
-    const totalIncomeForSavingsRate = newData.income.total + newData.businesses.reduce((sum, b) => sum + b.net, 0);
+    const totalIncomeForSavingsRate = newData.income.total + newData.businesses.reduce((sum, b) => sum + (Number(b.net) || 0), 0);
     newData.savingsRate = totalIncomeForSavingsRate > 0 ? (totalSavings / totalIncomeForSavingsRate) * 100 : 0;
 
     return newData;
@@ -2268,11 +2456,14 @@ export default function App() {
         if (fetchedData.allocations) {
             setAllocations(fetchedData.allocations);
         }
+        const view = { timeframe, date: historicalDate };
+        setDisplayData(recalculateTotals(fetchedData, view));
       } else {
         setDoc(userDocRef, initialData)
           .then(() => {
             setData(initialData);
             setAllocations(initialData.allocations);
+            setDisplayData(recalculateTotals(initialData, { timeframe, date: historicalDate }));
           })
           .catch(error => {
             console.error("Error creating initial document:", error);
@@ -2286,6 +2477,31 @@ export default function App() {
 
     return () => unsubscribeSnapshot();
   }, [userId]); // Re-runs when userId changes
+
+  // Auto-save on unload to preserve latest client state
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      try {
+        if (data) localStorage.setItem('financial_dashboard_autosave', JSON.stringify(data));
+      } catch {}
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [data]);
+
+  // On first load (no Firestore yet), hydrate from local autosave to preserve session
+  useEffect(() => {
+    if (!data) {
+      try {
+        const cached = localStorage.getItem('financial_dashboard_autosave');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          setData(parsed);
+          setDisplayData(recalculateTotals(parsed, { timeframe, date: historicalDate }));
+        }
+      } catch {}
+    }
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -2328,6 +2544,10 @@ export default function App() {
 
       recalculatedData.allocations = allocations;
 
+      // Optimistic UI update
+      setData(recalculatedData);
+      setDisplayData(recalculateTotals(recalculatedData, { timeframe, date: historicalDate }));
+
       await setDoc(userDocRef, recalculatedData, { merge: true });
     } catch (error) {
       console.error("Error saving data:", error);
@@ -2336,60 +2556,60 @@ export default function App() {
   
   const handleSaveBusinesses = async (newBusinesses) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, businesses: newBusinesses };
+    const updatedData = coerceEmptyNumericStrings({ ...data, businesses: newBusinesses });
     handleSaveData(updatedData);
   };
 
   const handleSaveNetWorth = async (newBreakdown) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, netWorth: { ...data.netWorth, breakdown: newBreakdown }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, netWorth: { ...(data.netWorth || {}), breakdown: newBreakdown }});
     handleSaveData(updatedData);
   };
   
   const handleSaveExpenses = async (newCategories) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, expenses: { ...data.expenses, categories: newCategories }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, expenses: { ...(data.expenses || {}), categories: newCategories }});
     handleSaveData(updatedData);
   };
   
   const handleSaveCreditScore = async (newScore) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, creditScore: { ...data.creditScore, current: newScore }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, creditScore: { ...(data.creditScore || {}), current: newScore }});
     handleSaveData(updatedData);
   };
 
   const handleSaveGoals = async (goals) => {
     if (!data || !userId) return;
-    const updatedData = { 
+    const updatedData = coerceEmptyNumericStrings({ 
         ...data, 
-        financialFreedom: { ...data.financialFreedom, targetAmount: goals.ffTarget },
-        rainyDayFund: { ...data.rainyDayFund, goal: goals.rdfGoal }
-    };
+        financialFreedom: { ...(data.financialFreedom || {}), targetAmount: goals.ffTarget },
+        rainyDayFund: { ...(data.rainyDayFund || {}), goal: goals.rdfGoal }
+    });
     handleSaveData(updatedData);
   };
   
   const handleSaveInvestment = async (newPortfolio) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, investmentPortfolio: newPortfolio };
+    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: { ...(data.investmentPortfolio || {}), ...newPortfolio } });
     handleSaveData(updatedData);
   };
 
   const handleSaveHoldings = async (newHoldings) => {
     if (!data || !userId) return;
-    const updatedData = { ...data, investmentPortfolio: { ...data.investmentPortfolio, holdings: newHoldings }};
+    const updatedData = coerceEmptyNumericStrings({ ...data, investmentPortfolio: { ...(data.investmentPortfolio || {}), holdings: newHoldings }});
     handleSaveData(updatedData);
   };
 
   const handleSaveContributionGoals = async (goals) => {
     if (!data || !userId) return;
-    const updatedData = { 
+    const updatedData = coerceEmptyNumericStrings({ 
         ...data, 
         investmentPortfolio: { 
-            ...data.investmentPortfolio, 
+            ...(data.investmentPortfolio || {}), 
             tfsaGoal: goals.tfsaGoal,
             rrspGoal: goals.rrspGoal
         }
-    };
+    });
     handleSaveData(updatedData);
   };
 
@@ -2397,20 +2617,44 @@ export default function App() {
       if (!userId || !data) return;
       const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
       try {
-          const updatedData = { ...data, allocations: allocations };
+          const updatedData = coerceEmptyNumericStrings({ ...data, allocations: allocations });
+          // Optimistic UI update
+          setData(updatedData);
+          setDisplayData(recalculateTotals(updatedData, { timeframe, date: historicalDate }));
           await setDoc(userDocRef, updatedData, { merge: true });
       } catch (error) {
           console.error("Error saving allocations:", error);
       }
   };
   
-  const handleResetData = async () => {
+  const handleSaveBudget = async (budget) => {
+      if (!userId) return;
+      const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
+      try {
+          await setDoc(userDocRef, { budget }, { merge: true });
+      } catch (error) {
+          console.error('Error saving budget:', error);
+      }
+  };
+  
+  const handleResetData = async (startDateStr) => {
     if (!userId) return;
     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
     try {
-        await setDoc(userDocRef, emptyData);
-        setData(JSON.parse(JSON.stringify(emptyData)));
-        setAllocations(emptyData.allocations);
+        const baselineDate = startDateStr || new Date().toISOString().split('T')[0];
+        const seeded = JSON.parse(JSON.stringify(emptyData));
+        // seed baseline histories
+        seeded.debt.history = [{ date: baselineDate, total: 0 }];
+        seeded.netWorth.history = [{ date: baselineDate, total: 0 }];
+        seeded.cashOnHand.history = [{ date: baselineDate, total: 0 }];
+        seeded.rainyDayFund.history = [{ date: baselineDate, total: 0 }];
+        seeded.creditScore.history = [];
+        seeded.investmentPortfolio.history = [{ date: baselineDate, total: 0 }];
+        // also persist chosen start date
+        seeded.startDate = baselineDate;
+        await setDoc(userDocRef, seeded);
+        setData(JSON.parse(JSON.stringify(seeded)));
+        setAllocations(seeded.allocations);
         setTimeframe('monthly');
         setHistoricalDate(null);
         setActiveTab('dashboard');
@@ -2447,6 +2691,12 @@ export default function App() {
     document.body.removeChild(link);
   };
 
+  const handleSaveGoalsList = async (newGoals) => {
+    if (!data || !userId) return;
+    const updatedData = { ...data, goals: newGoals };
+    handleSaveData(updatedData);
+  };
+
   if (loading || !displayData) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -2464,19 +2714,20 @@ export default function App() {
               <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
               <p className="text-gray-400 text-lg">Welcome back, Entrepreneur! Here's your financial snapshot.</p>
             </div>
-            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
-              <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard</button>
-              <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Building className="w-4 h-4 mr-2"/>Side Hustle</button>
-              <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
-              <button onClick={() => setActiveTab('visuals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
-              <button onClick={() => setActiveTab('allocations')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'allocations' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Allocations</button>
+            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1 overflow-x-auto max-w-full scrollbar-none md:scrollbar-thin">
+              <button onClick={() => setActiveTab('dashboard')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard</button>
+              <button onClick={() => setActiveTab('side-hustle')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Building className="w-4 h-4 mr-2"/>Side Hustle</button>
+              <button onClick={() => setActiveTab('investment')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
+              <button onClick={() => setActiveTab('visuals')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
+              <button onClick={() => setActiveTab('allocations')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'allocations' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Allocations</button>
+              <button onClick={() => setActiveTab('budget')} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Wallet className="w-4 h-4 mr-2"/>Budget</button>
             </div>
           </div>
           {activeTab === 'dashboard' && (
-            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1 mt-4 max-w-min">
-              <button onClick={() => { setTimeframe('monthly'); setHistoricalDate(null); }} className={`px-3 py-1 rounded-full text-sm font-semibold ${timeframe === 'monthly' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>Monthly</button>
-              <button onClick={() => { setTimeframe('annual'); setHistoricalDate(null); }} className={`px-3 py-1 rounded-full text-sm font-semibold ${timeframe === 'annual' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>Annually</button>
-              <button onClick={() => setIsHistoryModalOpen(true)} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${timeframe === 'historical' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calendar className="w-4 h-4 mr-1"/> History</button>
+            <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1 mt-4 max-w-full overflow-x-auto scrollbar-none md:scrollbar-thin">
+              <button onClick={() => { setTimeframe('monthly'); setHistoricalDate(null); }} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold ${timeframe === 'monthly' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>Monthly</button>
+              <button onClick={() => { setTimeframe('annual'); setHistoricalDate(null); }} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold ${timeframe === 'annual' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>Annually</button>
+              <button onClick={() => setIsHistoryModalOpen(true)} className={`shrink-0 px-3 py-2 rounded-full text-sm font-semibold flex items-center ${timeframe === 'historical' ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><Calendar className="w-4 h-4 mr-1"/> History</button>
             </div>
           )}
         </header>
@@ -2502,6 +2753,7 @@ export default function App() {
               <SavingsRateCard savingsRate={displayData.savingsRate || 0} />
               <RainyDayFundCard data={displayData.rainyDayFund} expensesTotal={displayData.expenses.total} onEdit={() => setIsEditGoalsModalOpen(true)} />
               <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={displayData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
+              <GoalsCard goals={displayData.goals} onEdit={() => setIsEditGoalsListModalOpen(true)} />
               <TransactionsCard data={data.recentTransactions} />
             </>
           )}
@@ -2532,7 +2784,11 @@ export default function App() {
             <>
                 <AllocationsCalculator allocations={allocations} setAllocations={setAllocations} onSave={handleSaveAllocations} />
                 <FinancialFreedomCalculator data={data.financialFreedom} onSave={(newData) => handleSaveData({...data, financialFreedom: newData})} />
+                <DebtPaydownCalculator existingDebts={data.debt.accounts} />
             </>
+          )}
+          {activeTab === 'budget' && (
+            <BudgetTab budget={data.budget} allocations={data.allocations} onSaveBudget={handleSaveBudget} />
           )}
         </main>
         
@@ -2627,7 +2883,187 @@ export default function App() {
             onSave={handleSaveHoldings}
             holdings={data.investmentPortfolio.holdings}
         />}
+        {isEditGoalsListModalOpen && <EditGoalsListModal
+            isOpen={isEditGoalsListModalOpen}
+            onClose={() => setIsEditGoalsListModalOpen(false)}
+            onSave={handleSaveGoalsList}
+            goals={data.goals}
+        />}
       </div>
     </div>
   );
 }
+
+// New: Edit Goals List Modal for creating/updating/removing specific goals
+const EditGoalsListModal = ({ isOpen, onClose, onSave, goals }) => {
+    const [localGoals, setLocalGoals] = useState(goals || []);
+
+    useEffect(() => {
+        setLocalGoals(goals || []);
+    }, [isOpen, goals]);
+
+    if (!isOpen) return null;
+
+    const handleChange = (id, field, value) => {
+        setLocalGoals(localGoals.map(g => g.id === id ? { ...g, [field]: field.includes('Amount') ? (value === '' ? '' : Number(value)) : value } : g));
+    };
+
+    const addGoal = () => {
+        const newGoal = { id: Date.now(), name: 'New Goal', targetAmount: 0, currentAmount: 0 };
+        setLocalGoals([...localGoals, newGoal]);
+    };
+
+    const removeGoal = (id) => {
+        setLocalGoals(localGoals.filter(g => g.id !== id));
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white">Edit Goals</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-6 h-6" /></button>
+                </div>
+                <div className="space-y-2">
+                    {localGoals.map(goal => (
+                        <div key={goal.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center bg-gray-900/50 p-3 rounded-lg">
+                            <input type="text" value={goal.name} onChange={e => handleChange(goal.id, 'name', e.target.value)} className="md:col-span-2 bg-gray-700 p-2 rounded-md" />
+                            <input type="text" inputMode="decimal" value={goal.currentAmount} onChange={e => handleChange(goal.id, 'currentAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Current $" />
+                            <input type="text" inputMode="decimal" value={goal.targetAmount} onChange={e => handleChange(goal.id, 'targetAmount', e.target.value)} className="bg-gray-700 p-2 rounded-md" placeholder="Target $" />
+                            <button onClick={() => removeGoal(goal.id)} className="text-rose-500 hover:text-rose-400 justify-self-end"><Trash2 className="w-5 h-5"/></button>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                    <button onClick={addGoal} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                        <Plus className="w-4 h-4 mr-2"/> Add Goal
+                    </button>
+                    <button onClick={() => { onSave(coerceEmptyNumericStrings(localGoals)); onClose(); }} className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
+                        <Save className="w-4 h-4 mr-2"/> Save Goals
+                    </button>
+                </div>
+            </Card>
+        </div>
+    );
+};
+
+// New: Budget Tab with a simple budget calculator
+const BudgetTab = ({ budget, allocations, onSaveBudget }) => {
+    const defaultBudget = budget || {
+        monthlyIncome: 5000,
+        categories: [
+            { id: 1, name: 'Needs', percent: 50 },
+            { id: 2, name: 'Wants', percent: 30 },
+            { id: 3, name: 'Savings/Debt', percent: 20 },
+        ],
+    };
+
+    const [monthlyIncome, setMonthlyIncome] = useState(defaultBudget.monthlyIncome || 0);
+    const [categories, setCategories] = useState(defaultBudget.categories || []);
+    const totalPercent = categories.reduce((s, c) => s + (Number(c.percent) || 0), 0);
+
+    const setPreset503020 = () => {
+        setCategories([
+            { id: Date.now() + 1, name: 'Needs', percent: 50 },
+            { id: Date.now() + 2, name: 'Wants', percent: 30 },
+            { id: Date.now() + 3, name: 'Savings/Debt', percent: 20 },
+        ]);
+    };
+
+    const setPresetJars = () => {
+        if (!allocations) return;
+        const mapped = Object.entries(allocations).map(([key, percent], idx) => ({
+            id: Date.now() + idx,
+            name: key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()),
+            percent: Number(percent) || 0,
+        }));
+        setCategories(mapped);
+    };
+
+    const handleChange = (id, field, value) => {
+        setCategories(categories.map(c => c.id === id ? { ...c, [field]: field === 'percent' ? Number(value) : value } : c));
+    };
+
+    const addCategory = () => {
+        setCategories([...categories, { id: Date.now(), name: 'New Category', percent: 0 }]);
+    };
+
+    const removeCategory = (id) => {
+        setCategories(categories.filter(c => c.id !== id));
+    };
+
+    const handleSave = () => {
+        onSaveBudget({ monthlyIncome, categories });
+    };
+
+    const plannedSpend = (monthlyIncome * Math.min(totalPercent, 100)) / 100;
+    const remainder = monthlyIncome - plannedSpend;
+
+    return (
+        <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+            <div className="flex flex-wrap justify-between items-center gap-4">
+                <h2 className="text-3xl font-bold text-white">Budget Calculator</h2>
+                <div className="flex gap-2">
+                    <button onClick={setPreset503020} className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">50/30/20</button>
+                    <button onClick={setPresetJars} className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">Use Jars</button>
+                    <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm flex items-center"><Save className="w-4 h-4 mr-1"/> Save Budget</button>
+                </div>
+            </div>
+
+            <Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm text-gray-400 mb-2">Monthly Net Income</label>
+                        <input type="text" inputMode="decimal" value={monthlyIncome} onChange={e => setMonthlyIncome(parseNumberInput(e.target.value))} className="w-full bg-gray-700 p-2 rounded-md" />
+                        {totalPercent !== 100 && (
+                            <div className="mt-3 bg-red-900/50 border border-red-500 text-red-300 p-3 rounded-lg flex items-center">
+                                <AlertTriangle className="w-5 h-5 mr-3"/>
+                                Total percentage is {totalPercent}%. It should be 100%.
+                            </div>
+                        )}
+                        <div className="mt-4">
+                            <button onClick={addCategory} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm flex items-center"><Plus className="w-4 h-4 mr-1"/> Add Category</button>
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <div className="hidden md:grid grid-cols-4 gap-2 text-xs text-gray-400 font-bold px-2">
+                            <span className="col-span-2">Category</span>
+                            <span>%</span>
+                            <span className="text-right">Amount</span>
+                        </div>
+                        <div className="space-y-2 max-h-80 overflow-y-auto pr-2">
+                            {categories.map(c => {
+                                const amount = (monthlyIncome * (Number(c.percent) || 0)) / 100;
+                                return (
+                                    <div key={c.id} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-center bg-gray-900/50 p-2 rounded-lg">
+                                        <input type="text" value={c.name} onChange={e => handleChange(c.id, 'name', e.target.value)} className="md:col-span-2 bg-gray-700 p-2 rounded-md" />
+                                        <input type="text" inputMode="decimal" value={c.percent} onChange={e => handleChange(c.id, 'percent', e.target.value)} className="bg-gray-700 p-2 rounded-md" />
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-mono">${amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                            <button onClick={() => removeCategory(c.id)} className="text-rose-500 hover:text-rose-400 p-1"><Trash2 className="w-4 h-4"/></button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="text-center">
+                    <p className="text-gray-400">Income</p>
+                    <p className="text-3xl font-bold text-white">${monthlyIncome.toLocaleString()}</p>
+                </Card>
+                <Card className="text-center">
+                    <p className="text-gray-400">Planned Spend</p>
+                    <p className="text-3xl font-bold text-amber-400">${plannedSpend.toLocaleString()}</p>
+                </Card>
+                <Card className="text-center">
+                    <p className="text-gray-400">Remainder</p>
+                    <p className={`text-3xl font-bold ${remainder >= 0 ? 'text-emerald-400' : 'text-red-500'}`}>${remainder.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                </Card>
+            </div>
+        </div>
+    );
+};
