@@ -3897,7 +3897,7 @@ const TravelTab = ({ data, setData, userId }) => {
  };
 
 export default function App() {
-  // Add CSS for scrollbar hiding
+  // Add CSS for scrollbar hiding and mobile viewport fixes
   React.useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -3907,6 +3907,25 @@ export default function App() {
       }
       .scrollbar-hide::-webkit-scrollbar {
         display: none;
+      }
+      
+      /* Fix mobile over-scrolling and viewport issues */
+      html, body {
+        overflow-x: hidden;
+        position: relative;
+        height: 100%;
+      }
+      
+      body {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      
+      /* Prevent pull-to-refresh on mobile */
+      .app-container {
+        overscroll-behavior-y: contain;
+        touch-action: pan-y;
       }
     `;
     document.head.appendChild(style);
@@ -4295,7 +4314,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
+    <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
