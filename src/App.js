@@ -875,9 +875,10 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
             expenses: 0,
             net: 0,
             history: [],
-            incomeSources: [],
-            expenseItems: []
+            incomeSources: [{ id: Date.now() + 1, name: "Revenue Source", amount: 0 }],
+            expenseItems: [{ id: Date.now() + 2, name: "Business Expense", amount: 0 }]
         };
+        console.log("➕ Adding new business:", newBusiness);
         setLocalBusinesses([...localBusinesses, newBusiness]);
     };
 
@@ -886,11 +887,14 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
     };
 
     const handleItemChange = (businessId, itemId, type, field, value) => {
+        console.log(`📝 Updating ${type} item:`, { businessId, itemId, field, value });
         setLocalBusinesses(localBusinesses.map(b => {
             if (b.id === businessId) {
                 const items = b[type].map(item => {
                     if (item.id === itemId) {
-                        return { ...item, [field]: field === 'amount' ? Number(value) : value };
+                        const updatedItem = { ...item, [field]: field === 'amount' ? Number(value) : value };
+                        console.log(`✏️ Item updated:`, updatedItem);
+                        return updatedItem;
                     }
                     return item;
                 });
@@ -920,7 +924,9 @@ const SideHustleModal = ({ isOpen, onClose, onSave, businesses }) => {
     };
     
     const handleSave = () => {
+        console.log("💼 Side Hustle Modal - Saving businesses:", localBusinesses);
         onSave(localBusinesses);
+        alert("✅ Side hustles saved successfully!");
         onClose();
     };
 
