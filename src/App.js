@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard } from 'lucide-react';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -89,6 +89,18 @@ const initialData = {
     { id: 1, name: 'House Down Payment', targetAmount: 75000, currentAmount: 25000, targetDate: '2025-12-31' },
     { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
     { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
+  ],
+  transactions: [
+    { id: 1, date: '2025-01-15', description: 'Main Job Salary', amount: 8000, type: 'income', category: 'personal', subcategory: 'salary' },
+    { id: 2, date: '2025-01-15', description: 'Rent Payment', amount: -2500, type: 'expense', category: 'personal', subcategory: 'housing' },
+    { id: 3, date: '2025-01-14', description: 'Trading Profit', amount: 2500, type: 'income', category: 'business', subcategory: 'trading' },
+    { id: 4, date: '2025-01-13', description: 'Groceries', amount: -150, type: 'expense', category: 'personal', subcategory: 'food' },
+    { id: 5, date: '2025-01-12', description: 'Side Business Revenue', amount: 2000, type: 'income', category: 'business', subcategory: 'consulting' },
+    { id: 6, date: '2025-01-12', description: 'Software Subscription', amount: -100, type: 'expense', category: 'business', subcategory: 'software' },
+    { id: 7, date: '2025-01-11', description: 'Gas Station', amount: -80, type: 'expense', category: 'personal', subcategory: 'transport' },
+    { id: 8, date: '2025-01-10', description: 'Dividend Payment', amount: 500, type: 'income', category: 'personal', subcategory: 'investment' },
+    { id: 9, date: '2025-01-10', description: 'Coffee Shop', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 10, date: '2025-01-09', description: 'Business Lunch', amount: -75, type: 'expense', category: 'business', subcategory: 'meals' },
   ]
 };
 
@@ -579,6 +591,455 @@ const BudgetCalculatorTab = () => {
   );
 };
 
+// Transaction Management Component
+const TransactionsTab = ({ data, setData, userId }) => {
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [filterType, setFilterType] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('date');
+  
+  const [newTransaction, setNewTransaction] = useState({
+    description: '',
+    amount: '',
+    type: 'expense',
+    category: 'personal',
+    subcategory: '',
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  const subcategoryOptions = {
+    personal: {
+      income: ['salary', 'bonus', 'investment', 'other'],
+      expense: ['housing', 'food', 'transport', 'entertainment', 'healthcare', 'utilities', 'other']
+    },
+    business: {
+      income: ['consulting', 'trading', 'services', 'products', 'other'],
+      expense: ['software', 'equipment', 'meals', 'travel', 'marketing', 'other']
+    }
+  };
+
+  const handleAddTransaction = async () => {
+    if (!newTransaction.description || !newTransaction.amount) return;
+    
+    const transaction = {
+      id: Date.now(),
+      ...newTransaction,
+      amount: newTransaction.type === 'expense' ? -Math.abs(parseFloat(newTransaction.amount)) : Math.abs(parseFloat(newTransaction.amount))
+    };
+    
+    const updatedTransactions = [transaction, ...data.transactions];
+    const updatedData = { ...data, transactions: updatedTransactions };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setNewTransaction({
+        description: '',
+        amount: '',
+        type: 'expense',
+        category: 'personal',
+        subcategory: '',
+        date: new Date().toISOString().split('T')[0]
+      });
+      setShowAddForm(false);
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+    }
+  };
+
+  const handleEditTransaction = async (transaction) => {
+    const updatedTransactions = data.transactions.map(t => 
+      t.id === transaction.id ? {
+        ...transaction,
+        amount: transaction.type === 'expense' ? -Math.abs(parseFloat(transaction.amount)) : Math.abs(parseFloat(transaction.amount))
+      } : t
+    );
+    const updatedData = { ...data, transactions: updatedTransactions };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setEditingTransaction(null);
+    } catch (error) {
+      console.error('Error updating transaction:', error);
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId) => {
+    const updatedTransactions = data.transactions.filter(t => t.id !== transactionId);
+    const updatedData = { ...data, transactions: updatedTransactions };
+    
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+    }
+  };
+
+  const filteredTransactions = data.transactions
+    .filter(t => filterType === 'all' || t.type === filterType)
+    .filter(t => filterCategory === 'all' || t.category === filterCategory)
+    .sort((a, b) => {
+      if (sortBy === 'date') return new Date(b.date) - new Date(a.date);
+      if (sortBy === 'amount') return Math.abs(b.amount) - Math.abs(a.amount);
+      return a.description.localeCompare(b.description);
+    });
+
+  const totalIncome = data.transactions
+    .filter(t => t.amount > 0)
+    .reduce((sum, t) => sum + t.amount, 0);
+  
+  const totalExpenses = data.transactions
+    .filter(t => t.amount < 0)
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  const personalIncome = data.transactions
+    .filter(t => t.amount > 0 && t.category === 'personal')
+    .reduce((sum, t) => sum + t.amount, 0);
+  
+  const businessIncome = data.transactions
+    .filter(t => t.amount > 0 && t.category === 'business')
+    .reduce((sum, t) => sum + t.amount, 0);
+  
+  const personalExpenses = data.transactions
+    .filter(t => t.amount < 0 && t.category === 'personal')
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  
+  const businessExpenses = data.transactions
+    .filter(t => t.amount < 0 && t.category === 'business')
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  return (
+    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+      {/* Transaction Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
+            Total Income
+          </h3>
+          <p className="text-2xl font-bold text-green-400">${totalIncome.toLocaleString()}</p>
+          <div className="mt-2 text-sm text-gray-300">
+            <div>Personal: ${personalIncome.toLocaleString()}</div>
+            <div>Business: ${businessIncome.toLocaleString()}</div>
+          </div>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-red-900/40 to-rose-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
+            Total Expenses
+          </h3>
+          <p className="text-2xl font-bold text-red-400">${totalExpenses.toLocaleString()}</p>
+          <div className="mt-2 text-sm text-gray-300">
+            <div>Personal: ${personalExpenses.toLocaleString()}</div>
+            <div>Business: ${businessExpenses.toLocaleString()}</div>
+          </div>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
+            Net Flow
+          </h3>
+          <p className={`text-2xl font-bold ${(totalIncome - totalExpenses) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+            ${(totalIncome - totalExpenses).toLocaleString()}
+          </p>
+          <div className="mt-2 text-sm text-gray-300">
+            {data.transactions.length} transactions
+          </div>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <CreditCard className="w-5 h-5 mr-2 text-purple-400" />
+            Avg Transaction
+          </h3>
+          <p className="text-2xl font-bold text-purple-400">
+            ${data.transactions.length > 0 ? Math.abs(data.transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0) / data.transactions.length).toLocaleString() : '0'}
+          </p>
+          <div className="mt-2 text-sm text-gray-300">
+            Last 30 days
+          </div>
+        </Card>
+      </div>
+
+      {/* Controls */}
+      <Card>
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center mb-2">
+              <CreditCard className="w-6 h-6 mr-3 text-blue-400" />
+              Transaction Management
+            </h2>
+            <p className="text-gray-400">Track all your personal and business transactions</p>
+          </div>
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Transaction
+          </button>
+        </div>
+        
+        <div className="mt-6 flex flex-wrap gap-4">
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+          >
+            <option value="all">All Types</option>
+            <option value="income">Income Only</option>
+            <option value="expense">Expenses Only</option>
+          </select>
+          
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+          >
+            <option value="all">All Categories</option>
+            <option value="personal">Personal</option>
+            <option value="business">Business</option>
+          </select>
+          
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+          >
+            <option value="date">Sort by Date</option>
+            <option value="amount">Sort by Amount</option>
+            <option value="description">Sort by Description</option>
+          </select>
+        </div>
+      </Card>
+
+      {/* Add Transaction Form */}
+      {showAddForm && (
+        <Card className="border-blue-500/30">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-white">Add New Transaction</h3>
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Description"
+              value={newTransaction.description}
+              onChange={(e) => setNewTransaction({...newTransaction, description: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+            />
+            
+            <input
+              type="number"
+              placeholder="Amount"
+              value={newTransaction.amount}
+              onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+            />
+            
+            <select
+              value={newTransaction.type}
+              onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+            >
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+            
+            <select
+              value={newTransaction.category}
+              onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+            >
+              <option value="personal">Personal</option>
+              <option value="business">Business</option>
+            </select>
+            
+            <select
+              value={newTransaction.subcategory}
+              onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+            >
+              <option value="">Select Subcategory</option>
+              {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
+                <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+              ))}
+            </select>
+            
+            <input
+              type="date"
+              value={newTransaction.date}
+              onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+          
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddTransaction}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Add Transaction
+            </button>
+          </div>
+        </Card>
+      )}
+
+      {/* Transaction List */}
+      <Card>
+        <h3 className="text-xl font-bold text-white mb-4">
+          Recent Transactions ({filteredTransactions.length})
+        </h3>
+        
+        <div className="space-y-2 max-h-96 overflow-y-auto">
+          {filteredTransactions.map(transaction => (
+            <div key={transaction.id} className="bg-gray-700/30 rounded-lg p-4 flex items-center justify-between hover:bg-gray-700/50 transition-colors">
+              <div className="flex-1">
+                <div className="flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full ${
+                    transaction.amount > 0 ? 'bg-green-500' : 'bg-red-500'
+                  }`}></div>
+                  <div>
+                    <h4 className="font-semibold text-white">{transaction.description}</h4>
+                    <div className="text-sm text-gray-400">
+                      {new Date(transaction.date).toLocaleDateString()} • 
+                      <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
+                        {transaction.category}
+                      </span>
+                      {transaction.subcategory && ` • ${transaction.subcategory}`}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className={`text-lg font-bold ${
+                  transaction.amount > 0 ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {transaction.amount > 0 ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
+                </div>
+                
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setEditingTransaction(transaction)}
+                    className="text-gray-400 hover:text-blue-400 p-1"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTransaction(transaction.id)}
+                    className="text-gray-400 hover:text-red-400 p-1"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {filteredTransactions.length === 0 && (
+            <div className="text-center text-gray-400 py-8">
+              No transactions found matching your filters.
+            </div>
+          )}
+        </div>
+      </Card>
+
+      {/* Edit Transaction Modal */}
+      {editingTransaction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-blue-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">Edit Transaction</h3>
+              <button
+                onClick={() => setEditingTransaction(null)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Description"
+                value={editingTransaction.description}
+                onChange={(e) => setEditingTransaction({...editingTransaction, description: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <input
+                type="number"
+                placeholder="Amount"
+                value={Math.abs(editingTransaction.amount)}
+                onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <select
+                value={editingTransaction.type}
+                onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              
+              <select
+                value={editingTransaction.category}
+                onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="personal">Personal</option>
+                <option value="business">Business</option>
+              </select>
+              
+              <input
+                type="date"
+                value={editingTransaction.date}
+                onChange={(e) => setEditingTransaction({...editingTransaction, date: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setEditingTransaction(null)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleEditTransaction(editingTransaction)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -667,6 +1128,9 @@ export default function App() {
               <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                 <Briefcase className="w-4 h-4 mr-2"/>Investment
               </button>
+              <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                <CreditCard className="w-4 h-4 mr-2"/>Transactions
+              </button>
             </div>
           </div>
         </header>
@@ -714,6 +1178,8 @@ export default function App() {
               </div>
             </Card>
           )}
+          
+          {activeTab === 'transactions' && <TransactionsTab data={data} setData={setData} userId={userId} />}
         </main>
 
         <footer className="text-center mt-12 text-gray-500">
