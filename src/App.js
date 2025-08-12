@@ -171,7 +171,11 @@ const initialData = {
         nextDividendDate: '2025-03-15',
         dripEnabled: true,
         dividendAccumulated: 1215,
-        dripProgress: 27.0 // 27% towards next share
+        dripProgress: 27.0, // 27% towards next share
+        accountType: 'RRSP',
+        isUSStock: true,
+        withholdingTax: 15, // US withholding tax for RRSP
+        currency: 'USD'
       },
       {
         id: 2,
@@ -186,7 +190,11 @@ const initialData = {
         nextDividendDate: '2025-02-28',
         dripEnabled: true,
         dividendAccumulated: 65,
-        dripProgress: 81.3 // 81% towards next share
+        dripProgress: 81.3, // 81% towards next share
+        accountType: 'TFSA',
+        isUSStock: true,
+        withholdingTax: 30, // US withholding tax for TFSA
+        currency: 'USD'
       },
       {
         id: 3,
@@ -201,7 +209,11 @@ const initialData = {
         nextDividendDate: '2025-03-20',
         dripEnabled: false,
         dividendAccumulated: 262,
-        dripProgress: 0 // DRIP disabled
+        dripProgress: 0, // DRIP disabled
+        accountType: 'Taxable',
+        isUSStock: true,
+        withholdingTax: 30, // US withholding tax for non-registered
+        currency: 'USD'
       },
       {
         id: 4,
@@ -216,7 +228,11 @@ const initialData = {
         nextDividendDate: null,
         dripEnabled: false,
         dividendAccumulated: 0,
-        dripProgress: 0
+        dripProgress: 0,
+        accountType: 'Taxable',
+        isUSStock: false,
+        withholdingTax: 0, // No withholding tax on crypto
+        currency: 'USD'
       }
     ],
     performanceHistory: [
@@ -656,16 +672,40 @@ const NetWorthCard = ({ data, onEdit }) => (
       </button>
     </div>
     <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-2">
-      {data.breakdown.filter(item => item.type === 'asset').map((item) => (
-        <div key={item.id} className="flex items-center justify-between text-sm">
-          <div className="flex items-center">
-            <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
-            <span className="text-gray-300">{item.name}</span>
-          </div>
-          <span className="font-semibold text-white">${item.value.toLocaleString()}</span>
+    <div className="mt-4 space-y-4">
+      {/* Assets Section */}
+      <div>
+        <h4 className="text-sm font-semibold text-emerald-400 mb-2">Assets</h4>
+        <div className="space-y-2">
+          {data.breakdown.filter(item => item.type === 'asset').map((item) => (
+            <div key={item.id} className="flex items-center justify-between text-sm">
+              <div className="flex items-center">
+                <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
+                <span className="text-gray-300">{item.name}</span>
+              </div>
+              <span className="text-emerald-400 font-medium">+${item.value.toLocaleString()}</span>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
+
+      {/* Liabilities Section */}
+      {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
+        <div>
+          <h4 className="text-sm font-semibold text-red-400 mb-2">Liabilities</h4>
+          <div className="space-y-2">
+            {data.breakdown.filter(item => item.type === 'liability').map((item) => (
+              <div key={item.id} className="flex items-center justify-between text-sm">
+                <div className="flex items-center">
+                  <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
+                  <span className="text-gray-300">{item.name}</span>
+                </div>
+                <span className="text-red-400 font-medium">-${Math.abs(item.value).toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </Card>
 );
@@ -1732,7 +1772,11 @@ const InvestmentTab = ({ data, setData, userId }) => {
     avgCost: '',
     currentPrice: '',
     dividendYield: '',
-    dripEnabled: true
+    dripEnabled: true,
+    accountType: 'TFSA',
+    isUSStock: false,
+    withholdingTax: 0,
+    currency: 'CAD'
   });
 
   useEffect(() => {
@@ -1885,6 +1929,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
     const currentPrice = parseFloat(newHolding.currentPrice);
     const dividendYield = parseFloat(newHolding.dividendYield) || 0;
     
+    // Calculate withholding tax based on account type and stock origin
+    let withholdingTax = 0;
+    if (newHolding.isUSStock) {
+      if (newHolding.accountType === 'RRSP') {
+        withholdingTax = 15; // US-Canada tax treaty rate for RRSP
+      } else {
+        withholdingTax = 30; // Standard US withholding rate
+      }
+    }
+
     const holding = {
       id: Date.now(),
       symbol: newHolding.symbol.toUpperCase(),
@@ -1898,7 +1952,11 @@ const InvestmentTab = ({ data, setData, userId }) => {
       nextDividendDate: null,
       dripEnabled: newHolding.dripEnabled,
       dividendAccumulated: 0,
-      dripProgress: 0
+      dripProgress: 0,
+      accountType: newHolding.accountType,
+      isUSStock: newHolding.isUSStock,
+      withholdingTax,
+      currency: newHolding.currency
     };
     
     const updatedHoldings = [...data.investments.holdings, holding];
@@ -1915,7 +1973,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     try {
       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
-      setNewHolding({ symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', dripEnabled: true });
+      setNewHolding({ 
+        symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
+        dripEnabled: true, accountType: 'TFSA', isUSStock: false, withholdingTax: 0, currency: 'CAD' 
+      });
       setShowAddHolding(false);
     } catch (error) {
       console.error('Error adding holding:', error);
@@ -2103,10 +2164,31 @@ const InvestmentTab = ({ data, setData, userId }) => {
         <div className="space-y-4">
           {data.investments.holdings.map(holding => (
             <div key={holding.id} className="bg-gray-700/30 rounded-lg p-4">
-              <div className="grid grid-cols-1 lg:grid-cols-7 gap-4 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-center">
                 <div className="lg:col-span-2">
-                  <h4 className="font-bold text-white">{holding.symbol}</h4>
+                  <h4 className="font-bold text-white flex items-center gap-2">
+                    {holding.symbol}
+                    {holding.isUSStock && (
+                      <span className="text-xs px-1 py-0.5 bg-red-600/20 text-red-400 rounded border border-red-600/30">
+                        US
+                      </span>
+                    )}
+                  </h4>
                   <p className="text-sm text-gray-400">{holding.name}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`text-xs px-2 py-0.5 rounded font-semibold ${
+                      holding.accountType === 'TFSA' ? 'bg-green-600/20 text-green-400 border border-green-600/30' :
+                      holding.accountType === 'RRSP' ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' :
+                      'bg-orange-600/20 text-orange-400 border border-orange-600/30'
+                    }`}>
+                      {holding.accountType}
+                    </span>
+                    {holding.withholdingTax > 0 && (
+                      <span className="text-xs text-red-400">
+                        {holding.withholdingTax}% Tax
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-500">{holding.shares} shares</p>
                 </div>
                 
@@ -2255,15 +2337,66 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   />
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={newHolding.dripEnabled}
-                    onChange={(e) => setNewHolding({...newHolding, dripEnabled: e.target.checked})}
-                    className="rounded"
-                  />
-                  <label className="text-white">Enable DRIP</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Account Type</label>
+                    <select
+                      value={newHolding.accountType}
+                      onChange={(e) => setNewHolding({...newHolding, accountType: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    >
+                      <option value="TFSA">TFSA</option>
+                      <option value="RRSP">RRSP</option>
+                      <option value="Taxable">Taxable</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Currency</label>
+                    <select
+                      value={newHolding.currency}
+                      onChange={(e) => setNewHolding({...newHolding, currency: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    >
+                      <option value="CAD">CAD</option>
+                      <option value="USD">USD</option>
+                    </select>
+                  </div>
                 </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={newHolding.dripEnabled}
+                      onChange={(e) => setNewHolding({...newHolding, dripEnabled: e.target.checked})}
+                      className="rounded"
+                    />
+                    <label className="text-white">Enable DRIP</label>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={newHolding.isUSStock}
+                      onChange={(e) => setNewHolding({...newHolding, isUSStock: e.target.checked})}
+                      className="rounded"
+                    />
+                    <label className="text-white">US Stock</label>
+                  </div>
+                </div>
+                
+                {newHolding.isUSStock && (
+                  <div className="p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                    <div className="text-red-400 font-semibold text-sm mb-1">Canadian Tax Notice</div>
+                    <div className="text-xs text-gray-300">
+                      {newHolding.accountType === 'RRSP' 
+                        ? 'US withholding tax: 15% (reduced rate due to tax treaty)'
+                        : 'US withholding tax: 30% (standard rate for TFSA/Taxable accounts)'
+                      }
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="mt-6 flex justify-end gap-2">
@@ -2342,6 +2475,55 @@ const InvestmentTab = ({ data, setData, userId }) => {
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Account Type</label>
+                    <select
+                      value={editingHolding.accountType || 'TFSA'}
+                      onChange={(e) => setEditingHolding({...editingHolding, accountType: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    >
+                      <option value="TFSA">TFSA</option>
+                      <option value="RRSP">RRSP</option>
+                      <option value="Taxable">Taxable</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Currency</label>
+                    <select
+                      value={editingHolding.currency || 'CAD'}
+                      onChange={(e) => setEditingHolding({...editingHolding, currency: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    >
+                      <option value="CAD">CAD</option>
+                      <option value="USD">USD</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={editingHolding.isUSStock || false}
+                    onChange={(e) => setEditingHolding({...editingHolding, isUSStock: e.target.checked})}
+                    className="rounded"
+                  />
+                  <label className="text-white">US Stock (affects withholding tax)</label>
+                </div>
+                
+                {editingHolding.isUSStock && (
+                  <div className="p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                    <div className="text-red-400 font-semibold text-sm mb-1">Canadian Tax Notice</div>
+                    <div className="text-xs text-gray-300">
+                      {editingHolding.accountType === 'RRSP' 
+                        ? 'US withholding tax: 15% (reduced rate due to tax treaty)'
+                        : 'US withholding tax: 30% (standard rate for TFSA/Taxable accounts)'
+                      }
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="mt-6 flex justify-end gap-2">
