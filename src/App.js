@@ -1882,45 +1882,133 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
   const [budgetType, setBudgetType] = useState('50-30-20');
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
   
+  // Income Sources State
+  const [incomeSources, setIncomeSources] = useState([
+    { id: 1, name: 'Primary Job', amount: 4000, type: 'active' },
+    { id: 2, name: 'Side Hustle', amount: 1000, type: 'active' }
+  ]);
+  
+  // Expense Sources State
+  const [expenseSources, setExpenseSources] = useState([
+    { id: 1, name: 'Rent/Mortgage', amount: 1500, category: 'needs' },
+    { id: 2, name: 'Groceries', amount: 400, category: 'needs' },
+    { id: 3, name: 'Utilities', amount: 200, category: 'needs' },
+    { id: 4, name: 'Transportation', amount: 300, category: 'needs' },
+    { id: 5, name: 'Entertainment', amount: 300, category: 'wants' },
+    { id: 6, name: 'Dining Out', amount: 200, category: 'wants' },
+    { id: 7, name: 'Emergency Fund', amount: 500, category: 'savings' },
+    { id: 8, name: 'Investments', amount: 500, category: 'savings' }
+  ]);
+  
+  // Calculate totals from manual entries
+  const totalIncomeFromSources = incomeSources.reduce((sum, source) => sum + source.amount, 0);
+  const totalExpensesFromSources = expenseSources.reduce((sum, expense) => sum + expense.amount, 0);
+  
+  // Use manual income if sources exist, otherwise use input
+  const effectiveIncome = incomeSources.length > 0 ? totalIncomeFromSources : monthlyIncome;
+  
   // 50/30/20 Budget
   const fiftyThirtyTwenty = {
-    needs: Math.round(monthlyIncome * 0.5),
-    wants: Math.round(monthlyIncome * 0.3),
-    savings: Math.round(monthlyIncome * 0.2)
+    needs: Math.round(effectiveIncome * 0.5),
+    wants: Math.round(effectiveIncome * 0.3),
+    savings: Math.round(effectiveIncome * 0.2)
   };
   
   // 6 Jars System
   const sixJars = {
-    necessities: Math.round(monthlyIncome * 0.55),
-    financialFreedom: Math.round(monthlyIncome * 0.10),
-    longTermSavings: Math.round(monthlyIncome * 0.10),
-    education: Math.round(monthlyIncome * 0.10),
-    play: Math.round(monthlyIncome * 0.10),
-    give: Math.round(monthlyIncome * 0.05)
+    necessities: Math.round(effectiveIncome * 0.55),
+    financialFreedom: Math.round(effectiveIncome * 0.10),
+    longTermSavings: Math.round(effectiveIncome * 0.10),
+    education: Math.round(effectiveIncome * 0.10),
+    play: Math.round(effectiveIncome * 0.10),
+    give: Math.round(effectiveIncome * 0.05)
+  };
+  
+  // Calculate actual expenses by category
+  const actualExpenses = {
+    needs: expenseSources.filter(e => e.category === 'needs').reduce((sum, e) => sum + e.amount, 0),
+    wants: expenseSources.filter(e => e.category === 'wants').reduce((sum, e) => sum + e.amount, 0),
+    savings: expenseSources.filter(e => e.category === 'savings').reduce((sum, e) => sum + e.amount, 0)
+  };
+  
+  // Add/Edit/Delete Income Sources
+  const addIncomeSource = () => {
+    const newSource = { 
+      id: Date.now(), 
+      name: 'New Income Source', 
+      amount: 0, 
+      type: 'active' 
+    };
+    setIncomeSources([...incomeSources, newSource]);
+  };
+  
+  const updateIncomeSource = (id, field, value) => {
+    setIncomeSources(incomeSources.map(source => 
+      source.id === id ? { ...source, [field]: value } : source
+    ));
+  };
+  
+  const deleteIncomeSource = (id) => {
+    setIncomeSources(incomeSources.filter(source => source.id !== id));
+  };
+  
+  // Add/Edit/Delete Expense Sources
+  const addExpenseSource = () => {
+    const newExpense = { 
+      id: Date.now(), 
+      name: 'New Expense', 
+      amount: 0, 
+      category: 'needs' 
+    };
+    setExpenseSources([...expenseSources, newExpense]);
+  };
+  
+  const updateExpenseSource = (id, field, value) => {
+    setExpenseSources(expenseSources.map(expense => 
+      expense.id === id ? { ...expense, [field]: value } : expense
+    ));
+  };
+  
+  const deleteExpenseSource = (id) => {
+    setExpenseSources(expenseSources.filter(expense => expense.id !== id));
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-white mb-6">💰 Budget Calculator</h2>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Budget Calculator Section */}
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-8">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-white mb-2">💰 Budget Calculator</h2>
+          <p className="text-gray-400">Plan your finances with proven budgeting methods</p>
+        </div>
         
-        <div className="mb-6">
-          <label className="block text-white text-sm font-bold mb-2">Monthly Income</label>
+        {/* Income Input */}
+        <div className="mb-8">
+          <label className="block text-white text-sm font-bold mb-3">
+            Monthly Income (${effectiveIncome.toLocaleString()})
+          </label>
           <input
             type="number"
             value={monthlyIncome}
             onChange={(e) => setMonthlyIncome(Number(e.target.value))}
-            className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600"
+            className="w-full max-w-md bg-gray-700 text-white p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
             placeholder="Enter your monthly income"
           />
+          <p className="text-gray-400 text-sm mt-2">
+            {incomeSources.length > 0 
+              ? `Calculated from income sources below: $${totalIncomeFromSources.toLocaleString()}`
+              : 'Or add detailed income sources in the table below'
+            }
+          </p>
         </div>
         
-        <div className="flex space-x-4 mb-6">
+        {/* Budget Type Selector */}
+        <div className="flex flex-wrap gap-4 mb-8">
           <button
             onClick={() => setBudgetType('50-30-20')}
-            className={`px-4 py-2 rounded-lg font-semibold ${
+            className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
               budgetType === '50-30-20' 
-                ? 'bg-blue-600 text-white' 
+                ? 'bg-blue-600 text-white shadow-lg' 
                 : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
             }`}
           >
@@ -1928,9 +2016,9 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
           </button>
           <button
             onClick={() => setBudgetType('6-jars')}
-            className={`px-4 py-2 rounded-lg font-semibold ${
+            className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
               budgetType === '6-jars' 
-                ? 'bg-blue-600 text-white' 
+                ? 'bg-blue-600 text-white shadow-lg' 
                 : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
             }`}
           >
@@ -1938,70 +2026,280 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
           </button>
         </div>
         
+        {/* Budget Breakdown */}
         {budgetType === '50-30-20' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-green-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-green-400 mb-2">💡 Needs (50%)</h3>
-              <p className="text-3xl font-bold text-white">${fiftyThirtyTwenty.needs.toLocaleString()}</p>
-              <p className="text-gray-300 text-sm mt-2">Rent, groceries, utilities, minimum debt payments</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-green-900/30 rounded-xl p-6 border border-green-800/30">
+              <h3 className="text-xl font-semibold text-green-400 mb-3">💡 Needs (50%)</h3>
+              <p className="text-4xl font-bold text-white mb-2">${fiftyThirtyTwenty.needs.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mb-3">Rent, groceries, utilities, minimum debt payments</p>
+              <div className="bg-green-800/20 rounded-lg p-3">
+                <p className="text-green-300 text-sm">Actual: ${actualExpenses.needs.toLocaleString()}</p>
+                <p className="text-green-300 text-sm">
+                  Difference: {actualExpenses.needs <= fiftyThirtyTwenty.needs ? '✅' : '⚠️'} 
+                  ${(fiftyThirtyTwenty.needs - actualExpenses.needs).toLocaleString()}
+                </p>
+              </div>
             </div>
-            <div className="bg-yellow-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-yellow-400 mb-2">🎯 Wants (30%)</h3>
-              <p className="text-3xl font-bold text-white">${fiftyThirtyTwenty.wants.toLocaleString()}</p>
-              <p className="text-gray-300 text-sm mt-2">Entertainment, dining out, hobbies, non-essential shopping</p>
+            <div className="bg-yellow-900/30 rounded-xl p-6 border border-yellow-800/30">
+              <h3 className="text-xl font-semibold text-yellow-400 mb-3">🎯 Wants (30%)</h3>
+              <p className="text-4xl font-bold text-white mb-2">${fiftyThirtyTwenty.wants.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mb-3">Entertainment, dining out, hobbies, shopping</p>
+              <div className="bg-yellow-800/20 rounded-lg p-3">
+                <p className="text-yellow-300 text-sm">Actual: ${actualExpenses.wants.toLocaleString()}</p>
+                <p className="text-yellow-300 text-sm">
+                  Difference: {actualExpenses.wants <= fiftyThirtyTwenty.wants ? '✅' : '⚠️'} 
+                  ${(fiftyThirtyTwenty.wants - actualExpenses.wants).toLocaleString()}
+                </p>
+              </div>
             </div>
-            <div className="bg-blue-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-blue-400 mb-2">💰 Savings (20%)</h3>
-              <p className="text-3xl font-bold text-white">${fiftyThirtyTwenty.savings.toLocaleString()}</p>
-              <p className="text-gray-300 text-sm mt-2">Emergency fund, retirement, investments, debt payoff</p>
+            <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-800/30">
+              <h3 className="text-xl font-semibold text-blue-400 mb-3">💰 Savings (20%)</h3>
+              <p className="text-4xl font-bold text-white mb-2">${fiftyThirtyTwenty.savings.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mb-3">Emergency fund, retirement, investments</p>
+              <div className="bg-blue-800/20 rounded-lg p-3">
+                <p className="text-blue-300 text-sm">Actual: ${actualExpenses.savings.toLocaleString()}</p>
+                <p className="text-blue-300 text-sm">
+                  Difference: {actualExpenses.savings >= fiftyThirtyTwenty.savings ? '✅' : '⚠️'} 
+                  ${(actualExpenses.savings - fiftyThirtyTwenty.savings).toLocaleString()}
+                </p>
+              </div>
             </div>
           </div>
         )}
         
         {budgetType === '6-jars' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bg-green-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-green-400 mb-2">🏠 Necessities (55%)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="bg-green-900/30 rounded-xl p-6 border border-green-800/30">
+              <h3 className="text-lg font-semibold text-green-400 mb-3">🏠 Necessities (55%)</h3>
               <p className="text-3xl font-bold text-white">${sixJars.necessities.toLocaleString()}</p>
               <p className="text-gray-300 text-sm mt-2">Housing, food, transportation, utilities</p>
             </div>
-            <div className="bg-purple-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-purple-400 mb-2">🚀 Financial Freedom (10%)</h3>
+            <div className="bg-purple-900/30 rounded-xl p-6 border border-purple-800/30">
+              <h3 className="text-lg font-semibold text-purple-400 mb-3">🚀 Financial Freedom (10%)</h3>
               <p className="text-3xl font-bold text-white">${sixJars.financialFreedom.toLocaleString()}</p>
               <p className="text-gray-300 text-sm mt-2">Investments, income-generating assets</p>
             </div>
-            <div className="bg-blue-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-blue-400 mb-2">🎯 Long-Term Savings (10%)</h3>
+            <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-800/30">
+              <h3 className="text-lg font-semibold text-blue-400 mb-3">🎯 Long-Term Savings (10%)</h3>
               <p className="text-3xl font-bold text-white">${sixJars.longTermSavings.toLocaleString()}</p>
               <p className="text-gray-300 text-sm mt-2">Emergency fund, major purchases</p>
             </div>
-            <div className="bg-amber-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-amber-400 mb-2">📚 Education (10%)</h3>
+            <div className="bg-amber-900/30 rounded-xl p-6 border border-amber-800/30">
+              <h3 className="text-lg font-semibold text-amber-400 mb-3">📚 Education (10%)</h3>
               <p className="text-3xl font-bold text-white">${sixJars.education.toLocaleString()}</p>
               <p className="text-gray-300 text-sm mt-2">Courses, books, skill development</p>
             </div>
-            <div className="bg-pink-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-pink-400 mb-2">🎉 Play (10%)</h3>
+            <div className="bg-pink-900/30 rounded-xl p-6 border border-pink-800/30">
+              <h3 className="text-lg font-semibold text-pink-400 mb-3">🎉 Play (10%)</h3>
               <p className="text-3xl font-bold text-white">${sixJars.play.toLocaleString()}</p>
               <p className="text-gray-300 text-sm mt-2">Entertainment, hobbies, fun activities</p>
             </div>
-            <div className="bg-teal-900/30 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-teal-400 mb-2">❤️ Give (5%)</h3>
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-teal-800/30">
+              <h3 className="text-lg font-semibold text-teal-400 mb-3">❤️ Give (5%)</h3>
               <p className="text-3xl font-bold text-white">${sixJars.give.toLocaleString()}</p>
               <p className="text-gray-300 text-sm mt-2">Charity, gifts, helping others</p>
             </div>
           </div>
         )}
         
-        <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-          <h4 className="text-lg font-semibold text-white mb-2">💡 Budget Tips</h4>
-          <ul className="text-gray-300 space-y-1 text-sm">
-            <li>• Start with the 50/30/20 rule if you're new to budgeting</li>
-            <li>• The 6 jars system gives more detailed allocation for specific goals</li>
-            <li>• Adjust percentages based on your personal situation</li>
-            <li>• Track your actual spending to see how you're doing</li>
-            <li>• Review and adjust your budget monthly</li>
-          </ul>
+        {/* Tips Section */}
+        <div className="mt-8 p-6 bg-gray-700/50 rounded-xl border border-gray-600">
+          <h4 className="text-xl font-semibold text-white mb-4">💡 Budget Tips</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ul className="text-gray-300 space-y-2 text-sm">
+              <li>• Start with the 50/30/20 rule if you're new to budgeting</li>
+              <li>• The 6 jars system gives more detailed allocation for specific goals</li>
+              <li>• Adjust percentages based on your personal situation</li>
+            </ul>
+            <ul className="text-gray-300 space-y-2 text-sm">
+              <li>• Track your actual spending using the tables below</li>
+              <li>• Review and adjust your budget monthly</li>
+              <li>• Focus on needs first, then savings, then wants</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* Income Sources Table */}
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-8">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h3 className="text-2xl font-bold text-white">💵 Income Sources</h3>
+            <p className="text-gray-400">Track all your income streams</p>
+          </div>
+          <button
+            onClick={addIncomeSource}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Income
+          </button>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-600">
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Source</th>
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Amount</th>
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Type</th>
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {incomeSources.map((source) => (
+                <tr key={source.id} className="border-b border-gray-700/50">
+                  <td className="py-3 px-4">
+                    <input
+                      type="text"
+                      value={source.name}
+                      onChange={(e) => updateIncomeSource(source.id, 'name', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </td>
+                  <td className="py-3 px-4">
+                    <input
+                      type="number"
+                      value={source.amount}
+                      onChange={(e) => updateIncomeSource(source.id, 'amount', Number(e.target.value))}
+                      className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </td>
+                  <td className="py-3 px-4">
+                    <select
+                      value={source.type}
+                      onChange={(e) => updateIncomeSource(source.id, 'type', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    >
+                      <option value="active">Active</option>
+                      <option value="passive">Passive</option>
+                      <option value="dividend">Dividend</option>
+                    </select>
+                  </td>
+                  <td className="py-3 px-4">
+                    <button
+                      onClick={() => deleteIncomeSource(source.id)}
+                      className="text-red-400 hover:text-red-300 p-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="border-t-2 border-gray-600">
+                <td className="py-3 px-4 font-bold text-green-400">Total Income:</td>
+                <td className="py-3 px-4 font-bold text-green-400">${totalIncomeFromSources.toLocaleString()}</td>
+                <td className="py-3 px-4"></td>
+                <td className="py-3 px-4"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      
+      {/* Expense Sources Table */}
+      <div className="bg-gray-800 rounded-xl p-6 lg:p-8">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h3 className="text-2xl font-bold text-white">💳 Expense Sources</h3>
+            <p className="text-gray-400">Track all your monthly expenses</p>
+          </div>
+          <button
+            onClick={addExpenseSource}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Expense
+          </button>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-600">
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Expense</th>
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Amount</th>
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Category</th>
+                <th className="text-left text-gray-300 font-semibold py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenseSources.map((expense) => (
+                <tr key={expense.id} className="border-b border-gray-700/50">
+                  <td className="py-3 px-4">
+                    <input
+                      type="text"
+                      value={expense.name}
+                      onChange={(e) => updateExpenseSource(expense.id, 'name', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </td>
+                  <td className="py-3 px-4">
+                    <input
+                      type="number"
+                      value={expense.amount}
+                      onChange={(e) => updateExpenseSource(expense.id, 'amount', Number(e.target.value))}
+                      className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </td>
+                  <td className="py-3 px-4">
+                    <select
+                      value={expense.category}
+                      onChange={(e) => updateExpenseSource(expense.id, 'category', e.target.value)}
+                      className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    >
+                      <option value="needs">Needs</option>
+                      <option value="wants">Wants</option>
+                      <option value="savings">Savings</option>
+                    </select>
+                  </td>
+                  <td className="py-3 px-4">
+                    <button
+                      onClick={() => deleteExpenseSource(expense.id)}
+                      className="text-red-400 hover:text-red-300 p-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="border-t-2 border-gray-600">
+                <td className="py-3 px-4 font-bold text-red-400">Total Expenses:</td>
+                <td className="py-3 px-4 font-bold text-red-400">${totalExpensesFromSources.toLocaleString()}</td>
+                <td className="py-3 px-4"></td>
+                <td className="py-3 px-4"></td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-bold text-white">Net Income:</td>
+                <td className="py-3 px-4 font-bold text-white">
+                  ${(totalIncomeFromSources - totalExpensesFromSources).toLocaleString()}
+                </td>
+                <td className="py-3 px-4"></td>
+                <td className="py-3 px-4"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+        {/* Expense Breakdown */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-green-900/20 rounded-lg p-4 border border-green-800/30">
+            <h4 className="text-green-400 font-semibold mb-2">Needs</h4>
+            <p className="text-2xl font-bold text-white">${actualExpenses.needs.toLocaleString()}</p>
+          </div>
+          <div className="bg-yellow-900/20 rounded-lg p-4 border border-yellow-800/30">
+            <h4 className="text-yellow-400 font-semibold mb-2">Wants</h4>
+            <p className="text-2xl font-bold text-white">${actualExpenses.wants.toLocaleString()}</p>
+          </div>
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800/30">
+            <h4 className="text-blue-400 font-semibold mb-2">Savings</h4>
+            <p className="text-2xl font-bold text-white">${actualExpenses.savings.toLocaleString()}</p>
+          </div>
         </div>
       </div>
     </div>
