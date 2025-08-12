@@ -725,59 +725,7 @@ const EditExpensesModal = ({ isOpen, onClose, onSave, categories }) => {
     );
 };
 
-const EditIncomeModal = ({ isOpen, onClose, onSave, sources }) => {
-    const [localSources, setLocalSources] = useState(sources);
 
-    useEffect(() => {
-        setLocalSources(sources);
-    }, [isOpen, sources]);
-
-    if (!isOpen) return null;
-
-    const handleSourceChange = (id, field, value) => {
-        setLocalSources(localSources.map(source => source.id === id ? { ...source, [field]: value } : source));
-    };
-
-    const addSource = () => {
-        const newSource = { id: Date.now(), name: 'New Income Source', amount: 0, icon: 'dollar', type: 'active' };
-        setLocalSources([...localSources, newSource]);
-    };
-
-    const removeSource = (id) => {
-        setLocalSources(localSources.filter(source => source.id !== id));
-    };
-
-    return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-lg">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-white">Edit Income Sources</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-6 h-6" /></button>
-                </div>
-                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
-                    {localSources.map(source => (
-                        <div key={source.id} className="flex items-center gap-2">
-                            <input type="text" value={source.name} onChange={e => handleSourceChange(source.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
-                            <input type="number" value={source.amount} onChange={e => handleSourceChange(source.id, 'amount', Number(e.target.value))} className="w-32 bg-gray-700 p-2 rounded-md" />
-                            <select value={source.type} onChange={e => handleSourceChange(source.id, 'type', e.target.value)} className="bg-gray-700 p-2 rounded-md">
-                                <option value="active">Active</option>
-                                <option value="passive">Passive</option>
-                                <option value="dividend">Dividend</option>
-                            </select>
-                            <button onClick={() => removeSource(source.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-4">
-                    <button onClick={addSource} className="bg-blue-600 text-white w-full py-2 rounded-md">Add Income Source</button>
-                </div>
-                <div className="mt-8 flex justify-end">
-                    <button onClick={() => { onSave(localSources); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
-                </div>
-            </Card>
-        </div>
-    );
-};
 
 const EditCreditScoreModal = ({ isOpen, onClose, onSave, currentScore }) => {
     const [score, setScore] = useState(currentScore);
@@ -1286,7 +1234,7 @@ const NetWorthCard = ({ data, onEdit }) => {
   );
 };
 
-const IncomeCard = ({ data, timeframe, historicalDate, onEdit }) => {
+const IncomeCard = ({ data, timeframe, historicalDate }) => {
     let displayTitle = "Monthly Income";
     if (timeframe === 'historical' && historicalDate) {
         const monthName = new Date(historicalDate.year, historicalDate.month).toLocaleString('default', { month: 'long' });
@@ -1301,7 +1249,7 @@ const IncomeCard = ({ data, timeframe, historicalDate, onEdit }) => {
           <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
           {displayTitle}
         </h2>
-        {onEdit && <button onClick={onEdit} className="text-gray-400 hover:text-white"><Edit size={18}/></button>}
+
       </div>
       <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
       <div className="mt-4 space-y-2">
@@ -1977,6 +1925,136 @@ const FinancialFreedomCalculator = ({ data, onSave }) => {
     );
 };
 
+      const BudgetCalculatorTab = () => {
+  const [budgetType, setBudgetType] = useState('50-30-20');
+  const [monthlyIncome, setMonthlyIncome] = useState(5000);
+  
+  // 50/30/20 Budget
+  const fiftyThirtyTwenty = {
+    needs: Math.round(monthlyIncome * 0.5),
+    wants: Math.round(monthlyIncome * 0.3),
+    savings: Math.round(monthlyIncome * 0.2)
+  };
+  
+  // 6 Jars System
+  const sixJars = {
+    necessities: Math.round(monthlyIncome * 0.55),
+    financialFreedom: Math.round(monthlyIncome * 0.10),
+    longTermSavings: Math.round(monthlyIncome * 0.10),
+    education: Math.round(monthlyIncome * 0.10),
+    play: Math.round(monthlyIncome * 0.10),
+    give: Math.round(monthlyIncome * 0.05)
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-800 rounded-lg p-6">
+        <h2 className="text-2xl font-bold text-white mb-6">💰 Budget Calculator</h2>
+        
+        <div className="mb-6">
+          <label className="block text-white text-sm font-bold mb-2">Monthly Income</label>
+          <input
+            type="number"
+            value={monthlyIncome}
+            onChange={(e) => setMonthlyIncome(Number(e.target.value))}
+            className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600"
+            placeholder="Enter your monthly income"
+          />
+        </div>
+        
+        <div className="flex space-x-4 mb-6">
+          <button
+            onClick={() => setBudgetType('50-30-20')}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              budgetType === '50-30-20' 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            50/30/20 Rule
+          </button>
+          <button
+            onClick={() => setBudgetType('6-jars')}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              budgetType === '6-jars' 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            6 Jars System
+          </button>
+        </div>
+        
+        {budgetType === '50-30-20' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-green-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-green-400 mb-2">💡 Needs (50%)</h3>
+              <p className="text-3xl font-bold text-white">${fiftyThirtyTwenty.needs.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Rent, groceries, utilities, minimum debt payments</p>
+            </div>
+            <div className="bg-yellow-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-yellow-400 mb-2">🎯 Wants (30%)</h3>
+              <p className="text-3xl font-bold text-white">${fiftyThirtyTwenty.wants.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Entertainment, dining out, hobbies, non-essential shopping</p>
+            </div>
+            <div className="bg-blue-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-blue-400 mb-2">💰 Savings (20%)</h3>
+              <p className="text-3xl font-bold text-white">${fiftyThirtyTwenty.savings.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Emergency fund, retirement, investments, debt payoff</p>
+            </div>
+          </div>
+        )}
+        
+        {budgetType === '6-jars' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-green-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-green-400 mb-2">🏠 Necessities (55%)</h3>
+              <p className="text-3xl font-bold text-white">${sixJars.necessities.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Housing, food, transportation, utilities</p>
+            </div>
+            <div className="bg-purple-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-purple-400 mb-2">🚀 Financial Freedom (10%)</h3>
+              <p className="text-3xl font-bold text-white">${sixJars.financialFreedom.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Investments, income-generating assets</p>
+            </div>
+            <div className="bg-blue-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-blue-400 mb-2">🎯 Long-Term Savings (10%)</h3>
+              <p className="text-3xl font-bold text-white">${sixJars.longTermSavings.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Emergency fund, major purchases</p>
+            </div>
+            <div className="bg-amber-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-amber-400 mb-2">📚 Education (10%)</h3>
+              <p className="text-3xl font-bold text-white">${sixJars.education.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Courses, books, skill development</p>
+            </div>
+            <div className="bg-pink-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-pink-400 mb-2">🎉 Play (10%)</h3>
+              <p className="text-3xl font-bold text-white">${sixJars.play.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Entertainment, hobbies, fun activities</p>
+            </div>
+            <div className="bg-teal-900/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-teal-400 mb-2">❤️ Give (5%)</h3>
+              <p className="text-3xl font-bold text-white">${sixJars.give.toLocaleString()}</p>
+              <p className="text-gray-300 text-sm mt-2">Charity, gifts, helping others</p>
+            </div>
+          </div>
+        )}
+        
+        <div className="mt-6 p-4 bg-gray-700 rounded-lg">
+          <h4 className="text-lg font-semibold text-white mb-2">💡 Budget Tips</h4>
+          <ul className="text-gray-300 space-y-1 text-sm">
+            <li>• Start with the 50/30/20 rule if you're new to budgeting</li>
+            <li>• The 6 jars system gives more detailed allocation for specific goals</li>
+            <li>• Adjust percentages based on your personal situation</li>
+            <li>• Track your actual spending to see how you're doing</li>
+            <li>• Review and adjust your budget monthly</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SideHustleTab = ({ businesses, onEdit, allTransactions }) => {
     const [selectedYear, setSelectedYear] = useState('all');
     const [annualData, setAnnualData] = useState([]);
@@ -2192,7 +2270,7 @@ export default function App() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditNetWorthModalOpen, setIsEditNetWorthModalOpen] = useState(false);
   const [isEditExpensesModalOpen, setIsEditExpensesModalOpen] = useState(false);
-  const [isEditIncomeModalOpen, setIsEditIncomeModalOpen] = useState(false);
+
   const [isEditCreditScoreModalOpen, setIsEditCreditScoreModalOpen] = useState(false);
   const [isEditGoalsModalOpen, setIsEditGoalsModalOpen] = useState(false);
   const [isEditInvestmentModalOpen, setIsEditInvestmentModalOpen] = useState(false);
@@ -2538,16 +2616,7 @@ export default function App() {
     handleSaveData(updatedData);
   };
   
-  const handleSaveIncome = async (newSources) => {
-    console.log("💵 Saving income sources:", newSources);
-    if (!data || !userId) {
-      console.error("❌ Cannot save income - missing data or userId");
-      return;
-    }
-    const updatedData = { ...data, income: { ...data.income, sources: newSources }};
-    console.log("💵 Updated data with income:", updatedData.income);
-    handleSaveData(updatedData);
-  };
+
   
   const handleSaveCreditScore = async (newScore) => {
     if (!data || !userId) return;
@@ -2702,6 +2771,7 @@ export default function App() {
             </div>
             <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
               <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard</button>
+              <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Calculator className="w-4 h-4 mr-2"/>Budget</button>
               <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Building className="w-4 h-4 mr-2"/>Side Hustle</button>
               <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><Briefcase className="w-4 h-4 mr-2"/>Investment</button>
               <button onClick={() => setActiveTab('visuals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center ${activeTab === 'visuals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}><AreaChart className="w-4 h-4 mr-2"/>Visuals</button>
@@ -2723,7 +2793,7 @@ export default function App() {
               <FinancialFreedomCard data={renderData} onEdit={() => setIsEditGoalsModalOpen(true)} />
               <NetWorthCard data={renderData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
               <InvestmentCard data={renderData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
-              <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditIncomeModalOpen(true)} />
+              <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} />
               <ExpensesCard data={renderData.expenses} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditExpensesModalOpen(true)} />
               <CashOnHandCard data={renderData.cashOnHand} />
               <DebtCard data={renderData.debt} />
@@ -2740,6 +2810,9 @@ export default function App() {
               <CardWithTimeframe title="Cashflow" icon={<TrendingUp/>} color="text-amber-400" data={renderData.cashflow} timeframe={timeframe} historicalDate={historicalDate} bgColor="bg-gradient-to-br from-amber-900/40 to-yellow-900/40" />
               <TransactionsCard data={data.recentTransactions} />
             </>
+          )}
+          {activeTab === 'budget' && (
+            <BudgetCalculatorTab />
           )}
           {activeTab === 'side-hustle' && (
             <SideHustleTab 
@@ -2825,12 +2898,7 @@ export default function App() {
             onSave={handleSaveExpenses} 
             categories={data.expenses.categories} 
         />}
-        {isEditIncomeModalOpen && <EditIncomeModal 
-            isOpen={isEditIncomeModalOpen} 
-            onClose={() => setIsEditIncomeModalOpen(false)} 
-            onSave={handleSaveIncome} 
-            sources={data.income.sources} 
-        />}
+        
         {isEditCreditScoreModalOpen && <EditCreditScoreModal
             isOpen={isEditCreditScoreModalOpen}
             onClose={() => setIsEditCreditScoreModalOpen(false)}
