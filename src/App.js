@@ -3194,6 +3194,11 @@ export default function App() {
   // Modal states for dashboard cards
   const [editingCard, setEditingCard] = useState(null);
   const [tempCardData, setTempCardData] = useState({});
+  
+  // Reset data states
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetStartDate, setResetStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [resetToSample, setResetToSample] = useState(false);
 
   useEffect(() => {
     const signInUser = async () => {
@@ -3336,6 +3341,147 @@ export default function App() {
         ];
         exportToCSV(`monthly_history_${timestamp}.csv`, historyData);
       }, 1500);
+    }
+  };
+
+  const openResetModal = () => {
+    setShowResetModal(true);
+    setResetStartDate(new Date().toISOString().split('T')[0]);
+    setResetToSample(false);
+  };
+
+  const closeResetModal = () => {
+    setShowResetModal(false);
+    setResetToSample(false);
+  };
+
+  const confirmResetData = async () => {
+    if (!userId) return;
+
+    let resetData;
+    
+    if (resetToSample) {
+      // Reset to sample data with new start date
+      resetData = {
+        ...initialData,
+        // Update all dates to start from the selected date
+        transactions: initialData.transactions.map(t => ({
+          ...t,
+          date: resetStartDate
+        })),
+        history: [{
+          month: resetStartDate.substring(0, 7),
+          netWorth: initialData.netWorth.total,
+          income: initialData.income.total,
+          expenses: initialData.expenses.total,
+          cashflow: initialData.cashflow.monthly,
+          businessIncome: initialData.businesses.reduce((sum, b) => sum + b.totalIncome, 0),
+          businessExpenses: initialData.businesses.reduce((sum, b) => sum + b.totalExpenses, 0),
+          investmentValue: initialData.investments.totalValue,
+          savingsRate: initialData.savingsRate.current
+        }]
+      };
+    } else {
+      // Reset to completely clean data
+      resetData = {
+        financialFreedom: {
+          targetAmount: 2000000,
+          currentInvestments: 0,
+          monthlyContribution: 0,
+          annualReturn: 7,
+        },
+        creditScore: {
+          current: 0,
+          history: []
+        },
+        cashOnHand: {
+          total: 0,
+          accounts: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
+        rainyDayFund: {
+          total: 0,
+          goal: 30000,
+          accounts: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
+        registeredAccounts: {
+          tfsa: {
+            currentBalance: 0,
+            contributionRoom: 95000,
+            contributionLimit: 95000,
+            annualContributionLimit: 7000,
+            withdrawals: 0,
+            contributionsThisYear: 0
+          },
+          rrsp: {
+            currentBalance: 0,
+            contributionRoom: 127000,
+            contributionLimit: 127000,
+            annualContributionLimit: 31560,
+            contributionsThisYear: 0,
+            carryForward: 0
+          }
+        },
+        businesses: [],
+        netWorth: {
+          total: 0,
+          breakdown: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
+        income: {
+          total: 0,
+          sources: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
+        expenses: {
+          total: 0,
+          categories: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
+        cashflow: {
+          monthly: 0,
+          history: [{ date: resetStartDate, amount: 0 }]
+        },
+        savingsRate: {
+          current: 0,
+          target: 20,
+          history: [{ date: resetStartDate, rate: 0 }]
+        },
+        goals: {
+          items: [],
+          totalTarget: 0,
+          totalProgress: 0
+        },
+        investments: {
+          totalValue: 0,
+          totalGainLoss: 0,
+          holdings: [],
+          categories: [],
+          monthlyData: []
+        },
+        transactions: [],
+        history: [{
+          month: resetStartDate.substring(0, 7),
+          netWorth: 0,
+          income: 0,
+          expenses: 0,
+          cashflow: 0,
+          businessIncome: 0,
+          businessExpenses: 0,
+          investmentValue: 0,
+          savingsRate: 0
+        }]
+      };
+    }
+
+    try {
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), resetData);
+      setData(resetData);
+      setShowResetModal(false);
+      setResetToSample(false);
+    } catch (error) {
+      console.error('Error resetting data:', error);
     }
   };
 
@@ -3510,13 +3656,20 @@ export default function App() {
 
         <footer className="text-center mt-12 text-gray-500">
           <p>Dashboard for the modern hustler. Keep building.</p>
-          <div className="flex justify-center items-center gap-4 mt-4">
+          <div className="flex justify-center items-center gap-6 mt-4">
             <p className="text-xs">User ID: {userId}</p>
             <button
               onClick={exportAllData}
               className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
             >
               Export Data to CSV
+            </button>
+            <button
+              onClick={openResetModal}
+              className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-1"
+            >
+              <Trash2 className="w-3 h-3" />
+              Reset Data
             </button>
           </div>
         </footer>
@@ -4150,6 +4303,119 @@ export default function App() {
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Save Changes
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Reset Data Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-red-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">Reset Dashboard Data</h3>
+              <button
+                onClick={closeResetModal}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-red-900/20 rounded-lg border border-red-600/30">
+                <div className="flex items-start gap-3">
+                  <div className="text-red-400 mt-0.5">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-red-400 font-semibold mb-1">Warning: Data Reset</h4>
+                    <p className="text-sm text-gray-300">
+                      This action will permanently replace your current data. Choose carefully:
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h5 className="text-white font-medium">Reset Options:</h5>
+                
+                <div className="space-y-2">
+                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50">
+                    <input
+                      type="radio"
+                      name="resetType"
+                      checked={!resetToSample}
+                      onChange={() => setResetToSample(false)}
+                      className="mt-1 text-red-400"
+                    />
+                    <div>
+                      <div className="text-white font-medium">Fresh Start (Blank Data)</div>
+                      <div className="text-xs text-gray-400">
+                        Clear everything and start with empty dashboard
+                      </div>
+                    </div>
+                  </label>
+                  
+                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50">
+                    <input
+                      type="radio"
+                      name="resetType"
+                      checked={resetToSample}
+                      onChange={() => setResetToSample(true)}
+                      className="mt-1 text-red-400"
+                    />
+                    <div>
+                      <div className="text-white font-medium">Sample Data</div>
+                      <div className="text-xs text-gray-400">
+                        Reset with example data for learning/demo purposes
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-white font-medium">
+                  Start Date for Tracking:
+                </label>
+                <input
+                  type="date"
+                  value={resetStartDate}
+                  onChange={(e) => setResetStartDate(e.target.value)}
+                  className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-red-400 focus:outline-none"
+                />
+                <p className="text-xs text-gray-400">
+                  This will be your financial tracking start date
+                </p>
+              </div>
+
+              <div className="bg-gray-700/30 rounded-lg p-3">
+                <h5 className="text-white font-medium mb-2">What will be reset:</h5>
+                <div className="text-sm space-y-1 text-gray-300">
+                  <div>• All transactions and financial data</div>
+                  <div>• Investment portfolio and holdings</div>
+                  <div>• Business income/expense records</div>
+                  <div>• Dashboard metrics and history</div>
+                  <div>• Goals and savings targets</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={closeResetModal}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmResetData}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Reset Data
               </button>
             </div>
           </Card>
