@@ -335,13 +335,13 @@ const initialData = {
     totalSavings: 85000,
     homeCurrency: 'CAD',
     exchangeRates: {
-      'USD': 0.75,
-      'EUR': 0.68,
-      'THB': 26.5,
-      'COP': 4200,
-      'PEN': 3.8,
-      'VND': 24500,
-      'MXN': 18.2
+      'USD': 0.70,        // 1 CAD = 0.70 USD (realistic rate)
+      'EUR': 0.65,        // 1 CAD = 0.65 EUR  
+      'THB': 24.5,        // 1 CAD = 24.5 Thai Baht
+      'COP': 3100,        // 1 CAD = 3,100 Colombian Pesos
+      'PEN': 2.65,        // 1 CAD = 2.65 Peruvian Soles
+      'VND': 17800,       // 1 CAD = 17,800 Vietnamese Dong
+      'MXN': 14.2         // 1 CAD = 14.2 Mexican Pesos
     },
     trips: [
       {
@@ -3427,6 +3427,10 @@ const TravelTab = ({ data, setData, userId }) => {
               <div className="text-xl font-bold text-white">${runway.averageDaily} CAD/day</div>
             </div>
           </div>
+          
+          <div className="text-xs text-blue-300 text-center mt-2">
+            💡 Multi-currency expenses automatically converted to CAD using current estimates
+          </div>
         </div>
       </Card>
 
@@ -3748,6 +3752,9 @@ const TravelTab = ({ data, setData, userId }) => {
                   <div className="text-sm text-blue-200">
                     💱 <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ≈ 
                     <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
+                  </div>
+                  <div className="text-xs text-blue-300 mt-1">
+                    * Rates are estimates. Actual conversion may vary.
                   </div>
                 </div>
               )}
