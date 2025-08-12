@@ -725,6 +725,60 @@ const EditExpensesModal = ({ isOpen, onClose, onSave, categories }) => {
     );
 };
 
+const EditIncomeModal = ({ isOpen, onClose, onSave, sources }) => {
+    const [localSources, setLocalSources] = useState(sources);
+
+    useEffect(() => {
+        setLocalSources(sources);
+    }, [isOpen, sources]);
+
+    if (!isOpen) return null;
+
+    const handleSourceChange = (id, field, value) => {
+        setLocalSources(localSources.map(source => source.id === id ? { ...source, [field]: value } : source));
+    };
+
+    const addSource = () => {
+        const newSource = { id: Date.now(), name: 'New Income Source', amount: 0, icon: 'dollar', type: 'active' };
+        setLocalSources([...localSources, newSource]);
+    };
+
+    const removeSource = (id) => {
+        setLocalSources(localSources.filter(source => source.id !== id));
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-lg">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white">Edit Income Sources</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-6 h-6" /></button>
+                </div>
+                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+                    {localSources.map(source => (
+                        <div key={source.id} className="flex items-center gap-2">
+                            <input type="text" value={source.name} onChange={e => handleSourceChange(source.id, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md" />
+                            <input type="number" value={source.amount} onChange={e => handleSourceChange(source.id, 'amount', Number(e.target.value))} className="w-32 bg-gray-700 p-2 rounded-md" />
+                            <select value={source.type} onChange={e => handleSourceChange(source.id, 'type', e.target.value)} className="bg-gray-700 p-2 rounded-md">
+                                <option value="active">Active</option>
+                                <option value="passive">Passive</option>
+                                <option value="dividend">Dividend</option>
+                            </select>
+                            <button onClick={() => removeSource(source.id)} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-4">
+                    <button onClick={addSource} className="bg-blue-600 text-white w-full py-2 rounded-md">Add Income Source</button>
+                </div>
+                <div className="mt-8 flex justify-end">
+                    <button onClick={() => { onSave(localSources); onClose(); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">Save Changes</button>
+                </div>
+            </Card>
+        </div>
+    );
+};
+
 const EditCreditScoreModal = ({ isOpen, onClose, onSave, currentScore }) => {
     const [score, setScore] = useState(currentScore);
 
@@ -1232,7 +1286,7 @@ const NetWorthCard = ({ data, onEdit }) => {
   );
 };
 
-const IncomeCard = ({ data, timeframe, historicalDate }) => {
+const IncomeCard = ({ data, timeframe, historicalDate, onEdit }) => {
     let displayTitle = "Monthly Income";
     if (timeframe === 'historical' && historicalDate) {
         const monthName = new Date(historicalDate.year, historicalDate.month).toLocaleString('default', { month: 'long' });
@@ -1242,10 +1296,13 @@ const IncomeCard = ({ data, timeframe, historicalDate }) => {
     }
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
-      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-        <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
-        {displayTitle}
-      </h2>
+      <div className="flex justify-between items-start">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+          {displayTitle}
+        </h2>
+        {onEdit && <button onClick={onEdit} className="text-gray-400 hover:text-white"><Edit size={18}/></button>}
+      </div>
       <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
       <div className="mt-4 space-y-2">
         {data.sources.map(source => (
@@ -2135,6 +2192,7 @@ export default function App() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditNetWorthModalOpen, setIsEditNetWorthModalOpen] = useState(false);
   const [isEditExpensesModalOpen, setIsEditExpensesModalOpen] = useState(false);
+  const [isEditIncomeModalOpen, setIsEditIncomeModalOpen] = useState(false);
   const [isEditCreditScoreModalOpen, setIsEditCreditScoreModalOpen] = useState(false);
   const [isEditGoalsModalOpen, setIsEditGoalsModalOpen] = useState(false);
   const [isEditInvestmentModalOpen, setIsEditInvestmentModalOpen] = useState(false);
@@ -2224,12 +2282,21 @@ export default function App() {
     
     newData.investmentPortfolio.totalValue = newData.investmentPortfolio.holdings.reduce((sum, h) => sum + ((h.shares || 0) * (h.currentPrice || 0)), 0);
 
-    // Safely update net worth breakdown
+    // Safely update only auto-calculated net worth breakdown items
     const cashItem = newData.netWorth.breakdown.find(b => b.name === 'Cash');
-    if (cashItem) cashItem.value = newData.cashOnHand.total;
+    if (cashItem) {
+      cashItem.value = newData.cashOnHand.total;
+      console.log("💰 Auto-updated Cash value:", cashItem.value);
+    }
     
     const investmentItem = newData.netWorth.breakdown.find(b => b.name === 'Investments');
-    if (investmentItem) investmentItem.value = newData.investmentPortfolio.totalValue;
+    if (investmentItem) {
+      investmentItem.value = newData.investmentPortfolio.totalValue;
+      console.log("💰 Auto-updated Investment value:", investmentItem.value);
+    }
+    
+    // Log all breakdown items to debug
+    console.log("💰 Full net worth breakdown:", newData.netWorth.breakdown);
     
     newData.netWorth.total = newData.netWorth.breakdown.reduce((sum, b) => sum + (b.value || 0), 0);
 
@@ -2471,6 +2538,17 @@ export default function App() {
     handleSaveData(updatedData);
   };
   
+  const handleSaveIncome = async (newSources) => {
+    console.log("💵 Saving income sources:", newSources);
+    if (!data || !userId) {
+      console.error("❌ Cannot save income - missing data or userId");
+      return;
+    }
+    const updatedData = { ...data, income: { ...data.income, sources: newSources }};
+    console.log("💵 Updated data with income:", updatedData.income);
+    handleSaveData(updatedData);
+  };
+  
   const handleSaveCreditScore = async (newScore) => {
     if (!data || !userId) return;
     const updatedData = { ...data, creditScore: { ...data.creditScore, current: newScore }};
@@ -2645,7 +2723,7 @@ export default function App() {
               <FinancialFreedomCard data={renderData} onEdit={() => setIsEditGoalsModalOpen(true)} />
               <NetWorthCard data={renderData.netWorth} onEdit={() => setIsEditNetWorthModalOpen(true)} />
               <InvestmentCard data={renderData.investmentPortfolio} onEdit={() => setIsEditInvestmentModalOpen(true)} />
-              <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} />
+              <IncomeCard data={renderData.income} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditIncomeModalOpen(true)} />
               <ExpensesCard data={renderData.expenses} timeframe={timeframe} historicalDate={historicalDate} onEdit={() => setIsEditExpensesModalOpen(true)} />
               <CashOnHandCard data={renderData.cashOnHand} />
               <DebtCard data={renderData.debt} />
@@ -2746,6 +2824,12 @@ export default function App() {
             onClose={() => setIsEditExpensesModalOpen(false)} 
             onSave={handleSaveExpenses} 
             categories={data.expenses.categories} 
+        />}
+        {isEditIncomeModalOpen && <EditIncomeModal 
+            isOpen={isEditIncomeModalOpen} 
+            onClose={() => setIsEditIncomeModalOpen(false)} 
+            onSave={handleSaveIncome} 
+            sources={data.income.sources} 
         />}
         {isEditCreditScoreModalOpen && <EditCreditScoreModal
             isOpen={isEditCreditScoreModalOpen}
