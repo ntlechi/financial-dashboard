@@ -6401,15 +6401,14 @@ export default function App() {
                         const newAccount = {
                           id: `account_${Date.now()}`,
                           name: 'New Account',
-                          currentBalance: 0,
-                          contributionLimit: 0,
-                          contributionRoom: 0,
+                          contributed: 0,
+                          limit: 0,
                           type: 'tax-free',
                           description: 'Custom retirement account'
                         };
                         setTempCardData({
                           ...tempCardData,
-                          retirementAccounts: [...(tempCardData.retirementAccounts || []), newAccount]
+                          accounts: [...(tempCardData.accounts || []), newAccount]
                         });
                       }}
                       className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
@@ -6419,7 +6418,7 @@ export default function App() {
                     </button>
                   </div>
 
-                  {(!tempCardData.retirementAccounts || tempCardData.retirementAccounts.length === 0) ? (
+                  {(!tempCardData.accounts || tempCardData.accounts.length === 0) ? (
                     <div className="text-center py-8 text-gray-400">
                       <div className="mb-4">
                         <div className="w-16 h-16 bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -6433,22 +6432,20 @@ export default function App() {
                           // Add default Canadian accounts as starting point
                           setTempCardData({
                             ...tempCardData,
-                            retirementAccounts: [
+                            accounts: [
                               {
                                 id: 'tfsa_default',
                                 name: 'TFSA',
-                                currentBalance: 45000,
-                                contributionLimit: 88000,
-                                contributionRoom: 43000,
+                                contributed: 45000,
+                                limit: 88000,
                                 type: 'tax-free',
                                 description: 'Tax-Free Savings Account'
                               },
                               {
                                 id: 'rrsp_default', 
                                 name: 'RRSP',
-                                currentBalance: 25000,
-                                contributionLimit: 31560,
-                                contributionRoom: 6560,
+                                contributed: 25000,
+                                limit: 31560,
                                 type: 'tax-deferred',
                                 description: 'Registered Retirement Savings Plan'
                               }
@@ -6462,7 +6459,7 @@ export default function App() {
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {tempCardData.retirementAccounts.map((account, index) => {
+                      {tempCardData.accounts.map((account, index) => {
                         const colors = [
                           'green', 'blue', 'orange', 'teal', 'indigo', 'pink'
                         ];
@@ -6475,16 +6472,16 @@ export default function App() {
                                 type="text"
                                 value={account.name}
                                 onChange={(e) => {
-                                  const updated = [...tempCardData.retirementAccounts];
+                                  const updated = [...tempCardData.accounts];
                                   updated[index] = { ...updated[index], name: e.target.value };
-                                  setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                  setTempCardData({ ...tempCardData, accounts: updated });
                                 }}
                                 className={`text-lg font-semibold text-${color}-400 bg-transparent border-none outline-none focus:bg-gray-700/50 rounded px-2 py-1`}
                               />
                               <button
                                 onClick={() => {
-                                  const updated = tempCardData.retirementAccounts.filter((_, i) => i !== index);
-                                  setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                  const updated = tempCardData.accounts.filter((_, i) => i !== index);
+                                  setTempCardData({ ...tempCardData, accounts: updated });
                                 }}
                                 className="text-red-400 hover:text-red-300 p-1"
                               >
@@ -6497,43 +6494,28 @@ export default function App() {
                                 <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
                                 <input
                                   type="number"
-                                  value={account.currentBalance}
+                                  value={account.contributed}
                                   onChange={(e) => {
-                                    const updated = [...tempCardData.retirementAccounts];
-                                    updated[index] = { ...updated[index], currentBalance: Number(e.target.value) };
-                                    setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                    const updated = [...tempCardData.accounts];
+                                    updated[index] = { ...updated[index], contributed: Number(e.target.value) };
+                                    setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
                                 />
                               </div>
 
-                              <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                  <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
-                                  <input
-                                    type="number"
-                                    value={account.contributionLimit}
-                                    onChange={(e) => {
-                                      const updated = [...tempCardData.retirementAccounts];
-                                      updated[index] = { ...updated[index], contributionLimit: Number(e.target.value) };
-                                      setTempCardData({ ...tempCardData, retirementAccounts: updated });
-                                    }}
-                                    className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
-                                  />
-                                </div>
-                                <div>
-                                  <label className="block text-sm text-gray-300 mb-1">Contribution Room</label>
-                                  <input
-                                    type="number"
-                                    value={account.contributionRoom}
-                                    onChange={(e) => {
-                                      const updated = [...tempCardData.retirementAccounts];
-                                      updated[index] = { ...updated[index], contributionRoom: Number(e.target.value) };
-                                      setTempCardData({ ...tempCardData, retirementAccounts: updated });
-                                    }}
-                                    className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
-                                  />
-                                </div>
+                              <div>
+                                <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
+                                <input
+                                  type="number"
+                                  value={account.limit}
+                                  onChange={(e) => {
+                                    const updated = [...tempCardData.accounts];
+                                    updated[index] = { ...updated[index], limit: Number(e.target.value) };
+                                    setTempCardData({ ...tempCardData, accounts: updated });
+                                  }}
+                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                />
                               </div>
 
                               <div>
@@ -6541,9 +6523,9 @@ export default function App() {
                                 <select
                                   value={account.type}
                                   onChange={(e) => {
-                                    const updated = [...tempCardData.retirementAccounts];
+                                    const updated = [...tempCardData.accounts];
                                     updated[index] = { ...updated[index], type: e.target.value };
-                                    setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                    setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
                                 >
@@ -6560,9 +6542,9 @@ export default function App() {
                                   type="text"
                                   value={account.description}
                                   onChange={(e) => {
-                                    const updated = [...tempCardData.retirementAccounts];
+                                    const updated = [...tempCardData.accounts];
                                     updated[index] = { ...updated[index], description: e.target.value };
-                                    setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                    setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   placeholder="e.g., Tax-Free Savings Account"
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
@@ -6573,12 +6555,12 @@ export default function App() {
                               <div>
                                 <div className="flex justify-between text-sm text-gray-400 mb-1">
                                   <span>Contribution Room Used</span>
-                                  <span>{Math.round((account.currentBalance / account.contributionLimit) * 100) || 0}%</span>
+                                  <span>{Math.round((account.contributed / account.limit) * 100) || 0}%</span>
                                 </div>
                                 <div className="w-full bg-gray-700 rounded-full h-2">
                                   <div 
                                     className={`bg-${color}-500 h-2 rounded-full transition-all duration-300`}
-                                    style={{ width: `${Math.min((account.currentBalance / account.contributionLimit) * 100, 100) || 0}%` }}
+                                    style={{ width: `${Math.min((account.contributed / account.limit) * 100, 100) || 0}%` }}
                                   ></div>
                                 </div>
                               </div>
@@ -6737,148 +6719,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* Retirement Accounts Modal */}
-              {editingCard === 'registeredAccounts' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-lg font-semibold text-white">Retirement Accounts</h4>
-                    <button
-                      onClick={() => {
-                        const newAccount = {
-                          id: Date.now().toString(),
-                          name: 'New Account',
-                          contributed: 0,
-                          limit: 10000,
-                          goal: 10000,
-                          type: 'tax-deferred',
-                          description: 'Retirement savings account'
-                        };
-                        setTempCardData({
-                          ...tempCardData,
-                          accounts: [...(tempCardData.accounts || []), newAccount]
-                        });
-                      }}
-                      className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                    >
-                      Add Account
-                    </button>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {(tempCardData.accounts || []).map((account, index) => (
-                      <div key={account.id} className="border border-gray-600 rounded-lg p-4 space-y-3">
-                        <div className="flex justify-between items-center">
-                          <h5 className="text-white font-medium">Account {index + 1}</h5>
-                          <button
-                            onClick={() => {
-                              setTempCardData({
-                                ...tempCardData,
-                                accounts: tempCardData.accounts.filter(a => a.id !== account.id)
-                              });
-                            }}
-                            className="text-red-400 hover:text-red-300 p-1 rounded transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">Account Name</label>
-                            <input
-                              type="text"
-                              value={account.name || ''}
-                              onChange={(e) => {
-                                const updatedAccounts = tempCardData.accounts.map(a => 
-                                  a.id === account.id ? {...a, name: e.target.value} : a
-                                );
-                                setTempCardData({...tempCardData, accounts: updatedAccounts});
-                              }}
-                              className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-purple-400 focus:outline-none"
-                              placeholder="e.g., TFSA, 401(k), IRA"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">Account Type</label>
-                            <select
-                              value={account.type || 'tax-deferred'}
-                              onChange={(e) => {
-                                const updatedAccounts = tempCardData.accounts.map(a => 
-                                  a.id === account.id ? {...a, type: e.target.value} : a
-                                );
-                                setTempCardData({...tempCardData, accounts: updatedAccounts});
-                              }}
-                              className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-purple-400 focus:outline-none"
-                            >
-                              <option value="tax-free">Tax-Free</option>
-                              <option value="tax-deferred">Tax-Deferred</option>
-                              <option value="pension">Pension</option>
-                              <option value="savings">Savings</option>
-                            </select>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">Contributed Amount</label>
-                            <input
-                              type="number"
-                              value={account.contributed || ''}
-                              onChange={(e) => {
-                                const updatedAccounts = tempCardData.accounts.map(a => 
-                                  a.id === account.id ? {...a, contributed: e.target.value === '' ? 0 : Number(e.target.value)} : a
-                                );
-                                setTempCardData({...tempCardData, accounts: updatedAccounts});
-                              }}
-                              className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-purple-400 focus:outline-none"
-                              placeholder="0"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
-                            <input
-                              type="number"
-                              value={account.limit || ''}
-                              onChange={(e) => {
-                                const updatedAccounts = tempCardData.accounts.map(a => 
-                                  a.id === account.id ? {...a, limit: e.target.value === '' ? 0 : Number(e.target.value)} : a
-                                );
-                                setTempCardData({...tempCardData, accounts: updatedAccounts});
-                              }}
-                              className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-purple-400 focus:outline-none"
-                              placeholder="10000"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Description</label>
-                          <input
-                            type="text"
-                            value={account.description || ''}
-                            onChange={(e) => {
-                              const updatedAccounts = tempCardData.accounts.map(a => 
-                                a.id === account.id ? {...a, description: e.target.value} : a
-                              );
-                              setTempCardData({...tempCardData, accounts: updatedAccounts});
-                            }}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-purple-400 focus:outline-none"
-                            placeholder="e.g., Tax-free growth and withdrawals"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {(!tempCardData.accounts || tempCardData.accounts.length === 0) && (
-                      <div className="text-center py-8 text-gray-400">
-                        <ShieldCheck className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p>No retirement accounts yet</p>
-                        <p className="text-sm">Click "Add Account" to get started</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+
             </div>
             
             <div className="mt-6 flex justify-end gap-2">
