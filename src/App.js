@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
 
@@ -3614,6 +3614,12 @@ const TravelTab = ({ data, setData, userId }) => {
   const [editingTrip, setEditingTrip] = useState(null);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
+  const [showRunwayModal, setShowRunwayModal] = useState(false);
+  const [runwaySettings, setRunwaySettings] = useState({
+    totalSavings: data.travel?.totalSavings || 0,
+    averageDailySpend: data.travel?.runwayCalculation?.averageDailySpend || 425,
+    homeCurrency: data.travel?.homeCurrency || 'CAD'
+  });
   
   const [newTrip, setNewTrip] = useState({
     name: '',
@@ -3664,7 +3670,30 @@ const TravelTab = ({ data, setData, userId }) => {
     }
   };
 
-     const handleAddExpense = async () => {
+     const handleSaveRunwaySettings = async () => {
+     try {
+       const updatedData = {
+         ...data,
+         travel: {
+           ...data.travel,
+           totalSavings: Number(runwaySettings.totalSavings),
+           homeCurrency: runwaySettings.homeCurrency,
+           runwayCalculation: {
+             ...data.travel.runwayCalculation,
+             averageDailySpend: Number(runwaySettings.averageDailySpend)
+           }
+         }
+       };
+       
+       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       setData(updatedData);
+       setShowRunwayModal(false);
+     } catch (error) {
+       console.error('Error saving runway settings:', error);
+     }
+   };
+
+   const handleAddExpense = async () => {
      if (!newExpense.description || !newExpense.amount || !selectedTrip) return;
 
      const amount = parseFloat(newExpense.amount);
@@ -3768,7 +3797,15 @@ const TravelTab = ({ data, setData, userId }) => {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
-      <Card className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30">
+      <Card className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30 relative">
+        <button
+          onClick={() => setShowRunwayModal(true)}
+          className="absolute top-4 right-4 p-2 bg-blue-700/20 hover:bg-blue-600/30 rounded-lg transition-colors"
+          title="Edit Travel Runway Settings"
+        >
+          <Edit className="w-4 h-4 text-blue-300" />
+        </button>
+        
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
           <p className="text-blue-200 mb-6">How long can you keep traveling with your current funds?</p>
@@ -4258,6 +4295,110 @@ const TravelTab = ({ data, setData, userId }) => {
                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
                  Save Changes
+               </button>
+             </div>
+           </Card>
+         </div>
+       )}
+
+       {/* Travel Runway Settings Modal */}
+       {showRunwayModal && (
+         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+           <Card className="w-full max-w-md border-blue-500/30">
+             <div className="flex justify-between items-center mb-4">
+               <h3 className="text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
+               <button
+                 onClick={() => setShowRunwayModal(false)}
+                 className="text-gray-400 hover:text-white"
+               >
+                 <X className="w-5 h-5" />
+               </button>
+             </div>
+             
+             <div className="space-y-4">
+               <div>
+                 <label className="block text-sm text-gray-300 mb-1">Total Travel Savings</label>
+                 <input
+                   type="number"
+                   placeholder="50000"
+                   value={runwaySettings.totalSavings || ''}
+                   onChange={(e) => setRunwaySettings({
+                     ...runwaySettings, 
+                     totalSavings: e.target.value === '' ? 0 : Number(e.target.value)
+                   })}
+                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                 />
+                 <p className="text-xs text-gray-400 mt-1">Your total funds available for travel</p>
+               </div>
+
+               <div>
+                 <label className="block text-sm text-gray-300 mb-1">Average Daily Spend</label>
+                 <input
+                   type="number"
+                   placeholder="425"
+                   value={runwaySettings.averageDailySpend || ''}
+                   onChange={(e) => setRunwaySettings({
+                     ...runwaySettings, 
+                     averageDailySpend: e.target.value === '' ? 0 : Number(e.target.value)
+                   })}
+                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                 />
+                 <p className="text-xs text-gray-400 mt-1">Your average daily spending while traveling</p>
+               </div>
+
+               <div>
+                 <label className="block text-sm text-gray-300 mb-1">Home Currency</label>
+                 <select
+                   value={runwaySettings.homeCurrency}
+                   onChange={(e) => setRunwaySettings({
+                     ...runwaySettings, 
+                     homeCurrency: e.target.value
+                   })}
+                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                 >
+                   <option value="CAD">CAD - Canadian Dollar</option>
+                   <option value="USD">USD - US Dollar</option>
+                   <option value="EUR">EUR - Euro</option>
+                   <option value="GBP">GBP - British Pound</option>
+                   <option value="AUD">AUD - Australian Dollar</option>
+                   <option value="NZD">NZD - New Zealand Dollar</option>
+                 </select>
+                 <p className="text-xs text-gray-400 mt-1">Your primary currency for calculations</p>
+               </div>
+
+               {/* Preview */}
+               <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
+                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Preview</div>
+                 <div className="grid grid-cols-2 gap-3 text-sm">
+                   <div>
+                     <div className="text-blue-300 font-bold">
+                       {Math.floor((runwaySettings.totalSavings || 0) / (runwaySettings.averageDailySpend || 1))} days
+                     </div>
+                     <div className="text-blue-200">Remaining</div>
+                   </div>
+                   <div>
+                     <div className="text-blue-300 font-bold">
+                       {Math.floor(((runwaySettings.totalSavings || 0) / (runwaySettings.averageDailySpend || 1)) / 30)} months
+                     </div>
+                     <div className="text-blue-200">Of Travel</div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             
+             <div className="mt-6 flex justify-end gap-3">
+               <button
+                 onClick={() => setShowRunwayModal(false)}
+                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+               >
+                 Cancel
+               </button>
+               <button
+                 onClick={handleSaveRunwaySettings}
+                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+               >
+                 <Save className="w-4 h-4" />
+                 Save Settings
                </button>
              </div>
            </Card>
