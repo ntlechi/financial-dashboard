@@ -4879,21 +4879,7 @@ export default function App() {
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
-    console.log('🔍 openCardEditor called:', { 
-      cardType, 
-      windowHeight: window.innerHeight, 
-      scrollY: window.scrollY,
-      documentScrollTop: document.documentElement.scrollTop 
-    });
-    
     setEditingCard(cardType);
-    
-    // Force viewport reset on modal open for mobile
-    if (window.innerWidth <= 768) {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      console.log('📱 Mobile --vh set to:', vh + 'px');
-    }
     
     // Provide safe defaults for different card types
     if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
@@ -4938,23 +4924,6 @@ export default function App() {
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
-    
-    // Reset mobile viewport on modal close
-    if (window.innerWidth <= 768) {
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-    }
-    
-    // Reset floating button visibility
-    const floatingBtn = document.querySelector('.floating-quick-btn');
-    if (floatingBtn) {
-      floatingBtn.style.visibility = 'visible';
-      floatingBtn.style.opacity = '1';
-      floatingBtn.style.pointerEvents = 'auto';
-      floatingBtn.style.zIndex = '99999';
-    }
-    
-    // Reset mobile viewport on modal close
-    setTimeout(resetMobileViewport, 100);
   };
 
   const saveCardData = async () => {
@@ -5816,32 +5785,8 @@ export default function App() {
 
       {/* Card Editing Modals */}
       {editingCard && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: '100vh',
-            zIndex: 9999,
-            padding: '1rem'
-          }}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              closeCardEditor();
-            }
-          }}
-        >
-          <Card 
-            className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
-            style={{
-              margin: 0
-            }}
-          >
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
