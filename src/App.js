@@ -4918,10 +4918,19 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
-    // Force viewport reset on modal open for mobile
+    // Force viewport reset on modal open for mobile - AGGRESSIVE iOS FIX
     if (window.innerWidth <= 768) {
+      // Update --vh IMMEDIATELY
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-      window.scrollTo(0, window.scrollY); // Maintain current position
+      
+      // Force scroll to prevent positioning issues on iOS Chrome
+      window.scrollTo(0, 0);
+      
+      // Force body to be non-scrollable while modal is open
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = '0';
     }
     
     // Provide safe defaults for different card types
@@ -4967,6 +4976,14 @@ export default function App() {
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
+    
+    // Restore body scroll and positioning on mobile
+    if (window.innerWidth <= 768) {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    }
     
     // Reset floating button visibility
     const floatingBtn = document.querySelector('.floating-quick-btn');
@@ -5841,20 +5858,30 @@ export default function App() {
       {/* Card Editing Modals */}
       {editingCard && (
         <div 
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          className="z-50"
           style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            // Use the custom --vh property for height (iOS fix)
+            top: '0px',
+            left: '0px',
+            right: '0px',
+            bottom: '0px',
+            width: '100vw',
             height: 'calc(var(--vh, 1vh) * 100)',
-            zIndex: 9999,
-            padding: '1rem' // Add padding to prevent modal touching edges
+            zIndex: 99999,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            overflow: 'hidden'
           }}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              closeCardEditor();
+            }
+          }}
         >
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
