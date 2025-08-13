@@ -5051,6 +5051,14 @@ export default function App() {
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
+    
+    // Ensure page scroll is reset and viewport is clean
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.height = '';
+    }, 100);
   };
 
   const saveCardData = async () => {
@@ -5934,7 +5942,10 @@ export default function App() {
 
       {/* Card Editing Modals */}
       {editingCard && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+        >
           <Card className="w-full max-w-2xl border-blue-500/30 max-h-[85vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
