@@ -5056,7 +5056,20 @@ export default function App() {
   const saveCardData = async () => {
     if (!editingCard || !data) return;
     
-    const updatedData = { ...data, [editingCard]: tempCardData };
+    let updatedData;
+    
+    // Special handling for savings rate target (only update the target, not the entire savingsRate object)
+    if (editingCard === 'savingsRateTarget') {
+      updatedData = { 
+        ...data, 
+        savingsRate: { 
+          ...data.savingsRate, 
+          target: tempCardData.target 
+        } 
+      };
+    } else {
+      updatedData = { ...data, [editingCard]: tempCardData };
+    }
     
     try {
       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
