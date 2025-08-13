@@ -5935,7 +5935,7 @@ export default function App() {
       {/* Card Editing Modals */}
       {editingCard && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto">
+          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[85vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
