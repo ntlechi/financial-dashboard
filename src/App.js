@@ -1246,7 +1246,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={currentAge}
-              onChange={(e) => setCurrentAge(Number(e.target.value))}
+              onChange={(e) => setCurrentAge(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1255,7 +1255,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={targetAmount}
-              onChange={(e) => setTargetAmount(Number(e.target.value))}
+              onChange={(e) => setTargetAmount(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1264,7 +1264,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={currentSavings}
-              onChange={(e) => setCurrentSavings(Number(e.target.value))}
+              onChange={(e) => setCurrentSavings(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1273,7 +1273,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={monthlyContribution}
-              onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+              onChange={(e) => setMonthlyContribution(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1282,7 +1282,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={annualReturn}
-              onChange={(e) => setAnnualReturn(Number(e.target.value))}
+              onChange={(e) => setAnnualReturn(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1291,7 +1291,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={monthlyExpenses}
-              onChange={(e) => setMonthlyExpenses(Number(e.target.value))}
+              onChange={(e) => setMonthlyExpenses(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1300,7 +1300,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={passiveIncome}
-              onChange={(e) => setPassiveIncome(Number(e.target.value))}
+              onChange={(e) => setPassiveIncome(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -1487,7 +1487,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.balance}
                         onChange={(e) => {
                           const newDebts = [...debts];
-                          newDebts[index].balance = Number(e.target.value);
+                          newDebts[index].balance = e.target.value === '' ? 0 : Number(e.target.value);
                           setDebts(newDebts);
                         }}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -1501,7 +1501,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.interestRate}
                         onChange={(e) => {
                           const newDebts = [...debts];
-                          newDebts[index].interestRate = Number(e.target.value);
+                          newDebts[index].interestRate = e.target.value === '' ? 0 : Number(e.target.value);
                           setDebts(newDebts);
                         }}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -1514,7 +1514,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.minPayment}
                         onChange={(e) => {
                           const newDebts = [...debts];
-                          newDebts[index].minPayment = Number(e.target.value);
+                          newDebts[index].minPayment = e.target.value === '' ? 0 : Number(e.target.value);
                           setDebts(newDebts);
                         }}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -1531,7 +1531,7 @@ const DebtPayoffCalculator = () => {
               <input
                 type="number"
                 value={extraPayment}
-                onChange={(e) => setExtraPayment(Number(e.target.value))}
+                onChange={(e) => setExtraPayment(e.target.value === '' ? 0 : Number(e.target.value))}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
                 placeholder="Extra payment amount"
               />
@@ -1709,7 +1709,7 @@ const BudgetCalculatorTab = () => {
           <input
             type="number"
             value={monthlyIncome}
-            onChange={(e) => setMonthlyIncome(Number(e.target.value))}
+            onChange={(e) => setMonthlyIncome(e.target.value === '' ? 0 : Number(e.target.value))}
             className="w-full bg-gray-700 text-white text-xl p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
             placeholder="Enter your monthly income"
           />
@@ -5546,11 +5546,11 @@ export default function App() {
                               <input
                                 type="number"
                                 placeholder="10000"
-                                value={account.balance || 0}
+                                value={account.balance || ''}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, balance: Number(e.target.value) || 0};
+                                  updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -5562,11 +5562,11 @@ export default function App() {
                                 type="number"
                                 step="0.1"
                                 placeholder="19.9"
-                                value={account.interestRate || 0}
+                                value={account.interestRate || ''}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, interestRate: Number(e.target.value) || 0};
+                                  updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -5577,11 +5577,11 @@ export default function App() {
                               <input
                                 type="number"
                                 placeholder="200"
-                                value={account.minPayment || 0}
+                                value={account.minPayment || ''}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, minPayment: Number(e.target.value) || 0};
+                                  updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
