@@ -6391,157 +6391,209 @@ export default function App() {
 
               {/* Cash Flow Modal - REMOVED: Cash Flow is calculated from Income - Expenses */}
 
-              {/* Registered Accounts Modal */}
+              {/* Retirement Accounts Modal - Fully Editable System */}
               {editingCard === 'registeredAccounts' && (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* TFSA Section */}
-                    <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-                      <h4 className="text-lg font-semibold text-green-400 mb-3">TFSA</h4>
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
-                          <input
-                            type="number"
-                            value={tempCardData.tfsa?.currentBalance || ''}
-                            onChange={(e) => setTempCardData({
-                              ...tempCardData,
-                              tfsa: {...tempCardData.tfsa, currentBalance: Number(e.target.value)}
-                            })}
-                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Contribution Room Available</label>
-                          <input
-                            type="number"
-                            value={tempCardData.tfsa?.contributionRoom || ''}
-                            onChange={(e) => setTempCardData({
-                              ...tempCardData,
-                              tfsa: {...tempCardData.tfsa, contributionRoom: Number(e.target.value)}
-                            })}
-                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Total Contribution Limit</label>
-                          <input
-                            type="number"
-                            value={tempCardData.tfsa?.contributionLimit || ''}
-                            onChange={(e) => setTempCardData({
-                              ...tempCardData,
-                              tfsa: {...tempCardData.tfsa, contributionLimit: Number(e.target.value)}
-                            })}
-                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">Annual Limit</label>
-                            <input
-                              type="number"
-                              value={tempCardData.tfsa?.annualContributionLimit || ''}
-                              onChange={(e) => setTempCardData({
-                                ...tempCardData,
-                                tfsa: {...tempCardData.tfsa, annualContributionLimit: Number(e.target.value)}
-                              })}
-                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">This Year</label>
-                            <input
-                              type="number"
-                              value={tempCardData.tfsa?.contributionsThisYear || ''}
-                              onChange={(e) => setTempCardData({
-                                ...tempCardData,
-                                tfsa: {...tempCardData.tfsa, contributionsThisYear: Number(e.target.value)}
-                              })}
-                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-500 focus:outline-none"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold text-purple-400">Manage Retirement Accounts</h3>
+                    <button
+                      onClick={() => {
+                        const newAccount = {
+                          id: `account_${Date.now()}`,
+                          name: 'New Account',
+                          currentBalance: 0,
+                          contributionLimit: 0,
+                          contributionRoom: 0,
+                          type: 'tax-free',
+                          description: 'Custom retirement account'
+                        };
+                        setTempCardData({
+                          ...tempCardData,
+                          retirementAccounts: [...(tempCardData.retirementAccounts || []), newAccount]
+                        });
+                      }}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Account
+                    </button>
+                  </div>
 
-                    {/* RRSP Section */}
-                    <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
-                      <h4 className="text-lg font-semibold text-blue-400 mb-3">RRSP</h4>
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
-                          <input
-                            type="number"
-                            value={tempCardData.rrsp?.currentBalance || ''}
-                            onChange={(e) => setTempCardData({
-                              ...tempCardData,
-                              rrsp: {...tempCardData.rrsp, currentBalance: Number(e.target.value)}
-                            })}
-                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                          />
+                  {(!tempCardData.retirementAccounts || tempCardData.retirementAccounts.length === 0) ? (
+                    <div className="text-center py-8 text-gray-400">
+                      <div className="mb-4">
+                        <div className="w-16 h-16 bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Wallet className="w-8 h-8 text-purple-400" />
                         </div>
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Contribution Room Available</label>
-                          <input
-                            type="number"
-                            value={tempCardData.rrsp?.contributionRoom || ''}
-                            onChange={(e) => setTempCardData({
-                              ...tempCardData,
-                              rrsp: {...tempCardData.rrsp, contributionRoom: Number(e.target.value)}
-                            })}
-                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm text-gray-300 mb-1">Total Contribution Limit</label>
-                          <input
-                            type="number"
-                            value={tempCardData.rrsp?.contributionLimit || ''}
-                            onChange={(e) => setTempCardData({
-                              ...tempCardData,
-                              rrsp: {...tempCardData.rrsp, contributionLimit: Number(e.target.value)}
-                            })}
-                            className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">This Year</label>
-                            <input
-                              type="number"
-                              value={tempCardData.rrsp?.contributionsThisYear || ''}
-                              onChange={(e) => setTempCardData({
-                                ...tempCardData,
-                                rrsp: {...tempCardData.rrsp, contributionsThisYear: Number(e.target.value)}
-                              })}
-                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm text-gray-300 mb-1">Carry Forward</label>
-                            <input
-                              type="number"
-                              value={tempCardData.rrsp?.carryForward || ''}
-                              onChange={(e) => setTempCardData({
-                                ...tempCardData,
-                                rrsp: {...tempCardData.rrsp, carryForward: Number(e.target.value)}
-                              })}
-                              className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                            />
-                          </div>
-                        </div>
+                        <h4 className="text-lg font-semibold mb-2">No Retirement Accounts</h4>
+                        <p className="text-sm">Add your retirement accounts like TFSA, RRSP, 401(k), IRA, etc.</p>
                       </div>
+                      <button
+                        onClick={() => {
+                          // Add default Canadian accounts as starting point
+                          setTempCardData({
+                            ...tempCardData,
+                            retirementAccounts: [
+                              {
+                                id: 'tfsa_default',
+                                name: 'TFSA',
+                                currentBalance: 45000,
+                                contributionLimit: 88000,
+                                contributionRoom: 43000,
+                                type: 'tax-free',
+                                description: 'Tax-Free Savings Account'
+                              },
+                              {
+                                id: 'rrsp_default', 
+                                name: 'RRSP',
+                                currentBalance: 25000,
+                                contributionLimit: 31560,
+                                contributionRoom: 6560,
+                                type: 'tax-deferred',
+                                description: 'Registered Retirement Savings Plan'
+                              }
+                            ]
+                          });
+                        }}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+                      >
+                        Add Default Accounts (TFSA & RRSP)
+                      </button>
                     </div>
-                  </div>
-                  
-                  <div className="mt-4 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-                    <div className="text-red-400 font-semibold mb-1">Canadian Tax-Advantaged Accounts</div>
-                    <div className="text-sm text-gray-300">
-                      Total Registered: ${((tempCardData.tfsa?.currentBalance || 0) + (tempCardData.rrsp?.currentBalance || 0)).toLocaleString()} • 
-                      Combined Room: ${((tempCardData.tfsa?.contributionRoom || 0) + (tempCardData.rrsp?.contributionRoom || 0)).toLocaleString()}
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {tempCardData.retirementAccounts.map((account, index) => {
+                        const colors = [
+                          'green', 'blue', 'orange', 'teal', 'indigo', 'pink'
+                        ];
+                        const color = colors[index % colors.length];
+                        
+                        return (
+                          <div key={account.id} className={`bg-${color}-900/20 rounded-lg p-4 border border-${color}-600/30 relative`}>
+                            <div className="flex justify-between items-start mb-3">
+                              <input
+                                type="text"
+                                value={account.name}
+                                onChange={(e) => {
+                                  const updated = [...tempCardData.retirementAccounts];
+                                  updated[index] = { ...updated[index], name: e.target.value };
+                                  setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                }}
+                                className={`text-lg font-semibold text-${color}-400 bg-transparent border-none outline-none focus:bg-gray-700/50 rounded px-2 py-1`}
+                              />
+                              <button
+                                onClick={() => {
+                                  const updated = tempCardData.retirementAccounts.filter((_, i) => i !== index);
+                                  setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                }}
+                                className="text-red-400 hover:text-red-300 p-1"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+
+                            <div className="space-y-3">
+                              <div>
+                                <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
+                                <input
+                                  type="number"
+                                  value={account.currentBalance}
+                                  onChange={(e) => {
+                                    const updated = [...tempCardData.retirementAccounts];
+                                    updated[index] = { ...updated[index], currentBalance: Number(e.target.value) };
+                                    setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                  }}
+                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
+                                  <input
+                                    type="number"
+                                    value={account.contributionLimit}
+                                    onChange={(e) => {
+                                      const updated = [...tempCardData.retirementAccounts];
+                                      updated[index] = { ...updated[index], contributionLimit: Number(e.target.value) };
+                                      setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                    }}
+                                    className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm text-gray-300 mb-1">Contribution Room</label>
+                                  <input
+                                    type="number"
+                                    value={account.contributionRoom}
+                                    onChange={(e) => {
+                                      const updated = [...tempCardData.retirementAccounts];
+                                      updated[index] = { ...updated[index], contributionRoom: Number(e.target.value) };
+                                      setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                    }}
+                                    className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-sm text-gray-300 mb-1">Account Type</label>
+                                <select
+                                  value={account.type}
+                                  onChange={(e) => {
+                                    const updated = [...tempCardData.retirementAccounts];
+                                    updated[index] = { ...updated[index], type: e.target.value };
+                                    setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                  }}
+                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                >
+                                  <option value="tax-free">Tax-Free</option>
+                                  <option value="tax-deferred">Tax-Deferred</option>
+                                  <option value="pension">Pension</option>
+                                  <option value="savings">Savings</option>
+                                </select>
+                              </div>
+
+                              <div>
+                                <label className="block text-sm text-gray-300 mb-1">Description</label>
+                                <input
+                                  type="text"
+                                  value={account.description}
+                                  onChange={(e) => {
+                                    const updated = [...tempCardData.retirementAccounts];
+                                    updated[index] = { ...updated[index], description: e.target.value };
+                                    setTempCardData({ ...tempCardData, retirementAccounts: updated });
+                                  }}
+                                  placeholder="e.g., Tax-Free Savings Account"
+                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                />
+                              </div>
+
+                              {/* Progress Bar */}
+                              <div>
+                                <div className="flex justify-between text-sm text-gray-400 mb-1">
+                                  <span>Contribution Room Used</span>
+                                  <span>{Math.round((account.currentBalance / account.contributionLimit) * 100) || 0}%</span>
+                                </div>
+                                <div className="w-full bg-gray-700 rounded-full h-2">
+                                  <div 
+                                    className={`bg-${color}-500 h-2 rounded-full transition-all duration-300`}
+                                    style={{ width: `${Math.min((account.currentBalance / account.contributionLimit) * 100, 100) || 0}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+
+                              {/* Account Type Badge */}
+                              <div className={`inline-block px-2 py-1 bg-${color}-600/20 text-${color}-400 text-xs rounded border border-${color}-600/30`}>
+                                {account.type.charAt(0).toUpperCase() + account.type.slice(1).replace('-', ' ')}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  </div>
-                </>
+                  )}
+                </div>
               )}
 
               {/* Goals Modal */}
