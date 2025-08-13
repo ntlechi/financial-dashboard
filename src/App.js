@@ -504,8 +504,17 @@ const SavingsRateCard = ({ data, onEdit }) => {
           <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
           Savings Rate
         </h2>
-        <div className="text-xs text-gray-500 px-2 py-1 bg-gray-700/50 rounded">
-          Auto-calculated
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-gray-500 px-2 py-1 bg-gray-700/50 rounded">
+            Auto-calculated
+          </div>
+          <button
+            onClick={() => onEdit('savingsRateTarget', data)}
+            className="text-gray-400 hover:text-blue-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+            title="Edit target savings rate"
+          >
+            <Target className="w-4 h-4" />
+          </button>
         </div>
       </div>
       
@@ -5917,6 +5926,7 @@ export default function App() {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
+                     editingCard === 'savingsRateTarget' ? 'Savings Rate Target' :
                      editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
                      editingCard === 'creditScore' ? 'Credit Score' :
                      editingCard === 'netWorth' ? 'Net Worth' :
@@ -6216,7 +6226,40 @@ export default function App() {
                 </>
               )}
 
-              {/* Savings Rate - Auto-calculated, no manual editing */}
+              {/* Savings Rate Target Modal */}
+              {editingCard === 'savingsRateTarget' && (
+                <div>
+                  <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
+                    <div className="text-blue-400 font-semibold text-sm mb-1">Current Rate (Auto-calculated)</div>
+                    <div className="text-2xl font-bold text-blue-400">{data.savingsRate.current}%</div>
+                    <div className="text-xs text-gray-300 mt-1">
+                      Based on your actual income and expenses from transactions
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Target Savings Rate %</label>
+                    <input
+                      type="number"
+                      value={tempCardData.target || ''}
+                      onChange={(e) => setTempCardData({...tempCardData, target: Number(e.target.value)})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                      placeholder="e.g., 50"
+                      min="0"
+                      max="100"
+                    />
+                    <div className="mt-2 text-xs text-gray-400">
+                      <div className="grid grid-cols-1 gap-1">
+                        <div>💡 <strong>Common targets:</strong></div>
+                        <div>• 20% - Traditional advice</div>
+                        <div>• 30-40% - Aggressive saving</div>
+                        <div>• 50%+ - FIRE/Early retirement</div>
+                        <div>• 60%+ - Digital nomad lifestyle</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Rainy Day Fund Modal */}
               {editingCard === 'rainyDayFund' && (
