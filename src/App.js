@@ -4487,27 +4487,51 @@ export default function App() {
             transform: scale(1);
           }
           
-          /* Mobile modal positioning fix */
-          .fixed.inset-0 {
+          /* Mobile modal positioning fix - CRITICAL */
+          .modal-container {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             right: 0 !important;
             bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             padding: 1rem !important;
-            z-index: 50 !important;
+            z-index: 9999 !important;
+            background: rgba(0, 0, 0, 0.5) !important;
           }
           
-          /* Mobile modal content */
-          .fixed.inset-0 > div {
-            max-height: 90vh !important;
+          /* Mobile modal content - FORCE CENTER */
+          .modal-container > div {
+            position: relative !important;
+            max-height: 85vh !important;
             overflow-y: auto !important;
             margin: auto !important;
             width: 100% !important;
             max-width: calc(100vw - 2rem) !important;
+            transform: translate(0, 0) !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+          }
+          
+          /* Floating button - ALWAYS VISIBLE */
+          .floating-quick-btn {
+            position: fixed !important;
+            bottom: 1.5rem !important;
+            right: 1.5rem !important;
+            z-index: 9998 !important;
+            width: 3.5rem !important;
+            height: 3.5rem !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
           }
         }
     `;
@@ -5469,7 +5493,7 @@ export default function App() {
       {/* Floating Quick Expense Button */}
       <button
         onClick={openQuickExpense}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-40 group"
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group floating-quick-btn"
         title="Quick Expense Log"
       >
         <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
@@ -5477,7 +5501,7 @@ export default function App() {
 
       {/* Quick Expense Modal */}
       {showQuickExpense && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-container">
           <Card className="w-full max-w-md border-red-500/30">
             <div className="flex justify-between items-center mb-4">
               <div>
@@ -5559,7 +5583,7 @@ export default function App() {
 
       {/* Card Editing Modals */}
       {editingCard && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-container">
           <Card className="w-full max-w-2xl border-blue-500/30 max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
