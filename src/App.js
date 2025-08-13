@@ -3165,71 +3165,71 @@ const InvestmentTab = ({ data, setData, userId }) => {
       </div>
 
       {/* Enhanced Dividend Tracker */}
-      <Card className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border-purple-500/30">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-          <Repeat className="w-6 h-6 mr-3 text-purple-400" />
-          💰 Dividend Income Tracker
-        </h3>
+              <Card className="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-500/30">
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+            <Repeat className="w-6 h-6 mr-3 text-green-400" />
+            💰 Dividend Income Tracker
+          </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-purple-800/30 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-purple-300">
-              ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-green-800/30 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-green-300">
+                ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
+              </div>
+              <div className="text-sm text-green-200">Monthly Income</div>
             </div>
-            <div className="text-sm text-purple-200">Monthly Income</div>
-          </div>
-          
-          <div className="bg-purple-800/30 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-purple-300">
-              ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
+            
+            <div className="bg-green-800/30 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-green-300">
+                ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
+              </div>
+              <div className="text-sm text-green-200">Quarterly Income</div>
             </div>
-            <div className="text-sm text-purple-200">Quarterly Income</div>
-          </div>
-          
-          <div className="bg-purple-800/30 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-purple-300">
-              ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
+            
+            <div className="bg-green-800/30 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-green-300">
+                ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
+              </div>
+              <div className="text-sm text-green-200">Annual Income</div>
             </div>
-            <div className="text-sm text-purple-200">Annual Income</div>
-          </div>
-          
-          <div className="bg-purple-800/30 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-purple-300">
-              {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
+            
+            <div className="bg-green-800/30 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-green-300">
+                {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
+              </div>
+              <div className="text-sm text-green-200">Portfolio Yield</div>
             </div>
-            <div className="text-sm text-purple-200">Portfolio Yield</div>
           </div>
-        </div>
         
         {/* Dividend Calendar & Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Upcoming Dividends */}
-          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
-            <h4 className="text-lg font-semibold text-purple-200 mb-3 flex items-center">
-              📅 Upcoming Dividends
-            </h4>
+                      {/* Upcoming Dividends */}
+            <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
+              <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+                📅 Upcoming Dividends
+              </h4>
             <div className="space-y-3">
               {data.investments.holdings
                 .filter(h => h.nextDividendDate && h.dividendYield > 0)
                 .sort((a, b) => new Date(a.nextDividendDate) - new Date(b.nextDividendDate))
-                .map(holding => (
-                  <div key={holding.id} className="flex justify-between items-center bg-purple-800/20 rounded p-2">
-                    <div>
-                      <div className="font-semibold text-white">{holding.symbol}</div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(holding.nextDividendDate).toLocaleDateString('en-US', { 
-                          month: 'short', day: 'numeric' 
-                        })}
+                                  .map(holding => (
+                    <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                      <div>
+                        <div className="font-semibold text-white">{holding.symbol}</div>
+                        <div className="text-xs text-gray-400">
+                          {new Date(holding.nextDividendDate).toLocaleDateString('en-US', { 
+                            month: 'short', day: 'numeric' 
+                          })}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-green-300 font-semibold">
+                          ${(holding.annualDividend / 4).toFixed(0)}
+                        </div>
+                        <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-purple-300 font-semibold">
-                        ${(holding.annualDividend / 4).toFixed(0)}
-                      </div>
-                      <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
             </div>
           </div>
           
@@ -3267,11 +3267,11 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
         </div>
         
-        {/* Dividend Breakdown by Holding */}
-        <div className="mt-6 bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
-          <h4 className="text-lg font-semibold text-purple-200 mb-3 flex items-center">
-            📊 Dividend Breakdown by Holding
-          </h4>
+              {/* Dividend Breakdown by Holding */}
+      <div className="mt-6 bg-green-900/20 rounded-lg p-4 border border-green-600/30">
+        <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+          📊 Dividend Breakdown by Holding
+        </h4>
           <div className="space-y-2">
             {data.investments.holdings
               .filter(h => h.dividendYield > 0)
@@ -3280,39 +3280,39 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 const totalDividends = data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0);
                 const percentage = totalDividends > 0 ? (holding.annualDividend / totalDividends * 100) : 0;
                 
-                return (
-                  <div key={holding.id} className="flex items-center justify-between bg-purple-800/20 rounded p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
-                      <div>
-                        <div className="font-semibold text-white">{holding.symbol}</div>
-                        <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
+                                  return (
+                    <div key={holding.id} className="flex items-center justify-between bg-green-800/20 rounded p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div>
+                          <div className="font-semibold text-white">{holding.symbol}</div>
+                          <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold text-green-300">
+                          ${holding.annualDividend.toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {percentage.toFixed(1)}% of total
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-purple-300">
-                        ${holding.annualDividend.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {percentage.toFixed(1)}% of total
-                      </div>
-                    </div>
-                  </div>
-                );
+                  );
               })}
           </div>
           
-          <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
-            <div className="text-sm text-purple-200 mb-2">
-              💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
-              <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
-              in passive income - perfect for travel funding! 🌍
+                      <div className="mt-4 p-3 bg-green-800/20 rounded border border-green-600/30">
+              <div className="text-sm text-green-200 mb-2">
+                💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
+                <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
+                in passive income - perfect for travel funding! 🌍
+              </div>
+              <div className="text-xs text-green-300 border-t border-green-600/30 pt-2">
+                📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
+                Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
+              </div>
             </div>
-            <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
-              📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
-              Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
-            </div>
-          </div>
         </div>
       </Card>
 
@@ -3588,8 +3588,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 
                 {/* Auto-Generated Dividend Date Info */}
                 {parseFloat(newHolding.dividendYield) > 0 && (
-                  <div className="p-3 bg-purple-900/20 rounded-lg border border-purple-600/30">
-                    <div className="text-purple-400 font-semibold text-sm mb-1">📅 Auto-Generated Dividend Date</div>
+                  <div className="p-3 bg-green-900/20 rounded-lg border border-green-600/30">
+                    <div className="text-green-400 font-semibold text-sm mb-1">📅 Auto-Generated Dividend Date</div>
                     <div className="text-xs text-gray-300">
                       Next dividend date will be automatically estimated based on common payment schedules for {newHolding.symbol || 'this symbol'}. 
                       Major ETFs typically pay quarterly (Mar/Jun/Sep/Dec), while monthly dividend stocks use the 10th of each month.
