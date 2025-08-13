@@ -4677,12 +4677,9 @@ export default function App() {
             flex-shrink: 0 !important;
           }
           
-          /* PREVENT BODY SCROLL WHEN MODAL OPEN */
+          /* PREVENT BODY SCROLL WHEN MODAL OPEN - handled by JavaScript now */
           body.modal-open {
-            overflow: hidden !important;
-            position: fixed !important;
-            width: 100% !important;
-            height: 100% !important;
+            /* Styles now handled dynamically by JavaScript for better control */
           }
           
           /* Floating button - PERFECT FLOATING UX */
@@ -4895,8 +4892,18 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
-    // Add modal-open class to body for mobile scroll prevention
+    // AGGRESSIVE MOBILE SCROLL PREVENTION
+    const scrollY = window.scrollY;
+    
+    // Prevent body scroll and lock position
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
     document.body.classList.add('modal-open');
+    
+    // Store scroll position for restoration
+    document.body.setAttribute('data-scroll-y', scrollY);
     
     // Provide safe defaults for different card types
     if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
@@ -4928,8 +4935,8 @@ export default function App() {
         }, 100);
       }
       
-      // Scroll to top and reset
-      window.scrollTo(0, 0);
+      // DON'T scroll to top - let the modal close function handle scroll restoration
+      // window.scrollTo(0, 0); // REMOVED
       
       // Blur any focused elements
       if (document.activeElement) {
@@ -4942,8 +4949,19 @@ export default function App() {
     setEditingCard(null);
     setTempCardData({});
     
-    // Remove modal-open class from body
+    // RESTORE SCROLL POSITION AND BODY STATE
+    const scrollY = document.body.getAttribute('data-scroll-y') || '0';
+    
+    // Remove modal styles
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
     document.body.classList.remove('modal-open');
+    document.body.removeAttribute('data-scroll-y');
+    
+    // Restore scroll position
+    window.scrollTo(0, parseInt(scrollY, 10));
     
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
@@ -5177,8 +5195,18 @@ export default function App() {
   const openQuickExpense = () => {
     setShowQuickExpense(true);
     
-    // Add modal-open class to body for mobile scroll prevention
+    // AGGRESSIVE MOBILE SCROLL PREVENTION
+    const scrollY = window.scrollY;
+    
+    // Prevent body scroll and lock position
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
     document.body.classList.add('modal-open');
+    
+    // Store scroll position for restoration
+    document.body.setAttribute('data-scroll-y', scrollY);
     
     setQuickExpense({
       description: '',
@@ -5190,8 +5218,19 @@ export default function App() {
   const closeQuickExpense = () => {
     setShowQuickExpense(false);
     
-    // Remove modal-open class from body
+    // RESTORE SCROLL POSITION AND BODY STATE
+    const scrollY = document.body.getAttribute('data-scroll-y') || '0';
+    
+    // Remove modal styles
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
     document.body.classList.remove('modal-open');
+    document.body.removeAttribute('data-scroll-y');
+    
+    // Restore scroll position
+    window.scrollTo(0, parseInt(scrollY, 10));
     
     setQuickExpense({
       description: '',
