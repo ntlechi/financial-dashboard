@@ -3890,8 +3890,12 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showRunwayModal, setShowRunwayModal] = useState(false);
   const [runwaySettings, setRunwaySettings] = useState({
     totalSavings: data.travel?.totalSavings || 0,
-    averageDailySpend: data.travel?.runwayCalculation?.averageDailySpend || 425,
-    homeCurrency: data.travel?.homeCurrency || 'CAD'
+    homeCurrency: data.travel?.homeCurrency || 'CAD',
+    tripPlan: data.travel?.tripPlan || {
+      cheap: 90,      // 3 months cheap travel
+      moderate: 30,   // 1 month moderate  
+      expensive: 15   // 2 weeks expensive
+    }
   });
   
   const [newTrip, setNewTrip] = useState({
@@ -3912,15 +3916,52 @@ const TravelTab = ({ data, setData, userId }) => {
     date: new Date().toISOString().split('T')[0]
   });
 
-  // Travel Runway Calculation
+  // Enhanced Travel Runway Calculation with Destination Tiers
   const calculateRunway = () => {
     const totalFunds = data.travel?.totalSavings || 0;
-    const averageDaily = data.travel?.runwayCalculation?.averageDailySpend || 425;
-    const daysRemaining = Math.floor(totalFunds / averageDaily);
-    const weeksRemaining = Math.floor(daysRemaining / 7);
-    const monthsRemaining = Math.floor(daysRemaining / 30);
     
-    return { daysRemaining, weeksRemaining, monthsRemaining, totalFunds, averageDaily };
+    // Cost tiers for different destination types
+    const costTiers = {
+      cheap: 40,      // $40/day - Southeast Asia, Central America, Eastern Europe, India
+      moderate: 90,   // $90/day - South America, Southern Europe, parts of Asia, Mexico  
+      expensive: 160  // $160/day - Western Europe, Scandinavia, Australia, Japan, North America
+    };
+    
+    // Get planned trips from user settings or defaults
+    const tripPlan = data.travel?.tripPlan || {
+      cheap: 90,      // 3 months cheap travel
+      moderate: 30,   // 1 month moderate  
+      expensive: 15   // 2 weeks expensive
+    };
+    
+    // Calculate costs for planned trips
+    const plannedCosts = {
+      cheap: tripPlan.cheap * costTiers.cheap,
+      moderate: tripPlan.moderate * costTiers.moderate,
+      expensive: tripPlan.expensive * costTiers.expensive
+    };
+    
+    const totalPlannedCost = plannedCosts.cheap + plannedCosts.moderate + plannedCosts.expensive;
+    const totalPlannedDays = tripPlan.cheap + tripPlan.moderate + tripPlan.expensive;
+    const remainingFunds = Math.max(0, totalFunds - totalPlannedCost);
+    
+    // Calculate how much longer they can extend with remaining funds (assume cheap travel)
+    const extensionDays = Math.floor(remainingFunds / costTiers.cheap);
+    const totalPossibleDays = totalPlannedDays + extensionDays;
+    
+    return { 
+      totalFunds,
+      costTiers,
+      tripPlan,
+      plannedCosts,
+      totalPlannedCost,
+      totalPlannedDays,
+      remainingFunds,
+      extensionDays,
+      totalPossibleDays,
+      weeksRemaining: Math.floor(totalPossibleDays / 7),
+      monthsRemaining: Math.floor(totalPossibleDays / 30)
+    };
   };
 
   const convertCurrency = (amount, fromCurrency, toCurrency = data.travel?.homeCurrency || 'CAD') => {
@@ -3953,10 +3994,7 @@ const TravelTab = ({ data, setData, userId }) => {
            ...data.travel,
            totalSavings: Number(runwaySettings.totalSavings),
            homeCurrency: runwaySettings.homeCurrency,
-           runwayCalculation: {
-             ...data.travel.runwayCalculation,
-             averageDailySpend: Number(runwaySettings.averageDailySpend)
-           }
+           tripPlan: runwaySettings.tripPlan
          }
        };
        
@@ -4083,36 +4121,72 @@ const TravelTab = ({ data, setData, userId }) => {
         
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-blue-200 mb-6">How long can you keep traveling with your current funds?</p>
+          <p className="text-blue-200 mb-6">Smart destination-based travel planning with cost tiers</p>
           
+          {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.daysRemaining}</div>
-              <div className="text-blue-200">Days Remaining</div>
+              <div className="text-3xl font-bold text-blue-300">{runway.totalPossibleDays}</div>
+              <div className="text-blue-200">Total Possible Days</div>
             </div>
             <div className="bg-blue-800/30 rounded-lg p-4">
               <div className="text-3xl font-bold text-blue-300">{runway.weeksRemaining}</div>
-              <div className="text-blue-200">Weeks Remaining</div>
+              <div className="text-blue-200">Weeks of Travel</div>
             </div>
             <div className="bg-blue-800/30 rounded-lg p-4">
               <div className="text-3xl font-bold text-blue-300">{runway.monthsRemaining}</div>
-              <div className="text-blue-200">Months Remaining</div>
+              <div className="text-blue-200">Months of Travel</div>
             </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+          {/* Destination Cost Breakdown */}
+          <div className="bg-blue-900/30 rounded-lg p-4 mb-6">
+            <h3 className="text-lg font-semibold text-blue-200 mb-4">🎯 Your Travel Plan</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-green-900/30 rounded-lg p-3 border border-green-600/30">
+                <div className="text-green-400 font-semibold">🟢 Cheap Destinations</div>
+                <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
+                <div className="text-green-300">${runway.costTiers.cheap}/day</div>
+                <div className="text-green-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
+                <div className="text-xs text-green-300 mt-1">Southeast Asia, Eastern Europe, India</div>
+              </div>
+              <div className="bg-yellow-900/30 rounded-lg p-3 border border-yellow-600/30">
+                <div className="text-yellow-400 font-semibold">🟡 Moderate Destinations</div>
+                <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
+                <div className="text-yellow-300">${runway.costTiers.moderate}/day</div>
+                <div className="text-yellow-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
+                <div className="text-xs text-yellow-300 mt-1">South America, Southern Europe</div>
+              </div>
+              <div className="bg-red-900/30 rounded-lg p-3 border border-red-600/30">
+                <div className="text-red-400 font-semibold">🔴 Expensive Destinations</div>
+                <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
+                <div className="text-red-300">${runway.costTiers.expensive}/day</div>
+                <div className="text-red-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
+                <div className="text-xs text-red-300 mt-1">Western Europe, Scandinavia, Japan</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Financial Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
             <div className="bg-blue-700/20 rounded-lg p-3">
               <div className="text-blue-200">Total Travel Funds</div>
               <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
             </div>
             <div className="bg-blue-700/20 rounded-lg p-3">
-              <div className="text-blue-200">Average Daily Spend</div>
-              <div className="text-xl font-bold text-white">${runway.averageDaily} {data.travel?.homeCurrency || 'CAD'}/day</div>
+              <div className="text-blue-200">Planned Trip Cost</div>
+              <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
+              <div className="text-xs text-blue-300">{runway.totalPlannedDays} days planned</div>
+            </div>
+            <div className="bg-green-700/20 rounded-lg p-3">
+              <div className="text-green-200">Remaining Funds</div>
+              <div className="text-xl font-bold text-green-400">${runway.remainingFunds.toLocaleString()}</div>
+              <div className="text-xs text-green-300">+{runway.extensionDays} days possible</div>
             </div>
           </div>
           
-          <div className="text-xs text-blue-300 text-center mt-2">
-            💡 Multi-currency expenses automatically converted to {data.travel?.homeCurrency || 'CAD'} using current estimates
+          <div className="text-xs text-blue-300 text-center">
+            💡 Extend your journey by choosing cheaper destinations with remaining funds
           </div>
         </div>
       </Card>
@@ -4590,7 +4664,7 @@ const TravelTab = ({ data, setData, userId }) => {
                </button>
              </div>
              
-             <div className="space-y-4">
+                          <div className="space-y-4">
                <div>
                  <label className="block text-sm text-gray-300 mb-1">Total Travel Savings</label>
                  <input
@@ -4607,21 +4681,6 @@ const TravelTab = ({ data, setData, userId }) => {
                </div>
 
                <div>
-                 <label className="block text-sm text-gray-300 mb-1">Average Daily Spend</label>
-                 <input
-                   type="number"
-                   placeholder="425"
-                   value={runwaySettings.averageDailySpend || ''}
-                   onChange={(e) => setRunwaySettings({
-                     ...runwaySettings, 
-                     averageDailySpend: e.target.value === '' ? 0 : Number(e.target.value)
-                   })}
-                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                 />
-                 <p className="text-xs text-gray-400 mt-1">Your average daily spending while traveling</p>
-               </div>
-
-               <div>
                  <label className="block text-sm text-gray-300 mb-1">Home Currency</label>
                  <select
                    value={runwaySettings.homeCurrency}
@@ -4630,7 +4689,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      homeCurrency: e.target.value
                    })}
                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                                 >
+                 >
                   <option value="USD">USD - US Dollar</option>
                   <option value="CAD">CAD - Canadian Dollar</option>
                   <option value="EUR">EUR - Euro</option>
@@ -4641,21 +4700,97 @@ const TravelTab = ({ data, setData, userId }) => {
                  <p className="text-xs text-gray-400 mt-1">Your primary currency for calculations</p>
                </div>
 
-               {/* Preview */}
+               {/* Trip Planning by Destination Tiers */}
+               <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
+                 <h4 className="text-blue-200 font-semibold mb-3">🎯 Plan Your Travel by Destination Type</h4>
+                 
+                 <div className="space-y-3">
+                   <div className="bg-green-900/30 rounded-lg p-3 border border-green-600/30">
+                     <div className="flex justify-between items-center mb-2">
+                       <span className="text-green-400 font-semibold">🟢 Cheap Destinations</span>
+                       <span className="text-green-300 text-sm">$40/day</span>
+                     </div>
+                     <input
+                       type="number"
+                       placeholder="90"
+                       value={runwaySettings.tripPlan.cheap || ''}
+                       onChange={(e) => setRunwaySettings({
+                         ...runwaySettings,
+                         tripPlan: {
+                           ...runwaySettings.tripPlan,
+                           cheap: e.target.value === '' ? 0 : Number(e.target.value)
+                         }
+                       })}
+                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                     />
+                     <p className="text-xs text-green-300 mt-1">Days in Southeast Asia, Eastern Europe, India</p>
+                   </div>
+
+                   <div className="bg-yellow-900/30 rounded-lg p-3 border border-yellow-600/30">
+                     <div className="flex justify-between items-center mb-2">
+                       <span className="text-yellow-400 font-semibold">🟡 Moderate Destinations</span>
+                       <span className="text-yellow-300 text-sm">$90/day</span>
+                     </div>
+                     <input
+                       type="number"
+                       placeholder="30"
+                       value={runwaySettings.tripPlan.moderate || ''}
+                       onChange={(e) => setRunwaySettings({
+                         ...runwaySettings,
+                         tripPlan: {
+                           ...runwaySettings.tripPlan,
+                           moderate: e.target.value === '' ? 0 : Number(e.target.value)
+                         }
+                       })}
+                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-yellow-400 focus:outline-none"
+                     />
+                     <p className="text-xs text-yellow-300 mt-1">Days in South America, Southern Europe</p>
+                   </div>
+
+                   <div className="bg-red-900/30 rounded-lg p-3 border border-red-600/30">
+                     <div className="flex justify-between items-center mb-2">
+                       <span className="text-red-400 font-semibold">🔴 Expensive Destinations</span>
+                       <span className="text-red-300 text-sm">$160/day</span>
+                     </div>
+                     <input
+                       type="number"
+                       placeholder="15"
+                       value={runwaySettings.tripPlan.expensive || ''}
+                       onChange={(e) => setRunwaySettings({
+                         ...runwaySettings,
+                         tripPlan: {
+                           ...runwaySettings.tripPlan,
+                           expensive: e.target.value === '' ? 0 : Number(e.target.value)
+                         }
+                       })}
+                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-red-400 focus:outline-none"
+                     />
+                     <p className="text-xs text-red-300 mt-1">Days in Western Europe, Scandinavia, Japan</p>
+                   </div>
+                 </div>
+               </div>
+
+               {/* Enhanced Preview */}
                <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
-                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Preview</div>
-                 <div className="grid grid-cols-2 gap-3 text-sm">
+                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Travel Plan Preview</div>
+                 <div className="grid grid-cols-3 gap-3 text-xs">
                    <div>
                      <div className="text-blue-300 font-bold">
-                       {Math.floor((runwaySettings.totalSavings || 0) / (runwaySettings.averageDailySpend || 1))} days
+                       {(runwaySettings.tripPlan.cheap || 0) + (runwaySettings.tripPlan.moderate || 0) + (runwaySettings.tripPlan.expensive || 0)} days
                      </div>
-                     <div className="text-blue-200">Remaining</div>
+                     <div className="text-blue-200">Planned Travel</div>
                    </div>
                    <div>
                      <div className="text-blue-300 font-bold">
-                       {Math.floor(((runwaySettings.totalSavings || 0) / (runwaySettings.averageDailySpend || 1)) / 30)} months
+                       ${((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160).toLocaleString()}
                      </div>
-                     <div className="text-blue-200">Of Travel</div>
+                     <div className="text-blue-200">Trip Cost</div>
+                   </div>
+                   <div>
+                     <div className="text-green-300 font-bold">
+                       ${Math.max(0, (runwaySettings.totalSavings || 0) - ((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160)).toLocaleString()}
+                     </div>
+                     <div className="text-green-200">Remaining</div>
                    </div>
                  </div>
                </div>
