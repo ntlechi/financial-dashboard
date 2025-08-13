@@ -4052,6 +4052,14 @@ const TravelTab = ({ data, setData, userId }) => {
        });
        setShowExpenseModal(false);
        setSelectedTrip(null);
+       
+       // Force viewport cleanup after modal close
+       setTimeout(() => {
+         window.scrollTo(0, 0);
+         document.body.style.overflow = '';
+         document.body.style.position = '';
+         document.body.style.height = '';
+       }, 100);
      } catch (error) {
        console.error('Error adding expense:', error);
      }
@@ -4080,6 +4088,14 @@ const TravelTab = ({ data, setData, userId }) => {
        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
        setData(updatedData);
        setEditingTrip(null);
+       
+       // Force viewport cleanup after modal close
+       setTimeout(() => {
+         window.scrollTo(0, 0);
+         document.body.style.overflow = '';
+         document.body.style.position = '';
+         document.body.style.height = '';
+       }, 100);
      } catch (error) {
        console.error('Error editing trip:', error);
      }
@@ -4108,6 +4124,14 @@ const TravelTab = ({ data, setData, userId }) => {
       setData(updatedData);
       setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
       setShowAddTrip(false);
+      
+      // Force viewport cleanup after modal close
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.height = '';
+      }, 100);
     } catch (error) {
       console.error('Error adding trip:', error);
     }
@@ -4328,7 +4352,16 @@ const TravelTab = ({ data, setData, userId }) => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">Plan New Trip</h3>
               <button
-                onClick={() => setShowAddTrip(false)}
+                onClick={() => {
+                  setShowAddTrip(false);
+                  // Force viewport cleanup after modal close
+                  setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.height = '';
+                  }, 100);
+                }}
                 className="text-gray-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
@@ -4404,7 +4437,16 @@ const TravelTab = ({ data, setData, userId }) => {
             
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setShowAddTrip(false)}
+                onClick={() => {
+                  setShowAddTrip(false);
+                  // Force viewport cleanup after modal close
+                  setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.height = '';
+                  }, 100);
+                }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Cancel
@@ -4433,6 +4475,13 @@ const TravelTab = ({ data, setData, userId }) => {
                 onClick={() => {
                   setShowExpenseModal(false);
                   setSelectedTrip(null);
+                  // Force viewport cleanup after modal close
+                  setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.height = '';
+                  }, 100);
                 }}
                 className="text-gray-400 hover:text-white"
               >
@@ -4530,6 +4579,13 @@ const TravelTab = ({ data, setData, userId }) => {
                 onClick={() => {
                   setShowExpenseModal(false);
                   setSelectedTrip(null);
+                  // Force viewport cleanup after modal close
+                  setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.height = '';
+                  }, 100);
                 }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
@@ -4555,7 +4611,16 @@ const TravelTab = ({ data, setData, userId }) => {
              <div className="flex justify-between items-center mb-4">
                <h3 className="text-xl font-bold text-white">Edit Trip</h3>
                <button
-                 onClick={() => setEditingTrip(null)}
+                 onClick={() => {
+                   setEditingTrip(null);
+                   // Force viewport cleanup after modal close
+                   setTimeout(() => {
+                     window.scrollTo(0, 0);
+                     document.body.style.overflow = '';
+                     document.body.style.position = '';
+                     document.body.style.height = '';
+                   }, 100);
+                 }}
                  className="text-gray-400 hover:text-white"
                >
                  <X className="w-5 h-5" />
@@ -4642,7 +4707,16 @@ const TravelTab = ({ data, setData, userId }) => {
              
              <div className="mt-6 flex justify-end gap-3">
                <button
-                 onClick={() => setEditingTrip(null)}
+                 onClick={() => {
+                   setEditingTrip(null);
+                   // Force viewport cleanup after modal close
+                   setTimeout(() => {
+                     window.scrollTo(0, 0);
+                     document.body.style.overflow = '';
+                     document.body.style.position = '';
+                     document.body.style.height = '';
+                   }, 100);
+                 }}
                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
                  Cancel
