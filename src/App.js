@@ -4857,6 +4857,12 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
+    // Force viewport reset on modal open for mobile
+    if (window.innerWidth <= 768) {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      window.scrollTo(0, window.scrollY); // Maintain current position
+    }
+    
     // Provide safe defaults for different card types
     if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
       setTempCardData({
