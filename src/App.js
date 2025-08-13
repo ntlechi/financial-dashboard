@@ -504,12 +504,9 @@ const SavingsRateCard = ({ data, onEdit }) => {
           <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
           Savings Rate
         </h2>
-        <button
-          onClick={() => onEdit('savingsRate', data)}
-          className="text-gray-400 hover:text-blue-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
+        <div className="text-xs text-gray-500 px-2 py-1 bg-gray-700/50 rounded">
+          Auto-calculated
+        </div>
       </div>
       
       <div className="space-y-4">
@@ -5920,7 +5917,6 @@ export default function App() {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
-                     editingCard === 'savingsRate' ? 'Savings Rate' :
                      editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
                      editingCard === 'creditScore' ? 'Credit Score' :
                      editingCard === 'netWorth' ? 'Net Worth' :
@@ -6220,29 +6216,7 @@ export default function App() {
                 </>
               )}
 
-              {/* Savings Rate Modal */}
-              {editingCard === 'savingsRate' && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-300 mb-1">Current Rate %</label>
-                    <input
-                      type="number"
-                      value={tempCardData.current || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, current: Number(e.target.value)})}
-                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-300 mb-1">Target Rate %</label>
-                    <input
-                      type="number"
-                      value={tempCardData.target || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, target: Number(e.target.value)})}
-                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-              )}
+              {/* Savings Rate - Auto-calculated, no manual editing */}
 
               {/* Rainy Day Fund Modal */}
               {editingCard === 'rainyDayFund' && (
