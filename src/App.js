@@ -2723,16 +2723,21 @@ const InvestmentTab = ({ data, setData, userId }) => {
     
     const updatedData = { ...data, investments: updatedInvestments };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setNewHolding({ 
-        symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
-        dripEnabled: true, accountType: 'TFSA', isUSStock: false, withholdingTax: 0, currency: 'CAD' 
-      });
-      setShowAddHolding(false);
-    } catch (error) {
-      console.error('Error adding holding:', error);
+    // Update local state immediately
+    setData(updatedData);
+    setNewHolding({ 
+      symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
+      dripEnabled: true, accountType: 'TFSA', isUSStock: false, withholdingTax: 0, currency: 'CAD' 
+    });
+    setShowAddHolding(false);
+    
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error saving to Firebase:', error);
+      }
     }
   };
 
@@ -2748,11 +2753,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
     
     const updatedData = { ...data, investments: updatedInvestments };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-    } catch (error) {
-      console.error('Error deleting holding:', error);
+    // Update local state immediately
+    setData(updatedData);
+    
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error saving to Firebase:', error);
+      }
     }
   };
 
@@ -2767,11 +2777,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
     const updatedInvestments = { ...data.investments, holdings: updatedHoldings };
     const updatedData = { ...data, investments: updatedInvestments };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-    } catch (error) {
-      console.error('Error toggling DRIP:', error);
+    // Update local state immediately
+    setData(updatedData);
+    
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error saving to Firebase:', error);
+      }
     }
   };
 
@@ -2805,12 +2820,17 @@ const InvestmentTab = ({ data, setData, userId }) => {
     
     const updatedData = { ...data, investments: updatedInvestments };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setEditingHolding(null);
-    } catch (error) {
-      console.error('Error editing holding:', error);
+    // Update local state immediately
+    setData(updatedData);
+    setEditingHolding(null);
+    
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error saving to Firebase:', error);
+      }
     }
   };
 
