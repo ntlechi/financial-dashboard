@@ -1,7 +1,8 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown } from 'lucide-react';
 import * as d3 from 'd3';
+import SubscriptionManager from './SubscriptionManager';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -3953,6 +3954,8 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
+  const [showSubscription, setShowSubscription] = useState(false);
+  const [userPlan, setUserPlan] = useState('free');
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -4642,8 +4645,28 @@ export default function App() {
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <p className="text-white font-medium">{user?.displayName || 'User'}</p>
-                <p className="text-gray-400 text-sm">{user?.email}</p>
+                <p className="text-gray-400 text-sm flex items-center gap-1">
+                  {user?.email}
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    userPlan === 'free' ? 'bg-gray-600 text-gray-300' :
+                    userPlan === 'backpacker' ? 'bg-blue-600 text-blue-100' :
+                    'bg-purple-600 text-purple-100'
+                  }`}>
+                    {userPlan === 'free' ? 'Free' : userPlan === 'backpacker' ? 'Backpacker' : 'Entrepreneur'}
+                  </span>
+                </p>
               </div>
+              
+              {userPlan === 'free' && (
+                <button
+                  onClick={() => setShowSubscription(true)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-medium"
+                >
+                  <Crown className="w-4 h-4" />
+                  Upgrade
+                </button>
+              )}
+              
               <button
                 onClick={handleSignOut}
                 className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -5729,6 +5752,15 @@ export default function App() {
             </div>
           </Card>
         </div>
+      )}
+
+      {/* Subscription Manager Modal */}
+      {showSubscription && (
+        <SubscriptionManager
+          user={user}
+          currentPlan={userPlan}
+          onClose={() => setShowSubscription(false)}
+        />
       )}
     </div>
   );
