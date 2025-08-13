@@ -19,7 +19,130 @@ import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
 
 const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
+// Global Retirement Account Configurations
+const retirementAccountsByCountry = {
+  CA: { // Canada
+    name: 'Canada',
+    currency: 'CAD',
+    taxYear: 'Calendar Year',
+    accounts: [
+      { 
+        name: 'TFSA', 
+        fullName: 'Tax-Free Savings Account',
+        limit: 88000, 
+        description: 'Tax-free growth and withdrawals',
+        type: 'tax-free'
+      },
+      { 
+        name: 'RRSP', 
+        fullName: 'Registered Retirement Savings Plan',
+        limit: 31560, 
+        description: 'Tax-deferred retirement savings',
+        type: 'tax-deferred'
+      }
+    ]
+  },
+  US: { // United States  
+    name: 'United States',
+    currency: 'USD',
+    taxYear: 'Calendar Year',
+    accounts: [
+      { 
+        name: '401(k)', 
+        fullName: '401(k) Retirement Plan',
+        limit: 69000, 
+        description: 'Employer-sponsored retirement plan',
+        type: 'tax-deferred'
+      },
+      { 
+        name: 'IRA', 
+        fullName: 'Traditional IRA',
+        limit: 7000, 
+        description: 'Individual Retirement Account',
+        type: 'tax-deferred'
+      },
+      { 
+        name: 'Roth IRA', 
+        fullName: 'Roth Individual Retirement Account',
+        limit: 7000, 
+        description: 'Tax-free retirement growth',
+        type: 'tax-free'
+      }
+    ]
+  },
+  UK: { // United Kingdom
+    name: 'United Kingdom',
+    currency: 'GBP',
+    taxYear: 'April 6 - April 5',
+    accounts: [
+      { 
+        name: 'ISA', 
+        fullName: 'Individual Savings Account',
+        limit: 20000, 
+        description: 'Tax-free savings and investments',
+        type: 'tax-free'
+      },
+      { 
+        name: 'SIPP', 
+        fullName: 'Self-Invested Personal Pension',
+        limit: 60000, 
+        description: 'Flexible pension scheme',
+        type: 'pension'
+      }
+    ]
+  },
+  AU: { // Australia
+    name: 'Australia',
+    currency: 'AUD',
+    taxYear: 'July 1 - June 30',
+    accounts: [
+      { 
+        name: 'Super', 
+        fullName: 'Superannuation',
+        limit: 30000, 
+        description: 'Mandatory retirement savings',
+        type: 'pension'
+      },
+      { 
+        name: 'FHSS', 
+        fullName: 'First Home Super Saver',
+        limit: 50000, 
+        description: 'Save for first home via super',
+        type: 'savings'
+      }
+    ]
+  },
+  DE: { // Germany
+    name: 'Germany',
+    currency: 'EUR',
+    taxYear: 'Calendar Year',
+    accounts: [
+      { 
+        name: 'Riester', 
+        fullName: 'Riester Pension',
+        limit: 2100, 
+        description: 'State-subsidized retirement plan',
+        type: 'pension'
+      },
+      { 
+        name: 'Rürup', 
+        fullName: 'Rürup Pension (Basis Rente)',
+        limit: 27565, 
+        description: 'Tax-deductible pension plan',
+        type: 'tax-deferred'
+      }
+    ]
+  }
+};
+
 const initialData = {
+  // User Profile with Country
+  userProfile: {
+    country: 'CA', // Default to Canada, user can change
+    currency: 'CAD',
+    name: '',
+    email: ''
+  },
   financialFreedom: {
     targetAmount: 2000000,
     currentInvestments: 450000,
@@ -242,6 +365,28 @@ const initialData = {
         isUSStock: false,
         withholdingTax: 0, // No withholding tax on crypto
         currency: 'USD'
+      }
+    ]
+  },
+  registeredAccounts: {
+    accounts: [
+      {
+        id: 'tfsa',
+        name: 'TFSA',
+        contributed: 45000,
+        limit: 88000,
+        goal: 88000,
+        type: 'tax-free',
+        description: 'Tax-free growth and withdrawals'
+      },
+      {
+        id: 'rrsp', 
+        name: 'RRSP',
+        contributed: 25000,
+        limit: 31560,
+        goal: 31560,
+        type: 'tax-deferred',
+        description: 'Tax-deferred retirement savings'
       }
     ]
   },
@@ -764,23 +909,27 @@ const NetWorthCard = ({ data, onEdit }) => (
   </Card>
 );
 
-// Canadian Registered Accounts Card
-const RegisteredAccountsCard = ({ data, onEdit }) => {
-  const tfsaProgress = (data.tfsa.currentBalance / data.tfsa.contributionLimit) * 100;
-  const rrspProgress = (data.rrsp.currentBalance / data.rrsp.contributionLimit) * 100;
-  const tfsaRoomUsed = ((data.tfsa.contributionLimit - data.tfsa.contributionRoom) / data.tfsa.contributionLimit) * 100;
-  const rrspRoomUsed = ((data.rrsp.contributionLimit - data.rrsp.contributionRoom) / data.rrsp.contributionLimit) * 100;
+// Dynamic Retirement Accounts Card (Global)
+const RegisteredAccountsCard = ({ data, onEdit, userCountry = 'CA' }) => {
+  // Get country configuration
+  const countryConfig = retirementAccountsByCountry[userCountry] || retirementAccountsByCountry.CA;
+  const accounts = data?.accounts || [];
+  
+  // Calculate totals
+  const totalContributed = accounts.reduce((sum, account) => sum + account.contributed, 0);
+  const totalLimit = accounts.reduce((sum, account) => sum + account.limit, 0);
+  const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30 border-red-600/30">
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-purple-900/30 to-indigo-900/30 border-purple-600/30">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <Building className="w-6 h-6 mr-3 text-red-400" />
-          Canadian Registered Accounts
+          <ShieldCheck className="w-6 h-6 mr-3 text-purple-400" />
+          {countryConfig.name} Retirement Accounts
         </h2>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
-          className="text-gray-400 hover:text-red-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="text-gray-400 hover:text-purple-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -5715,8 +5864,12 @@ export default function App() {
               <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
               <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
               
-              {/* Seventh Row - Canadian Registered Accounts */}
-              <RegisteredAccountsCard data={displayData.registeredAccounts} onEdit={openCardEditor} />
+              {/* Seventh Row - Dynamic Retirement Accounts */}
+              <RegisteredAccountsCard 
+                data={displayData.registeredAccounts} 
+                onEdit={openCardEditor} 
+                userCountry={displayData.userProfile?.country || 'CA'} 
+              />
             </>
           )}
           
