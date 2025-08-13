@@ -4738,6 +4738,18 @@ export default function App() {
       setData(initialData);
     }
     
+    // Set up --vh for iOS viewport fix
+    const setVH = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    };
+    
+    // Set initial --vh
+    setVH();
+    
+    // Update --vh on resize (orientation change, etc.)
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
+    
     // const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
     //   setUser(user);
     //   setUserId(user?.uid || null);
@@ -4749,6 +4761,11 @@ export default function App() {
     //   }
     // });
     // return () => unsubscribeAuth();
+    
+    return () => {
+      window.removeEventListener('resize', setVH);
+      window.removeEventListener('orientationchange', setVH);
+    };
   }, []);
 
   // Authentication Functions
@@ -5685,17 +5702,17 @@ export default function App() {
       {/* Quick Expense Modal */}
       {showQuickExpense && (
         <div 
-          className="fixed inset-0 bg-black/50 z-50 modal-container"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
           style={{
             position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            width: '100vw',
-            height: '100vh',
+            // Use the custom --vh property for height (iOS fix)
+            height: 'calc(var(--vh, 1vh) * 100)',
             zIndex: 9999,
-            overflow: 'hidden'
+            padding: '1rem' // Add padding to prevent modal touching edges
           }}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -5703,15 +5720,7 @@ export default function App() {
           <Card 
             className="w-full max-w-md border-red-500/30"
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 'calc(100vw - 2rem)',
-              maxWidth: '28rem',
-              maxHeight: '85vh',
-              overflowY: 'auto',
-              margin: 0
+              margin: 0 // Keep margin at 0
             }}
           >
             <div className="flex justify-between items-center mb-4">
@@ -5795,17 +5804,17 @@ export default function App() {
       {/* Card Editing Modals */}
       {editingCard && (
         <div 
-          className="fixed inset-0 bg-black/50 z-50 modal-container"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
           style={{
             position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            width: '100vw',
-            height: '100vh',
+            // Use the custom --vh property for height (iOS fix)
+            height: 'calc(var(--vh, 1vh) * 100)',
             zIndex: 9999,
-            overflow: 'hidden'
+            padding: '1rem' // Add padding to prevent modal touching edges
           }}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -5813,15 +5822,7 @@ export default function App() {
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 'calc(100vw - 2rem)',
-              maxWidth: '48rem',
-              maxHeight: '75vh',
-              overflowY: 'auto',
-              margin: 0
+              margin: 0 // Keep margin at 0
             }}
           >
             <div className="flex justify-between items-center mb-4">
