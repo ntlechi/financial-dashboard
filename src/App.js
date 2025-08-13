@@ -610,8 +610,10 @@ const RainyDayFundCard = ({ data, onEdit }) => {
   );
 };
 
-// Credit Score Card
+// Credit Score Card with History Chart
 const CreditScoreCard = ({ data, onEdit }) => {
+  const svgRef = useRef();
+
   const getScoreColor = (score) => {
     if (score >= 800) return 'text-emerald-400';
     if (score >= 740) return 'text-green-400';
@@ -629,6 +631,163 @@ const CreditScoreCard = ({ data, onEdit }) => {
   };
 
   const getScoreProgress = (score) => (score / 850) * 100;
+
+  // Create line chart for credit score history
+  useEffect(() => {
+    if (!data.history || data.history.length === 0) return;
+
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
+
+    const margin = { top: 10, right: 10, bottom: 25, left: 35 };
+    const width = 280 - margin.left - margin.right;
+    const height = 120 - margin.top - margin.bottom;
+
+    const g = svg
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Prepare data with current score
+    const historyData = [...data.history, { date: new Date().toISOString().split('T')[0], score: data.current }];
+    const sortedData = historyData
+      .map(d => ({ ...d, date: new Date(d.date) }))
+      .sort((a, b) => a.date - b.date);
+
+    // Scales
+    const xScale = d3.scaleTime()
+      .domain(d3.extent(sortedData, d => d.date))
+      .range([0, width]);
+
+    const yScale = d3.scaleLinear()
+      .domain([300, 850]) // Credit score range
+      .range([height, 0]);
+
+    // Create gradient for line
+    const gradient = g.append("defs")
+      .append("linearGradient")
+      .attr("id", "creditScoreGradient")
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", 0).attr("y1", height)
+      .attr("x2", 0).attr("y2", 0);
+
+    gradient.append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "#ef4444")
+      .attr("stop-opacity", 0.8);
+
+    gradient.append("stop")
+      .attr("offset", "40%")
+      .attr("stop-color", "#f59e0b")
+      .attr("stop-opacity", 0.8);
+
+    gradient.append("stop")
+      .attr("offset", "70%")
+      .attr("stop-color", "#eab308")
+      .attr("stop-opacity", 0.8);
+
+    gradient.append("stop")
+      .attr("offset", "85%")
+      .attr("stop-color", "#22c55e")
+      .attr("stop-opacity", 0.8);
+
+    gradient.append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#10b981")
+      .attr("stop-opacity", 1);
+
+    // Create line
+    const line = d3.line()
+      .x(d => xScale(d.date))
+      .y(d => yScale(d.score))
+      .curve(d3.curveMonotoneX);
+
+    // Add background score ranges
+    const scoreRanges = [
+      { min: 300, max: 580, color: '#ef4444', opacity: 0.1 },
+      { min: 580, max: 670, color: '#f59e0b', opacity: 0.1 },
+      { min: 670, max: 740, color: '#eab308', opacity: 0.1 },
+      { min: 740, max: 800, color: '#22c55e', opacity: 0.1 },
+      { min: 800, max: 850, color: '#10b981', opacity: 0.1 }
+    ];
+
+    scoreRanges.forEach(range => {
+      g.append("rect")
+        .attr("x", 0)
+        .attr("y", yScale(range.max))
+        .attr("width", width)
+        .attr("height", yScale(range.min) - yScale(range.max))
+        .attr("fill", range.color)
+        .attr("opacity", range.opacity);
+    });
+
+    // Add line path
+    g.append("path")
+      .datum(sortedData)
+      .attr("fill", "none")
+      .attr("stroke", "url(#creditScoreGradient)")
+      .attr("stroke-width", 3)
+      .attr("d", line);
+
+    // Add dots for data points
+    g.selectAll(".dot")
+      .data(sortedData)
+      .enter().append("circle")
+      .attr("class", "dot")
+      .attr("cx", d => xScale(d.date))
+      .attr("cy", d => yScale(d.score))
+      .attr("r", 4)
+      .attr("fill", d => {
+        if (d.score >= 800) return '#10b981';
+        if (d.score >= 740) return '#22c55e';
+        if (d.score >= 670) return '#eab308';
+        if (d.score >= 580) return '#f59e0b';
+        return '#ef4444';
+      })
+      .attr("stroke", "#1f2937")
+      .attr("stroke-width", 2);
+
+    // Add x-axis
+    const xAxis = d3.axisBottom(xScale)
+      .ticks(3)
+      .tickFormat(d3.timeFormat("%b %y"));
+
+    g.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(xAxis)
+      .selectAll("text")
+      .style("fill", "#9ca3af")
+      .style("font-size", "10px");
+
+    // Add y-axis
+    const yAxis = d3.axisLeft(yScale)
+      .ticks(4)
+      .tickFormat(d => d);
+
+    g.append("g")
+      .call(yAxis)
+      .selectAll("text")
+      .style("fill", "#9ca3af")
+      .style("font-size", "10px");
+
+    // Style axis lines
+    g.selectAll(".domain, .tick line")
+      .style("stroke", "#4b5563")
+      .style("stroke-width", 1);
+
+  }, [data.history, data.current]);
+
+  // Calculate score change
+  const getScoreChange = () => {
+    if (!data.history || data.history.length === 0) return null;
+    const sortedHistory = [...data.history].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const previousScore = sortedHistory[0]?.score;
+    const change = data.current - previousScore;
+    return change;
+  };
+
+  const scoreChange = getScoreChange();
 
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-indigo-900/40 to-blue-900/40">
@@ -650,8 +809,25 @@ const CreditScoreCard = ({ data, onEdit }) => {
           <div className={`text-4xl font-extrabold ${getScoreColor(data.current)}`}>
             {data.current}
           </div>
-          <div className="text-gray-400 text-sm">{getScoreStatus(data.current)}</div>
+          <div className="flex items-center justify-center gap-2">
+            <div className="text-gray-400 text-sm">{getScoreStatus(data.current)}</div>
+            {scoreChange !== null && (
+              <div className={`text-xs font-semibold flex items-center ${
+                scoreChange > 0 ? 'text-green-400' : scoreChange < 0 ? 'text-red-400' : 'text-gray-400'
+              }`}>
+                {scoreChange > 0 ? '↗' : scoreChange < 0 ? '↘' : '→'} {Math.abs(scoreChange)}
+              </div>
+            )}
+          </div>
         </div>
+        
+        {/* Credit Score History Chart */}
+        {data.history && data.history.length > 0 && (
+          <div className="bg-gray-800/30 rounded-lg p-3">
+            <div className="text-sm text-gray-300 mb-2 font-semibold">📈 Score History</div>
+            <svg ref={svgRef}></svg>
+          </div>
+        )}
         
         <div>
           <div className="flex justify-between text-sm text-gray-300 mb-2">
@@ -6557,16 +6733,120 @@ export default function App() {
               {/* Credit Score Modal */}
               {editingCard === 'creditScore' && (
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Current Credit Score</label>
-                  <input
-                    type="number"
-                    min="300"
-                    max="850"
-                    value={tempCardData.current || ''}
-                    onChange={(e) => setTempCardData({...tempCardData, current: Number(e.target.value)})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
-                  />
-                  <div className="text-xs text-gray-400 mt-1">Range: 300-850</div>
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-lg font-semibold text-white">Add New Credit Score</h4>
+                      <div className="text-sm text-indigo-400">
+                        Current: {tempCardData.current || 0}
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm text-gray-300 mb-1">New Credit Score</label>
+                        <input
+                          type="number"
+                          min="300"
+                          max="850"
+                          value={tempCardData.newScore || ''}
+                          onChange={(e) => setTempCardData({...tempCardData, newScore: Number(e.target.value)})}
+                          className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                          placeholder="750"
+                        />
+                        <div className="text-xs text-gray-400 mt-1">Range: 300-850</div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-300 mb-1">Date</label>
+                        <input
+                          type="date"
+                          value={tempCardData.newDate || new Date().toISOString().split('T')[0]}
+                          onChange={(e) => setTempCardData({...tempCardData, newDate: e.target.value})}
+                          className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                        />
+                        <div className="text-xs text-gray-400 mt-1">When was this score checked?</div>
+                      </div>
+                    </div>
+                    
+                    <button
+                      onClick={() => {
+                        if (!tempCardData.newScore) return;
+                        
+                        const newEntry = {
+                          date: tempCardData.current ? new Date().toISOString().split('T')[0] : null,
+                          score: tempCardData.current
+                        };
+                        
+                        const updatedHistory = [...(tempCardData.history || [])];
+                        if (tempCardData.current && newEntry.date) {
+                          updatedHistory.push(newEntry);
+                        }
+                        
+                        setTempCardData({
+                          ...tempCardData,
+                          current: tempCardData.newScore,
+                          history: updatedHistory,
+                          newScore: '',
+                          newDate: new Date().toISOString().split('T')[0]
+                        });
+                      }}
+                      disabled={!tempCardData.newScore}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Score Entry
+                    </button>
+                  </div>
+                  
+                  {/* Credit Score History */}
+                  {tempCardData.history && tempCardData.history.length > 0 && (
+                    <div className="bg-indigo-900/20 rounded-lg p-3 border border-indigo-600/30">
+                      <div className="flex justify-between items-center mb-3">
+                        <h5 className="text-indigo-200 font-semibold">📈 Score History</h5>
+                        <div className="text-xs text-indigo-300">
+                          {tempCardData.history.length} entries
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                        {[...tempCardData.history]
+                          .sort((a, b) => new Date(b.date) - new Date(a.date))
+                          .map((entry, index) => (
+                            <div key={index} className="flex justify-between items-center bg-gray-700/50 rounded p-2">
+                              <div className="flex items-center gap-3">
+                                <div className={`text-lg font-bold ${
+                                  entry.score >= 800 ? 'text-emerald-400' :
+                                  entry.score >= 740 ? 'text-green-400' :
+                                  entry.score >= 670 ? 'text-yellow-400' :
+                                  entry.score >= 580 ? 'text-orange-400' : 'text-red-400'
+                                }`}>
+                                  {entry.score}
+                                </div>
+                                <div className="text-sm text-gray-400">
+                                  {new Date(entry.date).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  const updatedHistory = tempCardData.history.filter((_, i) => {
+                                    const sortedHistory = [...tempCardData.history].sort((a, b) => new Date(b.date) - new Date(a.date));
+                                    return sortedHistory[index] !== entry;
+                                  });
+                                  setTempCardData({...tempCardData, history: updatedHistory});
+                                }}
+                                className="text-red-400 hover:text-red-300 p-1"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                      
+                      <div className="mt-3 p-2 bg-indigo-800/20 rounded text-xs text-indigo-200">
+                        💡 <strong>Tip:</strong> Check your credit score monthly to track improvements from paying down debt and maintaining good credit habits.
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
