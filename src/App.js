@@ -921,7 +921,7 @@ const DebtCard = ({ data, onEdit }) => {
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30 relative">
       <button
-        onClick={() => onEdit('debt')}
+        onClick={() => onEdit('debt', data)}
         className="absolute top-4 right-4 p-2 bg-red-700/20 hover:bg-red-600/30 rounded-lg transition-colors"
         title="Edit Debt"
       >
@@ -4480,7 +4480,17 @@ export default function App() {
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
-    setTempCardData(currentData);
+    
+    // Provide safe defaults for different card types
+    if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
+      setTempCardData({
+        accounts: currentData?.accounts || [],
+        total: currentData?.total || 0,
+        history: currentData?.history || []
+      });
+    } else {
+      setTempCardData(currentData || {});
+    }
   };
 
   const closeCardEditor = () => {
@@ -5498,9 +5508,11 @@ export default function App() {
                             interestRate: 0,
                             minPayment: 0
                           };
+                          // Ensure tempCardData has the right structure
+                          const currentData = tempCardData || {};
                           setTempCardData({
-                            ...tempCardData,
-                            accounts: [...(tempCardData.accounts || []), newAccount]
+                            ...currentData,
+                            accounts: [...(currentData.accounts || []), newAccount]
                           });
                         }}
                         className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1"
@@ -5511,7 +5523,7 @@ export default function App() {
                     </div>
                     
                     <div className="space-y-3">
-                      {(tempCardData.accounts || []).map((account, index) => (
+                      {((tempCardData && tempCardData.accounts) || []).map((account, index) => (
                         <div key={account.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
                           <div className="grid grid-cols-12 gap-2 items-end">
                             <div className="col-span-3">
@@ -5519,11 +5531,12 @@ export default function App() {
                               <input
                                 type="text"
                                 placeholder="Credit Card"
-                                value={account.name}
+                                value={account.name || ''}
                                 onChange={(e) => {
-                                  const updatedAccounts = [...tempCardData.accounts];
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
                                   updatedAccounts[index] = {...account, name: e.target.value};
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                               />
@@ -5533,11 +5546,12 @@ export default function App() {
                               <input
                                 type="number"
                                 placeholder="10000"
-                                value={account.balance}
+                                value={account.balance || 0}
                                 onChange={(e) => {
-                                  const updatedAccounts = [...tempCardData.accounts];
-                                  updatedAccounts[index] = {...account, balance: Number(e.target.value)};
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                  updatedAccounts[index] = {...account, balance: Number(e.target.value) || 0};
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                               />
@@ -5548,11 +5562,12 @@ export default function App() {
                                 type="number"
                                 step="0.1"
                                 placeholder="19.9"
-                                value={account.interestRate}
+                                value={account.interestRate || 0}
                                 onChange={(e) => {
-                                  const updatedAccounts = [...tempCardData.accounts];
-                                  updatedAccounts[index] = {...account, interestRate: Number(e.target.value)};
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                  updatedAccounts[index] = {...account, interestRate: Number(e.target.value) || 0};
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                               />
@@ -5562,11 +5577,12 @@ export default function App() {
                               <input
                                 type="number"
                                 placeholder="200"
-                                value={account.minPayment}
+                                value={account.minPayment || 0}
                                 onChange={(e) => {
-                                  const updatedAccounts = [...tempCardData.accounts];
-                                  updatedAccounts[index] = {...account, minPayment: Number(e.target.value)};
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                  updatedAccounts[index] = {...account, minPayment: Number(e.target.value) || 0};
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                               />
@@ -5574,8 +5590,9 @@ export default function App() {
                             <div className="col-span-1">
                               <button
                                 onClick={() => {
-                                  const updatedAccounts = tempCardData.accounts.filter((_, i) => i !== index);
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = (currentData.accounts || []).filter((_, i) => i !== index);
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="text-red-400 hover:text-red-300 p-1"
                               >
@@ -5591,18 +5608,18 @@ export default function App() {
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div>
                           <div className="text-red-400 font-semibold">
-                            Total Debt: ${(tempCardData.accounts || []).reduce((sum, acc) => sum + acc.balance, 0).toLocaleString()}
+                            Total Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.balance || 0), 0).toLocaleString()}
                           </div>
                         </div>
                         <div>
                           <div className="text-orange-400 font-semibold">
-                            Min Payment: ${(tempCardData.accounts || []).reduce((sum, acc) => sum + acc.minPayment, 0).toLocaleString()}/mo
+                            Min Payment: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.minPayment || 0), 0).toLocaleString()}/mo
                           </div>
                         </div>
                         <div>
                           <div className="text-yellow-400 font-semibold">
-                            Avg APR: {tempCardData.accounts?.length > 0 ? 
-                              (tempCardData.accounts.reduce((sum, acc) => sum + acc.interestRate, 0) / tempCardData.accounts.length).toFixed(1) : 0}%
+                            Avg APR: {(tempCardData && tempCardData.accounts && tempCardData.accounts.length > 0) ? 
+                              (tempCardData.accounts.reduce((sum, acc) => sum + (acc.interestRate || 0), 0) / tempCardData.accounts.length).toFixed(1) : 0}%
                           </div>
                         </div>
                       </div>
