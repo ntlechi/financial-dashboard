@@ -989,11 +989,11 @@ const CashOnHandCard = ({ data, onEdit }) => (
 );
 
 // Income Card
-const IncomeCard = ({ data }) => (
+const IncomeCard = ({ data, viewMode }) => (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
-      Monthly Income
+      {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
     </h2>
     <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     <div className="mt-4 space-y-2">
@@ -1008,11 +1008,11 @@ const IncomeCard = ({ data }) => (
 );
 
 // Expenses Card
-const ExpensesCard = ({ data }) => (
+const ExpensesCard = ({ data, viewMode }) => (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
-      Monthly Expenses
+      {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
     </h2>
     <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     <div className="mt-4 space-y-2">
@@ -5413,6 +5413,7 @@ export default function App() {
         total: (calculatedData.income.total - calculatedData.expenses.total) * 12,
         monthly: (calculatedData.income.total - calculatedData.expenses.total) * 12
       },
+      // Savings rate is the same percentage regardless of monthly vs annual view
       savingsRate: { 
         ...data.savingsRate, 
         current: calculatedData.income.total > 0 ? 
@@ -5737,8 +5738,8 @@ export default function App() {
               <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
               
               {/* Third Row - Income and Expenses Side by Side */}
-              <IncomeCard data={displayData.income} />
-              <ExpensesCard data={displayData.expenses} />
+              <IncomeCard data={displayData.income} viewMode={viewMode} />
+              <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
               
               {/* Fourth Row - Cash Flow and Rainy Day Fund */}
               <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
