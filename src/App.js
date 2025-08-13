@@ -245,19 +245,60 @@ const initialData = {
       }
     ],
     performanceHistory: [
-      { date: '2024-01-01', value: 380000 },
-      { date: '2024-02-01', value: 385000 },
-      { date: '2024-03-01', value: 392000 },
-      { date: '2024-04-01', value: 388000 },
-      { date: '2024-05-01', value: 395000 },
-      { date: '2024-06-01', value: 402000 },
-      { date: '2024-07-01', value: 410000 },
-      { date: '2024-08-01', value: 415000 },
-      { date: '2024-09-01', value: 425000 },
-      { date: '2024-10-01', value: 435000 },
-      { date: '2024-11-01', value: 440000 },
-      { date: '2024-12-01', value: 445000 },
-      { date: '2025-01-01', value: 450000 }
+      // 2021 Data
+      { date: '2021-01-01', value: 180000 },
+      { date: '2021-02-01', value: 185000 },
+      { date: '2021-03-01', value: 192000 },
+      { date: '2021-04-01', value: 198000 },
+      { date: '2021-05-01', value: 205000 },
+      { date: '2021-06-01', value: 212000 },
+      { date: '2021-07-01', value: 220000 },
+      { date: '2021-08-01', value: 225000 },
+      { date: '2021-09-01', value: 235000 },
+      { date: '2021-10-01', value: 245000 },
+      { date: '2021-11-01', value: 250000 },
+      { date: '2021-12-01', value: 255000 },
+      // 2022 Data
+      { date: '2022-01-01', value: 260000 },
+      { date: '2022-02-01', value: 265000 },
+      { date: '2022-03-01', value: 272000 },
+      { date: '2022-04-01', value: 268000 },
+      { date: '2022-05-01', value: 275000 },
+      { date: '2022-06-01', value: 282000 },
+      { date: '2022-07-01', value: 290000 },
+      { date: '2022-08-01', value: 295000 },
+      { date: '2022-09-01', value: 305000 },
+      { date: '2022-10-01', value: 315000 },
+      { date: '2022-11-01', value: 320000 },
+      { date: '2022-12-01', value: 325000 },
+      // 2023 Data
+      { date: '2023-01-01', value: 330000 },
+      { date: '2023-02-01', value: 335000 },
+      { date: '2023-03-01', value: 342000 },
+      { date: '2023-04-01', value: 338000 },
+      { date: '2023-05-01', value: 345000 },
+      { date: '2023-06-01', value: 352000 },
+      { date: '2023-07-01', value: 360000 },
+      { date: '2023-08-01', value: 365000 },
+      { date: '2023-09-01', value: 375000 },
+      { date: '2023-10-01', value: 385000 },
+      { date: '2023-11-01', value: 390000 },
+      { date: '2023-12-01', value: 395000 },
+      // 2024 Data
+      { date: '2024-01-01', value: 400000 },
+      { date: '2024-02-01', value: 405000 },
+      { date: '2024-03-01', value: 412000 },
+      { date: '2024-04-01', value: 408000 },
+      { date: '2024-05-01', value: 415000 },
+      { date: '2024-06-01', value: 422000 },
+      { date: '2024-07-01', value: 430000 },
+      { date: '2024-08-01', value: 435000 },
+      { date: '2024-09-01', value: 445000 },
+      { date: '2024-10-01', value: 455000 },
+      { date: '2024-11-01', value: 460000 },
+      { date: '2024-12-01', value: 465000 },
+      // 2025 Data (Current)
+      { date: '2025-01-01', value: 470000 }
     ]
   },
   transactions: [
@@ -2513,20 +2554,52 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .text(d => `${d.data.percentage}%`);
     }
     
-    // Line Chart
+    // Line Chart - Responsive with Yearly Data and Gradient
     if (lineChartRef.current && data.investments.performanceHistory) {
       const svg = d3.select(lineChartRef.current);
       svg.selectAll("*").remove();
       
-      const margin = { top: 20, right: 30, bottom: 40, left: 60 };
-      const width = 600 - margin.left - margin.right;
-      const height = 300 - margin.top - margin.bottom;
+      // Get container width for responsive design
+      const container = lineChartRef.current.parentNode;
+      const containerWidth = container.getBoundingClientRect().width;
       
+      // Mobile-first responsive margins and dimensions
+      const margin = window.innerWidth <= 768 
+        ? { top: 20, right: 20, bottom: 50, left: 50 }
+        : { top: 20, right: 30, bottom: 40, left: 60 };
+      
+      const width = Math.min(containerWidth - 40, 800) - margin.left - margin.right;
+      const height = window.innerWidth <= 768 ? 250 : 300;
+      const chartHeight = height - margin.top - margin.bottom;
+      
+      // Convert monthly data to yearly averages for better mobile UX
       const parseDate = d3.timeParse("%Y-%m-%d");
-      const data_parsed = data.investments.performanceHistory.map(d => ({
+      const monthlyData = data.investments.performanceHistory.map(d => ({
         date: parseDate(d.date),
         value: d.value
       }));
+      
+      // Group by year and take December value (or last available)
+      const yearlyData = d3.rollup(
+        monthlyData,
+        v => v[v.length - 1].value, // Take last value of the year
+        d => d.date.getFullYear()
+      );
+      
+      const data_parsed = Array.from(yearlyData, ([year, value]) => ({
+        date: new Date(year, 11, 31), // December 31st of each year
+        value: value
+      })).sort((a, b) => a.date - b.date);
+      
+      // Add current year if missing
+      const currentYear = new Date().getFullYear();
+      if (!yearlyData.has(currentYear) && monthlyData.length > 0) {
+        const latestData = monthlyData[monthlyData.length - 1];
+        data_parsed.push({
+          date: new Date(currentYear, 11, 31),
+          value: latestData.value
+        });
+      }
       
       const x = d3.scaleTime()
         .domain(d3.extent(data_parsed, d => d.date))
@@ -2535,34 +2608,62 @@ const InvestmentTab = ({ data, setData, userId }) => {
       const y = d3.scaleLinear()
         .domain(d3.extent(data_parsed, d => d.value))
         .nice()
-        .range([height, 0]);
+        .range([chartHeight, 0]);
       
       const line = d3.line()
         .x(d => x(d.date))
         .y(d => y(d.value))
         .curve(d3.curveMonotoneX);
       
+      const area = d3.area()
+        .x(d => x(d.date))
+        .y0(chartHeight)
+        .y1(d => y(d.value))
+        .curve(d3.curveMonotoneX);
+      
       const g = svg
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("height", height)
+        .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "auto")
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
       
-      // Add axes
-      g.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b %Y")))
+      // Add gradient definition
+      const gradient = svg.append("defs")
+        .append("linearGradient")
+        .attr("id", "areaGradient")
+        .attr("gradientUnits", "userSpaceOnUse")
+        .attr("x1", 0).attr("y1", 0)
+        .attr("x2", 0).attr("y2", chartHeight);
+      
+      gradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#3B82F6")
+        .attr("stop-opacity", 0.4);
+      
+      gradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#3B82F6")
+        .attr("stop-opacity", 0.1);
+      
+      // Add axes with responsive formatting
+      const xAxis = g.append("g")
+        .attr("transform", `translate(0,${chartHeight})`)
+        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")).ticks(data_parsed.length))
         .selectAll("text")
         .style("fill", "#9CA3AF")
-        .style("font-size", "12px");
+        .style("font-size", window.innerWidth <= 768 ? "10px" : "12px");
       
       g.append("g")
-        .call(d3.axisLeft(y).tickFormat(d => `$${d/1000}k`))
+        .call(d3.axisLeft(y).tickFormat(d => `$${(d/1000).toFixed(0)}k`))
         .selectAll("text")
         .style("fill", "#9CA3AF")
-        .style("font-size", "12px");
+        .style("font-size", window.innerWidth <= 768 ? "10px" : "12px");
       
-      // Add grid lines
+      // Add subtle grid lines
       g.selectAll(".grid-line-y")
         .data(y.ticks())
         .enter()
@@ -2573,25 +2674,33 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("y1", d => y(d))
         .attr("y2", d => y(d))
         .attr("stroke", "#374151")
-        .attr("stroke-opacity", 0.3);
+        .attr("stroke-opacity", 0.2);
       
-      // Add line
+      // Add gradient area
+      g.append("path")
+        .datum(data_parsed)
+        .attr("fill", "url(#areaGradient)")
+        .attr("d", area);
+      
+      // Add main line
       g.append("path")
         .datum(data_parsed)
         .attr("fill", "none")
         .attr("stroke", "#3B82F6")
-        .attr("stroke-width", 3)
+        .attr("stroke-width", window.innerWidth <= 768 ? 2 : 3)
         .attr("d", line);
       
-      // Add dots
+      // Add dots with responsive sizing
       g.selectAll(".dot")
         .data(data_parsed)
         .enter().append("circle")
         .attr("class", "dot")
         .attr("cx", d => x(d.date))
         .attr("cy", d => y(d.value))
-        .attr("r", 4)
-        .attr("fill", "#3B82F6");
+        .attr("r", window.innerWidth <= 768 ? 3 : 4)
+        .attr("fill", "#3B82F6")
+        .attr("stroke", "#1F2937")
+        .attr("stroke-width", 2);
     }
   }, [data.investments]);
 
@@ -2830,7 +2939,9 @@ const InvestmentTab = ({ data, setData, userId }) => {
             <BarChart3 className="w-6 h-6 mr-3 text-green-400" />
             Performance History
           </h3>
-          <svg ref={lineChartRef}></svg>
+          <div className="w-full overflow-hidden">
+            <svg ref={lineChartRef} className="w-full h-auto"></svg>
+          </div>
         </Card>
       </div>
 
