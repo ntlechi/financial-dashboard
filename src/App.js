@@ -1639,21 +1639,54 @@ const BudgetCalculatorTab = () => {
   const [showFFCalculator, setShowFFCalculator] = useState(false);
   const [showDebtCalculator, setShowDebtCalculator] = useState(false);
   
+  // Editable budget percentages
+  const [budgetPercentages, setBudgetPercentages] = useState({
+    '50-30-20': {
+      needs: 50,
+      wants: 30,
+      savings: 20
+    },
+    '6-jars': {
+      necessities: 55,
+      financialFreedom: 10,
+      longTermSavings: 10,
+      education: 10,
+      play: 10,
+      give: 5
+    }
+  });
+  
   const fiftyThirtyTwenty = {
-    needs: Math.round(monthlyIncome * 0.5),
-    wants: Math.round(monthlyIncome * 0.3),
-    savings: Math.round(monthlyIncome * 0.2)
+    needs: Math.round(monthlyIncome * (budgetPercentages['50-30-20'].needs / 100)),
+    wants: Math.round(monthlyIncome * (budgetPercentages['50-30-20'].wants / 100)),
+    savings: Math.round(monthlyIncome * (budgetPercentages['50-30-20'].savings / 100))
   };
   
   const sixJars = {
-    necessities: Math.round(monthlyIncome * 0.55),
-    financialFreedom: Math.round(monthlyIncome * 0.10),
-    longTermSavings: Math.round(monthlyIncome * 0.10),
-    education: Math.round(monthlyIncome * 0.10),
-    play: Math.round(monthlyIncome * 0.10),
-    give: Math.round(monthlyIncome * 0.05)
+    necessities: Math.round(monthlyIncome * (budgetPercentages['6-jars'].necessities / 100)),
+    financialFreedom: Math.round(monthlyIncome * (budgetPercentages['6-jars'].financialFreedom / 100)),
+    longTermSavings: Math.round(monthlyIncome * (budgetPercentages['6-jars'].longTermSavings / 100)),
+    education: Math.round(monthlyIncome * (budgetPercentages['6-jars'].education / 100)),
+    play: Math.round(monthlyIncome * (budgetPercentages['6-jars'].play / 100)),
+    give: Math.round(monthlyIncome * (budgetPercentages['6-jars'].give / 100))
   };
   
+  // Function to update budget percentages
+  const updateBudgetPercentage = (budgetSystem, category, percentage) => {
+    setBudgetPercentages(prev => ({
+      ...prev,
+      [budgetSystem]: {
+        ...prev[budgetSystem],
+        [category]: Math.max(0, Math.min(100, percentage)) // Ensure 0-100 range
+      }
+    }));
+  };
+
+  // Calculate total percentage for validation
+  const totalPercentage = budgetType === '50-30-20'
+    ? budgetPercentages['50-30-20'].needs + budgetPercentages['50-30-20'].wants + budgetPercentages['50-30-20'].savings
+    : Object.values(budgetPercentages['6-jars']).reduce((sum, val) => sum + val, 0);
+
   // Calculate remaining balance after budgeting
   const remainingBalance = budgetType === '50-30-20' 
     ? monthlyIncome - (fiftyThirtyTwenty.needs + fiftyThirtyTwenty.wants + fiftyThirtyTwenty.savings)
@@ -1726,23 +1759,75 @@ const BudgetCalculatorTab = () => {
           <p className="text-gray-400">
             {remainingBalance >= 0 ? 'Remaining balance' : 'Over budget by'}
           </p>
+          <div className="mt-3 pt-3 border-t border-blue-800/40">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-blue-300">Total Allocation:</span>
+              <span className={`font-semibold ${totalPercentage === 100 ? 'text-green-400' : totalPercentage > 100 ? 'text-red-400' : 'text-yellow-400'}`}>
+                {totalPercentage}%
+              </span>
+            </div>
+            {totalPercentage !== 100 && (
+              <p className="text-xs text-gray-400 mt-1">
+                {totalPercentage > 100 ? 'Reduce percentages to 100%' : 'Add more percentage allocations'}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       
       {budgetType === '50-30-20' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-green-900/30 rounded-xl p-6 border-2 border-green-800/40">
-            <h3 className="text-2xl font-bold text-green-400 mb-3">💡 Needs (50%)</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-2xl font-bold text-green-400">💡 Needs</h3>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={budgetPercentages['50-30-20'].needs || ''}
+                  onChange={(e) => updateBudgetPercentage('50-30-20', 'needs', e.target.value === '' ? 0 : Number(e.target.value))}
+                  className="w-16 bg-green-800/50 text-green-300 text-sm px-2 py-1 rounded border border-green-600 focus:border-green-400 focus:outline-none text-center"
+                  min="0"
+                  max="100"
+                />
+                <span className="text-green-400 text-sm font-semibold">%</span>
+              </div>
+            </div>
             <p className="text-gray-300 mb-4">Essential expenses</p>
             <div className="text-4xl font-bold text-white">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
           </div>
           <div className="bg-yellow-900/30 rounded-xl p-6 border-2 border-yellow-800/40">
-            <h3 className="text-2xl font-bold text-yellow-400 mb-3">🎯 Wants (30%)</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-2xl font-bold text-yellow-400">🎯 Wants</h3>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={budgetPercentages['50-30-20'].wants || ''}
+                  onChange={(e) => updateBudgetPercentage('50-30-20', 'wants', e.target.value === '' ? 0 : Number(e.target.value))}
+                  className="w-16 bg-yellow-800/50 text-yellow-300 text-sm px-2 py-1 rounded border border-yellow-600 focus:border-yellow-400 focus:outline-none text-center"
+                  min="0"
+                  max="100"
+                />
+                <span className="text-yellow-400 text-sm font-semibold">%</span>
+              </div>
+            </div>
             <p className="text-gray-300 mb-4">Discretionary spending</p>
             <div className="text-4xl font-bold text-white">${fiftyThirtyTwenty.wants.toLocaleString()}</div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40">
-            <h3 className="text-2xl font-bold text-blue-400 mb-3">💰 Savings (20%)</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-2xl font-bold text-blue-400">💰 Savings</h3>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={budgetPercentages['50-30-20'].savings || ''}
+                  onChange={(e) => updateBudgetPercentage('50-30-20', 'savings', e.target.value === '' ? 0 : Number(e.target.value))}
+                  className="w-16 bg-blue-800/50 text-blue-300 text-sm px-2 py-1 rounded border border-blue-600 focus:border-blue-400 focus:outline-none text-center"
+                  min="0"
+                  max="100"
+                />
+                <span className="text-blue-400 text-sm font-semibold">%</span>
+              </div>
+            </div>
             <p className="text-gray-300 mb-4">Future & investments</p>
             <div className="text-4xl font-bold text-white">${fiftyThirtyTwenty.savings.toLocaleString()}</div>
           </div>
@@ -1754,32 +1839,92 @@ const BudgetCalculatorTab = () => {
           <div className="bg-green-900/30 rounded-xl p-4 border-2 border-green-800/40 text-center">
             <h4 className="text-sm font-bold text-green-400 mb-2">🏠 Necessities</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.necessities.toLocaleString()}</div>
-            <div className="text-xs text-green-400 font-semibold">55%</div>
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="number"
+                value={budgetPercentages['6-jars'].necessities || ''}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'necessities', e.target.value === '' ? 0 : Number(e.target.value))}
+                className="w-12 bg-green-800/50 text-green-300 text-xs px-1 py-0.5 rounded border border-green-600 focus:border-green-400 focus:outline-none text-center"
+                min="0"
+                max="100"
+              />
+              <span className="text-green-400 text-xs font-semibold">%</span>
+            </div>
           </div>
           <div className="bg-purple-900/30 rounded-xl p-4 border-2 border-purple-800/40 text-center">
             <h4 className="text-sm font-bold text-purple-400 mb-2">🚀 Freedom</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.financialFreedom.toLocaleString()}</div>
-            <div className="text-xs text-purple-400 font-semibold">10%</div>
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="number"
+                value={budgetPercentages['6-jars'].financialFreedom || ''}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'financialFreedom', e.target.value === '' ? 0 : Number(e.target.value))}
+                className="w-12 bg-purple-800/50 text-purple-300 text-xs px-1 py-0.5 rounded border border-purple-600 focus:border-purple-400 focus:outline-none text-center"
+                min="0"
+                max="100"
+              />
+              <span className="text-purple-400 text-xs font-semibold">%</span>
+            </div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-4 border-2 border-blue-800/40 text-center">
             <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 Savings</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.longTermSavings.toLocaleString()}</div>
-            <div className="text-xs text-blue-400 font-semibold">10%</div>
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="number"
+                value={budgetPercentages['6-jars'].longTermSavings || ''}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'longTermSavings', e.target.value === '' ? 0 : Number(e.target.value))}
+                className="w-12 bg-blue-800/50 text-blue-300 text-xs px-1 py-0.5 rounded border border-blue-600 focus:border-blue-400 focus:outline-none text-center"
+                min="0"
+                max="100"
+              />
+              <span className="text-blue-400 text-xs font-semibold">%</span>
+            </div>
           </div>
           <div className="bg-amber-900/30 rounded-xl p-4 border-2 border-amber-800/40 text-center">
             <h4 className="text-sm font-bold text-amber-400 mb-2">📚 Education</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.education.toLocaleString()}</div>
-            <div className="text-xs text-amber-400 font-semibold">10%</div>
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="number"
+                value={budgetPercentages['6-jars'].education || ''}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'education', e.target.value === '' ? 0 : Number(e.target.value))}
+                className="w-12 bg-amber-800/50 text-amber-300 text-xs px-1 py-0.5 rounded border border-amber-600 focus:border-amber-400 focus:outline-none text-center"
+                min="0"
+                max="100"
+              />
+              <span className="text-amber-400 text-xs font-semibold">%</span>
+            </div>
           </div>
           <div className="bg-pink-900/30 rounded-xl p-4 border-2 border-pink-800/40 text-center">
             <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 Play</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.play.toLocaleString()}</div>
-            <div className="text-xs text-pink-400 font-semibold">10%</div>
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="number"
+                value={budgetPercentages['6-jars'].play || ''}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'play', e.target.value === '' ? 0 : Number(e.target.value))}
+                className="w-12 bg-pink-800/50 text-pink-300 text-xs px-1 py-0.5 rounded border border-pink-600 focus:border-pink-400 focus:outline-none text-center"
+                min="0"
+                max="100"
+              />
+              <span className="text-pink-400 text-xs font-semibold">%</span>
+            </div>
           </div>
           <div className="bg-teal-900/30 rounded-xl p-4 border-2 border-teal-800/40 text-center">
             <h4 className="text-sm font-bold text-teal-400 mb-2">❤️ Give</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.give.toLocaleString()}</div>
-            <div className="text-xs text-teal-400 font-semibold">5%</div>
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="number"
+                value={budgetPercentages['6-jars'].give || ''}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'give', e.target.value === '' ? 0 : Number(e.target.value))}
+                className="w-12 bg-teal-800/50 text-teal-300 text-xs px-1 py-0.5 rounded border border-teal-600 focus:border-teal-400 focus:outline-none text-center"
+                min="0"
+                max="100"
+              />
+              <span className="text-teal-400 text-xs font-semibold">%</span>
+            </div>
           </div>
         </div>
       )}
