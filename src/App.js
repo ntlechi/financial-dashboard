@@ -2680,10 +2680,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Calculate withholding tax based on account type and stock origin
     let withholdingTax = 0;
     if (newHolding.isUSStock) {
-      if (newHolding.accountType === 'RRSP') {
-        withholdingTax = 15; // US-Canada tax treaty rate for RRSP
+      // Find the account in user's retirement accounts
+      const account = data.registeredAccounts?.accounts?.find(acc => acc.name === newHolding.accountType);
+      
+      if (account && account.type === 'tax-deferred') {
+        // Tax-deferred accounts (like RRSP, 401k, Traditional IRA) get treaty rate
+        withholdingTax = 15; // US-Canada tax treaty rate for tax-deferred accounts
       } else {
-        withholdingTax = 30; // Standard US withholding rate
+        // Tax-free accounts (TFSA, Roth IRA) and taxable accounts get standard rate
+        withholdingTax = 30; // Standard rate
       }
     }
 
@@ -2722,7 +2727,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
     setData(updatedData);
     setNewHolding({ 
       symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
-      dripEnabled: true, accountType: 'TFSA', isUSStock: false, withholdingTax: 0, currency: 'CAD' 
+      dripEnabled: true, accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable', isUSStock: false, withholdingTax: 0, currency: 'CAD' 
     });
     setShowAddHolding(false);
     
@@ -2947,9 +2952,20 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   <p className="text-sm text-gray-400">{holding.name}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`text-xs px-2 py-0.5 rounded font-semibold ${
-                      holding.accountType === 'TFSA' ? 'bg-green-600/20 text-green-400 border border-green-600/30' :
-                      holding.accountType === 'RRSP' ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' :
-                      'bg-orange-600/20 text-orange-400 border border-orange-600/30'
+                      (() => {
+                        // Find the account in user's retirement accounts for dynamic color
+                        const account = data.registeredAccounts?.accounts?.find(acc => acc.name === holding.accountType);
+                        if (account) {
+                          // Use same color logic as retirement accounts modal
+                          const accountIndex = data.registeredAccounts.accounts.indexOf(account);
+                          const colors = ['green', 'blue', 'orange', 'teal', 'indigo', 'pink'];
+                          const color = colors[accountIndex % colors.length];
+                          return `bg-${color}-600/20 text-${color}-400 border border-${color}-600/30`;
+                        }
+                        // Fallback colors for non-retirement accounts
+                        if (holding.accountType === 'Taxable') return 'bg-orange-600/20 text-orange-400 border border-orange-600/30';
+                        return 'bg-gray-600/20 text-gray-400 border border-gray-600/30';
+                      })()
                     }`}>
                       {holding.accountType}
                     </span>
@@ -3115,9 +3131,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
                       onChange={(e) => setNewHolding({...newHolding, accountType: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     >
-                      <option value="TFSA">TFSA</option>
-                      <option value="RRSP">RRSP</option>
-                      <option value="Taxable">Taxable</option>
+                      {/* Dynamic options from user's retirement accounts */}
+                      {data.registeredAccounts?.accounts?.map(account => (
+                        <option key={account.id} value={account.name}>
+                          {account.name} ({account.type.replace('-', ' ')})
+                        </option>
+                      ))}
+                      {/* Always include taxable option */}
+                      <option value="Taxable">Taxable Account</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
                   
@@ -3158,12 +3180,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 
                 {newHolding.isUSStock && (
                   <div className="p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-                    <div className="text-red-400 font-semibold text-sm mb-1">Canadian Tax Notice</div>
+                    <div className="text-red-400 font-semibold text-sm mb-1">US Stock Tax Notice</div>
                     <div className="text-xs text-gray-300">
-                      {newHolding.accountType === 'RRSP' 
-                        ? 'US withholding tax: 15% (reduced rate due to tax treaty)'
-                        : 'US withholding tax: 30% (standard rate for TFSA/Taxable accounts)'
-                      }
+                      {(() => {
+                        const account = data.registeredAccounts?.accounts?.find(acc => acc.name === newHolding.accountType);
+                        if (account && account.type === 'tax-deferred') {
+                          return `US withholding tax: 15% (reduced rate for ${newHolding.accountType} - tax-deferred account)`;
+                        } else {
+                          return `US withholding tax: 30% (standard rate for ${newHolding.accountType || 'this account type'})`;
+                        }
+                      })()}
                     </div>
                   </div>
                 )}
@@ -3250,13 +3276,19 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   <div>
                     <label className="block text-sm text-gray-300 mb-1">Account Type</label>
                     <select
-                      value={editingHolding.accountType || 'TFSA'}
+                      value={editingHolding.accountType || (data.registeredAccounts?.accounts?.[0]?.name || 'Taxable')}
                       onChange={(e) => setEditingHolding({...editingHolding, accountType: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     >
-                      <option value="TFSA">TFSA</option>
-                      <option value="RRSP">RRSP</option>
-                      <option value="Taxable">Taxable</option>
+                      {/* Dynamic options from user's retirement accounts */}
+                      {data.registeredAccounts?.accounts?.map(account => (
+                        <option key={account.id} value={account.name}>
+                          {account.name} ({account.type.replace('-', ' ')})
+                        </option>
+                      ))}
+                      {/* Always include taxable option */}
+                      <option value="Taxable">Taxable Account</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
                   
@@ -3285,12 +3317,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 
                 {editingHolding.isUSStock && (
                   <div className="p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-                    <div className="text-red-400 font-semibold text-sm mb-1">Canadian Tax Notice</div>
+                    <div className="text-red-400 font-semibold text-sm mb-1">US Stock Tax Notice</div>
                     <div className="text-xs text-gray-300">
-                      {editingHolding.accountType === 'RRSP' 
-                        ? 'US withholding tax: 15% (reduced rate due to tax treaty)'
-                        : 'US withholding tax: 30% (standard rate for TFSA/Taxable accounts)'
-                      }
+                      {(() => {
+                        const account = data.registeredAccounts?.accounts?.find(acc => acc.name === editingHolding.accountType);
+                        if (account && account.type === 'tax-deferred') {
+                          return `US withholding tax: 15% (reduced rate for ${editingHolding.accountType} - tax-deferred account)`;
+                        } else {
+                          return `US withholding tax: 30% (standard rate for ${editingHolding.accountType || 'this account type'})`;
+                        }
+                      })()}
                     </div>
                   </div>
                 )}
