@@ -4918,26 +4918,9 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
-    // Force viewport reset on modal open for mobile - NUCLEAR iOS FIX
+    // Force viewport reset on modal open for mobile
     if (window.innerWidth <= 768) {
-      // Update --vh IMMEDIATELY AND FORCE RECALCULATION
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      
-      // FORCE scroll to top to prevent positioning offset issues
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      
-      // LOCK body completely - prevent ALL scrolling and positioning
-      document.body.style.overflow = 'hidden !important';
-      document.body.style.position = 'fixed !important';
-      document.body.style.width = '100% !important';
-      document.body.style.height = '100vh !important';
-      document.body.style.top = '0px !important';
-      document.body.style.left = '0px !important';
-      document.body.style.transform = 'none !important';
-      document.body.style.margin = '0px !important';
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     }
     
     // Provide safe defaults for different card types
@@ -4984,16 +4967,9 @@ export default function App() {
     setEditingCard(null);
     setTempCardData({});
     
-    // Restore body scroll and positioning on mobile - CLEAN UP ALL NUCLEAR STYLES
+    // Reset mobile viewport on modal close
     if (window.innerWidth <= 768) {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.transform = '';
-      document.body.style.margin = '';
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     }
     
     // Reset floating button visibility
@@ -5869,19 +5845,16 @@ export default function App() {
       {/* Card Editing Modals */}
       {editingCard && (
         <div 
-          className="z-50"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
           style={{
-            position: 'fixed !important',
-            top: '0px !important',
-            left: '0px !important',
-            right: '0px !important',
-            bottom: '0px !important',
-            width: '100vw !important',
-            height: '100vh !important',
-            zIndex: '99999 !important',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            padding: '1rem',
-            overflow: 'hidden !important'
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 'calc(var(--vh, 1vh) * 100)',
+            zIndex: 9999,
+            padding: '1rem'
           }}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -5894,15 +5867,7 @@ export default function App() {
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
             style={{
-              position: 'absolute !important',
-              top: '50% !important',
-              left: '50% !important',
-              transform: 'translate(-50%, -50%) !important',
-              margin: '0 !important',
-              maxWidth: '48rem',
-              width: 'calc(100vw - 2rem)',
-              maxHeight: '75vh',
-              overflowY: 'auto'
+              margin: 0
             }}
           >
             <div className="flex justify-between items-center mb-4">
