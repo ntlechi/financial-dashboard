@@ -4916,11 +4916,20 @@ export default function App() {
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
+    console.log('🔍 openCardEditor called:', { 
+      cardType, 
+      windowHeight: window.innerHeight, 
+      scrollY: window.scrollY,
+      documentScrollTop: document.documentElement.scrollTop 
+    });
+    
     setEditingCard(cardType);
     
     // Force viewport reset on modal open for mobile
     if (window.innerWidth <= 768) {
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      console.log('📱 Mobile --vh set to:', vh + 'px');
     }
     
     // Provide safe defaults for different card types
@@ -5852,7 +5861,7 @@ export default function App() {
             left: 0,
             right: 0,
             bottom: 0,
-            height: 'calc(var(--vh, 1vh) * 100)',
+            height: '100vh',
             zIndex: 9999,
             padding: '1rem'
           }}
