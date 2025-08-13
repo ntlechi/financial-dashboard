@@ -3982,37 +3982,37 @@ const TravelTab = ({ data, setData, userId }) => {
       return amount * globalRates[fromCurrency][toCurrency];
     }
     
-    // Fallback to 1:1 if rates not found
+        // Fallback to 1:1 if rates not found
     return amount;
   };
 
-          const handleSaveRunwaySettings = async () => {
-     try {
-       const updatedData = {
-         ...data,
-         travel: {
-           ...data.travel,
-           totalSavings: Number(runwaySettings.totalSavings),
-           homeCurrency: runwaySettings.homeCurrency,
-           tripPlan: runwaySettings.tripPlan
-         }
-       };
-         
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
-       setShowRunwayModal(false);
-       
-       // Force viewport cleanup after modal close
-       setTimeout(() => {
-         window.scrollTo(0, 0);
-         document.body.style.overflow = '';
-         document.body.style.position = '';
-         document.body.style.height = '';
-       }, 100);
-     } catch (error) {
-       console.error('Error saving runway settings:', error);
-     }
-   };
+  const handleSaveRunwaySettings = async () => {
+    try {
+      const updatedData = {
+        ...data,
+        travel: {
+          ...data.travel,
+          totalSavings: Number(runwaySettings.totalSavings),
+          homeCurrency: runwaySettings.homeCurrency,
+          tripPlan: runwaySettings.tripPlan
+        }
+      };
+        
+      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setShowRunwayModal(false);
+      
+      // Force viewport cleanup after modal close
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.height = '';
+      }, 100);
+    } catch (error) {
+      console.error('Error saving runway settings:', error);
+    }
+  };
 
    const handleAddExpense = async () => {
      if (!newExpense.description || !newExpense.amount || !selectedTrip) return;
