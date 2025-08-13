@@ -6772,15 +6772,14 @@ export default function App() {
                       onClick={() => {
                         if (!tempCardData.newScore) return;
                         
-                        const newEntry = {
-                          date: tempCardData.current ? new Date().toISOString().split('T')[0] : null,
-                          score: tempCardData.current
-                        };
-                        
+                        const selectedDate = tempCardData.newDate || new Date().toISOString().split('T')[0];
                         const updatedHistory = [...(tempCardData.history || [])];
-                        if (tempCardData.current && newEntry.date) {
-                          updatedHistory.push(newEntry);
-                        }
+                        
+                        // Add the new score entry to history
+                        updatedHistory.push({
+                          date: selectedDate,
+                          score: tempCardData.newScore
+                        });
                         
                         setTempCardData({
                           ...tempCardData,
@@ -6828,10 +6827,10 @@ export default function App() {
                               </div>
                               <button
                                 onClick={() => {
-                                  const updatedHistory = tempCardData.history.filter((_, i) => {
-                                    const sortedHistory = [...tempCardData.history].sort((a, b) => new Date(b.date) - new Date(a.date));
-                                    return sortedHistory[index] !== entry;
-                                  });
+                                  // Simple and reliable deletion - filter out this specific entry
+                                  const updatedHistory = tempCardData.history.filter(item => 
+                                    !(item.date === entry.date && item.score === entry.score)
+                                  );
                                   setTempCardData({...tempCardData, history: updatedHistory});
                                 }}
                                 className="text-red-400 hover:text-red-300 p-1"
