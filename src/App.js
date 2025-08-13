@@ -4918,19 +4918,26 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
-    // Force viewport reset on modal open for mobile - AGGRESSIVE iOS FIX
+    // Force viewport reset on modal open for mobile - NUCLEAR iOS FIX
     if (window.innerWidth <= 768) {
-      // Update --vh IMMEDIATELY
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      // Update --vh IMMEDIATELY AND FORCE RECALCULATION
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
       
-      // Force scroll to prevent positioning issues on iOS Chrome
+      // FORCE scroll to top to prevent positioning offset issues
       window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
       
-      // Force body to be non-scrollable while modal is open
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.top = '0';
+      // LOCK body completely - prevent ALL scrolling and positioning
+      document.body.style.overflow = 'hidden !important';
+      document.body.style.position = 'fixed !important';
+      document.body.style.width = '100% !important';
+      document.body.style.height = '100vh !important';
+      document.body.style.top = '0px !important';
+      document.body.style.left = '0px !important';
+      document.body.style.transform = 'none !important';
+      document.body.style.margin = '0px !important';
     }
     
     // Provide safe defaults for different card types
@@ -4977,12 +4984,16 @@ export default function App() {
     setEditingCard(null);
     setTempCardData({});
     
-    // Restore body scroll and positioning on mobile
+    // Restore body scroll and positioning on mobile - CLEAN UP ALL NUCLEAR STYLES
     if (window.innerWidth <= 768) {
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.width = '';
+      document.body.style.height = '';
       document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.transform = '';
+      document.body.style.margin = '';
     }
     
     // Reset floating button visibility
@@ -5860,20 +5871,23 @@ export default function App() {
         <div 
           className="z-50"
           style={{
-            position: 'fixed',
-            top: '0px',
-            left: '0px',
-            right: '0px',
-            bottom: '0px',
-            width: '100vw',
-            height: 'calc(var(--vh, 1vh) * 100)',
-            zIndex: 99999,
+            position: 'fixed !important',
+            top: '0px !important',
+            left: '0px !important',
+            right: '0px !important',
+            bottom: '0px !important',
+            width: '100vw !important',
+            height: 'calc(var(--vh, 1vh) * 100) !important',
+            zIndex: '99999 !important',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: 'flex !important',
+            alignItems: 'center !important',
+            justifyContent: 'center !important',
             padding: '1rem',
-            overflow: 'hidden'
+            overflow: 'hidden !important',
+            transform: 'none !important', // Prevent any transforms
+            marginTop: '0px !important', // Force no margin offset
+            marginLeft: '0px !important'
           }}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -5886,7 +5900,9 @@ export default function App() {
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
             style={{
-              margin: 0 // Keep margin at 0
+              margin: 'auto !important', // NUCLEAR OPTION: Force centering
+              alignSelf: 'center !important', // Extra insurance
+              position: 'relative !important' // Ensure it's not absolutely positioned
             }}
           >
             <div className="flex justify-between items-center mb-4">
