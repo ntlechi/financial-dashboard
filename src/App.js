@@ -1038,10 +1038,7 @@ const ExpensesCard = ({ data }) => (
     <div className="mt-4 space-y-2">
       {data.categories.map(cat => (
         <div key={cat.id} className="flex justify-between items-center text-sm">
-          <div className="flex items-center">
-            <span className={`w-2.5 h-2.5 rounded-full mr-2 ${cat.color}`}></span>
-            <span className="text-gray-300">{cat.name}</span>
-          </div>
+          <span className="text-gray-300">{cat.name}</span>
           <span className="font-semibold text-white">${cat.amount.toLocaleString()}</span>
         </div>
       ))}
@@ -1059,12 +1056,7 @@ const CashFlowCard = ({ data, onEdit }) => {
           <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
           Cash Flow
         </h2>
-        <button
-          onClick={() => onEdit('cashflow', data)}
-          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
+        {/* Cash Flow is calculated - no edit needed */}
       </div>
       <p className={`text-5xl font-extrabold ${isPositive ? 'text-amber-400' : 'text-red-500'}`}>
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
@@ -4494,6 +4486,29 @@ export default function App() {
             -webkit-transform: scale(1);
             transform: scale(1);
           }
+          
+          /* Mobile modal positioning fix */
+          .fixed.inset-0 {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 1rem !important;
+            z-index: 50 !important;
+          }
+          
+          /* Mobile modal content */
+          .fixed.inset-0 > div {
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            margin: auto !important;
+            width: 100% !important;
+            max-width: calc(100vw - 2rem) !important;
+          }
         }
     `;
     document.head.appendChild(style);
@@ -5555,7 +5570,7 @@ export default function App() {
                      editingCard === 'netWorth' ? 'Net Worth' :
                      editingCard === 'cashOnHand' ? 'Cash on Hand' :
                      editingCard === 'debt' ? 'Debt Management' :
-                     editingCard === 'cashflow' ? 'Cash Flow' :
+
                      editingCard === 'registeredAccounts' ? 'Registered Accounts' :
                      editingCard === 'goals' ? 'Financial Goals' : editingCard}
               </h3>
@@ -6060,19 +6075,7 @@ export default function App() {
                 </>
               )}
 
-              {/* Cash Flow Modal */}
-              {editingCard === 'cashflow' && (
-                <div>
-                  <label className="block text-sm text-gray-300 mb-1">Monthly Cash Flow</label>
-                  <input
-                    type="number"
-                    value={tempCardData.total || ''}
-                    onChange={(e) => setTempCardData({...tempCardData, total: e.target.value === '' ? 0 : Number(e.target.value)})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-500 focus:outline-none"
-                  />
-                  <div className="text-xs text-gray-400 mt-1">Positive for surplus, negative for deficit</div>
-                </div>
-              )}
+              {/* Cash Flow Modal - REMOVED: Cash Flow is calculated from Income - Expenses */}
 
               {/* Registered Accounts Modal */}
               {editingCard === 'registeredAccounts' && (
