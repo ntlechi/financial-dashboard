@@ -3987,6 +3987,7 @@ const TravelTab = ({ data, setData, userId }) => {
   };
 
      const handleSaveRunwaySettings = async () => {
+     console.log('🐛 DEBUG: handleSaveRunwaySettings called', { runwaySettings });
      try {
        const updatedData = {
          ...data,
@@ -3997,14 +3998,18 @@ const TravelTab = ({ data, setData, userId }) => {
            tripPlan: runwaySettings.tripPlan
          }
        };
+       console.log('🐛 DEBUG: About to save updatedData', updatedData);
        
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
-       setShowRunwayModal(false);
-     } catch (error) {
-       console.error('Error saving runway settings:', error);
-     }
-   };
+                await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+         console.log('🐛 DEBUG: Successfully saved to Firebase');
+         setData(updatedData);
+         console.log('🐛 DEBUG: Updated local state');
+         setShowRunwayModal(false);
+         console.log('🐛 DEBUG: Closed modal');
+       } catch (error) {
+         console.error('🐛 DEBUG: Error saving runway settings:', error);
+       }
+     };
 
    const handleAddExpense = async () => {
      if (!newExpense.description || !newExpense.amount || !selectedTrip) return;
