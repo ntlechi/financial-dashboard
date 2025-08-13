@@ -911,6 +911,68 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   );
 };
 
+// Debt Management Card
+const DebtCard = ({ data, onEdit }) => {
+  const totalDebt = data.accounts?.reduce((sum, account) => sum + account.balance, 0) || 0;
+  const totalMinPayment = data.accounts?.reduce((sum, account) => sum + account.minPayment, 0) || 0;
+  const avgInterestRate = data.accounts?.length > 0 ? 
+    data.accounts.reduce((sum, account) => sum + account.interestRate, 0) / data.accounts.length : 0;
+
+  return (
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30 relative">
+      <button
+        onClick={() => onEdit('debt')}
+        className="absolute top-4 right-4 p-2 bg-red-700/20 hover:bg-red-600/30 rounded-lg transition-colors"
+        title="Edit Debt"
+      >
+        <Edit className="w-4 h-4 text-red-300" />
+      </button>
+
+      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+        <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+        Total Debt
+      </h2>
+      <p className="text-5xl font-extrabold text-red-400">${totalDebt.toLocaleString()}</p>
+      
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-red-800/20 rounded-lg p-3">
+          <p className="text-red-300 text-sm">Min. Payment</p>
+          <p className="text-white font-bold">${totalMinPayment.toLocaleString()}/mo</p>
+        </div>
+        <div className="bg-orange-800/20 rounded-lg p-3">
+          <p className="text-orange-300 text-sm">Avg. Interest</p>
+          <p className="text-white font-bold">{avgInterestRate.toFixed(1)}%</p>
+        </div>
+        <div className="bg-yellow-800/20 rounded-lg p-3">
+          <p className="text-yellow-300 text-sm">Accounts</p>
+          <p className="text-white font-bold">{data.accounts?.length || 0}</p>
+        </div>
+      </div>
+
+      {data.accounts && data.accounts.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {data.accounts.slice(0, 3).map((account) => (
+            <div key={account.id} className="flex items-center justify-between text-sm bg-gray-800/30 rounded-lg p-2">
+              <div>
+                <span className="text-white font-medium">{account.name}</span>
+                <div className="text-gray-400 text-xs">
+                  {account.interestRate}% APR • Min: ${account.minPayment}
+                </div>
+              </div>
+              <span className="text-red-400 font-semibold">${account.balance.toLocaleString()}</span>
+            </div>
+          ))}
+          {data.accounts.length > 3 && (
+            <p className="text-gray-400 text-xs text-center">
+              +{data.accounts.length - 3} more accounts
+            </p>
+          )}
+        </div>
+      )}
+    </Card>
+  );
+};
+
 // Cash on Hand Card
 const CashOnHandCard = ({ data, onEdit }) => (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
@@ -1298,11 +1360,292 @@ const FinancialFreedomCalculator = () => {
   );
 };
 
+// Debt Payoff Calculator Component
+const DebtPayoffCalculator = () => {
+  const [debts, setDebts] = useState([
+    { id: 1, name: 'Credit Card 1', balance: 5000, interestRate: 19.99, minPayment: 100 },
+    { id: 2, name: 'Credit Card 2', balance: 10000, interestRate: 22.99, minPayment: 200 },
+    { id: 3, name: 'Line of Credit', balance: 30000, interestRate: 8.5, minPayment: 300 }
+  ]);
+  const [extraPayment, setExtraPayment] = useState(500);
+  const [strategy, setStrategy] = useState('snowball'); // 'snowball' or 'avalanche'
+  
+  // Calculate payoff scenarios
+  const calculatePayoffScenario = (debts, extraPayment, strategy) => {
+    const debtsCopy = debts.map(debt => ({ ...debt }));
+    let totalInterestPaid = 0;
+    let months = 0;
+    let payoffOrder = [];
+    
+    // Sort debts based on strategy
+    const sortedDebts = [...debtsCopy].sort((a, b) => {
+      if (strategy === 'snowball') {
+        return a.balance - b.balance; // Smallest balance first
+      } else {
+        return b.interestRate - a.interestRate; // Highest interest first
+      }
+    });
+    
+    while (sortedDebts.some(debt => debt.balance > 0) && months < 600) { // Max 50 years
+      months++;
+      let remainingExtraPayment = extraPayment;
+      
+      // Apply minimum payments and interest
+      sortedDebts.forEach(debt => {
+        if (debt.balance > 0) {
+          const monthlyInterest = debt.balance * (debt.interestRate / 100 / 12);
+          totalInterestPaid += monthlyInterest;
+          debt.balance += monthlyInterest;
+          
+          const payment = Math.min(debt.minPayment, debt.balance);
+          debt.balance -= payment;
+        }
+      });
+      
+      // Apply extra payment to first debt with balance
+      const targetDebt = sortedDebts.find(debt => debt.balance > 0);
+      if (targetDebt && remainingExtraPayment > 0) {
+        const extraPaid = Math.min(remainingExtraPayment, targetDebt.balance);
+        targetDebt.balance -= extraPaid;
+        
+        if (targetDebt.balance <= 0) {
+          payoffOrder.push({ name: targetDebt.name, month: months });
+        }
+      }
+    }
+    
+    return {
+      totalMonths: months,
+      totalYears: Math.floor(months / 12),
+      remainingMonths: months % 12,
+      totalInterestPaid,
+      payoffOrder,
+      totalPaid: debtsCopy.reduce((sum, debt) => sum + debt.balance, 0) + totalInterestPaid
+    };
+  };
+  
+  const snowballResult = calculatePayoffScenario(debts, extraPayment, 'snowball');
+  const avalancheResult = calculatePayoffScenario(debts, extraPayment, 'avalanche');
+  const currentResult = strategy === 'snowball' ? snowballResult : avalancheResult;
+  
+  const totalDebt = debts.reduce((sum, debt) => sum + debt.balance, 0);
+  const totalMinPayment = debts.reduce((sum, debt) => sum + debt.minPayment, 0);
+  
+  return (
+    <div className="space-y-6">
+      <Card>
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+          <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+          Debt Payoff Calculator
+        </h3>
+        
+        {/* Strategy Selection */}
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={() => setStrategy('snowball')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+              strategy === 'snowball' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            🏔️ Debt Snowball (Smallest First)
+          </button>
+          <button
+            onClick={() => setStrategy('avalanche')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+              strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            ⚡ Debt Avalanche (Highest Interest)
+          </button>
+        </div>
+        
+        {/* Input Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Debt List */}
+          <div>
+            <h4 className="font-semibold text-white mb-3">Your Debts</h4>
+            <div className="space-y-3">
+              {debts.map((debt, index) => (
+                <div key={debt.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
+                  <div className="grid grid-cols-4 gap-2 text-sm">
+                    <div>
+                      <input
+                        type="text"
+                        value={debt.name}
+                        onChange={(e) => {
+                          const newDebts = [...debts];
+                          newDebts[index].name = e.target.value;
+                          setDebts(newDebts);
+                        }}
+                        className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
+                        placeholder="Debt name"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        value={debt.balance}
+                        onChange={(e) => {
+                          const newDebts = [...debts];
+                          newDebts[index].balance = Number(e.target.value);
+                          setDebts(newDebts);
+                        }}
+                        className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
+                        placeholder="Balance"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={debt.interestRate}
+                        onChange={(e) => {
+                          const newDebts = [...debts];
+                          newDebts[index].interestRate = Number(e.target.value);
+                          setDebts(newDebts);
+                        }}
+                        className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
+                        placeholder="APR %"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        value={debt.minPayment}
+                        onChange={(e) => {
+                          const newDebts = [...debts];
+                          newDebts[index].minPayment = Number(e.target.value);
+                          setDebts(newDebts);
+                        }}
+                        className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
+                        placeholder="Min payment"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-4">
+              <label className="block text-sm text-gray-300 mb-2">Extra Monthly Payment</label>
+              <input
+                type="number"
+                value={extraPayment}
+                onChange={(e) => setExtraPayment(Number(e.target.value))}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                placeholder="Extra payment amount"
+              />
+            </div>
+          </div>
+          
+          {/* Results */}
+          <div>
+            <h4 className="font-semibold text-white mb-3">
+              {strategy === 'snowball' ? '🏔️ Snowball' : '⚡ Avalanche'} Results
+            </h4>
+            
+            <div className="space-y-4">
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-400">Total Debt</p>
+                    <p className="text-red-400 font-bold text-lg">${totalDebt.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400">Min Payments</p>
+                    <p className="text-white font-bold">${totalMinPayment.toLocaleString()}/mo</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400">Payoff Time</p>
+                    <p className="text-emerald-400 font-bold">
+                      {currentResult.totalYears}y {currentResult.remainingMonths}m
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400">Interest Paid</p>
+                    <p className="text-orange-400 font-bold">${Math.round(currentResult.totalInterestPaid).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Strategy Comparison */}
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <h5 className="text-white font-semibold mb-3">Strategy Comparison</h5>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-blue-400">🏔️ Snowball:</span>
+                    <span className="text-white">
+                      {snowballResult.totalYears}y {snowballResult.remainingMonths}m 
+                      (${Math.round(snowballResult.totalInterestPaid).toLocaleString()} interest)
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-purple-400">⚡ Avalanche:</span>
+                    <span className="text-white">
+                      {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
+                      (${Math.round(avalancheResult.totalInterestPaid).toLocaleString()} interest)
+                    </span>
+                  </div>
+                  <div className="border-t border-gray-600 pt-2 mt-2">
+                    <div className="text-emerald-400 font-semibold">
+                      💰 Avalanche saves: ${Math.round(snowballResult.totalInterestPaid - avalancheResult.totalInterestPaid).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Payoff Order */}
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <h5 className="text-white font-semibold mb-3">Payoff Order</h5>
+                <div className="space-y-2 text-sm">
+                  {currentResult.payoffOrder.map((payoff, index) => (
+                    <div key={index} className="flex justify-between items-center">
+                      <span className="text-gray-300">{index + 1}. {payoff.name}</span>
+                      <span className="text-emerald-400 font-medium">
+                        Month {payoff.month}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Progress Visualization */}
+        <div className="bg-gray-800/30 rounded-lg p-4">
+          <h5 className="text-white font-semibold mb-3">Debt Payoff Progress</h5>
+          <div className="space-y-3">
+            {debts.map((debt) => {
+              const progress = Math.max(0, Math.min(100, ((debt.balance / (debt.balance + extraPayment * 12)) * 100)));
+              return (
+                <div key={debt.id}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-300">{debt.name}</span>
+                    <span className="text-red-400">${debt.balance.toLocaleString()}</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${100 - progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 // Budget Calculator Component with the critical layout fix
 const BudgetCalculatorTab = () => {
   const [budgetType, setBudgetType] = useState('50-30-20');
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
   const [showFFCalculator, setShowFFCalculator] = useState(false);
+  const [showDebtCalculator, setShowDebtCalculator] = useState(false);
   
   const fiftyThirtyTwenty = {
     needs: Math.round(monthlyIncome * 0.5),
@@ -1345,6 +1688,16 @@ const BudgetCalculatorTab = () => {
             >
               <Target className="w-4 h-4 mr-2" />
               {showFFCalculator ? 'Hide FF Calculator' : 'Financial Freedom'}
+            </button>
+            
+            <button
+              onClick={() => setShowDebtCalculator(!showDebtCalculator)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
+                showDebtCalculator ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              {showDebtCalculator ? 'Hide Debt Calculator' : 'Debt Payoff'}
             </button>
           </div>
         </div>
@@ -1432,6 +1785,9 @@ const BudgetCalculatorTab = () => {
       
       {/* Financial Freedom Calculator */}
       {showFFCalculator && <FinancialFreedomCalculator />}
+      
+      {/* Debt Payoff Calculator */}
+      {showDebtCalculator && <DebtPayoffCalculator />}
     </div>
   );
 };
@@ -3929,11 +4285,15 @@ export default function App() {
         overflow-x: hidden;
         position: relative;
         height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #111827;
       }
       
       body {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+        overscroll-behavior-y: none;
         padding-bottom: env(safe-area-inset-bottom);
       }
       
@@ -3941,6 +4301,22 @@ export default function App() {
       .app-container {
         overscroll-behavior-y: contain;
         touch-action: pan-y;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background-color: #111827;
+      }
+      
+      /* Fix mobile viewport whitespace */
+      html {
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+      }
+      
+      /* Modern viewport units for better mobile support */
+      @supports (height: 100dvh) {
+        .app-container {
+          min-height: 100dvh;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -4800,11 +5176,14 @@ export default function App() {
               <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
               <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
               
-              {/* Fifth Row - Credit Score and Goals */}
+              {/* Fifth Row - Debt (Full Width) */}
+              <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              
+              {/* Sixth Row - Credit Score and Goals */}
               <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
               <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
               
-              {/* Sixth Row - Canadian Registered Accounts */}
+              {/* Seventh Row - Canadian Registered Accounts */}
               <RegisteredAccountsCard data={displayData.registeredAccounts} onEdit={openCardEditor} />
             </>
           )}
@@ -4944,6 +5323,7 @@ export default function App() {
                      editingCard === 'creditScore' ? 'Credit Score' :
                      editingCard === 'netWorth' ? 'Net Worth' :
                      editingCard === 'cashOnHand' ? 'Cash on Hand' :
+                     editingCard === 'debt' ? 'Debt Management' :
                      editingCard === 'cashflow' ? 'Cash Flow' :
                      editingCard === 'registeredAccounts' ? 'Registered Accounts' :
                      editingCard === 'goals' ? 'Financial Goals' : editingCard}
@@ -5097,6 +5477,134 @@ export default function App() {
                     <div className="mt-3 p-3 bg-teal-900/20 rounded-lg border border-teal-600/30">
                       <div className="text-teal-400 font-semibold">
                         Total Cash on Hand: ${(tempCardData.total || 0).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Debt Management Modal */}
+              {editingCard === 'debt' && (
+                <>
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-lg font-semibold text-white">Debt Accounts</h4>
+                      <button
+                        onClick={() => {
+                          const newAccount = {
+                            id: Date.now(),
+                            name: '',
+                            balance: 0,
+                            interestRate: 0,
+                            minPayment: 0
+                          };
+                          setTempCardData({
+                            ...tempCardData,
+                            accounts: [...(tempCardData.accounts || []), newAccount]
+                          });
+                        }}
+                        className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Debt
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {(tempCardData.accounts || []).map((account, index) => (
+                        <div key={account.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
+                          <div className="grid grid-cols-12 gap-2 items-end">
+                            <div className="col-span-3">
+                              <label className="block text-xs text-gray-400 mb-1">Account Name</label>
+                              <input
+                                type="text"
+                                placeholder="Credit Card"
+                                value={account.name}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, name: e.target.value};
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-3">
+                              <label className="block text-xs text-gray-400 mb-1">Balance</label>
+                              <input
+                                type="number"
+                                placeholder="10000"
+                                value={account.balance}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, balance: Number(e.target.value)};
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-2">
+                              <label className="block text-xs text-gray-400 mb-1">APR %</label>
+                              <input
+                                type="number"
+                                step="0.1"
+                                placeholder="19.9"
+                                value={account.interestRate}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, interestRate: Number(e.target.value)};
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-3">
+                              <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
+                              <input
+                                type="number"
+                                placeholder="200"
+                                value={account.minPayment}
+                                onChange={(e) => {
+                                  const updatedAccounts = [...tempCardData.accounts];
+                                  updatedAccounts[index] = {...account, minPayment: Number(e.target.value)};
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
+                            <div className="col-span-1">
+                              <button
+                                onClick={() => {
+                                  const updatedAccounts = tempCardData.accounts.filter((_, i) => i !== index);
+                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
+                                }}
+                                className="text-red-400 hover:text-red-300 p-1"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <div className="text-red-400 font-semibold">
+                            Total Debt: ${(tempCardData.accounts || []).reduce((sum, acc) => sum + acc.balance, 0).toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-orange-400 font-semibold">
+                            Min Payment: ${(tempCardData.accounts || []).reduce((sum, acc) => sum + acc.minPayment, 0).toLocaleString()}/mo
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-yellow-400 font-semibold">
+                            Avg APR: {tempCardData.accounts?.length > 0 ? 
+                              (tempCardData.accounts.reduce((sum, acc) => sum + acc.interestRate, 0) / tempCardData.accounts.length).toFixed(1) : 0}%
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
