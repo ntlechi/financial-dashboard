@@ -4653,7 +4653,7 @@ const TravelTab = ({ data, setData, userId }) => {
              {/* Travel Runway Settings Modal */}
       {showRunwayModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-blue-500/30">
+          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[90vh] overflow-y-auto">
              <div className="flex justify-between items-center mb-4">
                <h3 className="text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
                <button
