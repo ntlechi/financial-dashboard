@@ -1653,6 +1653,11 @@ const BudgetCalculatorTab = () => {
     play: Math.round(monthlyIncome * 0.10),
     give: Math.round(monthlyIncome * 0.05)
   };
+  
+  // Calculate remaining balance after budgeting
+  const remainingBalance = budgetType === '50-30-20' 
+    ? monthlyIncome - (fiftyThirtyTwenty.needs + fiftyThirtyTwenty.wants + fiftyThirtyTwenty.savings)
+    : monthlyIncome - (sixJars.necessities + sixJars.financialFreedom + sixJars.longTermSavings + sixJars.education + sixJars.play + sixJars.give);
 
   return (
     // This is the critical layout fix: col-span-6 for full width
@@ -1700,7 +1705,7 @@ const BudgetCalculatorTab = () => {
           <label className="block text-white text-lg font-bold mb-4">Monthly Income Input</label>
           <input
             type="number"
-            value={monthlyIncome}
+            value={monthlyIncome || ''}
             onChange={(e) => setMonthlyIncome(e.target.value === '' ? 0 : Number(e.target.value))}
             className="w-full bg-gray-700 text-white text-xl p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
             placeholder="Enter your monthly income"
@@ -1715,8 +1720,12 @@ const BudgetCalculatorTab = () => {
         
         <div className="bg-blue-900/20 rounded-xl p-6 border-2 border-blue-800/40">
           <label className="block text-blue-400 text-lg font-bold mb-4">After Budgeting</label>
-          <div className="text-3xl font-bold text-white mb-2">$0</div>
-          <p className="text-gray-400">Remaining balance</p>
+          <div className={`text-3xl font-bold mb-2 ${remainingBalance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            ${Math.abs(remainingBalance).toLocaleString()}
+          </div>
+          <p className="text-gray-400">
+            {remainingBalance >= 0 ? 'Remaining balance' : 'Over budget by'}
+          </p>
         </div>
       </div>
       
@@ -4487,7 +4496,7 @@ export default function App() {
             transform: scale(1);
           }
           
-          /* Mobile modal positioning fix - CRITICAL */
+          /* AGGRESSIVE MOBILE MODAL FIX - FORCE CENTER */
           .modal-container {
             position: fixed !important;
             top: 0 !important;
@@ -4496,30 +4505,42 @@ export default function App() {
             bottom: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
+            height: 100dvh !important;
             display: flex !important;
+            flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
             padding: 1rem !important;
             z-index: 9999 !important;
-            background: rgba(0, 0, 0, 0.5) !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            overflow: hidden !important;
           }
           
-          /* Mobile modal content - FORCE CENTER */
+          /* FORCE MODAL CONTENT TO CENTER - AGGRESSIVE */
           .modal-container > div {
-            position: relative !important;
-            max-height: 85vh !important;
+            position: static !important;
+            max-height: 80vh !important;
             overflow-y: auto !important;
-            margin: auto !important;
+            margin: 0 !important;
             width: 100% !important;
             max-width: calc(100vw - 2rem) !important;
-            transform: translate(0, 0) !important;
-            top: auto !important;
-            left: auto !important;
-            right: auto !important;
-            bottom: auto !important;
+            transform: none !important;
+            top: unset !important;
+            left: unset !important;
+            right: unset !important;
+            bottom: unset !important;
+            flex-shrink: 0 !important;
           }
           
-          /* Floating button - ALWAYS VISIBLE */
+          /* PREVENT BODY SCROLL WHEN MODAL OPEN */
+          body.modal-open {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+          }
+          
+          /* Floating button - PERFECT FLOATING UX */
           .floating-quick-btn {
             position: fixed !important;
             bottom: 1.5rem !important;
@@ -4531,7 +4552,27 @@ export default function App() {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4) !important;
+            transform: scale(1) !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            border: none !important;
+            outline: none !important;
+          }
+          
+          .floating-quick-btn:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 12px 40px rgba(239, 68, 68, 0.6) !important;
+          }
+          
+          .floating-quick-btn:active {
+            transform: scale(0.95) !important;
+          }
+          
+          /* Ensure floating button stays above content */
+          .floating-quick-btn {
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
           }
         }
     `;
@@ -4709,6 +4750,9 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
+    // Add modal-open class to body for mobile scroll prevention
+    document.body.classList.add('modal-open');
+    
     // Provide safe defaults for different card types
     if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
       setTempCardData({
@@ -4752,6 +4796,10 @@ export default function App() {
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
+    
+    // Remove modal-open class from body
+    document.body.classList.remove('modal-open');
+    
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
   };
@@ -4983,6 +5031,10 @@ export default function App() {
 
   const openQuickExpense = () => {
     setShowQuickExpense(true);
+    
+    // Add modal-open class to body for mobile scroll prevention
+    document.body.classList.add('modal-open');
+    
     setQuickExpense({
       description: '',
       amount: '',
@@ -4992,6 +5044,10 @@ export default function App() {
 
   const closeQuickExpense = () => {
     setShowQuickExpense(false);
+    
+    // Remove modal-open class from body
+    document.body.classList.remove('modal-open');
+    
     setQuickExpense({
       description: '',
       amount: '',
