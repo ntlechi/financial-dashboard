@@ -4641,45 +4641,14 @@ export default function App() {
             transform: scale(1);
           }
           
-          /* AGGRESSIVE MOBILE MODAL FIX - FORCE CENTER */
+          /* MODAL POSITIONING - NOW HANDLED BY INLINE STYLES */
           .modal-container {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            height: 100dvh !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 1rem !important;
-            z-index: 9999 !important;
-            background: rgba(0, 0, 0, 0.6) !important;
-            overflow: hidden !important;
+            /* Inline styles take precedence for reliable positioning */
           }
           
-          /* FORCE MODAL CONTENT TO CENTER - AGGRESSIVE */
-          .modal-container > div {
-            position: static !important;
-            max-height: 80vh !important;
-            overflow-y: auto !important;
-            margin: 0 !important;
-            width: 100% !important;
-            max-width: calc(100vw - 2rem) !important;
-            transform: none !important;
-            top: unset !important;
-            left: unset !important;
-            right: unset !important;
-            bottom: unset !important;
-            flex-shrink: 0 !important;
-          }
-          
-          /* PREVENT BODY SCROLL WHEN MODAL OPEN - handled by JavaScript now */
+          /* PREVENT BODY SCROLL WHEN MODAL OPEN */
           body.modal-open {
-            /* Styles now handled dynamically by JavaScript for better control */
+            overflow: hidden !important;
           }
           
           /* Floating button - PERFECT FLOATING UX */
@@ -4892,18 +4861,8 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
-    // AGGRESSIVE MOBILE SCROLL PREVENTION
-    const scrollY = window.scrollY;
-    
-    // Prevent body scroll and lock position
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
+    // Simple modal open handling - let inline styles handle positioning
     document.body.classList.add('modal-open');
-    
-    // Store scroll position for restoration
-    document.body.setAttribute('data-scroll-y', scrollY);
     
     // Provide safe defaults for different card types
     if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
@@ -4949,19 +4908,8 @@ export default function App() {
     setEditingCard(null);
     setTempCardData({});
     
-    // RESTORE SCROLL POSITION AND BODY STATE
-    const scrollY = document.body.getAttribute('data-scroll-y') || '0';
-    
-    // Remove modal styles
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
+    // Simple modal close handling
     document.body.classList.remove('modal-open');
-    document.body.removeAttribute('data-scroll-y');
-    
-    // Restore scroll position
-    window.scrollTo(0, parseInt(scrollY, 10));
     
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
@@ -5195,18 +5143,8 @@ export default function App() {
   const openQuickExpense = () => {
     setShowQuickExpense(true);
     
-    // AGGRESSIVE MOBILE SCROLL PREVENTION
-    const scrollY = window.scrollY;
-    
-    // Prevent body scroll and lock position
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
+    // Simple modal open handling
     document.body.classList.add('modal-open');
-    
-    // Store scroll position for restoration
-    document.body.setAttribute('data-scroll-y', scrollY);
     
     setQuickExpense({
       description: '',
@@ -5218,19 +5156,8 @@ export default function App() {
   const closeQuickExpense = () => {
     setShowQuickExpense(false);
     
-    // RESTORE SCROLL POSITION AND BODY STATE
-    const scrollY = document.body.getAttribute('data-scroll-y') || '0';
-    
-    // Remove modal styles
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
+    // Simple modal close handling
     document.body.classList.remove('modal-open');
-    document.body.removeAttribute('data-scroll-y');
-    
-    // Restore scroll position
-    window.scrollTo(0, parseInt(scrollY, 10));
     
     setQuickExpense({
       description: '',
@@ -5741,8 +5668,34 @@ export default function App() {
 
       {/* Quick Expense Modal */}
       {showQuickExpense && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-container">
-          <Card className="w-full max-w-md border-red-500/30">
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 modal-container"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            zIndex: 9999,
+            overflow: 'hidden'
+          }}
+        >
+          <Card 
+            className="w-full max-w-md border-red-500/30"
+            style={{
+              position: 'relative',
+              margin: 'auto',
+              maxWidth: 'calc(100vw - 2rem)',
+              maxHeight: '85vh',
+              overflowY: 'auto'
+            }}
+          >
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="text-xl font-bold text-white">⚡ Quick Expense</h3>
@@ -5823,8 +5776,34 @@ export default function App() {
 
       {/* Card Editing Modals */}
       {editingCard && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-container">
-          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[80vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 modal-container"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            zIndex: 9999,
+            overflow: 'hidden'
+          }}
+        >
+          <Card 
+            className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
+            style={{
+              position: 'relative',
+              margin: 'auto',
+              maxWidth: 'calc(100vw - 2rem)',
+              maxHeight: '75vh',
+              overflowY: 'auto'
+            }}
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
