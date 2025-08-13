@@ -2282,8 +2282,25 @@ const SideHustleTab = ({ data, setData, userId }) => {
 
       {/* Add Item Modal */}
       {showAddItem && selectedBusiness && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-violet-500/30">
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 'calc(var(--vh, 1vh) * 100)',
+            zIndex: 9999,
+            padding: '1rem'
+          }}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+        >
+          <Card 
+            className="w-full max-w-md border-violet-500/30"
+            style={{ margin: 0 }}
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Add Item to {selectedBusiness.name}
@@ -4449,8 +4466,28 @@ const TravelTab = ({ data, setData, userId }) => {
 
        {/* Travel Runway Settings Modal */}
        {showRunwayModal && (
-         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-           <Card className="w-full max-w-md border-blue-500/30">
+         <div 
+           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+           style={{
+             position: 'fixed',
+             top: 0,
+             left: 0,
+             right: 0,
+             bottom: 0,
+             // Use the custom --vh property for height (iOS fix)
+             height: 'calc(var(--vh, 1vh) * 100)',
+             zIndex: 9999,
+             padding: '1rem' // Add padding to prevent modal touching edges
+           }}
+           onTouchMove={(e) => e.preventDefault()}
+           onWheel={(e) => e.preventDefault()}
+         >
+           <Card 
+             className="w-full max-w-md border-blue-500/30"
+             style={{
+               margin: 0 // Keep margin at 0
+             }}
+           >
              <div className="flex justify-between items-center mb-4">
                <h3 className="text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
                <button
@@ -6656,8 +6693,25 @@ export default function App() {
 
       {/* Reset Data Modal */}
       {showResetModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-red-500/30">
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 'calc(var(--vh, 1vh) * 100)',
+            zIndex: 9999,
+            padding: '1rem'
+          }}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+        >
+          <Card 
+            className="w-full max-w-md border-red-500/30"
+            style={{ margin: 0 }}
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">Reset Dashboard Data</h3>
               <button
