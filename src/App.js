@@ -5877,17 +5877,11 @@ export default function App() {
             right: '0px !important',
             bottom: '0px !important',
             width: '100vw !important',
-            height: 'calc(var(--vh, 1vh) * 100) !important',
+            height: '100vh !important',
             zIndex: '99999 !important',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex !important',
-            alignItems: 'center !important',
-            justifyContent: 'center !important',
             padding: '1rem',
-            overflow: 'hidden !important',
-            transform: 'none !important', // Prevent any transforms
-            marginTop: '0px !important', // Force no margin offset
-            marginLeft: '0px !important'
+            overflow: 'hidden !important'
           }}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -5900,9 +5894,15 @@ export default function App() {
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
             style={{
-              margin: 'auto !important', // NUCLEAR OPTION: Force centering
-              alignSelf: 'center !important', // Extra insurance
-              position: 'relative !important' // Ensure it's not absolutely positioned
+              position: 'absolute !important',
+              top: '50% !important',
+              left: '50% !important',
+              transform: 'translate(-50%, -50%) !important',
+              margin: '0 !important',
+              maxWidth: '48rem',
+              width: 'calc(100vw - 2rem)',
+              maxHeight: '75vh',
+              overflowY: 'auto'
             }}
           >
             <div className="flex justify-between items-center mb-4">
