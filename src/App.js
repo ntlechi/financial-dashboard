@@ -4646,17 +4646,17 @@ export default function App() {
             /* Inline styles take precedence for reliable positioning */
           }
           
-          /* PREVENT BODY SCROLL WHEN MODAL OPEN */
+          /* PREVENT BODY SCROLL WHEN MODAL OPEN - NO CONFLICTS */
           body.modal-open {
-            overflow: hidden !important;
+            /* Remove overflow hidden - it conflicts with floating button */
           }
           
-          /* Floating button - PERFECT FLOATING UX */
+          /* Floating button - ALWAYS ABOVE MODALS */
           .floating-quick-btn {
             position: fixed !important;
             bottom: 1.5rem !important;
             right: 1.5rem !important;
-            z-index: 9998 !important;
+            z-index: 10000 !important;
             width: 3.5rem !important;
             height: 3.5rem !important;
             border-radius: 50% !important;
@@ -4668,6 +4668,9 @@ export default function App() {
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
             border: none !important;
             outline: none !important;
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
           }
           
           .floating-quick-btn:hover {
@@ -4677,13 +4680,6 @@ export default function App() {
           
           .floating-quick-btn:active {
             transform: scale(0.95) !important;
-          }
-          
-          /* Ensure floating button stays above content */
-          .floating-quick-btn {
-            pointer-events: auto !important;
-            user-select: none !important;
-            -webkit-tap-highlight-color: transparent !important;
           }
         }
     `;
@@ -4861,9 +4857,6 @@ export default function App() {
   const openCardEditor = (cardType, currentData) => {
     setEditingCard(cardType);
     
-    // Simple modal open handling - let inline styles handle positioning
-    document.body.classList.add('modal-open');
-    
     // Provide safe defaults for different card types
     if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
       setTempCardData({
@@ -4907,9 +4900,6 @@ export default function App() {
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
-    
-    // Simple modal close handling
-    document.body.classList.remove('modal-open');
     
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
@@ -5143,9 +5133,6 @@ export default function App() {
   const openQuickExpense = () => {
     setShowQuickExpense(true);
     
-    // Simple modal open handling
-    document.body.classList.add('modal-open');
-    
     setQuickExpense({
       description: '',
       amount: '',
@@ -5155,9 +5142,6 @@ export default function App() {
 
   const closeQuickExpense = () => {
     setShowQuickExpense(false);
-    
-    // Simple modal close handling
-    document.body.classList.remove('modal-open');
     
     setQuickExpense({
       description: '',
@@ -5661,6 +5645,13 @@ export default function App() {
       <button
         onClick={openQuickExpense}
         className="fixed bottom-6 right-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group floating-quick-btn"
+        style={{
+          position: 'fixed',
+          bottom: '1.5rem',
+          right: '1.5rem',
+          zIndex: 10000,
+          pointerEvents: 'auto'
+        }}
         title="Quick Expense Log"
       >
         <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
@@ -5685,6 +5676,8 @@ export default function App() {
             zIndex: 9999,
             overflow: 'hidden'
           }}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
         >
           <Card 
             className="w-full max-w-md border-red-500/30"
@@ -5793,6 +5786,8 @@ export default function App() {
             zIndex: 9999,
             overflow: 'hidden'
           }}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
         >
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
