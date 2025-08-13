@@ -4502,8 +4502,9 @@ export default function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  // AUTHENTICATION DISABLED FOR DEVELOPMENT - QUICK ACCESS
+  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User' });
+  const [authLoading, setAuthLoading] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
@@ -4531,21 +4532,30 @@ export default function App() {
     date: new Date().toISOString().split('T')[0]
   });
 
-  // Authentication Effect
+    // Authentication Effect - DISABLED FOR DEVELOPMENT
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setUserId(user?.uid || null);
-      setAuthLoading(false);
-      
-      if (!user) {
-        setLoading(false);
-        setData(null);
-      }
-    });
-
-              return () => unsubscribeAuth();
-    }, []);
+    // Skip Firebase auth - use mock user
+    setUserId('dev-user');
+    setAuthLoading(false);
+    setLoading(false);
+    
+    // Load initial sample data immediately
+    if (!data) {
+      setData(initialData);
+    }
+    
+    // const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    //   setUser(user);
+    //   setUserId(user?.uid || null);
+    //   setAuthLoading(false);
+    //   
+    //   if (!user) {
+    //     setLoading(false);
+    //     setData(null);
+    //   }
+    // });
+    // return () => unsubscribeAuth();
+  }, []);
 
   // Authentication Functions
   const handleSignUp = async (e) => {
@@ -4630,28 +4640,30 @@ export default function App() {
     }
   };
 
+  // Firebase Data Loading - DISABLED FOR DEVELOPMENT
   useEffect(() => {
-    if (!userId) return;
-
-    setLoading(true);
-    const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
+    // Skip Firebase - data already loaded in auth effect
+    return;
     
-    const unsubscribeSnapshot = onSnapshot(userDocRef, (doc) => {
-      if (doc.exists()) {
-        const fetchedData = doc.data();
-        setData(fetchedData);
-      } else {
-        setDoc(userDocRef, initialData)
-          .then(() => setData(initialData))
-          .catch(error => console.error("Error creating initial document:", error));
-      }
-      setLoading(false);
-    }, (error) => { 
-      console.error("Firestore snapshot error:", error); 
-      setLoading(false); 
-    });
-
-    return () => unsubscribeSnapshot();
+    // if (!userId) return;
+    // setLoading(true);
+    // const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
+    // 
+    // const unsubscribeSnapshot = onSnapshot(userDocRef, (doc) => {
+    //   if (doc.exists()) {
+    //     const fetchedData = doc.data();
+    //     setData(fetchedData);
+    //   } else {
+    //     setDoc(userDocRef, initialData)
+    //       .then(() => setData(initialData))
+    //       .catch(error => console.error("Error creating initial document:", error));
+    //   }
+    //   setLoading(false);
+    // }, (error) => { 
+    //   console.error("Firestore snapshot error:", error); 
+    //   setLoading(false); 
+    // });
+    // return () => unsubscribeSnapshot();
   }, [userId]);
 
   // Card editing functions
