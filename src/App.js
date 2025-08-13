@@ -4651,12 +4651,12 @@ export default function App() {
             /* Remove overflow hidden - it conflicts with floating button */
           }
           
-          /* Floating button - ALWAYS ABOVE MODALS */
+          /* Floating button - SUPREME Z-INDEX */
           .floating-quick-btn {
             position: fixed !important;
             bottom: 1.5rem !important;
             right: 1.5rem !important;
-            z-index: 10000 !important;
+            z-index: 99999 !important;
             width: 3.5rem !important;
             height: 3.5rem !important;
             border-radius: 50% !important;
@@ -4671,6 +4671,8 @@ export default function App() {
             pointer-events: auto !important;
             user-select: none !important;
             -webkit-tap-highlight-color: transparent !important;
+            visibility: visible !important;
+            opacity: 1 !important;
           }
           
           .floating-quick-btn:hover {
@@ -4680,6 +4682,11 @@ export default function App() {
           
           .floating-quick-btn:active {
             transform: scale(0.95) !important;
+          }
+          
+          /* Ensure button is always above everything */
+          .floating-quick-btn {
+            isolation: isolate !important;
           }
         }
     `;
@@ -4906,6 +4913,15 @@ export default function App() {
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
+    
+    // Reset floating button visibility
+    const floatingBtn = document.querySelector('.floating-quick-btn');
+    if (floatingBtn) {
+      floatingBtn.style.visibility = 'visible';
+      floatingBtn.style.opacity = '1';
+      floatingBtn.style.pointerEvents = 'auto';
+      floatingBtn.style.zIndex = '99999';
+    }
     
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
@@ -5655,8 +5671,11 @@ export default function App() {
           position: 'fixed',
           bottom: '1.5rem',
           right: '1.5rem',
-          zIndex: 10000,
-          pointerEvents: 'auto'
+          zIndex: 99999,
+          pointerEvents: 'auto',
+          transform: 'none',
+          visibility: 'visible',
+          display: 'flex'
         }}
         title="Quick Expense Log"
       >
@@ -5675,10 +5694,6 @@ export default function App() {
             bottom: 0,
             width: '100vw',
             height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1rem',
             zIndex: 9999,
             overflow: 'hidden'
           }}
@@ -5688,11 +5703,15 @@ export default function App() {
           <Card 
             className="w-full max-w-md border-red-500/30"
             style={{
-              position: 'relative',
-              margin: 'auto',
-              maxWidth: 'calc(100vw - 2rem)',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 'calc(100vw - 2rem)',
+              maxWidth: '28rem',
               maxHeight: '85vh',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              margin: 0
             }}
           >
             <div className="flex justify-between items-center mb-4">
@@ -5785,10 +5804,6 @@ export default function App() {
             bottom: 0,
             width: '100vw',
             height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1rem',
             zIndex: 9999,
             overflow: 'hidden'
           }}
@@ -5798,11 +5813,15 @@ export default function App() {
           <Card 
             className="w-full max-w-2xl border-blue-500/30 max-h-[75vh] overflow-y-auto"
             style={{
-              position: 'relative',
-              margin: 'auto',
-              maxWidth: 'calc(100vw - 2rem)',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 'calc(100vw - 2rem)',
+              maxWidth: '48rem',
               maxHeight: '75vh',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              margin: 0
             }}
           >
             <div className="flex justify-between items-center mb-4">
