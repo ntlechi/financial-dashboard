@@ -2874,6 +2874,64 @@ const InvestmentTab = ({ data, setData, userId }) => {
       }
     }
 
+    // Auto-generate next dividend date based on common patterns
+    const generateNextDividendDate = (symbol, dividendYield) => {
+      if (dividendYield <= 0) return null; // No dividends
+      
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      
+      // Common dividend schedules for major ETFs/stocks
+      const dividendSchedules = {
+        // Vanguard ETFs - typically quarterly
+        'VTI': [2, 5, 8, 11], // March, June, September, December
+        'VTF': [2, 5, 8, 11],
+        'VEA': [2, 5, 8, 11],
+        'VWO': [2, 5, 8, 11],
+        'BND': [1, 4, 7, 10], // February, May, August, November
+        'VNQ': [2, 5, 8, 11],
+        'VYM': [2, 5, 8, 11],
+        'VXUS': [2, 5, 8, 11],
+        
+        // Common monthly dividend REITs
+        'O': 'monthly', // Realty Income
+        'STAG': 'monthly',
+        'WPC': 'monthly',
+        
+        // iShares ETFs - typically quarterly
+        'IVV': [2, 5, 8, 11],
+        'EFA': [2, 5, 8, 11],
+        'AGG': [1, 4, 7, 10],
+        
+        // SPDR ETFs
+        'SPY': [2, 5, 8, 11],
+        'XLF': [2, 5, 8, 11],
+        'XLK': [2, 5, 8, 11],
+      };
+      
+      const schedule = dividendSchedules[symbol.toUpperCase()];
+      
+      if (schedule === 'monthly') {
+        // Monthly dividends - typically around the 10th of each month
+        const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+        const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+        return new Date(nextYear, nextMonth, 10).toISOString().split('T')[0];
+      } else if (Array.isArray(schedule)) {
+        // Quarterly dividends - find next month in schedule
+        const nextPaymentMonth = schedule.find(month => month > currentMonth) || schedule[0];
+        const nextYear = nextPaymentMonth > currentMonth ? currentYear : currentYear + 1;
+        const day = nextPaymentMonth === 1 ? 28 : 15; // Feb uses 28th, others use 15th
+        return new Date(nextYear, nextPaymentMonth, day).toISOString().split('T')[0];
+      } else {
+        // Generic quarterly schedule for unknown stocks - Mar, Jun, Sep, Dec
+        const genericSchedule = [2, 5, 8, 11]; // March, June, September, December
+        const nextPaymentMonth = genericSchedule.find(month => month > currentMonth) || genericSchedule[0];
+        const nextYear = nextPaymentMonth > currentMonth ? currentYear : currentYear + 1;
+        return new Date(nextYear, nextPaymentMonth, 15).toISOString().split('T')[0];
+      }
+    };
+
     const holding = {
       id: Date.now(),
       symbol: newHolding.symbol.toUpperCase(),
@@ -2884,7 +2942,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
       totalValue: shares * currentPrice,
       dividendYield,
       annualDividend: shares * currentPrice * (dividendYield / 100), // This is correct for dividend yield %
-      nextDividendDate: null,
+      nextDividendDate: generateNextDividendDate(newHolding.symbol, dividendYield),
       dripEnabled: newHolding.dripEnabled,
       dividendAccumulated: 0,
       dripProgress: 0,
@@ -3245,10 +3303,14 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
-            <div className="text-sm text-purple-200">
+            <div className="text-sm text-purple-200 mb-2">
               💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
               <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
               in passive income - perfect for travel funding! 🌍
+            </div>
+            <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
+              📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
+              Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
             </div>
           </div>
         </div>
@@ -3520,6 +3582,17 @@ const InvestmentTab = ({ data, setData, userId }) => {
                           return `US withholding tax: 30% (standard rate for ${newHolding.accountType || 'this account type'})`;
                         }
                       })()}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Auto-Generated Dividend Date Info */}
+                {parseFloat(newHolding.dividendYield) > 0 && (
+                  <div className="p-3 bg-purple-900/20 rounded-lg border border-purple-600/30">
+                    <div className="text-purple-400 font-semibold text-sm mb-1">📅 Auto-Generated Dividend Date</div>
+                    <div className="text-xs text-gray-300">
+                      Next dividend date will be automatically estimated based on common payment schedules for {newHolding.symbol || 'this symbol'}. 
+                      Major ETFs typically pay quarterly (Mar/Jun/Sep/Dec), while monthly dividend stocks use the 10th of each month.
                     </div>
                   </div>
                 )}
