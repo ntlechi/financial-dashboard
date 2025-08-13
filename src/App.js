@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
 
@@ -417,6 +417,29 @@ const Card = ({ children, className = '' }) => (
   </div>
 );
 
+// Tooltip component for financial education
+const Tooltip = ({ children, text }) => {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative inline-block">
+      <div 
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        className="cursor-help flex items-center gap-1"
+      >
+        {children}
+        <HelpCircle className="w-4 h-4 text-gray-400 hover:text-blue-400" />
+      </div>
+      {show && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-3 bg-gray-800 text-white text-sm rounded-lg shadow-lg border border-gray-600 z-50">
+          {text}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
   const percentage = maxValue > 0 ? Math.min((value / maxValue) * 100, 100) : 0;
   return (
@@ -502,7 +525,9 @@ const SavingsRateCard = ({ data, onEdit }) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
-          Savings Rate
+          <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
+            Savings Rate
+          </Tooltip>
         </h2>
         <div className="flex items-center gap-2">
           <div className="text-xs text-gray-500 px-2 py-1 bg-gray-700/50 rounded">
@@ -2852,12 +2877,35 @@ const InvestmentTab = ({ data, setData, userId }) => {
   const totalGainLossPercent = actualTotalCost > 0 ? (totalGainLoss / actualTotalCost) * 100 : 0;
 
   const handleAddHolding = async () => {
-    if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) return;
+    if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) {
+      showNotification('Please fill in all required fields', 'error');
+      return;
+    }
     
     const shares = parseFloat(newHolding.shares);
     const avgCost = parseFloat(newHolding.avgCost);
     const currentPrice = parseFloat(newHolding.currentPrice);
     const dividendYield = parseFloat(newHolding.dividendYield) || 0;
+
+    // Validation for impossible values
+    if (shares <= 0) {
+      showNotification('Shares must be greater than 0', 'error');
+      return;
+    }
+    if (avgCost <= 0) {
+      showNotification('Average cost must be greater than 0', 'error');
+      return;
+    }
+    if (currentPrice <= 0) {
+      showNotification('Current price must be greater than 0', 'error');
+      return;
+    }
+    if (dividendYield < 0 || dividendYield > 50) {
+      showNotification('Dividend yield must be between 0% and 50%', 'error');
+      return;
+    }
+
+    setIsLoading(true);
     
     // Calculate withholding tax based on account type and stock origin
     let withholdingTax = 0;
@@ -3002,8 +3050,17 @@ const InvestmentTab = ({ data, setData, userId }) => {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
+        showNotification('Error saving investment', 'error');
+        setIsLoading(false);
+        return;
       }
     }
+
+    // Success feedback
+    showNotification(`Successfully added ${newHolding.symbol} to your portfolio!`, 'success');
+    setIsLoading(false);
+    setShowAddHolding(false);
+    setNewHolding({ symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', dripEnabled: false, isUSStock: false, currency: 'CAD', accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable' });
   };
 
   const handleToggleDRIP = async (holdingId) => {
@@ -3253,7 +3310,11 @@ const InvestmentTab = ({ data, setData, userId }) => {
                       <div className={`text-sm font-semibold ${
                         holding.dripEnabled ? 'text-green-400' : 'text-gray-400'
                       }`}>
-                        {holding.dripEnabled ? '🔄 DRIP ON' : '💵 CASH'}
+                        <Tooltip 
+                          text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
+                        >
+                          {holding.dripEnabled ? '🔄 DRIP ON' : '💵 CASH'}
+                        </Tooltip>
                       </div>
                       {holding.dripEnabled && (
                         <div className="text-xs text-green-300">
@@ -3607,9 +3668,17 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </button>
                 <button
                   onClick={handleAddHolding}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  disabled={isLoading}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
                 >
-                  Add Holding
+                  {isLoading ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      Adding...
+                    </>
+                  ) : (
+                    'Add Holding'
+                  )}
                 </button>
               </div>
             </Card>
@@ -4434,8 +4503,31 @@ const TravelTab = ({ data, setData, userId }) => {
        return trip;
      });
 
+     // Convert currency if needed for main transaction
+     const amountInHomeCurrency = expense.currency !== (data.travel?.homeCurrency || 'CAD') 
+       ? convertCurrency(expense.amount, expense.currency, data.travel?.homeCurrency || 'CAD')
+       : expense.amount;
+
+     // Add to main transactions for dashboard consistency
+     const mainTransaction = {
+       id: Date.now() + 1, // Ensure unique ID
+       description: `${selectedTrip.name}: ${expense.description}`,
+       amount: -Math.abs(amountInHomeCurrency), // Negative for expense
+       type: 'expense',
+       category: 'Travel',
+       subcategory: expense.category || 'other',
+       date: expense.date,
+       linkedToTravel: true,
+       tripId: selectedTrip.id
+     };
+
      const updatedTravel = { ...data.travel, trips: updatedTrips };
-     const updatedData = { ...data, travel: updatedTravel };
+     const updatedTransactions = [mainTransaction, ...data.transactions];
+     const updatedData = { 
+       ...data, 
+       travel: updatedTravel,
+       transactions: updatedTransactions
+     };
 
      try {
        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
@@ -5495,6 +5587,15 @@ export default function App() {
     date: new Date().toISOString().split('T')[0]
   });
 
+  // User feedback system
+  const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState(null);
+  
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
     // Authentication Effect - DISABLED FOR DEVELOPMENT
   useEffect(() => {
     // Skip Firebase auth - use mock user
@@ -6091,14 +6192,40 @@ export default function App() {
     };
   };
 
+  // Calculate dynamic investment total from holdings
+  const calculateInvestmentTotal = (holdings) => {
+    return holdings.reduce((sum, holding) => sum + (holding.totalValue || 0), 0);
+  };
+
   const getDisplayData = () => {
     if (!data) return data;
     
     const calculatedData = calculateIncomeExpenses(data.transactions);
+    const actualInvestmentTotal = calculateInvestmentTotal(data.investments.holdings);
+    
+    // Update Net Worth with dynamic investment value
+    const updatedNetWorth = {
+      ...data.netWorth,
+      breakdown: data.netWorth.breakdown.map(item => 
+        item.name === 'Investments' 
+          ? { ...item, value: actualInvestmentTotal }
+          : item
+      )
+    };
+    
+    // Recalculate net worth total
+    const newNetWorthTotal = updatedNetWorth.breakdown.reduce((sum, item) => sum + item.value, 0);
+    updatedNetWorth.total = newNetWorthTotal;
+    
     const baseData = {
       ...data,
       income: calculatedData.income,
       expenses: calculatedData.expenses,
+      netWorth: updatedNetWorth,
+      investments: {
+        ...data.investments,
+        totalValue: actualInvestmentTotal
+      },
       cashflow: {
         ...data.cashflow,
         total: calculatedData.income.total - calculatedData.expenses.total,
@@ -6247,6 +6374,24 @@ export default function App() {
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
+      {/* Notification System */}
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+          notification.type === 'success' 
+            ? 'bg-green-600 text-white border border-green-500' 
+            : 'bg-red-600 text-white border border-red-500'
+        }`}>
+          <div className="flex items-center gap-2">
+            {notification.type === 'success' ? (
+              <span className="text-green-200">✅</span>
+            ) : (
+              <span className="text-red-200">❌</span>
+            )}
+            <span className="font-medium">{notification.message}</span>
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
