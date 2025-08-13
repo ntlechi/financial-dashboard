@@ -159,7 +159,7 @@ const initialData = {
     }
   ],
   investments: {
-    totalValue: 450000,
+    totalValue: 270000, // Calculated: VTI (1200 * 225) = 270,000
     portfolioAllocation: [
       { id: 1, name: 'Stocks', value: 270000, percentage: 60, color: '#3B82F6' },
       { id: 2, name: 'Bonds', value: 90000, percentage: 20, color: '#10B981' },
@@ -243,62 +243,6 @@ const initialData = {
         withholdingTax: 0, // No withholding tax on crypto
         currency: 'USD'
       }
-    ],
-    performanceHistory: [
-      // 2021 Data
-      { date: '2021-01-01', value: 180000 },
-      { date: '2021-02-01', value: 185000 },
-      { date: '2021-03-01', value: 192000 },
-      { date: '2021-04-01', value: 198000 },
-      { date: '2021-05-01', value: 205000 },
-      { date: '2021-06-01', value: 212000 },
-      { date: '2021-07-01', value: 220000 },
-      { date: '2021-08-01', value: 225000 },
-      { date: '2021-09-01', value: 235000 },
-      { date: '2021-10-01', value: 245000 },
-      { date: '2021-11-01', value: 250000 },
-      { date: '2021-12-01', value: 255000 },
-      // 2022 Data
-      { date: '2022-01-01', value: 260000 },
-      { date: '2022-02-01', value: 265000 },
-      { date: '2022-03-01', value: 272000 },
-      { date: '2022-04-01', value: 268000 },
-      { date: '2022-05-01', value: 275000 },
-      { date: '2022-06-01', value: 282000 },
-      { date: '2022-07-01', value: 290000 },
-      { date: '2022-08-01', value: 295000 },
-      { date: '2022-09-01', value: 305000 },
-      { date: '2022-10-01', value: 315000 },
-      { date: '2022-11-01', value: 320000 },
-      { date: '2022-12-01', value: 325000 },
-      // 2023 Data
-      { date: '2023-01-01', value: 330000 },
-      { date: '2023-02-01', value: 335000 },
-      { date: '2023-03-01', value: 342000 },
-      { date: '2023-04-01', value: 338000 },
-      { date: '2023-05-01', value: 345000 },
-      { date: '2023-06-01', value: 352000 },
-      { date: '2023-07-01', value: 360000 },
-      { date: '2023-08-01', value: 365000 },
-      { date: '2023-09-01', value: 375000 },
-      { date: '2023-10-01', value: 385000 },
-      { date: '2023-11-01', value: 390000 },
-      { date: '2023-12-01', value: 395000 },
-      // 2024 Data
-      { date: '2024-01-01', value: 400000 },
-      { date: '2024-02-01', value: 405000 },
-      { date: '2024-03-01', value: 412000 },
-      { date: '2024-04-01', value: 408000 },
-      { date: '2024-05-01', value: 415000 },
-      { date: '2024-06-01', value: 422000 },
-      { date: '2024-07-01', value: 430000 },
-      { date: '2024-08-01', value: 435000 },
-      { date: '2024-09-01', value: 445000 },
-      { date: '2024-10-01', value: 455000 },
-      { date: '2024-11-01', value: 460000 },
-      { date: '2024-12-01', value: 465000 },
-      // 2025 Data (Current)
-      { date: '2025-01-01', value: 470000 }
     ]
   },
   transactions: [
@@ -2505,6 +2449,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
     currency: 'CAD'
   });
 
+  // Calculate dynamic totals from actual holdings
+  const actualTotalValue = data.investments.holdings.reduce((sum, holding) => {
+    return sum + (holding.shares * holding.currentPrice);
+  }, 0);
+
+  const actualTotalCost = data.investments.holdings.reduce((sum, holding) => {
+    return sum + (holding.shares * holding.avgCost);
+  }, 0);
+
   useEffect(() => {
     // Pie Chart
     if (pieChartRef.current && data.investments.portfolioAllocation) {
@@ -2554,10 +2507,53 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .text(d => `${d.data.percentage}%`);
     }
     
-    // Line Chart - Responsive with Yearly Data and Gradient
-    if (lineChartRef.current && data.investments.performanceHistory) {
+    // Line Chart - Dynamic Performance History Based on Actual Investment Data
+    if (lineChartRef.current && data.investments.holdings.length > 0) {
       const svg = d3.select(lineChartRef.current);
       svg.selectAll("*").remove();
+      
+      // Use pre-calculated values
+      const currentTotalValue = actualTotalValue;
+      const totalCostBasis = actualTotalCost;
+      
+              // Generate dynamic performance history based on investment start date and growth
+        const generatePerformanceHistory = () => {
+          const currentDate = new Date();
+          // Start date based on investment timeline (more realistic for tracking)
+          const startDate = new Date(currentDate.getFullYear() - 3, 0, 1); // 3 years ago
+          const yearsDiff = (currentDate.getFullYear() - startDate.getFullYear()) + 1;
+        
+        // Calculate annual growth rate based on current vs cost basis
+        const totalGrowth = currentTotalValue / totalCostBasis;
+        const annualGrowthRate = Math.pow(totalGrowth, 1 / Math.max(yearsDiff, 1)) - 1;
+        
+        const performanceData = [];
+        
+        // Generate yearly data points
+        for (let i = 0; i < yearsDiff; i++) {
+          const year = startDate.getFullYear() + i;
+          const isCurrentYear = year === currentDate.getFullYear();
+          
+          let value;
+          if (isCurrentYear) {
+            // Use actual current value for current year
+            value = currentTotalValue;
+          } else {
+            // Calculate historical value based on growth rate
+            const yearsFromStart = i;
+            value = totalCostBasis * Math.pow(1 + annualGrowthRate, yearsFromStart);
+          }
+          
+          performanceData.push({
+            date: new Date(year, 11, 31), // December 31st
+            value: Math.round(value)
+          });
+        }
+        
+        return performanceData;
+      };
+      
+      const data_parsed = generatePerformanceHistory();
       
       // Get container width for responsive design
       const container = lineChartRef.current.parentNode;
@@ -2571,35 +2567,6 @@ const InvestmentTab = ({ data, setData, userId }) => {
       const width = Math.min(containerWidth - 40, 800) - margin.left - margin.right;
       const height = window.innerWidth <= 768 ? 250 : 300;
       const chartHeight = height - margin.top - margin.bottom;
-      
-      // Convert monthly data to yearly averages for better mobile UX
-      const parseDate = d3.timeParse("%Y-%m-%d");
-      const monthlyData = data.investments.performanceHistory.map(d => ({
-        date: parseDate(d.date),
-        value: d.value
-      }));
-      
-      // Group by year and take December value (or last available)
-      const yearlyData = d3.rollup(
-        monthlyData,
-        v => v[v.length - 1].value, // Take last value of the year
-        d => d.date.getFullYear()
-      );
-      
-      const data_parsed = Array.from(yearlyData, ([year, value]) => ({
-        date: new Date(year, 11, 31), // December 31st of each year
-        value: value
-      })).sort((a, b) => a.date - b.date);
-      
-      // Add current year if missing
-      const currentYear = new Date().getFullYear();
-      if (!yearlyData.has(currentYear) && monthlyData.length > 0) {
-        const latestData = monthlyData[monthlyData.length - 1];
-        data_parsed.push({
-          date: new Date(currentYear, 11, 31),
-          value: latestData.value
-        });
-      }
       
       const x = d3.scaleTime()
         .domain(d3.extent(data_parsed, d => d.date))
@@ -2704,16 +2671,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     }
   }, [data.investments]);
 
-  const totalGainLoss = data.investments.holdings.reduce((sum, holding) => {
-    return sum + ((holding.currentPrice - holding.avgCost) * holding.shares);
-  }, 0);
-  
-  const totalCost = data.investments.holdings.reduce((sum, holding) => {
-    const cost = holding.avgCost * holding.shares;
-    return sum + cost;
-  }, 0);
-  
-  const totalGainLossPercent = totalCost > 0 ? (totalGainLoss / totalCost) * 100 : 0;
+  const totalGainLoss = actualTotalValue - actualTotalCost;
+  const totalGainLossPercent = actualTotalCost > 0 ? (totalGainLoss / actualTotalCost) * 100 : 0;
 
   const handleAddHolding = async () => {
     if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) return;
@@ -2864,7 +2823,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
             <Briefcase className="w-5 h-5 mr-2 text-blue-400" />
             Total Value
           </h3>
-          <p className="text-3xl font-bold text-blue-400">${data.investments.totalValue.toLocaleString()}</p>
+          <p className="text-3xl font-bold text-blue-400">${actualTotalValue.toLocaleString()}</p>
           <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} holdings</p>
         </Card>
         
