@@ -3986,8 +3986,7 @@ const TravelTab = ({ data, setData, userId }) => {
     return amount;
   };
 
-     const handleSaveRunwaySettings = async () => {
-     console.log('🐛 DEBUG: handleSaveRunwaySettings called', { runwaySettings });
+          const handleSaveRunwaySettings = async () => {
      try {
        const updatedData = {
          ...data,
@@ -3998,18 +3997,22 @@ const TravelTab = ({ data, setData, userId }) => {
            tripPlan: runwaySettings.tripPlan
          }
        };
-       console.log('🐛 DEBUG: About to save updatedData', updatedData);
+         
+       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       setData(updatedData);
+       setShowRunwayModal(false);
        
-                await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-         console.log('🐛 DEBUG: Successfully saved to Firebase');
-         setData(updatedData);
-         console.log('🐛 DEBUG: Updated local state');
-         setShowRunwayModal(false);
-         console.log('🐛 DEBUG: Closed modal');
-       } catch (error) {
-         console.error('🐛 DEBUG: Error saving runway settings:', error);
-       }
-     };
+       // Force viewport cleanup after modal close
+       setTimeout(() => {
+         window.scrollTo(0, 0);
+         document.body.style.overflow = '';
+         document.body.style.position = '';
+         document.body.style.height = '';
+       }, 100);
+     } catch (error) {
+       console.error('Error saving runway settings:', error);
+     }
+   };
 
    const handleAddExpense = async () => {
      if (!newExpense.description || !newExpense.amount || !selectedTrip) return;
@@ -4662,7 +4665,16 @@ const TravelTab = ({ data, setData, userId }) => {
              <div className="flex justify-between items-center mb-4">
                <h3 className="text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
                <button
-                 onClick={() => setShowRunwayModal(false)}
+                 onClick={() => {
+                   setShowRunwayModal(false);
+                   // Force viewport cleanup after modal close
+                   setTimeout(() => {
+                     window.scrollTo(0, 0);
+                     document.body.style.overflow = '';
+                     document.body.style.position = '';
+                     document.body.style.height = '';
+                   }, 100);
+                 }}
                  className="text-gray-400 hover:text-white"
                >
                  <X className="w-5 h-5" />
@@ -4803,7 +4815,16 @@ const TravelTab = ({ data, setData, userId }) => {
              
              <div className="mt-6 flex justify-end gap-3">
                <button
-                 onClick={() => setShowRunwayModal(false)}
+                 onClick={() => {
+                   setShowRunwayModal(false);
+                   // Force viewport cleanup after modal close
+                   setTimeout(() => {
+                     window.scrollTo(0, 0);
+                     document.body.style.overflow = '';
+                     document.body.style.position = '';
+                     document.body.style.height = '';
+                   }, 100);
+                 }}
                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
                  Cancel
