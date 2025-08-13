@@ -5054,12 +5054,18 @@ export default function App() {
   };
 
   const saveCardData = async () => {
-    if (!editingCard || !data) return;
+    console.log('🐛 DEBUG: saveCardData called', { editingCard, tempCardData });
+    
+    if (!editingCard || !data) {
+      console.log('🐛 DEBUG: Early return - missing editingCard or data', { editingCard, data: !!data });
+      return;
+    }
     
     let updatedData;
     
     // Special handling for savings rate target (only update the target, not the entire savingsRate object)
     if (editingCard === 'savingsRateTarget') {
+      console.log('🐛 DEBUG: Handling savingsRateTarget', { target: tempCardData.target });
       updatedData = { 
         ...data, 
         savingsRate: { 
@@ -5068,15 +5074,21 @@ export default function App() {
         } 
       };
     } else {
+      console.log('🐛 DEBUG: Handling regular card', { editingCard, tempCardData });
       updatedData = { ...data, [editingCard]: tempCardData };
     }
     
+    console.log('🐛 DEBUG: About to save updatedData', updatedData);
+    
     try {
       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      console.log('🐛 DEBUG: Successfully saved to Firebase');
       setData(updatedData);
+      console.log('🐛 DEBUG: Updated local state');
       closeCardEditor();
+      console.log('🐛 DEBUG: Closed editor');
     } catch (error) {
-      console.error('Error saving card data:', error);
+      console.error('🐛 DEBUG: Error saving card data:', error);
     }
   };
 
