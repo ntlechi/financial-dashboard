@@ -3925,22 +3925,24 @@ const TravelTab = ({ data, setData, userId }) => {
 
   const convertCurrency = (amount, fromCurrency, toCurrency = data.travel?.homeCurrency || 'CAD') => {
     if (fromCurrency === toCurrency) return amount;
-    const rates = data.travel?.exchangeRates || {};
     
-    // rates[currency] represents how many CAD = 1 unit of that currency
-    // So USD: 1.35 means 1 USD = 1.35 CAD
+    // Updated exchange rates (realistic as of 2024)
+    const globalRates = {
+      'USD': { 'CAD': 1.35, 'EUR': 0.92, 'GBP': 0.79, 'THB': 36.0, 'COP': 4100 },
+      'CAD': { 'USD': 0.74, 'EUR': 0.68, 'GBP': 0.59, 'THB': 27.0, 'COP': 3050 },
+      'EUR': { 'USD': 1.09, 'CAD': 1.47, 'GBP': 0.86, 'THB': 39.5, 'COP': 4450 },
+      'GBP': { 'USD': 1.27, 'CAD': 1.70, 'EUR': 1.16, 'THB': 46.0, 'COP': 5200 },
+      'THB': { 'USD': 0.028, 'CAD': 0.037, 'EUR': 0.025, 'GBP': 0.022, 'COP': 113 },
+      'COP': { 'USD': 0.00024, 'CAD': 0.00033, 'EUR': 0.00022, 'GBP': 0.00019, 'THB': 0.0088 }
+    };
     
-    if (fromCurrency === 'CAD') {
-      // CAD to foreign: divide by rate (1 CAD = rate/1 foreign)
-      return amount / (rates[toCurrency] || 1);
-    } else if (toCurrency === 'CAD') {
-      // Foreign to CAD: multiply by rate (1 foreign = rate CAD)
-      return amount * (rates[fromCurrency] || 1);
-    } else {
-      // Foreign to foreign: convert through CAD
-      const inCAD = amount * (rates[fromCurrency] || 1);
-      return inCAD / (rates[toCurrency] || 1);
+    // Direct conversion using global rate matrix
+    if (globalRates[fromCurrency] && globalRates[fromCurrency][toCurrency]) {
+      return amount * globalRates[fromCurrency][toCurrency];
     }
+    
+    // Fallback to 1:1 if rates not found
+    return amount;
   };
 
      const handleSaveRunwaySettings = async () => {
@@ -4101,16 +4103,16 @@ const TravelTab = ({ data, setData, userId }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div className="bg-blue-700/20 rounded-lg p-3">
               <div className="text-blue-200">Total Travel Funds</div>
-              <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} CAD</div>
+              <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
             </div>
             <div className="bg-blue-700/20 rounded-lg p-3">
               <div className="text-blue-200">Average Daily Spend</div>
-              <div className="text-xl font-bold text-white">${runway.averageDaily} CAD/day</div>
+              <div className="text-xl font-bold text-white">${runway.averageDaily} {data.travel?.homeCurrency || 'CAD'}/day</div>
             </div>
           </div>
           
           <div className="text-xs text-blue-300 text-center mt-2">
-            💡 Multi-currency expenses automatically converted to CAD using current estimates
+            💡 Multi-currency expenses automatically converted to {data.travel?.homeCurrency || 'CAD'} using current estimates
           </div>
         </div>
       </Card>
@@ -4628,14 +4630,14 @@ const TravelTab = ({ data, setData, userId }) => {
                      homeCurrency: e.target.value
                    })}
                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                 >
-                   <option value="CAD">CAD - Canadian Dollar</option>
-                   <option value="USD">USD - US Dollar</option>
-                   <option value="EUR">EUR - Euro</option>
-                   <option value="GBP">GBP - British Pound</option>
-                   <option value="AUD">AUD - Australian Dollar</option>
-                   <option value="NZD">NZD - New Zealand Dollar</option>
-                 </select>
+                                 >
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="CAD">CAD - Canadian Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="THB">THB - Thai Baht</option>
+                  <option value="COP">COP - Colombian Peso</option>
+                </select>
                  <p className="text-xs text-gray-400 mt-1">Your primary currency for calculations</p>
                </div>
 
