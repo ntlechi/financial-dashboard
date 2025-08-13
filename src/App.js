@@ -4453,12 +4453,48 @@ export default function App() {
         overscroll-behavior-y: none;
       }
       
-      /* Modern viewport units for better mobile support */
-      @supports (height: 100dvh) {
-        .app-container {
-          min-height: 100dvh;
+              /* Modern viewport units for better mobile support */
+        @supports (height: 100dvh) {
+          .app-container {
+            min-height: 100dvh;
+          }
         }
-      }
+        
+        /* Prevent mobile zoom on inputs */
+        input[type="number"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+          font-size: 16px !important;
+          transform-origin: left top;
+          -webkit-user-select: text;
+        }
+        
+        /* Force zoom reset on modal close */
+        .modal-open {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+        }
+        
+        /* Additional mobile input fixes */
+        @media screen and (max-width: 768px) {
+          input, select, textarea {
+            font-size: 16px !important;
+            line-height: 1.2;
+          }
+          
+          /* Force viewport reset */
+          .zoom-reset {
+            zoom: 1;
+            -webkit-transform: scale(1);
+            transform: scale(1);
+          }
+        }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
@@ -4634,9 +4670,39 @@ export default function App() {
     }
   };
 
+  const resetMobileViewport = () => {
+    // Force viewport reset on mobile
+    if (window.innerWidth <= 768) {
+      // Remove any zoom/scale
+      document.body.style.zoom = "1";
+      document.body.style.transform = "scale(1)";
+      document.body.style.webkitTransform = "scale(1)";
+      
+      // Force viewport meta tag reset
+      let viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        // Trigger reflow
+        setTimeout(() => {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+        }, 100);
+      }
+      
+      // Scroll to top and reset
+      window.scrollTo(0, 0);
+      
+      // Blur any focused elements
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
+    }
+  };
+
   const closeCardEditor = () => {
     setEditingCard(null);
     setTempCardData({});
+    // Reset mobile viewport on modal close
+    setTimeout(resetMobileViewport, 100);
   };
 
   const saveCardData = async () => {
@@ -4880,6 +4946,8 @@ export default function App() {
       amount: '',
       date: new Date().toISOString().split('T')[0]
     });
+    // Reset mobile viewport on modal close
+    setTimeout(resetMobileViewport, 100);
   };
 
   const confirmQuickExpense = async () => {
@@ -5598,10 +5666,10 @@ export default function App() {
                               <input
                                 type="number"
                                 placeholder="Balance"
-                                value={account.balance}
+                                value={account.balance || ''}
                                 onChange={(e) => {
                                   const updatedAccounts = [...tempCardData.accounts];
-                                  updatedAccounts[index] = {...account, balance: Number(e.target.value)};
+                                  updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
                                   const newTotal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
                                   setTempCardData({...tempCardData, accounts: updatedAccounts, total: newTotal});
                                 }}
@@ -5801,7 +5869,7 @@ export default function App() {
                     <input
                       type="number"
                       value={tempCardData.total || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, total: Number(e.target.value)})}
+                      onChange={(e) => setTempCardData({...tempCardData, total: e.target.value === '' ? 0 : Number(e.target.value)})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
                     />
                   </div>
@@ -5926,10 +5994,10 @@ export default function App() {
                               <input
                                 type="number"
                                 placeholder="Enter amount"
-                                value={Math.abs(item.value)}
+                                value={Math.abs(item.value) || ''}
                                 onChange={(e) => {
                                   const updatedBreakdown = [...tempCardData.breakdown];
-                                  const value = Number(e.target.value);
+                                  const value = e.target.value === '' ? 0 : Number(e.target.value);
                                   updatedBreakdown[index] = {
                                     ...item, 
                                     value: item.type === 'liability' ? -value : value
@@ -5987,7 +6055,7 @@ export default function App() {
                   <input
                     type="number"
                     value={tempCardData.total || ''}
-                    onChange={(e) => setTempCardData({...tempCardData, total: Number(e.target.value)})}
+                    onChange={(e) => setTempCardData({...tempCardData, total: e.target.value === '' ? 0 : Number(e.target.value)})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-500 focus:outline-none"
                   />
                   <div className="text-xs text-gray-400 mt-1">Positive for surplus, negative for deficit</div>
