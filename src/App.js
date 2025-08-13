@@ -6377,11 +6377,13 @@ export default function App() {
                       {(tempCardData.breakdown || []).map((item, index) => (
                         <div key={item.id} className="bg-gray-700/50 rounded-lg p-3">
                           <div className="grid grid-cols-12 gap-2 items-center">
-                            <div className="col-span-5">
-                              <label className="block text-xs text-gray-400 mb-1">Name</label>
+                            <div className="col-span-6">
+                              <label className="block text-xs text-gray-400 mb-1">
+                                {item.type === 'asset' ? 'Asset Name' : 'Liability Name'}
+                              </label>
                               <input
                                 type="text"
-                                placeholder={item.type === 'asset' ? 'Asset name' : 'Liability name'}
+                                placeholder={item.type === 'asset' ? 'e.g., House, Car, Savings' : 'e.g., Mortgage, Credit Card, Loan'}
                                 value={item.name}
                                 onChange={(e) => {
                                   const updatedBreakdown = [...tempCardData.breakdown];
@@ -6391,29 +6393,7 @@ export default function App() {
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
                               />
                             </div>
-                            <div className="col-span-2">
-                              <label className="block text-xs text-gray-400 mb-1">Type</label>
-                              <select
-                                value={item.type}
-                                onChange={(e) => {
-                                  const updatedBreakdown = [...tempCardData.breakdown];
-                                  const newType = e.target.value;
-                                  updatedBreakdown[index] = {
-                                    ...item, 
-                                    type: newType,
-                                    color: newType === 'asset' ? 'bg-emerald-500' : 'bg-red-500',
-                                    value: newType === 'liability' ? -Math.abs(item.value) : Math.abs(item.value)
-                                  };
-                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
-                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
-                                }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
-                              >
-                                <option value="asset">Asset</option>
-                                <option value="liability">Liability</option>
-                              </select>
-                            </div>
-                            <div className="col-span-4">
+                            <div className="col-span-5">
                               <label className="block text-xs text-gray-400 mb-1">Value</label>
                               <input
                                 type="number"
