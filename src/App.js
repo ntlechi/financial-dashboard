@@ -5416,7 +5416,7 @@ export default function App() {
       savingsRate: { 
         ...data.savingsRate, 
         current: calculatedData.income.total > 0 ? 
-          ((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) : 0
+          Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100 : 0
       }
     };
   };
@@ -5433,6 +5433,11 @@ export default function App() {
         ...data.cashflow,
         total: calculatedData.income.total - calculatedData.expenses.total,
         monthly: calculatedData.income.total - calculatedData.expenses.total
+      },
+      savingsRate: { 
+        ...data.savingsRate, 
+        current: calculatedData.income.total > 0 ? 
+          Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100 : 0
       }
     };
     
