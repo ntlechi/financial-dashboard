@@ -6761,7 +6761,10 @@ export default function App() {
                         <input
                           type="date"
                           value={tempCardData.newDate || new Date().toISOString().split('T')[0]}
-                          onChange={(e) => setTempCardData({...tempCardData, newDate: e.target.value})}
+                          onChange={(e) => {
+                            console.log('Date selected:', e.target.value);
+                            setTempCardData({...tempCardData, newDate: e.target.value});
+                          }}
                           className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
                         />
                         <div className="text-xs text-gray-400 mt-1">When was this score checked?</div>
@@ -6773,6 +6776,7 @@ export default function App() {
                         if (!tempCardData.newScore) return;
                         
                         const selectedDate = tempCardData.newDate || new Date().toISOString().split('T')[0];
+                        console.log('Adding score entry:', { date: selectedDate, score: tempCardData.newScore });
                         const updatedHistory = [...(tempCardData.history || [])];
                         
                         // Add the new score entry to history
@@ -6822,7 +6826,11 @@ export default function App() {
                                   {entry.score}
                                 </div>
                                 <div className="text-sm text-gray-400">
-                                  {new Date(entry.date).toLocaleDateString()}
+                                  {new Date(entry.date + 'T12:00:00').toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                  })}
                                 </div>
                               </div>
                               <button
