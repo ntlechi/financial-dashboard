@@ -2878,7 +2878,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
 
   const handleAddHolding = async () => {
     if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) {
-      showNotification('Please fill in all required fields', 'error');
+      alert('Please fill in all required fields');
       return;
     }
     
@@ -2889,23 +2889,21 @@ const InvestmentTab = ({ data, setData, userId }) => {
 
     // Validation for impossible values
     if (shares <= 0) {
-      showNotification('Shares must be greater than 0', 'error');
+      alert('Shares must be greater than 0');
       return;
     }
     if (avgCost <= 0) {
-      showNotification('Average cost must be greater than 0', 'error');
+      alert('Average cost must be greater than 0');
       return;
     }
     if (currentPrice <= 0) {
-      showNotification('Current price must be greater than 0', 'error');
+      alert('Current price must be greater than 0');
       return;
     }
     if (dividendYield < 0 || dividendYield > 50) {
-      showNotification('Dividend yield must be between 0% and 50%', 'error');
+      alert('Dividend yield must be between 0% and 50%');
       return;
     }
-
-    setIsLoading(true);
     
     // Calculate withholding tax based on account type and stock origin
     let withholdingTax = 0;
@@ -3050,17 +3048,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
-        showNotification('Error saving investment', 'error');
-        setIsLoading(false);
-        return;
       }
     }
-
-    // Success feedback
-    showNotification(`Successfully added ${newHolding.symbol} to your portfolio!`, 'success');
-    setIsLoading(false);
-    setShowAddHolding(false);
-    setNewHolding({ symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', dripEnabled: false, isUSStock: false, currency: 'CAD', accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable' });
   };
 
   const handleToggleDRIP = async (holdingId) => {
@@ -3668,17 +3657,9 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </button>
                 <button
                   onClick={handleAddHolding}
-                  disabled={isLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  {isLoading ? (
-                    <>
-                      <span className="animate-spin">⏳</span>
-                      Adding...
-                    </>
-                  ) : (
-                    'Add Holding'
-                  )}
+                  Add Holding
                 </button>
               </div>
             </Card>
