@@ -930,7 +930,11 @@ const GoalsCard = ({ data, onEdit }) => {
                 </div>
                 
                 <div className="text-center text-xs text-gray-400">
-                  Target: {new Date(goal.targetDate).toLocaleDateString()}
+                  Target: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  })}
                 </div>
               </div>
             </div>
@@ -7628,10 +7632,10 @@ export default function App() {
                               <label className="block text-xs text-gray-400 mb-1">Target Date</label>
                               <input
                                 type="date"
-                                value={goal.deadline}
+                                value={goal.targetDate}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
-                                  updatedGoals[index] = {...goal, deadline: e.target.value};
+                                  updatedGoals[index] = {...goal, targetDate: e.target.value};
                                   setTempCardData(updatedGoals);
                                 }}
                                 className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
