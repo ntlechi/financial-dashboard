@@ -6074,16 +6074,13 @@ export default function App() {
   };
 
   // Calculate income and expenses from transactions
-  const calculateIncomeExpenses = (transactions) => {
+  const calculateIncomeExpenses = (transactions, businesses = []) => {
     if (!transactions || transactions.length === 0) {
-      return {
-        income: { total: 0, sources: [] },
-        expenses: { total: 0, categories: [] }
-      };
+      transactions = [];
     }
 
-    // Calculate total income and expenses
-    const totalIncome = transactions
+    // Calculate total income and expenses from transactions
+    const totalTransactionIncome = transactions
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
@@ -6091,7 +6088,14 @@ export default function App() {
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-    // Group income by subcategory
+    // Calculate business income
+    const totalBusinessIncome = businesses.reduce((sum, business) => 
+      sum + (business.totalIncome || business.income || 0), 0);
+
+    // Combine transaction and business income
+    const totalIncome = totalTransactionIncome + totalBusinessIncome;
+
+    // Group income by subcategory (from transactions)
     const incomeByCategory = {};
     transactions
       .filter(t => t.type === 'income')
@@ -6102,6 +6106,14 @@ export default function App() {
         }
         incomeByCategory[category] += Math.abs(t.amount);
       });
+
+    // Add business income as separate categories
+    businesses.forEach((business, index) => {
+      if (business.totalIncome > 0) {
+        const businessKey = business.name || `Business ${index + 1}`;
+        incomeByCategory[businessKey] = business.totalIncome;
+      }
+    });
 
     // Group expenses by subcategory
     const expensesByCategory = {};
@@ -6146,7 +6158,7 @@ export default function App() {
   const getAnnualizedData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions);
+    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
     
     return {
       ...data,
@@ -6181,7 +6193,7 @@ export default function App() {
   const getDisplayData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions);
+    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
     const actualInvestmentTotal = calculateInvestmentTotal(data.investments.holdings);
     
     // Update Net Worth with dynamic investment value
