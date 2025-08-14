@@ -5519,6 +5519,9 @@ export default function App() {
             -webkit-tap-highlight-color: transparent !important;
             visibility: visible !important;
             opacity: 1 !important;
+            will-change: transform !important;
+            backface-visibility: hidden !important;
+            transform-origin: center !important;
           }
           
           .floating-quick-btn:hover {
@@ -6045,6 +6048,13 @@ export default function App() {
       amount: '',
       date: new Date().toISOString().split('T')[0]
     });
+    
+    // Enhanced viewport cleanup
+    window.scrollTo(0, 0);
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.height = '';
+    
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
   };
@@ -6072,6 +6082,14 @@ export default function App() {
       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       closeQuickExpense();
+      
+      // Additional viewport cleanup after successful save
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.height = '';
+      }, 150);
     } catch (error) {
       console.error('Error adding quick expense:', error);
     }
