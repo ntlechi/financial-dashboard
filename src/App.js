@@ -5511,7 +5511,7 @@ export default function App() {
             justify-content: center !important;
             box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4) !important;
             transform: scale(1) !important;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
             border: none !important;
             outline: none !important;
             pointer-events: auto !important;
@@ -5522,6 +5522,12 @@ export default function App() {
             will-change: transform !important;
             backface-visibility: hidden !important;
             transform-origin: center !important;
+            /* Force positioning to override any conflicts */
+            top: auto !important;
+            left: auto !important;
+            margin: 0 !important;
+            /* Prevent any layout shifts */
+            contain: layout style paint !important;
           }
           
           .floating-quick-btn:hover {
@@ -6055,6 +6061,8 @@ export default function App() {
     document.body.style.position = '';
     document.body.style.height = '';
     
+
+    
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
   };
@@ -6089,6 +6097,8 @@ export default function App() {
         document.body.style.overflow = '';
         document.body.style.position = '';
         document.body.style.height = '';
+        
+
       }, 150);
     } catch (error) {
       console.error('Error adding quick expense:', error);
@@ -6624,17 +6634,7 @@ export default function App() {
       {/* Floating Quick Expense Button */}
       <button
         onClick={openQuickExpense}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group floating-quick-btn"
-        style={{
-          position: 'fixed',
-          bottom: '1.5rem',
-          right: '1.5rem',
-          zIndex: 99999,
-          pointerEvents: 'auto',
-          transform: 'none',
-          visibility: 'visible',
-          display: 'flex'
-        }}
+        className="floating-quick-btn bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
         title="Quick Expense Log"
       >
         <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
