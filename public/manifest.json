@@ -1,16 +1,36 @@
 {
-  "short_name": "Financial Dashboard",
-  "name": "Personal Financial Dashboard",
-  "description": "Track your finances with budget calculators and investment tools",
+  "short_name": "Survive Backpacking",
+  "name": "Survive Backpacking - Financial Freedom App",
+  "description": "Master your money, master your adventures. The financial app built by someone who's been broke.",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#ef4444",
+  "background_color": "#1f2937",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["finance", "productivity", "travel"],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    }
+  ]
 }
