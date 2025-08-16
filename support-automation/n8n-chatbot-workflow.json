@@ -70,27 +70,20 @@
     },
     {
       "parameters": {
-        "model": "gpt-3.5-turbo",
-        "messages": {
-          "chatInput": [
-            {
-              "role": "system",
-              "content": "You are a helpful customer support agent for Survive Backpacking, a financial freedom app. You are knowledgeable, empathetic, and focused on helping users with their financial journey. Keep responses concise and actionable. If you can't help, direct them to email support@survivebackpacking.com"
-            },
-            {
-              "role": "user", 
-              "content": "={{$json.message}}"
-            }
-          ]
-        },
+        "resource": "text",
+        "operation": "generate",
+        "model": "gemini-1.5-flash",
+        "prompt": "You are a helpful customer support agent for Survive Backpacking, a financial freedom app built by someone who lost everything to scammers and is rebuilding. You are knowledgeable, empathetic, and focused on helping users with their financial journey. Keep responses concise and actionable.\n\nUser question: {{$json.message}}\n\nProvide a helpful, encouraging response. If you can't help, direct them to email support@survivebackpacking.com",
         "options": {
           "temperature": 0.7,
-          "maxTokens": 200
+          "maxOutputTokens": 200,
+          "topP": 0.8,
+          "topK": 40
         }
       },
-      "id": "openai-fallback",
-      "name": "OpenAI Fallback",
-      "type": "n8n-nodes-base.openAi",
+      "id": "gemini-fallback",
+      "name": "Google Gemini Fallback",
+      "type": "n8n-nodes-base.googleGemini",
       "typeVersion": 1,
       "position": [680, 900]
     },
@@ -208,7 +201,7 @@
         ],
         [
           {
-            "node": "OpenAI Fallback",
+            "node": "Google Gemini Fallback",
             "type": "main", 
             "index": 0
           }
@@ -251,17 +244,17 @@
         ]
       ]
     },
-    "OpenAI Fallback": {
-      "main": [
-        [
-          {
-            "node": "AI Response",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
+         "Google Gemini Fallback": {
+       "main": [
+         [
+           {
+             "node": "AI Response",
+             "type": "main",
+             "index": 0
+           }
+         ]
+       ]
+     },
     "Installation Response": {
       "main": [
         [
