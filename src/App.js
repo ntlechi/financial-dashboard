@@ -1553,6 +1553,67 @@ const DebtPayoffCalculator = () => {
   const [extraPayment, setExtraPayment] = useState(500);
   const [strategy, setStrategy] = useState('snowball'); // 'snowball' or 'avalanche'
   
+  // Add new debt function
+  const addDebt = () => {
+    const newId = Math.max(...debts.map(d => d.id)) + 1;
+    const newDebt = {
+      id: newId,
+      name: `Debt ${debts.length + 1}`,
+      balance: 0,
+      interestRate: 0,
+      minPayment: 0
+    };
+    setDebts([...debts, newDebt]);
+  };
+  
+  // Remove debt function
+  const removeDebt = (debtId) => {
+    if (debts.length > 1) { // Keep at least one debt
+      setDebts(debts.filter(debt => debt.id !== debtId));
+    }
+  };
+  
+  // Update debt function
+  const updateDebt = (index, field, value) => {
+    const newDebts = [...debts];
+    newDebts[index][field] = value;
+    setDebts(newDebts);
+  };
+  
+  // Load debt templates
+  const loadTemplate = (templateName) => {
+    let template = [];
+    
+    switch (templateName) {
+      case 'credit-cards':
+        template = [
+          { id: 1, name: 'Credit Card 1', balance: 3500, interestRate: 18.99, minPayment: 85 },
+          { id: 2, name: 'Credit Card 2', balance: 8200, interestRate: 22.99, minPayment: 165 },
+          { id: 3, name: 'Store Card', balance: 1200, interestRate: 24.99, minPayment: 35 }
+        ];
+        break;
+      case 'student-loans':
+        template = [
+          { id: 1, name: 'Federal Loan 1', balance: 15000, interestRate: 4.53, minPayment: 150 },
+          { id: 2, name: 'Federal Loan 2', balance: 12000, interestRate: 5.28, minPayment: 125 },
+          { id: 3, name: 'Private Loan', balance: 25000, interestRate: 7.5, minPayment: 285 }
+        ];
+        break;
+      case 'mixed':
+        template = [
+          { id: 1, name: 'Credit Card', balance: 5500, interestRate: 19.99, minPayment: 110 },
+          { id: 2, name: 'Car Loan', balance: 18000, interestRate: 6.5, minPayment: 320 },
+          { id: 3, name: 'Student Loan', balance: 22000, interestRate: 5.8, minPayment: 245 },
+          { id: 4, name: 'Personal Loan', balance: 8000, interestRate: 12.99, minPayment: 180 }
+        ];
+        break;
+      default:
+        return;
+    }
+    
+    setDebts(template);
+  };
+  
   // Calculate payoff scenarios
   const calculatePayoffScenario = (debts, extraPayment, strategy) => {
     const debtsCopy = debts.map(debt => ({ ...debt }));
@@ -1623,43 +1684,85 @@ const DebtPayoffCalculator = () => {
         </h3>
         
         {/* Strategy Selection */}
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setStrategy('snowball')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-              strategy === 'snowball' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            }`}
-          >
-            🏔️ Debt Snowball (Smallest First)
-          </button>
-          <button
-            onClick={() => setStrategy('avalanche')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-              strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            }`}
-          >
-            ⚡ Debt Avalanche (Highest Interest)
-          </button>
+        <div className="mb-6">
+          <div className="flex gap-4 mb-4">
+            <button
+              onClick={() => setStrategy('snowball')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                strategy === 'snowball' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              🏔️ Debt Snowball (Smallest First)
+            </button>
+            <button
+              onClick={() => setStrategy('avalanche')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              ⚡ Debt Avalanche (Highest Interest)
+            </button>
+          </div>
+          
+          {/* Quick Templates */}
+          <div className="bg-gray-800/30 rounded-lg p-3">
+            <p className="text-sm text-gray-400 mb-2">Quick Start Templates:</p>
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => loadTemplate('credit-cards')}
+                className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
+              >
+                💳 Credit Cards
+              </button>
+              <button
+                onClick={() => loadTemplate('student-loans')}
+                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+              >
+                🎓 Student Loans
+              </button>
+              <button
+                onClick={() => loadTemplate('mixed')}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded transition-colors"
+              >
+                🔄 Mixed Debts
+              </button>
+            </div>
+          </div>
         </div>
         
         {/* Input Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Debt List */}
           <div>
-            <h4 className="font-semibold text-white mb-3">Your Debts</h4>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-white">Your Debts</h4>
+              <button
+                onClick={addDebt}
+                className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Debt
+              </button>
+            </div>
+            
+            {/* Column Headers */}
+            <div className="grid grid-cols-5 gap-2 text-xs text-gray-400 mb-2 px-3">
+              <div>Name</div>
+              <div>Balance</div>
+              <div>APR %</div>
+              <div>Min Payment</div>
+              <div></div>
+            </div>
+            
             <div className="space-y-3">
               {debts.map((debt, index) => (
                 <div key={debt.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
-                  <div className="grid grid-cols-4 gap-2 text-sm">
+                  <div className="grid grid-cols-5 gap-2 text-sm items-center">
                     <div>
                       <input
                         type="text"
                         value={debt.name}
-                        onChange={(e) => {
-                          const newDebts = [...debts];
-                          newDebts[index].name = e.target.value;
-                          setDebts(newDebts);
-                        }}
+                        onChange={(e) => updateDebt(index, 'name', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
                         placeholder="Debt name"
                       />
@@ -1667,57 +1770,103 @@ const DebtPayoffCalculator = () => {
                     <div>
                       <input
                         type="number"
-                        value={debt.balance}
-                        onChange={(e) => {
-                          const newDebts = [...debts];
-                          newDebts[index].balance = e.target.value === '' ? '' : Number(e.target.value);
-                          setDebts(newDebts);
-                        }}
+                        value={debt.balance || ''}
+                        onChange={(e) => updateDebt(index, 'balance', e.target.value === '' ? '' : Number(e.target.value))}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="Balance"
+                        placeholder="$0"
                       />
                     </div>
                     <div>
                       <input
                         type="number"
                         step="0.1"
-                        value={debt.interestRate}
-                        onChange={(e) => {
-                          const newDebts = [...debts];
-                          newDebts[index].interestRate = e.target.value === '' ? '' : Number(e.target.value);
-                          setDebts(newDebts);
-                        }}
+                        value={debt.interestRate || ''}
+                        onChange={(e) => updateDebt(index, 'interestRate', e.target.value === '' ? '' : Number(e.target.value))}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="APR %"
+                        placeholder="0.0"
                       />
                     </div>
                     <div>
                       <input
                         type="number"
-                        value={debt.minPayment}
-                        onChange={(e) => {
-                          const newDebts = [...debts];
-                          newDebts[index].minPayment = e.target.value === '' ? '' : Number(e.target.value);
-                          setDebts(newDebts);
-                        }}
+                        value={debt.minPayment || ''}
+                        onChange={(e) => updateDebt(index, 'minPayment', e.target.value === '' ? '' : Number(e.target.value))}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="Min payment"
+                        placeholder="$0"
                       />
+                    </div>
+                    <div className="flex justify-center">
+                      {debts.length > 1 && (
+                        <button
+                          onClick={() => removeDebt(debt.id)}
+                          className="text-red-400 hover:text-red-300 transition-colors p-1"
+                          title="Remove debt"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="mt-4">
-              <label className="block text-sm text-gray-300 mb-2">Extra Monthly Payment</label>
-              <input
-                type="number"
-                value={extraPayment || ''}
-                onChange={(e) => setExtraPayment(e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                placeholder="Extra payment amount"
-              />
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">Extra Monthly Payment</label>
+                <input
+                  type="number"
+                  value={extraPayment || ''}
+                  onChange={(e) => setExtraPayment(e.target.value === '' ? '' : Number(e.target.value))}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  placeholder="Extra payment amount"
+                />
+              </div>
+              
+              {/* Quick Actions */}
+              <div className="flex gap-2 text-xs">
+                <button
+                  onClick={() => setExtraPayment(100)}
+                  className="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-gray-300 rounded transition-colors"
+                >
+                  +$100
+                </button>
+                <button
+                  onClick={() => setExtraPayment(250)}
+                  className="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-gray-300 rounded transition-colors"
+                >
+                  +$250
+                </button>
+                <button
+                  onClick={() => setExtraPayment(500)}
+                  className="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-gray-300 rounded transition-colors"
+                >
+                  +$500
+                </button>
+                <button
+                  onClick={() => setExtraPayment(0)}
+                  className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white rounded transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
+              
+              {/* Debt Summary */}
+              <div className="bg-gray-800/50 rounded-lg p-3 text-sm">
+                <div className="flex justify-between text-gray-300 mb-1">
+                  <span>Total Debts:</span>
+                  <span className="font-semibold">{debts.length}</span>
+                </div>
+                <div className="flex justify-between text-gray-300">
+                  <span>Average APR:</span>
+                  <span className="font-semibold">
+                    {debts.length > 0 && debts.some(d => d.interestRate > 0) ? 
+                      (debts.reduce((sum, debt) => sum + (debt.interestRate || 0), 0) / debts.filter(d => d.interestRate > 0).length).toFixed(1) + '%' : 
+                      '0.0%'
+                    }
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
           
