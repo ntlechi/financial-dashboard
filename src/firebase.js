@@ -1,31 +1,24 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { env } from './config/environment';
 
-// Add this line to debug:
-console.log("Firebase API Key from env:", process.env.REACT_APP_FIREBASE_API_KEY);
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID
-};
-
-// Add these lines to debug each variable:
-console.log("apiKey:", process.env.REACT_APP_FIREBASE_API_KEY);
-console.log("authDomain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
-console.log("projectId:", process.env.REACT_APP_FIREBASE_PROJECT_ID);
-console.log("storageBucket:", process.env.REACT_APP_FIREBASE_STORAGE_BUCKET);
-console.log("messagingSenderId:", process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID);
-console.log("appId:", process.env.REACT_APP_FIREBASE_APP_ID);
+// 🔐 Secure Firebase config from validated environment variables
+const firebaseConfig = env.firebase;
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app, db, auth;
 
-// Initialize Firebase services and export them
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  auth = getAuth(app);
+  console.log("✅ Firebase initialized successfully");
+} catch (error) {
+  console.error("❌ Firebase initialization failed:", error);
+  db = null;
+  auth = null;
+}
+
+export { db, auth };
 export default app;

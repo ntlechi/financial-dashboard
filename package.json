@@ -2,15 +2,16 @@
   "name": "financial-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "My personal financial dashboard.",
-  "main": "index.js",
+  "description": "Personal financial dashboard with budget tracking",
   "dependencies": {
+    "@stripe/stripe-js": "^7.8.0",
     "d3": "^7.9.0",
     "firebase": "^12.1.0",
     "lucide-react": "^0.539.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "stripe": "^18.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,5 +36,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
   }
 }

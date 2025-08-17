@@ -1,0 +1,308 @@
+{
+  "name": "Survive Backpacking Support Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "support-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.message}}",
+              "operation": "contains",
+              "value2": "install"
+            }
+          ]
+        }
+      },
+      "id": "check-installation",
+      "name": "Check Installation Question",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.message}}",
+              "operation": "contains",
+              "value2": "offline"
+            }
+          ]
+        }
+      },
+      "id": "check-offline",
+      "name": "Check Offline Question",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 500]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.message}}",
+              "operation": "contains",
+              "value2": "debt"
+            }
+          ]
+        }
+      },
+      "id": "check-debt",
+      "name": "Check Debt Question",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 700]
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "generate",
+        "model": "gemini-1.5-flash",
+        "prompt": "You are a helpful customer support agent for Survive Backpacking, a financial freedom app built by someone who lost everything to scammers and is rebuilding. You are knowledgeable, empathetic, and focused on helping users with their financial journey. Keep responses concise and actionable.\n\nUser question: {{$json.message}}\n\nProvide a helpful, encouraging response. If you can't help, direct them to email support@survivebackpacking.com",
+        "options": {
+          "temperature": 0.7,
+          "maxOutputTokens": 200,
+          "topP": 0.8,
+          "topK": 40
+        }
+      },
+      "id": "gemini-fallback",
+      "name": "Google Gemini Fallback",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [680, 900]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": {
+          "response": "Hi! 👋 To install the Survive Backpacking app:\n\n📱 **iPhone (Safari only):**\n1. Go to survivebackpacking.com\n2. Tap Share button (□↗)\n3. Select 'Add to Home Screen'\n4. Tap 'Add'\n\n🤖 **Android (Chrome):**\n1. Go to survivebackpacking.com\n2. Tap menu (⋮)\n3. Select 'Add to Home screen'\n4. Tap 'Add'\n\nNeed more help? Check our full guide: survivebackpacking.com/install-guide",
+          "type": "installation_help",
+          "helpful": true
+        }
+      },
+      "id": "installation-response",
+      "name": "Installation Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": {
+          "response": "Yes! 🌍 The app works perfectly offline - great for travel!\n\n✈️ **Perfect for:**\n• Airplane mode (track expenses during flights)\n• Remote areas (mountains, beaches)\n• Poor connections (slow/unreliable internet)\n• Avoiding data costs (expensive roaming)\n\n🔄 **Auto-sync:** All changes sync automatically when you're back online!\n\nThis makes it perfect for backpackers and travelers who aren't always connected.",
+          "type": "offline_help", 
+          "helpful": true
+        }
+      },
+      "id": "offline-response",
+      "name": "Offline Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": {
+          "response": "💳 You can add unlimited debts in the calculator!\n\n**Steps:**\n1. Go to Budget tab → Debt Payoff Calculator\n2. Click green 'Add Debt' button\n3. Fill in your debt details\n4. Repeat for all debts (no limit!)\n5. Use trash icon to remove unwanted debts\n\n🚀 **Quick templates:** Try Credit Cards, Student Loans, or Mixed Debts for instant setup!\n\nThe calculator supports both Snowball (smallest first) and Avalanche (highest interest) strategies.",
+          "type": "debt_help",
+          "helpful": true
+        }
+      },
+      "id": "debt-response", 
+      "name": "Debt Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": {
+          "response": "={{$json.choices[0].message.content}}",
+          "type": "ai_response",
+          "helpful": true
+        }
+      },
+      "id": "ai-response",
+      "name": "AI Response", 
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 900]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "appendRow",
+        "documentId": "your-google-sheet-id",
+        "sheetName": "Support Logs",
+        "values": {
+          "timestamp": "={{new Date().toISOString()}}",
+          "user_message": "={{$json.message}}",
+          "bot_response": "={{$json.response}}",
+          "response_type": "={{$json.type}}",
+          "helpful": "={{$json.helpful}}"
+        }
+      },
+      "id": "log-interaction",
+      "name": "Log Interaction",
+      "type": "n8n-nodes-base.googleSheets", 
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Installation Question",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Offline Question", 
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Debt Question",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Installation Question": {
+      "main": [
+        [
+          {
+            "node": "Installation Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Gemini Fallback",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Offline Question": {
+      "main": [
+        [
+          {
+            "node": "Offline Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Debt Question": {
+      "main": [
+        [
+          {
+            "node": "Debt Response", 
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+         "Google Gemini Fallback": {
+       "main": [
+         [
+           {
+             "node": "AI Response",
+             "type": "main",
+             "index": 0
+           }
+         ]
+       ]
+     },
+    "Installation Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Offline Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debt Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction", 
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "America/New_York"
+  },
+  "staticData": null,
+  "tags": ["support", "chatbot", "automation"]
+}

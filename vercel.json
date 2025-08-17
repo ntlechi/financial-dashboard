@@ -1,13 +1,10 @@
 {
-  "headers": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "rewrites": [
     {
       "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "script-src 'self' 'unsafe-eval' https://apis.google.com; object-src 'self''unsafe-inline'"
-        }
-      ]
+      "destination": "/index.html"
     }
   ]
 }

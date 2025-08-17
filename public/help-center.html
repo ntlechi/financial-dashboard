@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - Survive Backpacking Support</title>
+    <meta name="description" content="Get instant help with the Survive Backpacking financial app. FAQ, troubleshooting, and support resources.">
+    <link rel="icon" href="/favicon.ico">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; 
+            color: #333; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: white;
+            margin-top: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        .hero { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 15px;
+        }
+        .hero h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 10px; 
+            font-weight: 700;
+        }
+        .search-box {
+            max-width: 600px;
+            margin: 20px auto;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-input:focus {
+            border-color: #4CAF50;
+        }
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .category {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #4CAF50;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .category:hover {
+            background: #e8f5e8;
+            transform: translateY(-2px);
+        }
+        .category h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .category-icon {
+            font-size: 1.5rem;
+        }
+        .faq-section {
+            margin: 40px 0;
+        }
+        .faq-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            background: #fafafa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .faq-question:hover {
+            background: #f0f0f0;
+        }
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+        .faq-toggle {
+            font-size: 1.2rem;
+            color: #4CAF50;
+            transition: transform 0.3s ease;
+        }
+        .faq-toggle.active {
+            transform: rotate(45deg);
+        }
+        .contact-section {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        .contact-button {
+            background: white;
+            color: #ff6b6b;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .contact-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #d4edda;
+            color: #155724;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+        .hidden { display: none; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .container { margin-top: 10px; padding: 15px; }
+            .categories { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🆘 Help Center</h1>
+            <p>Get instant answers to your questions</p>
+            <div class="status-indicator">
+                <span style="color: #28a745;">●</span>
+                All systems operational
+            </div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search for help... (e.g., 'offline mode', 'add debt', 'sync issues')"
+                id="searchInput"
+            >
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <!-- Quick Categories -->
+        <div class="categories">
+            <div class="category" onclick="showCategory('installation')">
+                <h3><span class="category-icon">📱</span> Installation & Setup</h3>
+                <p>How to install and get started with the app</p>
+            </div>
+            <div class="category" onclick="showCategory('features')">
+                <h3><span class="category-icon">⚡</span> Features & Usage</h3>
+                <p>Learn how to use all app features effectively</p>
+            </div>
+            <div class="category" onclick="showCategory('troubleshooting')">
+                <h3><span class="category-icon">🔧</span> Troubleshooting</h3>
+                <p>Fix common issues and technical problems</p>
+            </div>
+            <div class="category" onclick="showCategory('account')">
+                <h3><span class="category-icon">👤</span> Account & Data</h3>
+                <p>Manage your account and financial data</p>
+            </div>
+        </div>
+
+        <!-- FAQ Sections -->
+        <div class="faq-section">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">📋 Frequently Asked Questions</h2>
+
+            <!-- Installation FAQs -->
+            <div class="faq-category" data-category="installation">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        How do I install the app on my iPhone?
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>iPhone Installation (Safari only):</strong></p>
+                        <ol>
+                            <li>Open <strong>Safari</strong> browser (not Chrome)</li>
+                            <li>Go to <strong>survivebackpacking.com</strong></li>
+                            <li>Tap the <strong>Share button</strong> (square with arrow)</li>
+                            <li>Select <strong>"Add to Home Screen"</strong></li>
+                            <li>Tap <strong>"Add"</strong> to confirm</li>
+                        </ol>
+                        <p>The app icon will appear on your home screen instantly!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Why isn't the app in the App Store?
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>By design!</strong> We built a Progressive Web App (PWA) because:</p>
+                        <ul>
+                            <li>✅ <strong>No 30% Apple/Google fees</strong> - savings passed to you</li>
+                            <li>✅ <strong>Instant updates</strong> - no waiting for app store approval</li>
+                            <li>✅ <strong>Works on ALL devices</strong> - iPhone, Android, desktop</li>
+                            <li>✅ <strong>60-second installation</strong> - faster than app store</li>
+                            <li>✅ <strong>No permissions required</strong> - more privacy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features FAQs -->
+            <div class="faq-category" data-category="features">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Does the app work offline?
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Yes! Perfect for travel:</strong></p>
+                        <ul>
+                            <li>✈️ <strong>Airplane mode</strong> - track expenses during flights</li>
+                            <li>🏔️ <strong>Remote areas</strong> - mountains, beaches, rural locations</li>
+                            <li>📶 <strong>Poor connections</strong> - slow/unreliable internet</li>
+                            <li>💰 <strong>Save data costs</strong> - avoid expensive roaming</li>
+                        </ul>
+                        <p>All changes sync automatically when you're back online!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        How do I add more than 3 debts in the calculator?
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Unlimited debt entries!</strong></p>
+                        <ol>
+                            <li>Go to <strong>Budget tab</strong> → <strong>Debt Payoff Calculator</strong></li>
+                            <li>Click the green <strong>"Add Debt"</strong> button</li>
+                            <li>Fill in your debt details</li>
+                            <li>Repeat for all your debts (no limit!)</li>
+                            <li>Use trash icon to remove debts you don't need</li>
+                        </ol>
+                        <p><strong>Quick templates:</strong> Try Credit Cards, Student Loans, or Mixed Debts templates!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Troubleshooting FAQs -->
+            <div class="faq-category" data-category="troubleshooting">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        The app isn't loading or showing errors
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Quick fixes to try:</strong></p>
+                        <ol>
+                            <li><strong>Refresh the page</strong> - swipe down or press F5</li>
+                            <li><strong>Clear browser cache</strong> - Settings → Clear browsing data</li>
+                            <li><strong>Check internet connection</strong> - try other websites</li>
+                            <li><strong>Update your browser</strong> - use latest version</li>
+                            <li><strong>Try incognito/private mode</strong> - rules out extensions</li>
+                        </ol>
+                        <p>Still not working? Email us at support@survivebackpacking.com with details!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        My data disappeared or isn't syncing
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Don't panic! Your data is likely safe:</strong></p>
+                        <ol>
+                            <li><strong>Check offline status</strong> - look for sync indicator</li>
+                            <li><strong>Connect to WiFi</strong> - data may be waiting to sync</li>
+                            <li><strong>Refresh the app</strong> - force a sync attempt</li>
+                            <li><strong>Check browser storage</strong> - data might be saved locally</li>
+                        </ol>
+                        <p><strong>Prevention:</strong> Your data auto-saves every change and syncs when online.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account FAQs -->
+            <div class="faq-category" data-category="account">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Is my financial data secure and private?
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Absolutely! Your privacy is our priority:</strong></p>
+                        <ul>
+                            <li>🔐 <strong>Bank-level encryption</strong> - same security as online banking</li>
+                            <li>🛡️ <strong>No tracking or surveillance</strong> - we don't spy on you</li>
+                            <li>🚫 <strong>No data selling</strong> - your information is never sold</li>
+                            <li>📱 <strong>No phone permissions</strong> - can't access camera, contacts, etc.</li>
+                            <li>🗑️ <strong>Easy deletion</strong> - delete your data anytime</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        How do I export my data or switch devices?
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Easy data portability:</strong></p>
+                        <ol>
+                            <li>Go to <strong>Settings</strong> in the app</li>
+                            <li>Click <strong>"Export Data to CSV"</strong></li>
+                            <li>Download files to your device</li>
+                            <li>Open with Excel, Google Sheets, or any spreadsheet app</li>
+                        </ol>
+                        <p><strong>New device:</strong> Just install the app and your data will sync automatically!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2>Still Need Help?</h2>
+            <p>Can't find what you're looking for? We're here to help!</p>
+            <div>
+                <a href="mailto:support@survivebackpacking.com" class="contact-button">📧 Email Support</a>
+                <a href="#" onclick="openChat()" class="contact-button">💬 Live Chat</a>
+            </div>
+            <p style="margin-top: 20px; opacity: 0.9; font-size: 0.9rem;">
+                💡 <strong>Pro tip:</strong> Include screenshots and describe what you were doing when the issue occurred
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    // Auto-expand matching items
+                    if (searchTerm.length > 2) {
+                        item.querySelector('.faq-answer').classList.add('active');
+                        item.querySelector('.faq-toggle').classList.add('active');
+                    }
+                } else {
+                    item.style.display = searchTerm === '' ? 'block' : 'none';
+                }
+            });
+        });
+
+        // FAQ toggle functionality
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+            
+            answer.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+        // Category filtering
+        function showCategory(category) {
+            const allCategories = document.querySelectorAll('.faq-category');
+            
+            allCategories.forEach(cat => {
+                if (cat.dataset.category === category) {
+                    cat.style.display = 'block';
+                } else {
+                    cat.style.display = 'none';
+                }
+            });
+            
+            // Scroll to FAQ section
+            document.querySelector('.faq-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Reset to show all categories
+        function showAllCategories() {
+            document.querySelectorAll('.faq-category').forEach(cat => {
+                cat.style.display = 'block';
+            });
+        }
+
+        // Live chat placeholder
+        function openChat() {
+            alert('Live chat coming soon! For now, please email support@survivebackpacking.com');
+        }
+
+        // Initialize - show all categories
+        showAllCategories();
+    </script>
+</body>
+</html>
