@@ -1,12 +1,12 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, Target, Briefcase, BarChart2, Repeat, ShoppingCart, X, Plus, TrendingUp, Wind, PiggyBank, Leaf, Download, Calendar, Wallet, Trash2, CreditCard, Building, LayoutDashboard, AreaChart, Umbrella, Calculator, AlertTriangle, Save, Edit, ShieldCheck } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, Target, Briefcase, BarChart2, Repeat, X, Plus, TrendingUp, PiggyBank, Download, Calendar, Wallet, Trash2, CreditCard, Building, LayoutDashboard, AreaChart, Umbrella, Calculator, AlertTriangle, Save, Edit, ShieldCheck } from 'lucide-react';
 import * as d3 from 'd3';
 
 // Firebase Imports
 import { db, auth } from './firebase'; // Import the ready-to-use services
-import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
+import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
 
 // Tracking Imports
 import { storeTrackingData } from './utils/tracking';
