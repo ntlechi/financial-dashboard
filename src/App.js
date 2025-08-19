@@ -8,6 +8,9 @@ import { db, auth } from './firebase'; // Import the ready-to-use services
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
 
+// Tracking Imports
+import { storeTrackingData } from './utils/tracking';
+
 const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 /* global __initial_auth_token:readonly */
@@ -2294,6 +2297,11 @@ export default function App() {
         setDisplayData(newDisplayData);
     }
   }, [data, timeframe, historicalDate]);
+
+  // Initialize tracking on app load
+  useEffect(() => {
+    storeTrackingData();
+  }, []);
 
   const handleSaveData = async (formData) => {
     if (!userId) return;
