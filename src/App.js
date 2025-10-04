@@ -5708,14 +5708,13 @@ export default function App() {
     date: new Date().toISOString().split('T')[0]
   });
 
-  // User feedback system - available for future features
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [notification, setNotification] = useState(null);
-  // 
-  // const showNotification = (message, type = 'success') => {
-  //   setNotification({ message, type });
-  //   setTimeout(() => setNotification(null), 3000);
-  // };
+  // User feedback system
+  const [notification, setNotification] = useState(null);
+  
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
 
   // Authentication Effect
   useEffect(() => {
