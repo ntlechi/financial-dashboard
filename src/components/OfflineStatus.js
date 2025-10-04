@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Cloud, CloudOff, Sync, AlertCircle } from 'lucide-react';
+import { Wifi, WifiOff, Cloud, CloudOff, RefreshCw, AlertCircle } from 'lucide-react';
 import offlineStorage from '../utils/offlineStorage';
 
 const OfflineStatus = () => {
@@ -46,7 +46,7 @@ const OfflineStatus = () => {
   const getStatusIcon = () => {
     if (status.isOnline) {
       return status.pendingOperations > 0 ? 
-        <Sync className="w-4 h-4 animate-spin" /> : 
+        <RefreshCw className="w-4 h-4 animate-spin" /> : 
         <Wifi className="w-4 h-4" />;
     }
     return <WifiOff className="w-4 h-4" />;
