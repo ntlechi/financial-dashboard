@@ -242,7 +242,7 @@ const FAQ = ({ onClose }) => {
         {/* Footer */}
         <div className="p-4 border-t border-gray-700 bg-gray-800/50">
           <div className="text-center text-sm text-gray-400">
-            <p>Still need help? Contact us at <span className="text-blue-400">support@freedomcompass.app</span></p>
+            <p>Still need help? Contact us at <span className="text-blue-400">janara@survivebackpacking.com</span></p>
           </div>
         </div>
       </div>
