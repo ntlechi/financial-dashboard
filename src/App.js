@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
+import ErrorBoundary from './components/ErrorBoundary';
+import FinancialErrorBoundary from './components/FinancialErrorBoundary';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -15,9 +17,10 @@ import {
   onAuthStateChanged,
   updateProfile 
 } from "firebase/auth";
-import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const appId = process.env.REACT_APP_FIREBASE_APP_ID;
+// Firebase App ID available if needed
+// const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
@@ -174,24 +177,6 @@ const initialData = {
         { id: 3, name: 'Wealthsimple Cash', balance: 15000, type: 'Investment Cash' },
     ],
     history: [ { date: '2025-08-09', total: 75000 } ]
-  },
-  registeredAccounts: {
-    tfsa: {
-      currentBalance: 45000,
-      contributionRoom: 88000,
-      contributionLimit: 95000,
-      annualContributionLimit: 7000,
-      withdrawals: 0,
-      contributionsThisYear: 7000
-    },
-    rrsp: {
-      currentBalance: 85000,
-      contributionRoom: 42000,
-      contributionLimit: 127000,
-      annualContributionLimit: 31560, // 18% of income up to max
-      contributionsThisYear: 15000,
-      carryForward: 8500
-    }
   },
   rainyDayFund: {
     total: 20000,
@@ -842,7 +827,8 @@ const CreditScoreCard = ({ data, onEdit }) => {
     return 'Poor';
   };
 
-  const getScoreProgress = (score) => (score / 850) * 100;
+  // Score progress calculation available if needed
+  // const getScoreProgress = (score) => (score / 850) * 100;
 
   // Create line chart for credit score history
   useEffect(() => {
@@ -3159,7 +3145,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stop-opacity", 0.1);
       
       // Add axes with responsive formatting
-      const xAxis = g.append("g")
+      g.append("g")
         .attr("transform", `translate(0,${chartHeight})`)
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")).ticks(data_parsed.length))
         .selectAll("text")
@@ -6018,7 +6004,7 @@ const TravelTab = ({ data, setData, userId }) => {
    );
  };
 
-export default function App() {
+function App() {
   // Add CSS for scrollbar hiding and mobile viewport fixes
   React.useEffect(() => {
     const style = document.createElement('style');
@@ -6176,8 +6162,8 @@ export default function App() {
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
-  const [loading, setLoading] = useState(true);
+  const [userPlan] = useState('free'); // Subscription plan state
+  // Removed unused loading state - using authLoading instead
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
@@ -6200,7 +6186,7 @@ export default function App() {
   });
 
   // User feedback system
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
   const [notification, setNotification] = useState(null);
   
   const showNotification = (message, type = 'success') => {
@@ -6259,7 +6245,7 @@ export default function App() {
       }
       
       setAuthLoading(false);
-      setLoading(false);
+      // setLoading(false); // Removed - using authLoading instead
     });
 
     return () => unsubscribe();
@@ -7246,12 +7232,20 @@ export default function App() {
               )}
               
               {/* Top Row - Financial Freedom Goal */}
-              <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
-              <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
+              <FinancialErrorBoundary componentName="Financial Freedom Goal">
+                <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
+              <FinancialErrorBoundary componentName="Savings Rate Tracker">
+                <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
               
               {/* Second Row - Net Worth and Cash on Hand */}
-              <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
-              <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+              <FinancialErrorBoundary componentName="Net Worth Calculator">
+                <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
+              <FinancialErrorBoundary componentName="Cash Management">
+                <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
               
               {/* Third Row - Income and Expenses Side by Side */}
               <IncomeCard data={displayData.income} viewMode={viewMode} />
@@ -7276,15 +7270,35 @@ export default function App() {
             </>
           )}
           
-          {activeTab === 'budget' && <BudgetCalculatorTab />}
+          {activeTab === 'budget' && (
+            <ErrorBoundary>
+              <BudgetCalculatorTab />
+            </ErrorBoundary>
+          )}
           
-          {activeTab === 'side-hustle' && <SideHustleTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'side-hustle' && (
+            <FinancialErrorBoundary componentName="Side Hustle Management">
+              <SideHustleTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
           
-          {activeTab === 'investment' && <InvestmentTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'investment' && (
+            <FinancialErrorBoundary componentName="Investment Portfolio">
+              <InvestmentTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
           
-          {activeTab === 'transactions' && <TransactionsTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'transactions' && (
+            <FinancialErrorBoundary componentName="Transaction Management">
+              <TransactionsTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
           
-          {activeTab === 'travel' && <TravelTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'travel' && (
+            <FinancialErrorBoundary componentName="Travel Planning">
+              <TravelTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
         </main>
 
         <footer className="text-center mt-12 text-gray-500">
@@ -8523,3 +8537,11 @@ export default function App() {
   );
 }
 
+// Wrap the entire app with error boundary for maximum protection
+const AppWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;
