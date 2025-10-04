@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
 import UpgradePrompt from './components/UpgradePrompt';
 import FounderCircleOffer from './components/FounderCircleOffer';
+import FAQ from './components/FAQ';
 import { hasFeatureAccess, hasDashboardCardAccess, getUserPlan } from './utils/featureAccess';
 
 // Firebase Imports
@@ -5714,6 +5715,7 @@ export default function App() {
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState(null);
   const [showFounderOffer, setShowFounderOffer] = useState(false);
+  const [showFAQ, setShowFAQ] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -6626,6 +6628,14 @@ export default function App() {
                   </span>
                 </p>
               </div>
+              
+              <button 
+                onClick={() => setShowFAQ(true)} 
+                className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                title="Help & FAQ"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
               
               {userPlan === 'free' && (
                 <button
@@ -8065,6 +8075,10 @@ export default function App() {
             onClose={() => setShowFounderOffer(false)}
             onSubscribe={handleSubscribe}
           />
+        )}
+
+        {showFAQ && (
+          <FAQ onClose={() => setShowFAQ(false)} />
         )}
     </div>
   );
