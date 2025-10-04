@@ -11,6 +11,7 @@ import {
   createUserWithEmailAndPassword, 
   signInWithPopup, 
   GoogleAuthProvider,
+  signInAnonymously,
   signOut, 
   onAuthStateChanged,
   updateProfile 
@@ -3170,8 +3171,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     });
     setShowAddHolding(false);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -3195,8 +3196,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -3219,8 +3220,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -3263,8 +3264,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     setData(updatedData);
     setEditingHolding(null);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -5700,8 +5701,8 @@ export default function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  // AUTHENTICATION DISABLED FOR DEVELOPMENT - QUICK ACCESS
-  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User' });
+  // Authentication state
+  const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
@@ -5739,19 +5740,60 @@ export default function App() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-    // Authentication Effect - DISABLED FOR DEVELOPMENT
+  // Authentication Effect
   useEffect(() => {
-    // Skip Firebase auth - use mock user
-    setUserId('dev-user');
-    setAuthLoading(false);
-    setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setAuthLoading(true);
+      
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        setUserId(firebaseUser.uid);
+        
+        // Load user data from Firestore
+        try {
+          const userDocRef = doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${firebaseUser.uid}/financials`, 'data');
+          const userDoc = await getDoc(userDocRef);
+          
+          if (userDoc.exists()) {
+            setData(userDoc.data());
+          } else {
+            // First time user - initialize with sample data
+            setData(initialData);
+            // Save initial data to Firestore
+            await setDoc(userDocRef, initialData);
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+          setData(initialData);
+        }
+      } else {
+        // User not authenticated
+        setUser(null);
+        setUserId(null);
+        setData(null);
+      }
+      
+      setAuthLoading(false);
+      setLoading(false);
+    });
     
-    // Load initial sample data immediately
-    if (!data) {
-      setData(initialData);
+    return () => unsubscribe();
+  }, []);
+
+  // Auto sign-in anonymously if no user after loading
+  useEffect(() => {
+    if (!user && !authLoading && !loading) {
+      // Auto sign-in anonymously for immediate access
+      signInAnonymously(auth).catch((error) => {
+        console.error('Anonymous sign-in failed:', error);
+        // Fallback to local data
+        setData(initialData);
+      });
     }
-    
-    // Set up --vh for iOS viewport fix
+  }, [user, authLoading, loading]);
+
+  // Set up --vh for iOS viewport fix
+  useEffect(() => {
     const setVH = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
@@ -5762,18 +5804,6 @@ export default function App() {
     // Update --vh on resize (orientation change, etc.)
     window.addEventListener('resize', setVH);
     window.addEventListener('orientationchange', setVH);
-    
-    // const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-    //   setUser(user);
-    //   setUserId(user?.uid || null);
-    //   setAuthLoading(false);
-    //   
-    //   if (!user) {
-    //     setLoading(false);
-    //     setData(null);
-    //   }
-    // });
-    // return () => unsubscribeAuth();
     
     return () => {
       window.removeEventListener('resize', setVH);
