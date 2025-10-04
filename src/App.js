@@ -7016,11 +7016,11 @@ export default function App() {
           <div className="max-w-md w-full">
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-amber-500/30 shadow-lg shadow-amber-500/10">
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent flex items-center justify-center gap-2">
-                  🧭 The Freedom Compass
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
+                  The Freedom Compass
                 </h1>
                 <p className="text-amber-200 mt-2">
-                  {authMode === 'login' ? 'Navigate back to your financial freedom' : 'Start your journey to financial independence'}
+                  {authMode === 'login' ? 'Navigate to your financial freedom' : 'Start your journey to financial independence'}
                 </p>
               </div>
 
@@ -7098,7 +7098,7 @@ export default function App() {
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white flex items-center gap-3">🧭 The Freedom Compass</h1>
+              <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
               <p className="text-amber-200 text-lg">Welcome back, {user?.displayName || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
             </div>
             
