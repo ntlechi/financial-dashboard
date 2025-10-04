@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
@@ -1811,16 +1811,16 @@ const DebtPayoffCalculator = () => {
       let remainingExtraPayment = extraPayment;
       
       // Apply minimum payments and interest
-      sortedDebts.forEach((debt) => {
+      for (const debt of sortedDebts) {
         if (debt.balance > 0) {
           const monthlyInterest = debt.balance * (debt.interestRate / 100 / 12);
-          totalInterestPaid += monthlyInterest; // eslint-disable-line no-loop-func
+          totalInterestPaid += monthlyInterest;
           debt.balance += monthlyInterest;
           
           const payment = Math.min(debt.minPayment, debt.balance);
           debt.balance -= payment;
         }
-      });
+      }
       
       // Apply extra payment to first debt with balance
       const targetDebt = sortedDebts.find(debt => debt.balance > 0);
@@ -6192,10 +6192,46 @@ function App() {
   // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
   const [notification, setNotification] = useState(null);
   
-  const showNotification = (message, type = 'success') => {
+  const showNotification = useCallback((message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
-  };
+  }, []);
+
+  // 🔄 Process Recurring Expenses Function
+  const processRecurringExpenses = useCallback(async (userData, currentUserId) => {
+    if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
+      return;
+    }
+
+    const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
+      userData.recurringExpenses, 
+      userData.transactions || []
+    );
+    
+    if (newTransactions.length > 0) {
+      const updatedData = {
+        ...userData,
+        transactions: [...newTransactions, ...(userData.transactions || [])],
+        recurringExpenses: updatedRecurringExpenses
+      };
+      
+      try {
+        const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
+        await setDoc(docRef, updatedData);
+        setData(updatedData);
+        
+        // Show notification about processed recurring expenses
+        if (newTransactions.length === 1) {
+          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+        } else {
+          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
+        }
+      } catch (error) {
+        console.error('Error processing recurring expenses:', error);
+        showNotification('Error processing recurring transactions', 'error');
+      }
+    }
+  }, [showNotification]);
 
     // 🔐 PRODUCTION Authentication Effect
   useEffect(() => {
@@ -6252,43 +6288,8 @@ function App() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [processRecurringExpenses, showNotification]);
 
-  // 🔄 Process Recurring Expenses Function
-  const processRecurringExpenses = async (userData, currentUserId) => {
-    if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
-      return;
-    }
-
-    const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
-      userData.recurringExpenses, 
-      userData.transactions || []
-    );
-    
-    if (newTransactions.length > 0) {
-      const updatedData = {
-        ...userData,
-        transactions: [...newTransactions, ...(userData.transactions || [])],
-        recurringExpenses: updatedRecurringExpenses
-      };
-      
-      try {
-        const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
-        await setDoc(docRef, updatedData);
-        setData(updatedData);
-        
-        // Show notification about processed recurring expenses
-        if (newTransactions.length === 1) {
-          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
-        } else {
-          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
-        }
-      } catch (error) {
-        console.error('Error processing recurring expenses:', error);
-        showNotification('Error processing recurring transactions', 'error');
-      }
-    }
-  };
 
   // 🔐 Authentication Functions
   const handleSignUp = async () => {
@@ -7194,6 +7195,7 @@ function App() {
             <>
               {/* Monthly History View */}
               {showHistory && data.monthlyHistory && (
+                <FinancialErrorBoundary componentName="Monthly History">
                 <Card className="col-span-1 md:col-span-6 lg:col-span-6">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
@@ -7232,6 +7234,7 @@ function App() {
                     </table>
                   </div>
                 </Card>
+                </FinancialErrorBoundary>
               )}
               
               {/* Top Row - Financial Freedom Goal */}
