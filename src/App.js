@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
@@ -974,7 +974,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
       .style("stroke", "#4b5563")
       .style("stroke-width", 1);
 
-  }, [data.history, data.current]);
+  }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Calculate score change
   const getScoreChange = () => {
@@ -1454,20 +1454,23 @@ const FinancialFreedomCalculator = () => {
   const requiredAmountFor4Percent = monthlyPassiveNeeded * 12 / 0.04;
 
   // Generate projection data
-  const projectionData = [];
-  let amount = currentSavings;
-  for (let month = 0; month <= totalMonths && month <= 600; month++) { // Max 50 years
-    if (month > 0) {
-      amount = amount * (1 + monthlyReturn) + monthlyContribution;
+  const projectionData = useMemo(() => {
+    const data = [];
+    let amount = currentSavings;
+    for (let month = 0; month <= totalMonths && month <= 600; month++) { // Max 50 years
+      if (month > 0) {
+        amount = amount * (1 + monthlyReturn) + monthlyContribution;
+      }
+      if (month % 12 === 0) {
+        data.push({
+          year: currentAge + Math.floor(month / 12),
+          amount: amount,
+          passiveIncome: amount * 0.04 / 12 // 4% rule monthly
+        });
+      }
     }
-    if (month % 12 === 0) {
-      projectionData.push({
-        year: currentAge + Math.floor(month / 12),
-        amount: amount,
-        passiveIncome: amount * 0.04 / 12 // 4% rule monthly
-      });
-    }
-  }
+    return data;
+  }, [currentSavings, totalMonths, monthlyReturn, monthlyContribution, currentAge]);
 
   useEffect(() => {
     if (chartRef.current && projectionData.length > 0) {
@@ -1808,10 +1811,10 @@ const DebtPayoffCalculator = () => {
       let remainingExtraPayment = extraPayment;
       
       // Apply minimum payments and interest
-      sortedDebts.forEach(debt => {
+      sortedDebts.forEach((debt) => {
         if (debt.balance > 0) {
           const monthlyInterest = debt.balance * (debt.interestRate / 100 / 12);
-          totalInterestPaid += monthlyInterest;
+          totalInterestPaid += monthlyInterest; // eslint-disable-line no-loop-func
           debt.balance += monthlyInterest;
           
           const payment = Math.min(debt.minPayment, debt.balance);
@@ -3197,7 +3200,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stroke", "#1F2937")
         .attr("stroke-width", 2);
     }
-  }, [data.investments]);
+  }, [data.investments, actualTotalCost, actualTotalValue]);
 
   const totalGainLoss = actualTotalValue - actualTotalCost;
   const totalGainLossPercent = actualTotalCost > 0 ? (totalGainLoss / actualTotalCost) * 100 : 0;
