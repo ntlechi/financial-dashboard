@@ -2507,7 +2507,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
       setShowAddBusiness(false);
@@ -2547,7 +2547,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0] });
       setShowAddItem(false);
@@ -2573,7 +2573,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setBusinessToDelete(null);
       setShowDeleteConfirm(false);
@@ -2606,7 +2606,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
       console.error('Error deleting item:', error);
@@ -3357,10 +3357,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     });
     setShowAddHolding(false);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3382,10 +3382,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3406,10 +3406,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3450,10 +3450,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     setData(updatedData);
     setEditingHolding(null);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -4235,7 +4235,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
     }
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewTransaction({
         description: '',
@@ -4266,7 +4266,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, transactions: updatedTransactions };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setEditingTransaction(null);
     } catch (error) {
@@ -4279,7 +4279,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, transactions: updatedTransactions };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
       console.error('Error deleting transaction:', error);
@@ -4775,7 +4775,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                       );
                       const updatedData = { ...data, recurringExpenses: updatedRecurring };
                       try {
-                        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
                         setData(updatedData);
                       } catch (error) {
                         console.error('Error updating recurring expense:', error);
@@ -4795,7 +4795,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                       const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
                       const updatedData = { ...data, recurringExpenses: updatedRecurring };
                       try {
-                        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
                         setData(updatedData);
                       } catch (error) {
                         console.error('Error deleting recurring expense:', error);
@@ -5067,7 +5067,7 @@ const TravelTab = ({ data, setData, userId }) => {
         }
       };
         
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setShowRunwayModal(false);
       
@@ -5133,7 +5133,7 @@ const TravelTab = ({ data, setData, userId }) => {
      };
 
      try {
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
        setData(updatedData);
        setNewExpense({
          description: '',
@@ -5177,7 +5177,7 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedData = { ...data, travel: updatedTravel };
 
      try {
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
        setData(updatedData);
        setEditingTrip(null);
        
@@ -5212,7 +5212,7 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, travel: updatedTravel };
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
       setShowAddTrip(false);
@@ -6169,9 +6169,9 @@ export default function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  // AUTHENTICATION DISABLED FOR DEVELOPMENT - QUICK ACCESS
-  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User' });
-  const [authLoading, setAuthLoading] = useState(false);
+  // 🔐 PRODUCTION AUTHENTICATION ENABLED
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
@@ -6208,56 +6208,193 @@ export default function App() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-    // Authentication Effect - DISABLED FOR DEVELOPMENT
+    // 🔐 PRODUCTION Authentication Effect
   useEffect(() => {
-    // Skip Firebase auth - use mock user
-    setUserId('dev-user');
-    setAuthLoading(false);
-    setLoading(false);
-    
-    // Load initial sample data immediately
-    if (!data) {
-      setData(initialData);
+    if (!auth) {
+      console.error('Firebase auth not initialized');
+      setAuthLoading(false);
+      return;
     }
-    
-    // 🔄 Process recurring expenses on app load
-    const processRecurringExpenses = async () => {
-      if (data && data.recurringExpenses && data.recurringExpenses.length > 0) {
-        const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
-          data.recurringExpenses, 
-          data.transactions || []
-        );
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setAuthLoading(true);
+      
+      if (firebaseUser) {
+        // User is signed in
+        setUser(firebaseUser);
+        setUserId(firebaseUser.uid);
+        setShowAuth(false);
         
-        if (newTransactions.length > 0) {
-          const updatedData = {
-            ...data,
-            transactions: [...newTransactions, ...(data.transactions || [])],
-            recurringExpenses: updatedRecurringExpenses
-          };
+        // Load user's financial data from Firestore
+        try {
+          const docRef = doc(db, `users/${firebaseUser.uid}/financials`, 'data');
+          const docSnap = await getDoc(docRef);
           
-          try {
-            await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-            setData(updatedData);
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setData(userData);
             
-            // Show notification about processed recurring expenses
-            if (newTransactions.length === 1) {
-              showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
-            } else {
-              showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
-            }
-          } catch (error) {
-            console.error('Error processing recurring expenses:', error);
+            // 🔄 Process recurring expenses on data load
+            await processRecurringExpenses(userData, firebaseUser.uid);
+          } else {
+            // New user - initialize with sample data
+            console.log('New user detected, initializing with sample data');
+            const newUserData = { ...initialData };
+            await setDoc(docRef, newUserData);
+            setData(newUserData);
+            showNotification('Welcome! Your financial dashboard is ready.', 'success');
           }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+          showNotification('Error loading your data. Please try refreshing.', 'error');
+          // Fallback to initial data
+          setData(initialData);
         }
+      } else {
+        // User is signed out
+        setUser(null);
+        setUserId(null);
+        setData(null);
+        setShowAuth(true);
       }
-    };
-    
-    // Process recurring expenses when data loads
-    if (data && data.recurringExpenses) {
-      processRecurringExpenses();
+      
+      setAuthLoading(false);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // 🔄 Process Recurring Expenses Function
+  const processRecurringExpenses = async (userData, currentUserId) => {
+    if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
+      return;
     }
+
+    const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
+      userData.recurringExpenses, 
+      userData.transactions || []
+    );
     
-    // Set up --vh for iOS viewport fix
+    if (newTransactions.length > 0) {
+      const updatedData = {
+        ...userData,
+        transactions: [...newTransactions, ...(userData.transactions || [])],
+        recurringExpenses: updatedRecurringExpenses
+      };
+      
+      try {
+        const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
+        await setDoc(docRef, updatedData);
+        setData(updatedData);
+        
+        // Show notification about processed recurring expenses
+        if (newTransactions.length === 1) {
+          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+        } else {
+          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
+        }
+      } catch (error) {
+        console.error('Error processing recurring expenses:', error);
+        showNotification('Error processing recurring transactions', 'error');
+      }
+    }
+  };
+
+  // 🔐 Authentication Functions
+  const handleSignUp = async () => {
+    if (!authForm.email || !authForm.password || !authForm.name) {
+      showNotification('Please fill in all fields', 'error');
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
+      await updateProfile(userCredential.user, { displayName: authForm.name });
+      
+      showNotification(`Welcome ${authForm.name}! Your account has been created.`, 'success');
+      setAuthForm({ email: '', password: '', name: '' });
+    } catch (error) {
+      console.error('Signup error:', error);
+      let errorMessage = 'Failed to create account';
+      
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'An account with this email already exists';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password should be at least 6 characters';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
+  };
+
+  const handleSignIn = async () => {
+    if (!authForm.email || !authForm.password) {
+      showNotification('Please enter email and password', 'error');
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
+      showNotification('Welcome back!', 'success');
+      setAuthForm({ email: '', password: '', name: '' });
+    } catch (error) {
+      console.error('Signin error:', error);
+      let errorMessage = 'Failed to sign in';
+      
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed attempts. Please try again later';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      showNotification('Signed out successfully', 'success');
+    } catch (error) {
+      console.error('Signout error:', error);
+      showNotification('Error signing out', 'error');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setAuthLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      showNotification('Welcome! Signed in with Google.', 'success');
+    } catch (error) {
+      console.error('Google signin error:', error);
+      let errorMessage = 'Failed to sign in with Google';
+      
+      if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'Sign-in cancelled';
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = 'Popup blocked. Please allow popups and try again';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
+  };
+
+  // Set up --vh for iOS viewport fix
+  useEffect(() => {
     const setVH = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
@@ -6269,106 +6406,12 @@ export default function App() {
     window.addEventListener('resize', setVH);
     window.addEventListener('orientationchange', setVH);
     
-    // const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-    //   setUser(user);
-    //   setUserId(user?.uid || null);
-    //   setAuthLoading(false);
-    //   
-    //   if (!user) {
-    //     setLoading(false);
-    //     setData(null);
-    //   }
-    // });
-    // return () => unsubscribeAuth();
-    
     return () => {
       window.removeEventListener('resize', setVH);
       window.removeEventListener('orientationchange', setVH);
     };
   }, []);
 
-  // Authentication Functions
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      setAuthLoading(true);
-      const { user } = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
-      await updateProfile(user, { displayName: authForm.name });
-      
-      // Create initial user data
-      await setDoc(doc(db, 'users', user.uid), {
-        ...initialData,
-        profile: {
-          name: authForm.name,
-          email: authForm.email,
-          createdAt: new Date().toISOString(),
-          subscription: 'free' // Default to free tier
-        }
-      });
-      
-      setShowAuth(false);
-      setAuthForm({ email: '', password: '', name: '' });
-    } catch (error) {
-      console.error('Sign up error:', error);
-      alert(error.message);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    try {
-      setAuthLoading(true);
-      await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
-      setShowAuth(false);
-      setAuthForm({ email: '', password: '', name: '' });
-    } catch (error) {
-      console.error('Sign in error:', error);
-      alert(error.message);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      setAuthLoading(true);
-      const provider = new GoogleAuthProvider();
-      const { user } = await signInWithPopup(auth, provider);
-      
-      // Check if user exists, if not create initial data
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, 'users', user.uid), {
-          ...initialData,
-          profile: {
-            name: user.displayName,
-            email: user.email,
-            createdAt: new Date().toISOString(),
-            subscription: 'free'
-          }
-        });
-      }
-      
-      setShowAuth(false);
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      alert(error.message);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      setData(null);
-      setActiveTab('dashboard');
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
 
   // Firebase Data Loading - DISABLED FOR DEVELOPMENT
   useEffect(() => {
@@ -6472,7 +6515,7 @@ export default function App() {
     }
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       closeCardEditor();
     } catch (error) {
@@ -6755,7 +6798,7 @@ export default function App() {
     const updatedData = { ...data, transactions: updatedTransactions };
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       closeQuickExpense();
       
@@ -6936,134 +6979,6 @@ export default function App() {
 
   const displayData = getDisplayData();
 
-  // Show loading spinner during auth check
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-2xl animate-pulse mb-4">Loading Your Financial Universe...</p>
-          <p className="text-gray-400 text-sm">Connecting to Firebase...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show auth screen if user is not logged in
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="max-w-md w-full mx-auto p-6">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Survive Financial</h1>
-            <p className="text-gray-400">Your journey to financial freedom starts here</p>
-          </div>
-
-          {!showAuth ? (
-            <div className="space-y-4">
-              <button
-                onClick={() => { setShowAuth(true); setAuthMode('login'); }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => { setShowAuth(true); setAuthMode('signup'); }}
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                Create Account
-              </button>
-              <button
-                onClick={handleGoogleSignIn}
-                disabled={authLoading}
-                className="w-full bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Continue with Google
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={authMode === 'login' ? handleSignIn : handleSignUp} className="space-y-4">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-white">
-                  {authMode === 'login' ? 'Welcome Back' : 'Join Survive Financial'}
-                </h2>
-              </div>
-
-              {authMode === 'signup' && (
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={authForm.name}
-                  onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  required
-                />
-              )}
-
-              <input
-                type="email"
-                placeholder="Email"
-                value={authForm.email}
-                onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                required
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-                value={authForm.password}
-                onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                required
-              />
-
-              <button
-                type="submit"
-                disabled={authLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
-              </button>
-
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAuth(false)}
-                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-                  className="flex-1 text-blue-400 hover:text-blue-300 py-2 px-4 rounded-lg transition-colors"
-                >
-                  {authMode === 'login' ? 'Need an account?' : 'Have an account?'}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  if (loading || !data) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-2xl animate-pulse mb-4">Loading Your Financial Data...</p>
-          <p className="text-gray-400 text-sm">Setting up your dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
@@ -7085,6 +7000,100 @@ export default function App() {
         </div>
       )}
       
+      {/* Show loading screen while checking authentication */}
+      {authLoading && (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-300">Loading your financial dashboard...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Show authentication screen if user is not logged in */}
+      {(showAuth || !user) && !authLoading && (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center p-4">
+          <div className="max-w-md w-full">
+            <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-gray-700/50">
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                  Financial Dashboard
+                </h1>
+                <p className="text-gray-400 mt-2">
+                  {authMode === 'login' ? 'Welcome back!' : 'Create your account'}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {authMode === 'signup' && (
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={authForm.name}
+                    onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
+                    className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                )}
+                
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  value={authForm.email}
+                  onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
+                
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={authMode === 'login' ? handleSignIn : handleSignUp}
+                  disabled={authLoading}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+                >
+                  {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
+                </button>
+                
+                <button
+                  onClick={handleGoogleSignIn}
+                  disabled={authLoading}
+                  className="w-full bg-white hover:bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  Continue with Google
+                </button>
+              </div>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+                  className="text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  {authMode === 'login' 
+                    ? "Don't have an account? Sign up" 
+                    : "Already have an account? Sign in"
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Dashboard - Only show when authenticated */}
+      {user && !authLoading && (
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
@@ -7298,18 +7307,21 @@ export default function App() {
           </div>
         </footer>
       </div>
+      )}
 
-      {/* Floating Quick Expense Button */}
-      <button
-        onClick={openQuickExpense}
-        className="floating-quick-btn bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
-        title="Quick Expense Log"
-      >
-        <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
-      </button>
+      {/* Floating Quick Expense Button - Only show when authenticated */}
+      {user && !authLoading && (
+        <>
+          <button
+            onClick={openQuickExpense}
+            className="floating-quick-btn bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
+            title="Quick Expense Log"
+          >
+            <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
+          </button>
 
-      {/* Quick Expense Modal */}
-      {showQuickExpense && (
+          {/* Quick Expense Modal */}
+          {showQuickExpense && (
         <div 
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
           style={{
@@ -7408,6 +7420,8 @@ export default function App() {
             </div>
           </Card>
         </div>
+          )}
+        </>
       )}
 
       {/* Card Editing Modals */}
