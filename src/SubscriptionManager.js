@@ -59,8 +59,8 @@ Add your Stripe secret key to complete integration.`);
 
   const PricingCard = ({ plan, planKey }) => {
     const isCurrentPlan = currentPlan === planKey;
-    const price = billingInterval === 'yearly' ? plan.yearlyPrice : plan.price;
-    const yearlyDiscount = plan.yearlyPrice ? Math.round((1 - plan.yearlyPrice / (plan.price * 12)) * 100) : 0;
+    const price = plan.price;
+    const isFounder = planKey === 'founder';
 
     return (
       <div className={`relative bg-gray-800 rounded-xl p-6 border-2 transition-all duration-200 ${
@@ -88,23 +88,30 @@ Add your Stripe secret key to complete integration.`);
         )}
 
         <div className="text-center mb-6">
-          <h3 className="text-xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            {planKey === 'free' && <Zap className="w-5 h-5 text-yellow-400" />}
-            {planKey === 'backpacker' && <Crown className="w-5 h-5 text-blue-400" />}
-            {planKey === 'entrepreneur' && <Crown className="w-5 h-5 text-purple-400" />}
+          <h3 className="text-xl font-bold text-white mb-1 flex items-center justify-center gap-2">
+            {planKey === 'recon' && <Zap className="w-5 h-5 text-gray-400" />}
+            {planKey === 'climber' && <Crown className="w-5 h-5 text-blue-400" />}
+            {planKey === 'operator' && <Crown className="w-5 h-5 text-purple-400" />}
+            {planKey === 'founder' && <Crown className="w-5 h-5 text-yellow-400" />}
             {plan.name}
           </h3>
+          <p className="text-sm font-medium text-gray-300 mb-2">{plan.identity}</p>
           <p className="text-gray-400 text-sm">{plan.description}</p>
         </div>
 
         <div className="text-center mb-6">
           <div className="flex items-baseline justify-center gap-1">
+            {isFounder && plan.originalPrice && (
+              <span className="text-lg text-gray-400 line-through mr-2">
+                ${plan.originalPrice}
+              </span>
+            )}
             <span className="text-4xl font-bold text-white">${price}</span>
-            <span className="text-gray-400">/{billingInterval === 'yearly' ? 'year' : 'month'}</span>
+            <span className="text-gray-400">/month</span>
           </div>
-          {billingInterval === 'yearly' && plan.yearlyPrice && (
-            <p className="text-green-400 text-sm mt-1">
-              Save {yearlyDiscount}% with annual billing
+          {isFounder && (
+            <p className="text-yellow-400 text-sm mt-1 font-semibold">
+              🔒 Price locked for LIFE
             </p>
           )}
         </div>
