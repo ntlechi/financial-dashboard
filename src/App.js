@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
+import OfflineStatus from './components/OfflineStatus';
+import offlineStorage from './utils/offlineStorage';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -5745,10 +5747,20 @@ export default function App() {
     setUserId('dev-user');
     setAuthLoading(false);
     setLoading(false);
-    
-    // Load initial sample data immediately
-    if (!data) {
-      setData(initialData);
+
+    // Prefer locally saved data if available; otherwise load sample
+    try {
+      const localData = offlineStorage.getLocalData();
+      if (localData) {
+        const { lastSaved, savedOffline, ...userData } = localData;
+        setData(userData);
+      } else if (!data) {
+        setData(initialData);
+      }
+    } catch (_err) {
+      if (!data) {
+        setData(initialData);
+      }
     }
     
     // Set up --vh for iOS viewport fix
@@ -5780,6 +5792,13 @@ export default function App() {
       window.removeEventListener('orientationchange', setVH);
     };
   }, []);
+
+  // Persist data changes locally (works offline)
+  useEffect(() => {
+    if (data) {
+      offlineStorage.saveDataLocally(data);
+    }
+  }, [data]);
 
   // Authentication Functions
   const handleSignUp = async (e) => {
@@ -6548,6 +6567,7 @@ export default function App() {
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
+      <OfflineStatus />
       {/* Notification System */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
