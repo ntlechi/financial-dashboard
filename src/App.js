@@ -21,6 +21,140 @@ const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
+// 🤖 Smart Expense Categorization System
+const expenseCategorizationRules = {
+  housing: [
+    'rent', 'mortgage', 'property tax', 'home insurance', 'hoa', 'utilities', 'electricity', 'gas bill', 
+    'water bill', 'internet', 'cable', 'phone bill', 'maintenance', 'repairs', 'cleaning'
+  ],
+  food: [
+    'grocery', 'groceries', 'supermarket', 'restaurant', 'takeout', 'delivery', 'coffee', 'lunch', 
+    'dinner', 'breakfast', 'food', 'dining', 'uber eats', 'doordash', 'grubhub', 'starbucks'
+  ],
+  transport: [
+    'gas', 'fuel', 'car payment', 'auto loan', 'car insurance', 'parking', 'tolls', 'uber', 'lyft', 
+    'taxi', 'bus', 'train', 'subway', 'metro', 'car wash', 'oil change', 'car repair', 'mechanic'
+  ],
+  entertainment: [
+    'netflix', 'spotify', 'amazon prime', 'disney+', 'hulu', 'movie', 'cinema', 'theater', 'concert', 
+    'game', 'gaming', 'subscription', 'streaming', 'music', 'books', 'hobbies', 'gym', 'fitness'
+  ],
+  healthcare: [
+    'doctor', 'dentist', 'pharmacy', 'medicine', 'prescription', 'hospital', 'medical', 'health insurance', 
+    'copay', 'deductible', 'therapy', 'massage', 'chiropractor', 'optometrist', 'glasses', 'contacts'
+  ],
+  shopping: [
+    'amazon', 'target', 'walmart', 'costco', 'clothing', 'shoes', 'electronics', 'furniture', 
+    'home depot', 'lowes', 'best buy', 'apple store', 'shopping', 'retail'
+  ],
+  business: [
+    'office supplies', 'software', 'saas', 'hosting', 'domain', 'marketing', 'advertising', 'business lunch', 
+    'conference', 'training', 'professional development', 'legal', 'accounting', 'consulting'
+  ]
+};
+
+// 🎯 Auto-categorize expense based on description
+const categorizeExpense = (description) => {
+  const desc = description.toLowerCase();
+  
+  for (const [category, keywords] of Object.entries(expenseCategorizationRules)) {
+    if (keywords.some(keyword => desc.includes(keyword))) {
+      return {
+        category: 'personal', // Default to personal, can be changed manually
+        subcategory: category
+      };
+    }
+  }
+  
+  // Default categorization
+  return {
+    category: 'personal',
+    subcategory: 'other'
+  };
+};
+
+// 📅 Recurring Expense Utilities
+const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, lastProcessed) => {
+  const lastDate = new Date(lastProcessed);
+  let nextDate = new Date(lastDate);
+  
+  switch (frequency) {
+    case 'weekly':
+      nextDate.setDate(lastDate.getDate() + 7);
+      break;
+    case 'monthly':
+      nextDate.setMonth(lastDate.getMonth() + 1);
+      nextDate.setDate(dayOfMonth);
+      break;
+    case 'yearly':
+      nextDate.setFullYear(lastDate.getFullYear() + 1);
+      nextDate.setMonth(monthOfYear - 1); // monthOfYear is 1-12, setMonth expects 0-11
+      nextDate.setDate(dayOfMonth);
+      break;
+    default:
+      nextDate.setMonth(lastDate.getMonth() + 1);
+  }
+  
+  return nextDate.toISOString().split('T')[0];
+};
+
+// 🔄 Process Due Recurring Expenses
+const processDueRecurringExpenses = (recurringExpenses, existingTransactions) => {
+  const today = new Date();
+  const newTransactions = [];
+  const updatedRecurringExpenses = [];
+  
+  recurringExpenses.forEach(recurring => {
+    if (!recurring.isActive) {
+      updatedRecurringExpenses.push(recurring);
+      return;
+    }
+    
+    const dueDate = new Date(recurring.nextDueDate);
+    
+    // Check if the recurring expense is due (due date is today or in the past)
+    if (dueDate <= today) {
+      // Create new transaction
+      const transaction = {
+        id: Date.now() + Math.random(), // Ensure unique ID
+        date: recurring.nextDueDate,
+        description: recurring.description,
+        amount: recurring.type === 'expense' ? -Math.abs(recurring.amount) : Math.abs(recurring.amount),
+        type: recurring.type,
+        category: recurring.category,
+        subcategory: recurring.subcategory,
+        isRecurring: true,
+        recurringId: recurring.id,
+        tags: recurring.tags || []
+      };
+      
+      newTransactions.push(transaction);
+      
+      // Update recurring expense with new next due date
+      const updatedRecurring = {
+        ...recurring,
+        lastProcessed: recurring.nextDueDate,
+        nextDueDate: calculateNextDueDate(
+          recurring.frequency,
+          recurring.dayOfMonth,
+          recurring.dayOfWeek,
+          recurring.monthOfYear,
+          recurring.nextDueDate
+        )
+      };
+      
+      updatedRecurringExpenses.push(updatedRecurring);
+    } else {
+      updatedRecurringExpenses.push(recurring);
+    }
+  });
+  
+  return {
+    newTransactions,
+    updatedRecurringExpenses
+  };
+};
+
 const initialData = {
   financialFreedom: {
     targetAmount: 2000000,
@@ -280,6 +414,59 @@ const initialData = {
     { id: 8, date: '2025-01-10', description: 'Dividend Payment', amount: 500, type: 'income', category: 'personal', subcategory: 'investment' },
     { id: 9, date: '2025-01-10', description: 'Coffee Shop', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
     { id: 10, date: '2025-01-09', description: 'Business Lunch', amount: -75, type: 'expense', category: 'business', subcategory: 'meals' },
+  ],
+  recurringExpenses: [
+    {
+      id: 1,
+      description: 'Rent Payment',
+      amount: 2500,
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'housing',
+      frequency: 'monthly', // monthly, weekly, yearly
+      dayOfMonth: 1, // For monthly: day of month (1-31)
+      dayOfWeek: null, // For weekly: day of week (0-6, 0=Sunday)
+      monthOfYear: null, // For yearly: month (1-12)
+      isActive: true,
+      nextDueDate: '2025-02-01',
+      lastProcessed: '2025-01-01',
+      createdDate: '2024-12-01',
+      tags: ['essential', 'housing']
+    },
+    {
+      id: 2,
+      description: 'Netflix Subscription',
+      amount: 15.99,
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'entertainment',
+      frequency: 'monthly',
+      dayOfMonth: 5,
+      dayOfWeek: null,
+      monthOfYear: null,
+      isActive: true,
+      nextDueDate: '2025-02-05',
+      lastProcessed: '2025-01-05',
+      createdDate: '2024-11-05',
+      tags: ['subscription', 'entertainment']
+    },
+    {
+      id: 3,
+      description: 'Car Insurance',
+      amount: 150,
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'transport',
+      frequency: 'monthly',
+      dayOfMonth: 15,
+      dayOfWeek: null,
+      monthOfYear: null,
+      isActive: true,
+      nextDueDate: '2025-02-15',
+      lastProcessed: '2025-01-15',
+      createdDate: '2024-10-15',
+      tags: ['insurance', 'essential']
+    }
   ],
   monthlyHistory: [
     { 
@@ -3974,7 +4161,12 @@ const TransactionsTab = ({ data, setData, userId }) => {
     type: 'expense',
     category: 'personal',
     subcategory: '',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    isRecurring: false,
+    frequency: 'monthly',
+    dayOfMonth: 1,
+    dayOfWeek: 1,
+    monthOfYear: 1
   });
 
   const subcategoryOptions = {
@@ -3991,14 +4183,56 @@ const TransactionsTab = ({ data, setData, userId }) => {
   const handleAddTransaction = async () => {
     if (!newTransaction.description || !newTransaction.amount) return;
     
+    // Auto-categorize if subcategory is empty
+    let finalTransaction = { ...newTransaction };
+    if (!finalTransaction.subcategory || finalTransaction.subcategory === '') {
+      const autoCategory = categorizeExpense(finalTransaction.description);
+      finalTransaction.category = autoCategory.category;
+      finalTransaction.subcategory = autoCategory.subcategory;
+    }
+    
     const transaction = {
       id: Date.now(),
-      ...newTransaction,
-      amount: newTransaction.type === 'expense' ? -Math.abs(parseFloat(newTransaction.amount)) : Math.abs(parseFloat(newTransaction.amount))
+      ...finalTransaction,
+      amount: finalTransaction.type === 'expense' ? -Math.abs(parseFloat(finalTransaction.amount)) : Math.abs(parseFloat(finalTransaction.amount)),
+      isRecurring: false // Regular transaction, not from recurring
     };
     
+    let updatedData = { ...data };
+    
+    // Add the transaction
     const updatedTransactions = [transaction, ...data.transactions];
-    const updatedData = { ...data, transactions: updatedTransactions };
+    updatedData.transactions = updatedTransactions;
+    
+    // If this is a recurring expense, add it to recurring expenses
+    if (finalTransaction.isRecurring) {
+      const recurringExpense = {
+        id: Date.now() + 1, // Different ID from transaction
+        description: finalTransaction.description,
+        amount: parseFloat(finalTransaction.amount),
+        type: finalTransaction.type,
+        category: finalTransaction.category,
+        subcategory: finalTransaction.subcategory,
+        frequency: finalTransaction.frequency,
+        dayOfMonth: finalTransaction.dayOfMonth,
+        dayOfWeek: finalTransaction.dayOfWeek,
+        monthOfYear: finalTransaction.monthOfYear,
+        isActive: true,
+        nextDueDate: calculateNextDueDate(
+          finalTransaction.frequency,
+          finalTransaction.dayOfMonth,
+          finalTransaction.dayOfWeek,
+          finalTransaction.monthOfYear,
+          finalTransaction.date
+        ),
+        lastProcessed: finalTransaction.date,
+        createdDate: finalTransaction.date,
+        tags: ['user-created']
+      };
+      
+      const updatedRecurringExpenses = [...(data.recurringExpenses || []), recurringExpense];
+      updatedData.recurringExpenses = updatedRecurringExpenses;
+    }
     
     try {
       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
@@ -4009,7 +4243,12 @@ const TransactionsTab = ({ data, setData, userId }) => {
         type: 'expense',
         category: 'personal',
         subcategory: '',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        isRecurring: false,
+        frequency: 'monthly',
+        dayOfMonth: 1,
+        dayOfWeek: 1,
+        monthOfYear: 1
       });
       setShowAddForm(false);
     } catch (error) {
@@ -4272,58 +4511,179 @@ const TransactionsTab = ({ data, setData, userId }) => {
             </button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Description"
-              value={newTransaction.description}
-              onChange={(e) => setNewTransaction({...newTransaction, description: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            />
-            
-            <input
-              type="number"
-              placeholder="Amount"
-              value={newTransaction.amount || ''}
-              onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? '' : e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            />
-            
-            <select
-              value={newTransaction.type}
-              onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-            >
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-            
-            <select
-              value={newTransaction.category}
-              onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-            >
-              <option value="personal">Personal</option>
-              <option value="business">Business</option>
-            </select>
-            
-            <select
-              value={newTransaction.subcategory}
-              onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-            >
-              <option value="">Select Subcategory</option>
-              {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
-                <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
-              ))}
-            </select>
-            
-            <input
-              type="date"
-              value={newTransaction.date}
-              onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            />
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Description (e.g., Netflix, Rent, Groceries)"
+                value={newTransaction.description}
+                onChange={(e) => {
+                  const newDesc = e.target.value;
+                  setNewTransaction({...newTransaction, description: newDesc});
+                  
+                  // Auto-suggest category as user types
+                  if (newDesc && !newTransaction.subcategory) {
+                    const autoCategory = categorizeExpense(newDesc);
+                    setNewTransaction(prev => ({
+                      ...prev, 
+                      description: newDesc,
+                      category: autoCategory.category,
+                      subcategory: autoCategory.subcategory
+                    }));
+                  }
+                }}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <input
+                type="number"
+                placeholder="Amount"
+                value={newTransaction.amount || ''}
+                onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? '' : e.target.value})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <select
+                value={newTransaction.type}
+                onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="expense">💸 Expense</option>
+                <option value="income">💰 Income</option>
+              </select>
+              
+              <select
+                value={newTransaction.category}
+                onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="personal">👤 Personal</option>
+                <option value="business">🏢 Business</option>
+              </select>
+              
+              <select
+                value={newTransaction.subcategory}
+                onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="">🤖 Auto-categorize</option>
+                {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
+                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                ))}
+              </select>
+              
+              <input
+                type="date"
+                value={newTransaction.date}
+                onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+
+            {/* 🔄 Recurring Expense Section */}
+            <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
+              <div className="flex items-center gap-3 mb-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newTransaction.isRecurring}
+                    onChange={(e) => setNewTransaction({...newTransaction, isRecurring: e.target.checked})}
+                    className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
+                  />
+                  <span className="text-white font-semibold">🔄 Make this a recurring {newTransaction.type}</span>
+                </label>
+              </div>
+              
+              {newTransaction.isRecurring && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+                  <select
+                    value={newTransaction.frequency}
+                    onChange={(e) => setNewTransaction({...newTransaction, frequency: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                  >
+                    <option value="weekly">📅 Weekly</option>
+                    <option value="monthly">🗓️ Monthly</option>
+                    <option value="yearly">📆 Yearly</option>
+                  </select>
+                  
+                  {newTransaction.frequency === 'weekly' && (
+                    <select
+                      value={newTransaction.dayOfWeek}
+                      onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: parseInt(e.target.value)})}
+                      className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                    >
+                      <option value={0}>Sunday</option>
+                      <option value={1}>Monday</option>
+                      <option value={2}>Tuesday</option>
+                      <option value={3}>Wednesday</option>
+                      <option value={4}>Thursday</option>
+                      <option value={5}>Friday</option>
+                      <option value={6}>Saturday</option>
+                    </select>
+                  )}
+                  
+                  {newTransaction.frequency === 'monthly' && (
+                    <select
+                      value={newTransaction.dayOfMonth}
+                      onChange={(e) => setNewTransaction({...newTransaction, dayOfMonth: parseInt(e.target.value)})}
+                      className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                    >
+                      {Array.from({length: 31}, (_, i) => (
+                        <option key={i+1} value={i+1}>Day {i+1}</option>
+                      ))}
+                    </select>
+                  )}
+                  
+                  {newTransaction.frequency === 'yearly' && (
+                    <>
+                      <select
+                        value={newTransaction.monthOfYear}
+                        onChange={(e) => setNewTransaction({...newTransaction, monthOfYear: parseInt(e.target.value)})}
+                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      >
+                        <option value={1}>January</option>
+                        <option value={2}>February</option>
+                        <option value={3}>March</option>
+                        <option value={4}>April</option>
+                        <option value={5}>May</option>
+                        <option value={6}>June</option>
+                        <option value={7}>July</option>
+                        <option value={8}>August</option>
+                        <option value={9}>September</option>
+                        <option value={10}>October</option>
+                        <option value={11}>November</option>
+                        <option value={12}>December</option>
+                      </select>
+                      <select
+                        value={newTransaction.dayOfMonth}
+                        onChange={(e) => setNewTransaction({...newTransaction, dayOfMonth: parseInt(e.target.value)})}
+                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      >
+                        {Array.from({length: 31}, (_, i) => (
+                          <option key={i+1} value={i+1}>Day {i+1}</option>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </div>
+              )}
+              
+              {newTransaction.isRecurring && (
+                <div className="mt-3 p-3 bg-blue-800/20 rounded-lg text-sm text-blue-200">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Repeat className="w-4 h-4" />
+                    <span className="font-semibold">Automation Preview:</span>
+                  </div>
+                  <div>
+                    This {newTransaction.type} will automatically be added every{' '}
+                    {newTransaction.frequency === 'weekly' && `week on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]}`}
+                    {newTransaction.frequency === 'monthly' && `month on day ${newTransaction.dayOfMonth}`}
+                    {newTransaction.frequency === 'yearly' && `year on ${['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][newTransaction.monthOfYear]} ${newTransaction.dayOfMonth}`}
+                    . You can manage all recurring {newTransaction.type}s in the Transactions tab.
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="mt-4 flex justify-end gap-2">
@@ -4339,6 +4699,115 @@ const TransactionsTab = ({ data, setData, userId }) => {
             >
               Add Transaction
             </button>
+          </div>
+        </Card>
+      )}
+
+      {/* Recurring Expenses Management */}
+      {data.recurringExpenses && data.recurringExpenses.length > 0 && (
+        <Card className="border-purple-500/30">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Repeat className="w-6 h-6 text-purple-400" />
+                Recurring {data.recurringExpenses.filter(r => r.type === 'expense').length > 0 ? 'Expenses' : 'Income'} 
+                ({data.recurringExpenses.filter(r => r.isActive).length} active)
+              </h3>
+              <p className="text-gray-400">Automatically processed transactions</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data.recurringExpenses.map(recurring => (
+              <div key={recurring.id} className={`p-4 rounded-lg border-2 ${
+                recurring.isActive 
+                  ? 'bg-purple-900/20 border-purple-500/30' 
+                  : 'bg-gray-800/50 border-gray-600/30'
+              }`}>
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-semibold text-white">{recurring.description}</h4>
+                    <p className={`text-lg font-bold ${
+                      recurring.type === 'expense' ? 'text-red-400' : 'text-green-400'
+                    }`}>
+                      {recurring.type === 'expense' ? '-' : '+'}${recurring.amount.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className={`px-2 py-1 rounded text-xs font-semibold ${
+                    recurring.isActive 
+                      ? 'bg-green-600/20 text-green-400' 
+                      : 'bg-gray-600/20 text-gray-400'
+                  }`}>
+                    {recurring.isActive ? 'Active' : 'Paused'}
+                  </div>
+                </div>
+                
+                <div className="space-y-1 text-sm text-gray-300">
+                  <div className="flex justify-between">
+                    <span>Frequency:</span>
+                    <span className="capitalize">{recurring.frequency}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Next Due:</span>
+                    <span className="text-purple-300">{new Date(recurring.nextDueDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Category:</span>
+                    <span className="capitalize">{recurring.subcategory}</span>
+                  </div>
+                </div>
+                
+                {recurring.tags && recurring.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {recurring.tags.map(tag => (
+                      <span key={tag} className="px-2 py-1 bg-gray-700/50 text-xs text-gray-300 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                
+                <div className="mt-3 flex justify-between items-center">
+                  <button
+                    onClick={async () => {
+                      const updatedRecurring = data.recurringExpenses.map(r => 
+                        r.id === recurring.id ? { ...r, isActive: !r.isActive } : r
+                      );
+                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
+                      try {
+                        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+                        setData(updatedData);
+                      } catch (error) {
+                        console.error('Error updating recurring expense:', error);
+                      }
+                    }}
+                    className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
+                      recurring.isActive
+                        ? 'bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30'
+                        : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
+                    }`}
+                  >
+                    {recurring.isActive ? 'Pause' : 'Resume'}
+                  </button>
+                  
+                  <button
+                    onClick={async () => {
+                      const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
+                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
+                      try {
+                        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+                        setData(updatedData);
+                      } catch (error) {
+                        console.error('Error deleting recurring expense:', error);
+                      }
+                    }}
+                    className="px-3 py-1 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       )}
@@ -5751,6 +6220,43 @@ export default function App() {
       setData(initialData);
     }
     
+    // 🔄 Process recurring expenses on app load
+    const processRecurringExpenses = async () => {
+      if (data && data.recurringExpenses && data.recurringExpenses.length > 0) {
+        const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
+          data.recurringExpenses, 
+          data.transactions || []
+        );
+        
+        if (newTransactions.length > 0) {
+          const updatedData = {
+            ...data,
+            transactions: [...newTransactions, ...(data.transactions || [])],
+            recurringExpenses: updatedRecurringExpenses
+          };
+          
+          try {
+            await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+            setData(updatedData);
+            
+            // Show notification about processed recurring expenses
+            if (newTransactions.length === 1) {
+              showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+            } else {
+              showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
+            }
+          } catch (error) {
+            console.error('Error processing recurring expenses:', error);
+          }
+        }
+      }
+    };
+    
+    // Process recurring expenses when data loads
+    if (data && data.recurringExpenses) {
+      processRecurringExpenses();
+    }
+    
     // Set up --vh for iOS viewport fix
     const setVH = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
@@ -6069,6 +6575,18 @@ export default function App() {
           ...t,
           date: resetStartDate
         })),
+        recurringExpenses: initialData.recurringExpenses.map(r => ({
+          ...r,
+          nextDueDate: calculateNextDueDate(
+            r.frequency,
+            r.dayOfMonth,
+            r.dayOfWeek,
+            r.monthOfYear,
+            resetStartDate
+          ),
+          lastProcessed: resetStartDate,
+          createdDate: resetStartDate
+        })),
         history: [{
           month: resetStartDate.substring(0, 7),
           netWorth: initialData.netWorth.total,
@@ -6161,6 +6679,7 @@ export default function App() {
           monthlyData: []
         },
         transactions: [],
+        recurringExpenses: [],
         history: [{
           month: resetStartDate.substring(0, 7),
           netWorth: 0,
