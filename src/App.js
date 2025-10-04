@@ -16,9 +16,8 @@ import {
   onAuthStateChanged,
   updateProfile 
 } from "firebase/auth";
-import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
@@ -245,28 +244,6 @@ const initialData = {
         isUSStock: false,
         withholdingTax: 0, // No withholding tax on crypto
         currency: 'USD'
-      }
-    ]
-  },
-  registeredAccounts: {
-    accounts: [
-      {
-        id: 'tfsa',
-        name: 'TFSA',
-        contributed: 45000,
-        limit: 88000,
-        goal: 88000,
-        type: 'tax-free',
-        description: 'Tax-free growth and withdrawals'
-      },
-      {
-        id: 'rrsp', 
-        name: 'RRSP',
-        contributed: 25000,
-        limit: 31560,
-        goal: 31560,
-        type: 'tax-deferred',
-        description: 'Tax-deferred retirement savings'
       }
     ]
   },
@@ -656,7 +633,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
     return 'Poor';
   };
 
-  const getScoreProgress = (score) => (score / 850) * 100;
+  // const getScoreProgress = (score) => (score / 850) * 100; // Currently unused
 
   // Create line chart for credit score history
   useEffect(() => {
@@ -2973,7 +2950,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stop-opacity", 0.1);
       
       // Add axes with responsive formatting
-      const xAxis = g.append("g")
+      g.append("g")
         .attr("transform", `translate(0,${chartHeight})`)
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")).ticks(data_parsed.length))
         .selectAll("text")
@@ -5708,7 +5685,7 @@ export default function App() {
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
+  const [userPlan] = useState('free'); // setUserPlan available for future premium features
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -5731,14 +5708,14 @@ export default function App() {
     date: new Date().toISOString().split('T')[0]
   });
 
-  // User feedback system
-  const [isLoading, setIsLoading] = useState(false);
-  const [notification, setNotification] = useState(null);
-  
-  const showNotification = (message, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
-  };
+  // User feedback system - available for future features
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [notification, setNotification] = useState(null);
+  // 
+  // const showNotification = (message, type = 'success') => {
+  //   setNotification({ message, type });
+  //   setTimeout(() => setNotification(null), 3000);
+  // };
 
   // Authentication Effect
   useEffect(() => {
