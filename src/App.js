@@ -7004,8 +7004,8 @@ export default function App() {
       {authLoading && (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-300">Loading your financial dashboard...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+            <p className="text-amber-200">Loading The Freedom Compass...</p>
           </div>
         </div>
       )}
@@ -7014,13 +7014,13 @@ export default function App() {
       {(showAuth || !user) && !authLoading && (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center p-4">
           <div className="max-w-md w-full">
-            <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-gray-700/50">
+            <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-amber-500/30 shadow-lg shadow-amber-500/10">
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                  Financial Dashboard
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent flex items-center justify-center gap-2">
+                  🧭 The Freedom Compass
                 </h1>
-                <p className="text-gray-400 mt-2">
-                  {authMode === 'login' ? 'Welcome back!' : 'Create your account'}
+                <p className="text-amber-200 mt-2">
+                  {authMode === 'login' ? 'Navigate back to your financial freedom' : 'Start your journey to financial independence'}
                 </p>
               </div>
 
@@ -7031,7 +7031,7 @@ export default function App() {
                     placeholder="Full Name"
                     value={authForm.name}
                     onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                    className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
                   />
                 )}
                 
@@ -7040,7 +7040,7 @@ export default function App() {
                   placeholder="Email Address"
                   value={authForm.email}
                   onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
                 />
                 
                 <input
@@ -7048,7 +7048,7 @@ export default function App() {
                   placeholder="Password"
                   value={authForm.password}
                   onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
                 />
               </div>
 
@@ -7056,7 +7056,7 @@ export default function App() {
                 <button
                   onClick={authMode === 'login' ? handleSignIn : handleSignUp}
                   disabled={authLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+                  className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
                 >
                   {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
                 </button>
@@ -7079,7 +7079,7 @@ export default function App() {
               <div className="mt-6 text-center">
                 <button
                   onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-                  className="text-blue-400 hover:text-blue-300 transition-colors"
+                  className="text-amber-400 hover:text-amber-300 transition-colors"
                 >
                   {authMode === 'login' 
                     ? "Don't have an account? Sign up" 
@@ -7098,8 +7098,8 @@ export default function App() {
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
-              <p className="text-gray-400 text-lg">Welcome back, {user?.displayName || 'Entrepreneur'}! Here's your {viewMode} snapshot.</p>
+              <h1 className="text-4xl font-bold text-white flex items-center gap-3">🧭 The Freedom Compass</h1>
+              <p className="text-amber-200 text-lg">Welcome back, {user?.displayName || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
             </div>
             
             {/* User Profile Section */}
