@@ -1,4 +1,4 @@
-# Financial Dashboard
+# The Freedom Compass App
 
 A comprehensive React-based financial dashboard with Firebase backend and Vercel deployment support. Track your net worth, income, expenses, investments, and budget with a modern, responsive interface.
 

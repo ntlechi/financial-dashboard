@@ -6607,8 +6607,8 @@ export default function App() {
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
-              <p className="text-gray-400 text-lg">Welcome back, {user?.displayName || 'Entrepreneur'}! Here's your {viewMode} snapshot.</p>
+              <h1 className="text-4xl font-bold text-white">The Freedom Compass App</h1>
+              <p className="text-gray-400 text-lg">Welcome back, {user?.displayName || 'Financial Navigator'}! Here's your {viewMode} snapshot.</p>
             </div>
             
             {/* User Profile Section */}

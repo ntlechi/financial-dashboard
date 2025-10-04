@@ -1,8 +1,8 @@
 {
-  "name": "financial-dashboard",
+  "name": "freedom-compass-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Personal financial dashboard with budget tracking",
+  "description": "The Freedom Compass App - Your financial training ground for building wealth and discipline",
   "dependencies": {
     "@stripe/stripe-js": "^7.8.0",
     "d3": "^7.9.0",
