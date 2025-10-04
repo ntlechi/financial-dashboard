@@ -11,13 +11,13 @@ import {
   createUserWithEmailAndPassword, 
   signInWithPopup, 
   GoogleAuthProvider,
+  signInAnonymously,
   signOut, 
   onAuthStateChanged,
   updateProfile 
 } from "firebase/auth";
-import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
@@ -244,28 +244,6 @@ const initialData = {
         isUSStock: false,
         withholdingTax: 0, // No withholding tax on crypto
         currency: 'USD'
-      }
-    ]
-  },
-  registeredAccounts: {
-    accounts: [
-      {
-        id: 'tfsa',
-        name: 'TFSA',
-        contributed: 45000,
-        limit: 88000,
-        goal: 88000,
-        type: 'tax-free',
-        description: 'Tax-free growth and withdrawals'
-      },
-      {
-        id: 'rrsp', 
-        name: 'RRSP',
-        contributed: 25000,
-        limit: 31560,
-        goal: 31560,
-        type: 'tax-deferred',
-        description: 'Tax-deferred retirement savings'
       }
     ]
   },
@@ -655,7 +633,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
     return 'Poor';
   };
 
-  const getScoreProgress = (score) => (score / 850) * 100;
+  // const getScoreProgress = (score) => (score / 850) * 100; // Currently unused
 
   // Create line chart for credit score history
   useEffect(() => {
@@ -2972,7 +2950,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stop-opacity", 0.1);
       
       // Add axes with responsive formatting
-      const xAxis = g.append("g")
+      g.append("g")
         .attr("transform", `translate(0,${chartHeight})`)
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")).ticks(data_parsed.length))
         .selectAll("text")
@@ -3170,8 +3148,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     });
     setShowAddHolding(false);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -3195,8 +3173,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -3219,8 +3197,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -3263,8 +3241,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     setData(updatedData);
     setEditingHolding(null);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase if user is authenticated
+    if (userId && auth.currentUser) {
       try {
         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
@@ -5700,14 +5678,14 @@ export default function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  // AUTHENTICATION DISABLED FOR DEVELOPMENT - QUICK ACCESS
-  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User' });
+  // Authentication state
+  const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
+  const [userPlan] = useState('free'); // setUserPlan available for future premium features
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -5731,7 +5709,6 @@ export default function App() {
   });
 
   // User feedback system
-  const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   
   const showNotification = (message, type = 'success') => {
@@ -5739,19 +5716,60 @@ export default function App() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-    // Authentication Effect - DISABLED FOR DEVELOPMENT
+  // Authentication Effect
   useEffect(() => {
-    // Skip Firebase auth - use mock user
-    setUserId('dev-user');
-    setAuthLoading(false);
-    setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setAuthLoading(true);
+      
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        setUserId(firebaseUser.uid);
+        
+        // Load user data from Firestore
+        try {
+          const userDocRef = doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${firebaseUser.uid}/financials`, 'data');
+          const userDoc = await getDoc(userDocRef);
+          
+          if (userDoc.exists()) {
+            setData(userDoc.data());
+          } else {
+            // First time user - initialize with sample data
+            setData(initialData);
+            // Save initial data to Firestore
+            await setDoc(userDocRef, initialData);
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+          setData(initialData);
+        }
+      } else {
+        // User not authenticated
+        setUser(null);
+        setUserId(null);
+        setData(null);
+      }
+      
+      setAuthLoading(false);
+      setLoading(false);
+    });
     
-    // Load initial sample data immediately
-    if (!data) {
-      setData(initialData);
+    return () => unsubscribe();
+  }, []);
+
+  // Auto sign-in anonymously if no user after loading
+  useEffect(() => {
+    if (!user && !authLoading && !loading) {
+      // Auto sign-in anonymously for immediate access
+      signInAnonymously(auth).catch((error) => {
+        console.error('Anonymous sign-in failed:', error);
+        // Fallback to local data
+        setData(initialData);
+      });
     }
-    
-    // Set up --vh for iOS viewport fix
+  }, [user, authLoading, loading]);
+
+  // Set up --vh for iOS viewport fix
+  useEffect(() => {
     const setVH = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
@@ -5762,18 +5780,6 @@ export default function App() {
     // Update --vh on resize (orientation change, etc.)
     window.addEventListener('resize', setVH);
     window.addEventListener('orientationchange', setVH);
-    
-    // const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-    //   setUser(user);
-    //   setUserId(user?.uid || null);
-    //   setAuthLoading(false);
-    //   
-    //   if (!user) {
-    //     setLoading(false);
-    //     setData(null);
-    //   }
-    // });
-    // return () => unsubscribeAuth();
     
     return () => {
       window.removeEventListener('resize', setVH);
