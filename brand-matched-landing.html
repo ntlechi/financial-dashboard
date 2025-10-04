@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Freedom Compass App - Survive Backpacking</title>
+    <meta name="description" content="From the creator of Survive Backpacking - The Freedom Compass App. Your financial training ground for building wealth through discipline.">
+    
+    <!-- Google Fonts - Matching your site exactly -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@700;800;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Matching your exact color scheme */
+        :root {
+            --primary-color: #f59e0b;
+            --background-dark: #111827;
+            --text-light: #e5e7eb;
+            --text-gray: #9a9ca0;
+            --accent-dark: #1f2937;
+        }
+        
+        body {
+            font-family: 'Lora', serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1.7em;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+        
+        h1 { font-size: 4rem; line-height: 1.4em; }
+        h2 { font-size: 2.125rem; line-height: 1.3em; }
+        h3 { font-size: 1.5rem; font-weight: 900; line-height: 1.3em; }
+        
+        a { color: var(--text-light); text-decoration: none; transition: color 0.3s; }
+        a:hover { color: var(--primary-color); }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Header matching your site */
+        .header {
+            background-color: var(--background-dark);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.1);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Hero section with your storytelling approach */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--background-dark) 0%, #1f2937 50%, #374151 100%);
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23f59e0b" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23f59e0b" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="%23f59e0b" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .story-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--background-dark);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .hero h1 {
+            margin-bottom: 30px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        /* Story section matching your narrative style */
+        .story-section {
+            padding: 80px 0;
+            background-color: var(--background-dark);
+        }
+        
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .story-intro {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 40px;
+        }
+        
+        /* Features with your clean, professional style */
+        .features {
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--background-dark) 0%, #1f2937 100%);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px 30px;
+            border-radius: 10px;
+            border: 1px solid rgba(229, 231, 235, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        /* CTA section with your authentic voice */
+        .cta-section {
+            padding: 80px 0;
+            background-color: var(--background-dark);
+            text-align: center;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--background-dark);
+            padding: 18px 40px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .cta-button:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+        
+        .cta-secondary {
+            background: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--text-light);
+        }
+        
+        .cta-secondary:hover {
+            background: var(--text-light);
+            color: var(--background-dark);
+        }
+        
+        /* Footer matching your site */
+        .footer {
+            background-color: var(--background-dark);
+            padding: 40px 0;
+            border-top: 1px solid rgba(229, 231, 235, 0.1);
+            text-align: center;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .hero { padding: 60px 0; }
+            .nav-links { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header matching your site style -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">Survive Backpacking</div>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="#app">The App</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="app">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Story Badge matching your narrative -->
+                <div class="story-badge">
+                    This is a "Building Back Up" Tool
+                </div>
+                
+                <h1>The Freedom Compass App</h1>
+                
+                <p class="hero-subtitle">
+                    From the creator of Survive Backpacking comes your <strong>financial training ground</strong>. 
+                    Master your money through discipline, not automation. Manual entry builds wealth.
+                </p>
+                
+                <div style="margin: 40px 0;">
+                    <a href="https://financial-dashboard-git-main-koadevs-projects-bf36f028.vercel.app/" class="cta-button">
+                        Start Your Financial Journey
+                    </a>
+                    <a href="#story" class="cta-button cta-secondary">
+                        Read My Story
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section - Matching your authentic voice -->
+    <section class="story-section" id="story">
+        <div class="container">
+            <div class="story-content">
+                <h2>This Isn't About Success. Not Yet, Anyway.</h2>
+                
+                <div class="story-intro">
+                    <p>After losing everything I built to a scam, I had two choices: stay down or fight back.</p>
+                    
+                    <p>I chose to fight. And I chose to build in public.</p>
+                    
+                    <p><strong>The Freedom Compass App</strong> is part of that comeback story. It's the financial tool I wish I had when I was starting over - one that builds discipline through manual entry, creates awareness through conscious tracking, and develops the habits that actually create wealth.</p>
+                    
+                    <p>This isn't another automated financial app. This is your <strong>training ground</strong>.</p>
+                    
+                    <p>Every manual entry builds discipline. Every budget creates awareness. Every goal tracked becomes reality.</p>
+                </div>
+                
+                <!-- Founder's Circle Offer -->
+                <div style="background: rgba(245, 158, 11, 0.1); padding: 40px; border-radius: 15px; border: 2px solid var(--primary-color); margin: 50px 0;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 20px;">👑 Join the First 100 Founders</h3>
+                    <p style="font-size: 1.2rem; margin-bottom: 20px;">
+                        Get lifetime access to the full app for <strong style="color: var(--primary-color);">$7.49/month</strong> (normally $14.99). 
+                        Price locked forever. Only 77 spots remaining.
+                    </p>
+                    <a href="https://financial-dashboard-git-main-koadevs-projects-bf36f028.vercel.app/" class="cta-button">
+                        Claim Your Founder's Circle Spot
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 20px;">Built for Financial Mastery</h2>
+            <p style="text-align: center; color: var(--text-gray); font-size: 1.1rem; margin-bottom: 50px;">
+                Every feature designed to build the habits that create wealth
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Build Awareness</h3>
+                    <p>Manual entry creates financial consciousness. You become aware of every dollar flowing through your life.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💪</div>
+                    <h3>Develop Discipline</h3>
+                    <p>Conscious tracking builds wealth-creating habits. Every entry is a moment of financial mindfulness.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Track Progress</h3>
+                    <p>Set goals, track budgets, manage investments. See your financial freedom journey unfold in real-time.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Own Your Data</h3>
+                    <p>Complete control over your financial information. No bank connections, no data selling, no compromises.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Scale Your Income</h3>
+                    <p>Track side hustles, manage multiple income streams, and build your financial empire systematically.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Freedom Lifestyle</h3>
+                    <p>Travel budgeting, multi-currency support, and tools for the location-independent lifestyle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="margin-bottom: 30px;">Ready to Build Your Financial Foundation?</h2>
+            <p style="font-size: 1.2rem; color: var(--text-gray); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Join me and the first 100 founders in building financial freedom through discipline, awareness, and smart money habits.
+            </p>
+            
+            <div>
+                <a href="https://financial-dashboard-git-main-koadevs-projects-bf36f028.vercel.app/" class="cta-button">
+                    👑 Join Founder's Circle - $7.49/mo
+                </a>
+                <a href="https://financial-dashboard-git-main-koadevs-projects-bf36f028.vercel.app/" class="cta-button cta-secondary">
+                    Try Free Version
+                </a>
+            </div>
+            
+            <p style="margin-top: 30px; color: var(--text-gray); font-size: 0.9rem;">
+                🔒 30-day money-back guarantee • Cancel anytime<br>
+                ⚡ Limited to first 100 founders • Price locked for life
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer matching your site -->
+    <footer class="footer">
+        <div class="container">
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">Survive Backpacking</div>
+                <p style="color: var(--text-gray); margin-bottom: 20px;">Building a life of freedom in public, one tool at a time.</p>
+            </div>
+            
+            <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; flex-wrap: wrap;">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/blog">Blog</a>
+                <a href="mailto:janara@survivebackpacking.com">Contact</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#terms">Terms</a>
+            </div>
+            
+            <p style="color: var(--text-gray); font-size: 0.9rem;">
+                © 2025 Survive Backpacking. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
