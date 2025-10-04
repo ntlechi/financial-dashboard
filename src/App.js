@@ -3,6 +3,9 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
+import UpgradePrompt from './components/UpgradePrompt';
+import FounderCircleOffer from './components/FounderCircleOffer';
+import { hasFeatureAccess, hasDashboardCardAccess, getUserPlan } from './utils/featureAccess';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -5701,13 +5704,16 @@ export default function App() {
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
   // AUTHENTICATION DISABLED FOR DEVELOPMENT - QUICK ACCESS
-  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User' });
+  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User', plan: 'recon' });
   const [authLoading, setAuthLoading] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
+  const [userPlan, setUserPlan] = useState('recon');
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState(null);
+  const [showFounderOffer, setShowFounderOffer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -5737,6 +5743,37 @@ export default function App() {
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  // Feature access handlers
+  const handleFeatureAccess = (feature) => {
+    const currentUserPlan = getUserPlan(user);
+    if (hasFeatureAccess(currentUserPlan, feature)) {
+      return true;
+    } else {
+      setUpgradeFeature(feature);
+      setShowUpgradePrompt(true);
+      return false;
+    }
+  };
+
+  const handleUpgrade = (planType) => {
+    setShowUpgradePrompt(false);
+    if (planType === 'founder') {
+      setShowFounderOffer(true);
+    } else {
+      setShowSubscription(true);
+    }
+  };
+
+  const handleSubscribe = (planType) => {
+    // This would integrate with your payment system
+    console.log(`Subscribing to plan: ${planType}`);
+    setUser(prev => ({ ...prev, plan: planType }));
+    setUserPlan(planType);
+    setShowFounderOffer(false);
+    setShowSubscription(false);
+    showNotification(`Welcome to ${planType === 'founder' ? 'The Founder\'s Circle' : 'your new plan'}! 🎉`);
   };
 
     // Authentication Effect - DISABLED FOR DEVELOPMENT
@@ -6570,8 +6607,8 @@ export default function App() {
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
-              <p className="text-gray-400 text-lg">Welcome back, {user?.displayName || 'Entrepreneur'}! Here's your {viewMode} snapshot.</p>
+              <h1 className="text-4xl font-bold text-white">The Freedom Compass App</h1>
+              <p className="text-gray-400 text-lg">Welcome back, {user?.displayName || 'Financial Navigator'}! Here's your {viewMode} snapshot.</p>
             </div>
             
             {/* User Profile Section */}
@@ -6651,20 +6688,47 @@ export default function App() {
                   <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
                   </button>
-                  <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button 
+                    onClick={() => setActiveTab('budget')} 
+                    className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}
+                  >
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
-                  <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button 
+                    onClick={() => {
+                      if (handleFeatureAccess('sideHustleManagement')) {
+                        setActiveTab('side-hustle');
+                      }
+                    }} 
+                    className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'} ${!hasFeatureAccess(getUserPlan(user), 'sideHustleManagement') ? 'opacity-75' : ''}`}
+                  >
                     <Building className="w-4 h-4 mr-2"/>Side Hustle
+                    {!hasFeatureAccess(getUserPlan(user), 'sideHustleManagement') && <Crown className="w-3 h-3 ml-1 text-yellow-400" />}
                   </button>
-                  <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button 
+                    onClick={() => {
+                      if (handleFeatureAccess('investmentPortfolio')) {
+                        setActiveTab('investment');
+                      }
+                    }} 
+                    className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'} ${!hasFeatureAccess(getUserPlan(user), 'investmentPortfolio') ? 'opacity-75' : ''}`}
+                  >
                     <Briefcase className="w-4 h-4 mr-2"/>Investment
+                    {!hasFeatureAccess(getUserPlan(user), 'investmentPortfolio') && <Crown className="w-3 h-3 ml-1 text-yellow-400" />}
                   </button>
                   <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <CreditCard className="w-4 h-4 mr-2"/>Transactions
                   </button>
-                  <button onClick={() => setActiveTab('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button 
+                    onClick={() => {
+                      if (handleFeatureAccess('travelMode')) {
+                        setActiveTab('travel');
+                      }
+                    }} 
+                    className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'} ${!hasFeatureAccess(getUserPlan(user), 'travelMode') ? 'opacity-75' : ''}`}
+                  >
                     🌍 Travel
+                    {!hasFeatureAccess(getUserPlan(user), 'travelMode') && <Crown className="w-3 h-3 ml-1 text-yellow-400" />}
                   </button>
                 </div>
               </div>
@@ -7979,13 +8043,29 @@ export default function App() {
       )}
 
       {/* Subscription Manager Modal */}
-      {showSubscription && (
-        <SubscriptionManager
-          user={user}
-          currentPlan={userPlan}
-          onClose={() => setShowSubscription(false)}
-        />
-      )}
+        {showSubscription && (
+          <SubscriptionManager 
+            user={user} 
+            currentPlan={userPlan}
+            onClose={() => setShowSubscription(false)} 
+          />
+        )}
+
+        {showUpgradePrompt && (
+          <UpgradePrompt
+            feature={upgradeFeature}
+            currentPlan={getUserPlan(user)}
+            onClose={() => setShowUpgradePrompt(false)}
+            onUpgrade={handleUpgrade}
+          />
+        )}
+
+        {showFounderOffer && (
+          <FounderCircleOffer
+            onClose={() => setShowFounderOffer(false)}
+            onSubscribe={handleSubscribe}
+          />
+        )}
     </div>
   );
 }
