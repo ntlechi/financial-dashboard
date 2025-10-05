@@ -6263,8 +6263,10 @@ function App() {
     const tabFeatures = {
       'dashboard': 'basic-dashboard',
       'budget': 'budget-calculator', 
+      'investment': 'investment-portfolio',
       'investments': 'investment-portfolio',
       'side-hustle': 'side-hustle',
+      'travel': 'travel-mode',
       'transactions': 'transaction-management'
     };
 
@@ -6272,12 +6274,13 @@ function App() {
     if (requiredFeature && !checkFeatureAccess(requiredFeature)) {
       const featureNames = {
         'investment-portfolio': 'Investment Portfolio',
-        'side-hustle': 'Side Hustle Management'
+        'side-hustle': 'Side Hustle Management',
+        'travel-mode': 'Travel Mode'
       };
       showUpgradePromptForFeature(featureNames[requiredFeature] || tab, requiredFeature);
       return;
     }
-
+    
     setActiveTab(tab);
   }, [checkFeatureAccess, showUpgradePromptForFeature]);
 
