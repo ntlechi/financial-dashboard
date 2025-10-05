@@ -59,7 +59,7 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 6,
           question: 'What are the different pricing tiers?',
-          answer: 'We have 3 main tiers: 1) Recon Kit "The Recruit" (Free Forever) - Basic tracking and budgeting, 2) Climber Plan "The Climber" ($7.99/mo or $79/year) - Advanced analytics and full dashboard, 3) Operator Plan "The Operator" ($14.99/mo or $149/year) - Complete toolkit with side hustle and investment tracking. Plus our limited Founder\'s Circle offer ($7.49/mo) for the first 100 members.',
+          answer: 'We have 3 main tiers: 1) Recon Kit "The Recruit" (Free Forever) - Basic dashboard (Net Worth, Cash Flow, Savings Rate), Budget Calculator, and Transactions, 2) Climber Plan "The Climber" ($7.99/mo or $79/year) - Full advanced dashboard, all financial calculators, debt payoff, retirement planning, and goal tracking, 3) Operator Plan "The Operator" ($14.99/mo or $149/year) - Everything in Climber PLUS side hustle management, investment portfolio, and travel mode. Plus our limited Founder\'s Circle offer ($7.49/mo for full Operator access) for the first 100 members.',
           tags: ['pricing', 'tiers', 'plans', 'features'],
           popular: true
         },
