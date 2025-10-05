@@ -6221,28 +6221,42 @@ function App() {
     setShowUpgradePrompt(true);
   }, []);
 
-  const handleUpgrade = useCallback((planId, billingCycle = 'monthly') => {
+  const handleUpgrade = useCallback(async (planId, billingCycle = 'monthly') => {
     if (planId === 'view-all') {
       setShowUpgradePrompt(false);
       setShowPricingModal(true);
       return;
     }
 
-    // Here you would integrate with Stripe for actual payment processing
-    console.log(`Upgrading to ${planId} with ${billingCycle} billing`);
-    
-    // For demo purposes, simulate successful upgrade
-    setUserPlan(planId);
-    setShowUpgradePrompt(false);
-    setShowPricingModal(false);
-    showNotification(`Successfully upgraded to ${planId}!`, 'success');
-    
-    // In production, this would:
-    // 1. Create Stripe checkout session
-    // 2. Handle payment success webhook
-    // 3. Update user subscription in database
-    // 4. Update local state
-  }, [showNotification]);
+    // Don't allow upgrading if not authenticated
+    if (!user) {
+      showNotification('Please sign in to upgrade your plan', 'error');
+      return;
+    }
+
+    try {
+      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing`);
+      
+      // Import Stripe utilities dynamically
+      const { createCheckoutSession } = await import('./utils/stripeUtils');
+      
+      // Show loading notification
+      showNotification('Redirecting to secure checkout...', 'info');
+      
+      // Create Stripe checkout session and redirect
+      await createCheckoutSession(planId, billingCycle, user);
+      
+      // Note: User will be redirected to Stripe, so code after this may not execute
+      // Subscription update happens via webhook after successful payment
+      
+    } catch (error) {
+      console.error('❌ Upgrade error:', error);
+      showNotification(
+        error.message || 'Failed to process upgrade. Please try again.',
+        'error'
+      );
+    }
+  }, [user, showNotification]);
 
   const handleTabClick = useCallback((tab) => {
     // Check if user has access to the tab
