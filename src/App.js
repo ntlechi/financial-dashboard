@@ -7197,11 +7197,16 @@ function App() {
                 <p className="text-gray-400 text-sm flex items-center gap-1">
                   {user?.email}
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    userPlan === 'free' ? 'bg-gray-600 text-gray-300' :
-                    userPlan === 'backpacker' ? 'bg-blue-600 text-blue-100' :
-                    'bg-purple-600 text-purple-100'
+                    userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
+                    userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
+                    userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
+                    'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
                   }`}>
-                    {userPlan === 'free' ? 'Free' : userPlan === 'backpacker' ? 'Backpacker' : 'Entrepreneur'}
+                    {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon' : 
+                     userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber' : 
+                     userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator' :
+                     userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder' : 
+                     'Free'}
                   </span>
                 </p>
               </div>
