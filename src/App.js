@@ -6363,19 +6363,22 @@ function App() {
           setData(initialData);
         }
       } else {
-        // User is signed out - automatically sign in anonymously
-        console.log('No user found, signing in anonymously...');
-        try {
-          await signInAnonymously(auth);
-          // onAuthStateChanged will handle the rest
-        } catch (error) {
-          console.error('Anonymous sign-in failed:', error);
-          // Fallback to showing auth screen
-          setUser(null);
-          setUserId(null);
-          setData(null);
-          setShowAuth(true);
-        }
+        // User is signed out - show authentication screen
+        console.log('No user found, showing auth screen...');
+        setUser(null);
+        setUserId(null);
+        setData(null);
+        setShowAuth(true);
+        
+        // TEMPORARILY DISABLED: Auto anonymous sign-in (for Stripe testing)
+        // Uncomment below to re-enable anonymous sign-in after payment testing
+        // try {
+        //   await signInAnonymously(auth);
+        //   // onAuthStateChanged will handle the rest
+        // } catch (error) {
+        //   console.error('Anonymous sign-in failed:', error);
+        //   setShowAuth(true);
+        // }
       }
       
       setAuthLoading(false);
