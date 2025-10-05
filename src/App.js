@@ -5,6 +5,8 @@ import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
 import ErrorBoundary from './components/ErrorBoundary';
 import FinancialErrorBoundary from './components/FinancialErrorBoundary';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -6167,6 +6169,8 @@ function App() {
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   const [userPlan] = useState('free'); // Subscription plan state
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTermsOfService, setShowTermsOfService] = useState(false);
   // Removed unused loading state - using authLoading instead
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -8547,6 +8551,46 @@ function App() {
           currentPlan={userPlan}
           onClose={() => setShowSubscription(false)}
         />
+      )}
+
+      {/* Footer */}
+      <footer className="mt-12 border-t border-gray-700 pt-8 pb-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="text-center md:text-left">
+              <h3 className="text-lg font-semibold text-white mb-1">The Freedom Compass</h3>
+              <p className="text-gray-400 text-sm">Navigate to your financial freedom</p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center md:justify-end items-center space-x-6 text-sm">
+              <button
+                onClick={() => setShowPrivacyPolicy(true)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </button>
+              <button
+                onClick={() => setShowTermsOfService(true)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Terms of Service
+              </button>
+              <span className="text-gray-500">
+                © {new Date().getFullYear()} The Freedom Compass. All rights reserved.
+              </span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Privacy Policy Modal */}
+      {showPrivacyPolicy && (
+        <PrivacyPolicy onClose={() => setShowPrivacyPolicy(false)} />
+      )}
+
+      {/* Terms of Service Modal */}
+      {showTermsOfService && (
+        <TermsOfService onClose={() => setShowTermsOfService(false)} />
       )}
     </div>
   );
