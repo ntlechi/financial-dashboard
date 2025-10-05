@@ -139,6 +139,12 @@ async function handleCheckoutComplete(session) {
   const priceId = subscription.items.data[0].price.id;
   const planTier = PRICE_TO_PLAN_MAP[priceId] || 'recon';
 
+  // 🔍 DEBUG: Log timestamp values and types
+  console.log('🔍 DEBUG - Checkout Timestamp values:');
+  console.log('  current_period_start:', subscription.current_period_start, 'Type:', typeof subscription.current_period_start);
+  console.log('  current_period_end:', subscription.current_period_end, 'Type:', typeof subscription.current_period_end);
+  console.log('  cancel_at_period_end:', subscription.cancel_at_period_end, 'Type:', typeof subscription.cancel_at_period_end);
+
   // Update user subscription in Firebase
   await updateUserSubscription(userId, {
     plan: planTier,
