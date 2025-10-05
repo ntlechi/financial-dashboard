@@ -6350,28 +6350,17 @@ function App() {
         }
       } else {
         // User is signed out - automatically sign in anonymously
-        console.log('🔐 No user found, attempting anonymous sign-in...');
-        setShowAuth(false); // Hide auth screen during sign-in attempt
-        
-        // Add timeout to prevent hanging
-        const signInPromise = signInAnonymously(auth);
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Sign-in timeout')), 10000)
-        );
-        
+        console.log('No user found, signing in anonymously...');
         try {
-          const result = await Promise.race([signInPromise, timeoutPromise]);
-          console.log('✅ Anonymous sign-in successful:', result.user.uid);
+          await signInAnonymously(auth);
           // onAuthStateChanged will handle the rest
         } catch (error) {
-          console.error('❌ Anonymous sign-in failed:', error);
-          console.log('🔐 Falling back to local data without authentication');
-          
-          // Fallback: Set local data without authentication
-          setUser({ uid: 'local-user', isAnonymous: true, email: null });
-          setUserId('local-user');
-          setData(initialData);
-          setShowAuth(false);
+          console.error('Anonymous sign-in failed:', error);
+          // Fallback to showing auth screen
+          setUser(null);
+          setUserId(null);
+          setData(null);
+          setShowAuth(true);
         }
       }
       
@@ -7093,7 +7082,7 @@ function App() {
       )}
 
       {/* Show authentication screen if user is not logged in */}
-      {showAuth && !authLoading && (
+      {showAuth && !user && !authLoading && (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center p-4">
           <div className="max-w-md w-full">
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-amber-500/30 shadow-lg shadow-amber-500/10">
