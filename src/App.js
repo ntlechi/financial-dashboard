@@ -6202,6 +6202,11 @@ function App() {
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
+  
+  // 🛠️ SECURE DEVELOPER PANEL (only for admins)
+  const [showDevPanel, setShowDevPanel] = useState(false);
+  const [devOverridePlan, setDevOverridePlan] = useState(null);
+  
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
   const [showHelpFAQ, setShowHelpFAQ] = useState(false);
