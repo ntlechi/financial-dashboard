@@ -8851,10 +8851,86 @@ function App() {
           onClose={() => setShowUpgradePrompt(false)}
           featureName={upgradePromptData.featureName}
           requiredPlan={upgradePromptData.requiredPlan}
+          onViewPlans={() => {
+            setShowUpgradePrompt(false);
+            setShowPricingModal(true);
+          }}
           currentPlan={userPlan}
           onUpgrade={handleUpgrade}
           isFoundersCircleAvailable={isFoundersCircleAvailable()}
         />
+      )}
+      
+      {/* 🛠️ SECURE DEVELOPER PANEL - Only visible to admin emails */}
+      {showDevPanel && isAdmin && (
+        <div className="fixed bottom-4 right-4 bg-gray-900 border-2 border-amber-500 rounded-lg shadow-2xl p-6 z-50 min-w-[300px]">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
+              <h3 className="text-white font-bold text-sm">🛠️ DEVELOPER MODE</h3>
+            </div>
+            <button
+              onClick={() => setShowDevPanel(false)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
+              <span className="text-green-400">●</span>
+              Admin: {user?.email}
+            </div>
+            
+            <div>
+              <label className="text-gray-300 text-sm font-semibold block mb-2">
+                Override Subscription Tier:
+              </label>
+              <select
+                value={devOverridePlan || 'none'}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === 'none') {
+                    setDevOverridePlan(null);
+                  } else {
+                    setDevOverridePlan(value);
+                    setUserPlan(value);
+                  }
+                }}
+                className="w-full bg-gray-800 text-white border border-gray-700 hover:border-amber-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+              >
+                <option value="none">🔄 Use Real Subscription</option>
+                <option value={SUBSCRIPTION_TIERS.FREE}>🆓 FREE (Recon Kit)</option>
+                <option value={SUBSCRIPTION_TIERS.CLIMBER}>🧗 CLIMBER ($7.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.OPERATOR}>⚙️ OPERATOR ($14.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
+              </select>
+            </div>
+            
+            <div className="pt-3 border-t border-gray-700 space-y-2">
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Active Plan:</span>
+                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Real Subscription:</span>
+                  <span className="text-blue-400">{userPlan}</span>
+                </div>
+                {devOverridePlan && (
+                  <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
+                    ⚠️ Dev Override Active
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="pt-2 text-xs text-gray-500 text-center border-t border-gray-700">
+              Press <kbd className="px-1 py-0.5 bg-gray-800 rounded text-amber-400">Ctrl+Shift+Alt+D</kbd> to toggle
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
