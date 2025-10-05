@@ -50,7 +50,7 @@ export async function createCheckoutSession(planId, billingCycle, user) {
       body: JSON.stringify({
         priceId: priceId,
         userId: user.uid,
-        userEmail: user.email || user.isAnonymous ? 'anonymous@user.com' : user.email,
+        userEmail: user.email || 'no-email@provided.com',
         planName: planId,
         billingCycle: billingCycle,
       }),
