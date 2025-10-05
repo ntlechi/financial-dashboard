@@ -161,6 +161,11 @@ async function handleCheckoutComplete(session) {
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
+  // 👑 If Founder's Circle, increment the counter
+  if (planTier === 'founders-circle') {
+    await incrementFoundersCircleCount();
+  }
+
   console.log(`✅ User ${userId} upgraded to ${planTier}`);
 }
 

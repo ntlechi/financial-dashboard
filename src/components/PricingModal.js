@@ -1,14 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, Crown, Zap, Target, Rocket } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan = null }) => {
   const [billingCycle, setBillingCycle] = useState('monthly');
-  const [foundersCircleCount] = useState(47); // This would come from backend
+  const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(null);
 
   // Launch date: October 19, 2025, 9:00 AM EDT
   const launchDate = new Date('2025-10-19T13:00:00.000Z'); // 9 AM EDT = 1 PM UTC
   const launchEndDate = new Date(launchDate.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days later
+
+  // Load Founder's Circle subscriber count from Firebase
+  useEffect(() => {
+    const loadFoundersCount = async () => {
+      try {
+        const countDocRef = doc(db, 'app-config', 'founders-circle');
+        const countDoc = await getDoc(countDocRef);
+        
+        if (countDoc.exists()) {
+          const count = countDoc.data().subscriberCount || 0;
+          setFoundersCircleCount(count);
+          console.log(`📊 Founder's Circle: ${count}/100 spots taken`);
+        } else {
+          setFoundersCircleCount(0);
+        }
+      } catch (error) {
+        console.error('Error loading Founder\'s Circle count:', error);
+        setFoundersCircleCount(0);
+      }
+    };
+
+    loadFoundersCount();
+  }, []);
 
   useEffect(() => {
     const updateTimer = () => {
@@ -77,15 +102,16 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         'Everything in Recon Kit',
         'Full Advanced Dashboard',
         'All Financial Calculators',
+        'Side Hustle Management (Limited to 1)',
         'Advanced Analytics & Reports',
         'Goal Tracking & Projections',
         'Priority Email Support',
         '30-Day Money-Back Guarantee'
       ],
       limitations: [
-        'Side Hustle Management',
-        'Investment Portfolio',
-        'Travel Mode'
+        'Investment Portfolio (Operator only)',
+        'Travel Mode (Operator only)',
+        'Unlimited Side Hustles (Max 1)'
       ]
     },
     'operator': {
