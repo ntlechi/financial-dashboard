@@ -194,12 +194,17 @@ async function handleSubscriptionUpdated(subscription) {
   const priceId = subscription.items.data[0].price.id;
   const planTier = PRICE_TO_PLAN_MAP[priceId] || 'recon';
 
+  // Get period dates from subscription item
+  const subscriptionItem = subscription.items.data[0];
+  const currentPeriodStart = subscriptionItem.current_period_start;
+  const currentPeriodEnd = subscriptionItem.current_period_end;
+
   await updateUserSubscription(userId, {
     plan: planTier,
     status: subscription.status,
     stripePriceId: priceId,
-    currentPeriodStartSeconds: subscription.current_period_start,
-    currentPeriodEndSeconds: subscription.current_period_end,
+    currentPeriodStart: currentPeriodStart,
+    currentPeriodEnd: currentPeriodEnd,
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
