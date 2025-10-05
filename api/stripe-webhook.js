@@ -293,4 +293,18 @@ async function updateUserSubscription(userId, data) {
     throw error;
   }
 }
+
+// Increment Founder's Circle subscriber count
+async function incrementFoundersCircleCount() {
+  try {
+    const countRef = db.collection('app-config').doc('founders-circle');
+    await countRef.set({
+      subscriberCount: admin.firestore.FieldValue.increment(1),
+      lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    console.log(`👑 Incremented Founder's Circle count`);
+  } catch (error) {
+    console.error(`❌ Error incrementing Founder's Circle count:`, error);
+  }
+}
 // Webhook updated at Sun Oct  5 08:03:25 PM UTC 2025
