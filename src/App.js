@@ -6444,6 +6444,28 @@ function App() {
 
     return () => unsubscribe();
   }, [processRecurringExpenses, showNotification]);
+  
+  // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      // Only works for admin emails
+      if (!isAdmin) return;
+      
+      // Secret combo: Ctrl + Shift + Alt + D
+      if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'D') {
+        e.preventDefault();
+        setShowDevPanel(prev => !prev);
+      }
+      
+      // Quick close: Escape
+      if (e.key === 'Escape' && showDevPanel) {
+        setShowDevPanel(false);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isAdmin, showDevPanel]);
 
 
   // 🔐 Authentication Functions
