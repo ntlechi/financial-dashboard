@@ -2,7 +2,6 @@ import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
 import * as d3 from 'd3';
-import SubscriptionManager from './SubscriptionManager';
 import ErrorBoundary from './components/ErrorBoundary';
 import FinancialErrorBoundary from './components/FinancialErrorBoundary';
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -6171,7 +6170,6 @@ function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
-  const [showSubscription, setShowSubscription] = useState(false);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
@@ -8624,14 +8622,6 @@ function App() {
         </div>
       )}
 
-      {/* Subscription Manager Modal */}
-      {showSubscription && (
-        <SubscriptionManager
-          user={user}
-          currentPlan={userPlan}
-          onClose={() => setShowSubscription(false)}
-        />
-      )}
 
       {/* Footer */}
       <footer className="mt-12 border-t border-gray-700 pt-8 pb-6">
