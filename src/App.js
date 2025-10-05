@@ -7158,9 +7158,9 @@ function App() {
               </div>
             </div>
             <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-              Freedom Compass
+              The Freedom Compass
             </h2>
-            <p className="text-gray-400 animate-pulse">Loading your financial data...</p>
+            <p className="text-gray-400 animate-pulse">Loading your dashboard...</p>
             <div className="mt-4 flex items-center justify-center gap-2">
               <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
               <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
