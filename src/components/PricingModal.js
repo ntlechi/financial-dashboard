@@ -267,48 +267,49 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         {/* Pricing Cards */}
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Founder's Circle (if available) */}
+            {/* Founder's Circle (if available) - DARK TEXT for readability */}
             {isFoundersCircleAvailable() && (
-              <div className={`relative bg-gradient-to-br ${foundersCircle.color} rounded-lg p-6 border-2 border-amber-400 transform scale-105 shadow-xl`}>
+              <div className={`relative bg-gradient-to-br from-amber-400 to-yellow-500 rounded-lg p-6 border-2 border-amber-500 transform scale-105 shadow-xl`}>
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-amber-400 text-black px-4 py-1 rounded-full text-xs font-bold">
+                  <span className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse flex items-center">
+                    <Crown className="w-3 h-3 mr-1" />
                     LIMITED TIME
                   </span>
                 </div>
                 
                 <div className="text-center mb-4">
-                  <Crown className="w-12 h-12 text-white mx-auto mb-2" />
-                  <h3 className="text-xl font-bold text-white">{foundersCircle.name}</h3>
-                  <p className="text-amber-100 text-sm">{foundersCircle.identity}</p>
+                  <Crown className="w-12 h-12 text-gray-900 mx-auto mb-2" />
+                  <h3 className="text-xl font-bold text-gray-900">{foundersCircle.name}</h3>
+                  <p className="text-gray-800 text-sm font-semibold">{foundersCircle.identity}</p>
                 </div>
 
                 <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-white">
+                  <div className="text-3xl font-bold text-gray-900">
                     {formatPrice(foundersCircle.monthlyPrice)}
-                    <span className="text-lg text-amber-100">/month</span>
+                    <span className="text-lg text-gray-800">/month</span>
                   </div>
-                  <div className="text-amber-100 text-sm">Locked in for life</div>
-                  <div className="text-amber-200 text-xs mt-1">
-                    Only {foundersCircle.spotsRemaining} spots left
+                  <div className="text-gray-800 text-sm font-semibold">Locked in for life</div>
+                  <div className="text-red-700 text-xs mt-1 font-bold">
+                    🔥 Only {foundersCircle.spotsRemaining} spots left!
                   </div>
                 </div>
 
                 <div className="space-y-2 mb-6">
                   {foundersCircle.features.slice(0, 4).map((feature, index) => (
-                    <div key={index} className="flex items-center text-sm text-white">
-                      <Check className="w-4 h-4 text-amber-200 mr-2 flex-shrink-0" />
-                      <span>{feature}</span>
+                    <div key={index} className="flex items-center text-sm text-gray-900">
+                      <Check className="w-4 h-4 text-green-700 mr-2 flex-shrink-0 font-bold" />
+                      <span className="font-medium">{feature}</span>
                     </div>
                   ))}
-                  <div className="text-amber-100 text-xs">+ {foundersCircle.features.length - 4} more features</div>
+                  <div className="text-gray-800 text-xs font-semibold">+ {foundersCircle.features.length - 4} more features</div>
                 </div>
 
                 <button
                   onClick={() => handleUpgrade('founders-circle')}
-                  className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${getButtonStyle('founders-circle')}`}
+                  className="w-full py-3 px-4 rounded-lg font-bold transition-colors bg-gray-900 hover:bg-gray-800 text-amber-400 shadow-lg"
                   disabled={currentPlan === 'founders-circle'}
                 >
-                  {currentPlan === 'founders-circle' ? 'Current Plan' : 'Claim Your Spot'}
+                  {currentPlan === 'founders-circle' ? 'Current Plan' : '👑 Claim Your Spot'}
                 </button>
               </div>
             )}
