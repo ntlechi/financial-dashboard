@@ -2656,8 +2656,8 @@ const SideHustleTab = ({ data, setData, userId }) => {
             <p className="text-gray-400">Track income and expenses for all your businesses</p>
           </div>
           <button
-            onClick={() => {
-              const { getSideHustleLimit } = require('./utils/subscriptionUtils');
+            onClick={async () => {
+              const { getSideHustleLimit } = await import('./utils/subscriptionUtils');
               const limit = getSideHustleLimit(userPlan);
               const currentCount = data.businesses?.length || 0;
               
