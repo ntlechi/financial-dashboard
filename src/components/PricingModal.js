@@ -313,10 +313,14 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               </div>
             )}
 
-            {/* Regular Plans */}
-            {Object.entries(pricingTiers).map(([planId, plan]) => {
+            {/* Regular Plans - Ordered for Launch Funnel */}
+            {/* Order: Recon (Free) | Climber | Operator - creates contrast after Founder's Circle */}
+            {['recon', 'climber', 'operator'].map((planId) => {
+              const plan = pricingTiers[planId];
+              if (!plan) return null;
               const price = billingCycle === 'annual' ? plan.annualPrice : plan.monthlyPrice;
-              const isHighlighted = highlightPlan === planId || (planId === 'climber' && !highlightPlan);
+              // LAUNCH MODE: Disable "Most Popular" tag during Founder's Circle launch (Oct 5-12)
+              const isHighlighted = false; // Was: highlightPlan === planId || (planId === 'climber' && !highlightPlan);
               
               return (
                 <div
