@@ -2656,11 +2656,22 @@ const SideHustleTab = ({ data, setData, userId }) => {
             <p className="text-gray-400">Track income and expenses for all your businesses</p>
           </div>
           <button
-            onClick={() => setShowAddBusiness(true)}
+            onClick={() => {
+              const { getSideHustleLimit } = require('./utils/subscriptionUtils');
+              const limit = getSideHustleLimit(userPlan);
+              const currentCount = data.businesses?.length || 0;
+              
+              if (currentCount >= limit) {
+                alert(`You've reached your limit of ${limit} side hustle${limit !== 1 ? 's' : ''}. Upgrade to Operator Plan for unlimited side hustles!`);
+                return;
+              }
+              
+              setShowAddBusiness(true);
+            }}
             className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Business
+            Add Business {userPlan === 'climber' && `(${data.businesses?.length || 0}/1)`}
           </button>
         </div>
       </Card>
