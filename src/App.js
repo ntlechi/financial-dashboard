@@ -10,7 +10,7 @@ import TermsOfService from './components/TermsOfService';
 import HelpFAQ from './components/HelpFAQ';
 import PricingModal from './components/PricingModal';
 import UpgradePrompt from './components/UpgradePrompt';
-import { hasFeatureAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
+import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -7380,42 +7380,84 @@ function App() {
                 </FinancialErrorBoundary>
               )}
               
-              {/* Top Row - Financial Freedom Goal */}
-              <FinancialErrorBoundary componentName="Financial Freedom Goal">
-                <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+              {/* FREE TIER CARDS: Net Worth, Cash Flow, Savings Rate */}
+              
+              {/* Net Worth - FREE+ */}
+              <FinancialErrorBoundary componentName="Net Worth Calculator">
+                <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
+              
+              {/* Cash Flow - FREE+ */}
+              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
+              
+              {/* Savings Rate - FREE+ */}
               <FinancialErrorBoundary componentName="Savings Rate Tracker">
                 <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
-              {/* Second Row - Net Worth and Cash on Hand */}
-              <FinancialErrorBoundary componentName="Net Worth Calculator">
-                <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
-              <FinancialErrorBoundary componentName="Cash Management">
-                <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
+              {/* CLIMBER+ CARDS: Advanced Dashboard */}
               
-              {/* Third Row - Income and Expenses Side by Side */}
-              <IncomeCard data={displayData.income} viewMode={viewMode} />
-              <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
+              {/* Financial Freedom Goal - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <FinancialErrorBoundary componentName="Financial Freedom Goal">
+                  <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              ) : (
+                <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Fourth Row - Cash Flow and Rainy Day Fund */}
-              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
-              <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
+              {/* Emergency Fund - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
+                <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Emergency Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Fifth Row - Debt (Full Width) */}
-              <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              {/* Debt Payoff - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
+                <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Debt Payoff Calculator" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Sixth Row - Credit Score and Goals */}
-              <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
-              <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+              {/* Credit Score - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'credit-score') ? (
+                <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Seventh Row - Retirement Accounts */}
-              <RegisteredAccountsCard 
-                data={displayData.registeredAccounts} 
-                onEdit={openCardEditor} 
-              />
+              {/* Goals - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Goal Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* Retirement Accounts - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <RegisteredAccountsCard 
+                  data={displayData.registeredAccounts} 
+                  onEdit={openCardEditor} 
+                />
+              ) : (
+                <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* Income and Expenses - CLIMBER+ (for detailed view) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') && (
+                <>
+                  <IncomeCard data={displayData.income} viewMode={viewMode} />
+                  <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
+                </>
+              )}
+              
+              {/* Cash on Hand - CLIMBER+ */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') && (
+                <FinancialErrorBoundary componentName="Cash Management">
+                  <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              )}
             </>
           )}
           
