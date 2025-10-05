@@ -59,29 +59,29 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 6,
           question: 'What are the different pricing tiers?',
-          answer: 'We have 4 tiers: 1) Recon Kit (Free) - Basic tracking and budgeting, 2) Climber ($19/mo) - Advanced analytics and goal tracking, 3) Operator ($49/mo) - Full investment tracking and side hustle tools, 4) Founder\'s Circle ($7.49/mo) - Limited-time offer for first 100 members with full Operator features.',
+          answer: 'We have 3 main tiers: 1) Recon Kit "The Recruit" (Free Forever) - Basic tracking and budgeting, 2) Climber Plan "The Climber" ($7.99/mo or $79/year) - Advanced analytics and full dashboard, 3) Operator Plan "The Operator" ($14.99/mo or $149/year) - Complete toolkit with side hustle and investment tracking. Plus our limited Founder\'s Circle offer ($7.49/mo) for the first 100 members.',
           tags: ['pricing', 'tiers', 'plans', 'features'],
           popular: true
         },
         {
           id: 7,
           question: 'Can I upgrade or downgrade anytime?',
-          answer: 'Yes, you can change your plan anytime. Upgrades take effect immediately with prorated billing. Downgrades take effect at your next billing cycle, so you keep full access until then. No long-term contracts or cancellation fees.',
-          tags: ['upgrade', 'downgrade', 'billing', 'flexibility'],
+          answer: 'Yes, you can change your plan anytime. Upgrades take effect immediately with prorated billing. Downgrades take effect at your next billing cycle, so you keep full access until then. No long-term contracts or cancellation fees. Annual plans save you 17% (equivalent to 2 months free).',
+          tags: ['upgrade', 'downgrade', 'billing', 'flexibility', 'annual savings'],
           popular: true
         },
         {
           id: 8,
           question: 'Why these specific price points?',
-          answer: 'Our pricing reflects the value delivered at each level. The Recon Kit is free because everyone deserves basic financial tools. Climber ($19) covers advanced analytics that replace expensive financial advisors. Operator ($49) includes business tools that typically cost $100+ elsewhere. Founder\'s Circle ($7.49) is our way of rewarding early supporters.',
+          answer: 'Our pricing reflects the value delivered at each level. The Recon Kit is free because everyone deserves basic financial tools. Climber ($7.99) provides advanced analytics that replace expensive financial advisors. Operator ($14.99) includes business tools that typically cost $100+ elsewhere. Founder\'s Circle ($7.49) gives you full Operator features at half price - our way of rewarding early supporters.',
           tags: ['pricing strategy', 'value', 'comparison'],
           popular: false
         },
         {
           id: 9,
           question: 'Is there a money-back guarantee?',
-          answer: 'While we don\'t offer refunds for partial months, you can cancel anytime and keep access until your billing period ends. We\'re confident you\'ll love the app, but if you\'re not satisfied, simply cancel before your next billing cycle.',
-          tags: ['refund', 'guarantee', 'cancellation'],
+          answer: 'Yes! All paid plans (Climber, Operator, and Founder\'s Circle) come with a 30-Day, No-Questions-Asked Money-Back Guarantee. If you\'re not completely satisfied within 30 days, we\'ll refund your payment in full. You can also cancel anytime and keep access until your billing period ends.',
+          tags: ['refund', 'guarantee', 'cancellation', '30-day'],
           popular: false
         }
       ]
@@ -95,15 +95,15 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 10,
           question: 'What is The Founder\'s Circle?',
-          answer: 'The Founder\'s Circle is an exclusive group of our first 100 users who get full Operator-level features ($49 value) for just $7.49/month. Founders get lifetime priority support, early access to new features, and a permanent "Founder" badge. It\'s our way of honoring the brave souls who join us at the beginning.',
-          tags: ['founders circle', 'exclusive', 'benefits', 'early access'],
+          answer: 'The Founder\'s Circle is an exclusive group of our first 100 users who get full Operator-level features ($14.99 value) for just $7.49/month. This price is locked in for life as long as your subscription remains active. Founders get lifetime priority support, early access to new features, exclusive Founder badge, and access to our private Founder-only Discord channel.',
+          tags: ['founders circle', 'exclusive', 'benefits', 'lifetime pricing'],
           popular: true
         },
         {
           id: 11,
           question: 'How many Founder spots are left?',
-          answer: 'Founder spots are limited to exactly 100 members. Once all spots are claimed or our 7-day launch timer expires, the offer disappears forever. You can see the real-time counter on our main page showing exactly how many spots remain.',
-          tags: ['availability', 'limited', 'spots remaining'],
+          answer: 'Founder spots are limited to exactly 100 members. The offer ends when either: 1) All 100 spots are claimed, OR 2) 7 days after our official launch (October 19, 2025, 9:00 AM EDT) - whichever comes first. Once the offer ends, it disappears forever and will never be available again.',
+          tags: ['availability', 'limited', 'spots remaining', 'launch date'],
           popular: true
         },
         {
