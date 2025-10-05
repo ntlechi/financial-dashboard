@@ -6362,6 +6362,31 @@ function App() {
           // Fallback to initial data
           setData(initialData);
         }
+        
+        // 💳 Load user's subscription data
+        try {
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            const userDoc = userDocSnap.data();
+            const subscription = userDoc.subscription;
+            
+            if (subscription && subscription.plan && subscription.status === 'active') {
+              console.log('✅ Active subscription found:', subscription.plan);
+              setUserPlan(subscription.plan);
+            } else {
+              console.log('📋 No active subscription, using free tier');
+              setUserPlan(SUBSCRIPTION_TIERS.FREE);
+            }
+          } else {
+            console.log('📋 No user document, using free tier');
+            setUserPlan(SUBSCRIPTION_TIERS.FREE);
+          }
+        } catch (error) {
+          console.error('Error loading subscription:', error);
+          setUserPlan(SUBSCRIPTION_TIERS.FREE);
+        }
       } else {
         // User is signed out - show authentication screen
         console.log('No user found, showing auth screen...');
