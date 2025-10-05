@@ -13,6 +13,7 @@ import {
   createUserWithEmailAndPassword, 
   signInWithPopup, 
   GoogleAuthProvider,
+  signInAnonymously,
   signOut, 
   onAuthStateChanged,
   updateProfile 
@@ -6276,11 +6277,19 @@ function App() {
           setData(initialData);
         }
       } else {
-        // User is signed out
-        setUser(null);
-        setUserId(null);
-        setData(null);
-        setShowAuth(true);
+        // User is signed out - automatically sign in anonymously
+        console.log('No user found, signing in anonymously...');
+        try {
+          await signInAnonymously(auth);
+          // onAuthStateChanged will handle the rest
+        } catch (error) {
+          console.error('Anonymous sign-in failed:', error);
+          // Fallback to showing auth screen
+          setUser(null);
+          setUserId(null);
+          setData(null);
+          setShowAuth(true);
+        }
       }
       
       setAuthLoading(false);
