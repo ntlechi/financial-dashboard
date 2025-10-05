@@ -6213,6 +6213,17 @@ function App() {
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
   
+  // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
+  const ADMIN_EMAILS = [
+    'janara.nguon@gmail.com',
+    // Add more admin emails here as needed
+  ];
+  
+  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+  
+  // Get current plan (with dev override if admin)
+  const currentUserPlan = isAdmin && devOverridePlan ? devOverridePlan : userPlan;
+  
   // Modal states for dashboard cards
   const [editingCard, setEditingCard] = useState(null);
   const [tempCardData, setTempCardData] = useState({});
