@@ -7,6 +7,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import FinancialErrorBoundary from './components/FinancialErrorBoundary';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
+import HelpFAQ from './components/HelpFAQ';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -6171,6 +6172,7 @@ function App() {
   const [userPlan] = useState('free'); // Subscription plan state
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
+  const [showHelpFAQ, setShowHelpFAQ] = useState(false);
   // Removed unused loading state - using authLoading instead
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -7130,6 +7132,15 @@ function App() {
                   Upgrade
                 </button>
               )}
+              
+              {/* Help FAQ Button */}
+              <button
+                onClick={() => setShowHelpFAQ(true)}
+                className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
+                title="Help & FAQ"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
               
               <button
                 onClick={handleSignOut}
@@ -8591,6 +8602,11 @@ function App() {
       {/* Terms of Service Modal */}
       {showTermsOfService && (
         <TermsOfService onClose={() => setShowTermsOfService(false)} />
+      )}
+
+      {/* Help FAQ Modal */}
+      {showHelpFAQ && (
+        <HelpFAQ onClose={() => setShowHelpFAQ(false)} />
       )}
     </div>
   );
