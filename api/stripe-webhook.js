@@ -139,11 +139,12 @@ async function handleCheckoutComplete(session) {
   const priceId = subscription.items.data[0].price.id;
   const planTier = PRICE_TO_PLAN_MAP[priceId] || 'recon';
 
-  // 🔍 DEBUG: Log timestamp values and types
-  console.log('🔍 DEBUG - Checkout Timestamp values:');
-  console.log('  current_period_start:', subscription.current_period_start, 'Type:', typeof subscription.current_period_start);
-  console.log('  current_period_end:', subscription.current_period_end, 'Type:', typeof subscription.current_period_end);
-  console.log('  cancel_at_period_end:', subscription.cancel_at_period_end, 'Type:', typeof subscription.cancel_at_period_end);
+  // Get period dates from subscription item (where they actually exist!)
+  const subscriptionItem = subscription.items.data[0];
+  const currentPeriodStart = subscriptionItem.current_period_start;
+  const currentPeriodEnd = subscriptionItem.current_period_end;
+
+  console.log(`✅ Period: ${new Date(currentPeriodStart * 1000)} to ${new Date(currentPeriodEnd * 1000)}`);
 
   // Update user subscription in Firebase
   await updateUserSubscription(userId, {
@@ -154,8 +155,8 @@ async function handleCheckoutComplete(session) {
     stripeCustomerId: session.customer,
     stripeSubscriptionId: session.subscription,
     stripePriceId: priceId,
-    currentPeriodStartSeconds: subscription.current_period_start,
-    currentPeriodEndSeconds: subscription.current_period_end,
+    currentPeriodStart: currentPeriodStart,
+    currentPeriodEnd: currentPeriodEnd,
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
