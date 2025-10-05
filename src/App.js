@@ -8,6 +8,9 @@ import FinancialErrorBoundary from './components/FinancialErrorBoundary';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import HelpFAQ from './components/HelpFAQ';
+import PricingModal from './components/PricingModal';
+import UpgradePrompt from './components/UpgradePrompt';
+import { hasFeatureAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -6169,10 +6172,13 @@ function App() {
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
-  const [userPlan] = useState('free'); // Subscription plan state
+  const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
   const [showHelpFAQ, setShowHelpFAQ] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
   // Removed unused loading state - using authLoading instead
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -6203,6 +6209,63 @@ function App() {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
   }, []);
+
+  // Feature gating and upgrade functions
+  const checkFeatureAccess = useCallback((feature) => {
+    return hasFeatureAccess(userPlan, feature);
+  }, [userPlan]);
+
+  const showUpgradePromptForFeature = useCallback((featureName, feature) => {
+    const requiredPlan = getRequiredTier(feature);
+    setUpgradePromptData({ featureName, requiredPlan });
+    setShowUpgradePrompt(true);
+  }, []);
+
+  const handleUpgrade = useCallback((planId, billingCycle = 'monthly') => {
+    if (planId === 'view-all') {
+      setShowUpgradePrompt(false);
+      setShowPricingModal(true);
+      return;
+    }
+
+    // Here you would integrate with Stripe for actual payment processing
+    console.log(`Upgrading to ${planId} with ${billingCycle} billing`);
+    
+    // For demo purposes, simulate successful upgrade
+    setUserPlan(planId);
+    setShowUpgradePrompt(false);
+    setShowPricingModal(false);
+    showNotification(`Successfully upgraded to ${planId}!`, 'success');
+    
+    // In production, this would:
+    // 1. Create Stripe checkout session
+    // 2. Handle payment success webhook
+    // 3. Update user subscription in database
+    // 4. Update local state
+  }, [showNotification]);
+
+  const handleTabClick = useCallback((tab) => {
+    // Check if user has access to the tab
+    const tabFeatures = {
+      'dashboard': 'basic-dashboard',
+      'budget': 'budget-calculator', 
+      'investments': 'investment-portfolio',
+      'side-hustle': 'side-hustle',
+      'transactions': 'transaction-management'
+    };
+
+    const requiredFeature = tabFeatures[tab];
+    if (requiredFeature && !checkFeatureAccess(requiredFeature)) {
+      const featureNames = {
+        'investment-portfolio': 'Investment Portfolio',
+        'side-hustle': 'Side Hustle Management'
+      };
+      showUpgradePromptForFeature(featureNames[requiredFeature] || tab, requiredFeature);
+      return;
+    }
+
+    setActiveTab(tab);
+  }, [checkFeatureAccess, showUpgradePromptForFeature]);
 
   // 🔄 Process Recurring Expenses Function
   const processRecurringExpenses = useCallback(async (userData, currentUserId) => {
@@ -7123,13 +7186,13 @@ function App() {
                 </p>
               </div>
               
-              {userPlan === 'free' && (
+              {userPlan === SUBSCRIPTION_TIERS.FREE && (
                 <button
-                  onClick={() => setShowSubscription(true)}
+                  onClick={() => setShowPricingModal(true)}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-medium"
                 >
                   <Crown className="w-4 h-4" />
-                  Upgrade
+                  {isFoundersCircleAvailable() ? 'Join Founder\'s Circle' : 'Upgrade'}
                 </button>
               )}
               
@@ -7190,23 +7253,26 @@ function App() {
             <div className="bg-gray-800 rounded-full p-1 overflow-hidden">
               <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
                 <div className="flex space-x-1 min-w-max">
-                  <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
                   </button>
-                  <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
-                  <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Building className="w-4 h-4 mr-2"/>Side Hustle
+                    {!checkFeatureAccess('side-hustle') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
-                  <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Briefcase className="w-4 h-4 mr-2"/>Investment
+                    {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
-                  <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <CreditCard className="w-4 h-4 mr-2"/>Transactions
                   </button>
-                  <button onClick={() => setActiveTab('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
+                    {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
               </div>
@@ -8607,6 +8673,27 @@ function App() {
       {/* Help FAQ Modal */}
       {showHelpFAQ && (
         <HelpFAQ onClose={() => setShowHelpFAQ(false)} />
+      )}
+
+      {/* Pricing Modal */}
+      {showPricingModal && (
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          currentPlan={userPlan}
+          onUpgrade={handleUpgrade}
+        />
+      )}
+
+      {/* Upgrade Prompt Modal */}
+      {showUpgradePrompt && (
+        <UpgradePrompt
+          onClose={() => setShowUpgradePrompt(false)}
+          featureName={upgradePromptData.featureName}
+          requiredPlan={upgradePromptData.requiredPlan}
+          currentPlan={userPlan}
+          onUpgrade={handleUpgrade}
+          isFoundersCircleAvailable={isFoundersCircleAvailable()}
+        />
       )}
     </div>
   );
