@@ -102,16 +102,15 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         'Everything in Recon Kit',
         'Full Advanced Dashboard',
         'All Financial Calculators',
-        'Side Hustle Management (Limited to 1)',
         'Advanced Analytics & Reports',
         'Goal Tracking & Projections',
         'Priority Email Support',
         '30-Day Money-Back Guarantee'
       ],
       limitations: [
+        'Side Hustle Management (Operator only)',
         'Investment Portfolio (Operator only)',
-        'Travel Mode (Operator only)',
-        'Unlimited Side Hustles (Max 1)'
+        'Travel Mode (Operator only)'
       ]
     },
     'operator': {
