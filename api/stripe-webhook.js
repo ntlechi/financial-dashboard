@@ -5,6 +5,13 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const admin = require('firebase-admin');
 
+// Disable automatic body parsing for webhook signature verification
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
   try {
@@ -32,6 +39,15 @@ const PRICE_TO_PLAN_MAP = {
   [process.env.STRIPE_FOUNDERS_CIRCLE_MONTHLY]: 'founders-circle',
 };
 
+// Helper to get raw body as buffer
+async function buffer(readable) {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
 module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
@@ -49,9 +65,12 @@ module.exports = async (req, res) => {
   let event;
 
   try {
-    // Verify webhook signature
+    // Get raw body for signature verification
+    const rawBody = await buffer(req);
+    
+    // Verify webhook signature with raw body
     event = stripe.webhooks.constructEvent(
-      req.body,
+      rawBody,
       sig,
       webhookSecret
     );
