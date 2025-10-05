@@ -173,13 +173,20 @@ async function handleSubscriptionCreated(subscription) {
   const priceId = subscription.items.data[0].price.id;
   const planTier = PRICE_TO_PLAN_MAP[priceId] || 'recon';
 
+  // Get period dates from subscription item (not root!)
+  const subscriptionItem = subscription.items.data[0];
+  const currentPeriodStart = subscriptionItem.current_period_start;
+  const currentPeriodEnd = subscriptionItem.current_period_end;
+
+  console.log(`✅ Subscription period: ${new Date(currentPeriodStart * 1000)} to ${new Date(currentPeriodEnd * 1000)}`);
+
   await updateUserSubscription(userId, {
     plan: planTier,
     status: subscription.status,
     stripeSubscriptionId: subscription.id,
     stripePriceId: priceId,
-    currentPeriodStartSeconds: subscription.current_period_start,
-    currentPeriodEndSeconds: subscription.current_period_end,
+    currentPeriodStart: currentPeriodStart,
+    currentPeriodEnd: currentPeriodEnd,
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
