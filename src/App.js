@@ -596,6 +596,35 @@ const Card = ({ children, className = '' }) => (
   </div>
 );
 
+// 🔒 Locked Card Component - Shows upgrade prompt for locked dashboard cards
+const LockedCard = ({ cardName, requiredTier, onUpgrade }) => (
+  <div className="bg-gray-800/50 backdrop-blur-sm border-2 border-amber-500/30 rounded-2xl shadow-lg p-6 relative overflow-hidden col-span-1 md:col-span-2 lg:col-span-2">
+    {/* Blur overlay */}
+    <div className="absolute inset-0 backdrop-blur-sm bg-gray-900/80 flex items-center justify-center z-10">
+      <div className="text-center p-6">
+        <Crown className="w-12 h-12 text-amber-400 mx-auto mb-3 animate-pulse" />
+        <h3 className="text-lg font-bold text-white mb-2">{cardName}</h3>
+        <p className="text-gray-400 text-sm mb-4">
+          Upgrade to <span className="text-amber-400 font-semibold">{requiredTier === 'climber' ? 'Climber Plan' : 'Operator Plan'}</span> to unlock
+        </p>
+        <button
+          onClick={onUpgrade}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg"
+        >
+          View Plans
+        </button>
+      </div>
+    </div>
+    
+    {/* Blurred preview content */}
+    <div className="opacity-10 pointer-events-none">
+      <h3 className="text-xl font-bold text-white mb-4">{cardName}</h3>
+      <div className="h-24 bg-gray-700 rounded mb-4"></div>
+      <div className="h-16 bg-gray-700 rounded"></div>
+    </div>
+  </div>
+);
+
 // Tooltip component for financial education
 const Tooltip = ({ children, text }) => {
   const [show, setShow] = useState(false);
