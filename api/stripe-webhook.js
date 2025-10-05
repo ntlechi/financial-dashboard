@@ -148,8 +148,8 @@ async function handleCheckoutComplete(session) {
     stripeCustomerId: session.customer,
     stripeSubscriptionId: session.subscription,
     stripePriceId: priceId,
-    currentPeriodStart: new Date(subscription.current_period_start * 1000),
-    currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+    currentPeriodStart: admin.firestore.Timestamp.fromMillis(subscription.current_period_start * 1000),
+    currentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
@@ -171,8 +171,8 @@ async function handleSubscriptionCreated(subscription) {
     status: subscription.status,
     stripeSubscriptionId: subscription.id,
     stripePriceId: priceId,
-    currentPeriodStart: new Date(subscription.current_period_start * 1000),
-    currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+    currentPeriodStart: admin.firestore.Timestamp.fromMillis(subscription.current_period_start * 1000),
+    currentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
@@ -191,8 +191,8 @@ async function handleSubscriptionUpdated(subscription) {
     plan: planTier,
     status: subscription.status,
     stripePriceId: priceId,
-    currentPeriodStart: new Date(subscription.current_period_start * 1000),
-    currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+    currentPeriodStart: admin.firestore.Timestamp.fromMillis(subscription.current_period_start * 1000),
+    currentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
@@ -226,7 +226,7 @@ async function handlePaymentSucceeded(invoice) {
     amount: invoice.amount_paid / 100, // Convert from cents
     currency: invoice.currency,
     status: 'succeeded',
-    paidAt: new Date(invoice.status_transitions.paid_at * 1000),
+    paidAt: admin.firestore.Timestamp.fromMillis(invoice.status_transitions.paid_at * 1000),
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 }
