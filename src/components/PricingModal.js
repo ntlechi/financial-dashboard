@@ -100,9 +100,11 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
       color: 'from-blue-600 to-blue-700',
       features: [
         'Everything in Recon Kit',
-        'Full Advanced Dashboard',
+        'Full Advanced Dashboard & Analytics',
         'All Financial Calculators',
-        'Advanced Analytics & Reports',
+        'Debt Payoff Calculator',
+        'Emergency Fund Tracking',
+        'Retirement Planning Tools',
         'Goal Tracking & Projections',
         'Priority Email Support',
         '30-Day Money-Back Guarantee'
