@@ -3634,7 +3634,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-green-300 font-semibold">
+                        <div className="text-purple-300 font-semibold">
                           ${(holding.annualDividend / 4).toFixed(0)}
                         </div>
                         <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
@@ -3645,15 +3645,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           {/* DRIP Status */}
-          <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-            <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
+            <h4 className="text-lg font-semibold text-purple-200 mb-3 flex items-center">
               🔄 DRIP Status
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
                 .filter(h => h.dividendYield > 0)
                 .map(holding => (
-                  <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                  <div key={holding.id} className="flex justify-between items-center bg-purple-800/20 rounded p-2">
                     <div>
                       <div className="font-semibold text-white">{holding.symbol}</div>
                       <div className="text-xs text-gray-400">
@@ -3662,7 +3662,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                     </div>
                     <div className="text-right">
                       <div className={`text-sm font-semibold ${
-                        holding.dripEnabled ? 'text-green-400' : 'text-gray-400'
+                        holding.dripEnabled ? 'text-purple-400' : 'text-gray-400'
                       }`}>
                         <Tooltip 
                           text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
@@ -3671,7 +3671,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
-                        <div className="text-xs text-green-300">
+                        <div className="text-xs text-purple-300">
                           {holding.dripProgress.toFixed(1)}% to next share
                         </div>
                       )}
@@ -3683,8 +3683,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
         </div>
         
               {/* Dividend Breakdown by Holding */}
-      <div className="mt-6 bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-        <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+      <div className="mt-6 bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
+        <h4 className="text-lg font-semibold text-purple-200 mb-3 flex items-center">
           📊 Dividend Breakdown by Holding
         </h4>
           <div className="space-y-2">
@@ -3696,16 +3696,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 const percentage = totalDividends > 0 ? (holding.annualDividend / totalDividends * 100) : 0;
                 
                                   return (
-                    <div key={holding.id} className="flex items-center justify-between bg-green-800/20 rounded p-3">
+                    <div key={holding.id} className="flex items-center justify-between bg-purple-800/20 rounded p-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
                         <div>
                           <div className="font-semibold text-white">{holding.symbol}</div>
                           <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-green-300">
+                        <div className="font-semibold text-purple-300">
                           ${holding.annualDividend.toLocaleString()}
                         </div>
                         <div className="text-xs text-gray-400">
@@ -3717,13 +3717,13 @@ const InvestmentTab = ({ data, setData, userId }) => {
               })}
           </div>
           
-                      <div className="mt-4 p-3 bg-green-800/20 rounded border border-green-600/30">
-              <div className="text-sm text-green-200 mb-2">
+                      <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
+              <div className="text-sm text-purple-200 mb-2">
                 💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
                 in passive income - perfect for travel funding! 🌍
               </div>
-              <div className="text-xs text-green-300 border-t border-green-600/30 pt-2">
+              <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
                 📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
                 Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
               </div>
