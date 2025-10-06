@@ -194,24 +194,27 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-800 rounded-lg max-w-7xl w-full max-h-[95vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-6 flex justify-between items-center">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
+      <div className="bg-gray-800 rounded-lg max-w-7xl w-full my-4 sm:my-8 max-h-[96vh] sm:max-h-[90vh] flex flex-col">
+        {/* Header - Sticky with close button always visible */}
+        <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 sm:p-6 flex justify-between items-center flex-shrink-0 z-10">
           <div>
-            <h2 className="text-3xl font-bold text-white">Choose Your Plan</h2>
-            <p className="text-gray-400 mt-1">Unlock your path to financial freedom</p>
+            <h2 className="text-xl sm:text-3xl font-bold text-white">Choose Your Plan</h2>
+            <p className="text-gray-400 mt-1 text-xs sm:text-sm">Unlock your path to financial freedom</p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
+            className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700 flex-shrink-0"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto flex-1">
+        
         {/* Billing Toggle */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-4 sm:p-6 border-b border-gray-700">
           <div className="flex justify-center">
             <div className="bg-gray-700 rounded-lg p-1 flex">
               <button

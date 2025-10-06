@@ -64,29 +64,29 @@ const UpgradePrompt = ({
   const PlanIcon = plan?.icon || Lock;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-800 rounded-lg max-w-2xl w-full">
-        {/* Header */}
-        <div className="flex justify-between items-start p-6 border-b border-gray-700">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div className="bg-gray-800 rounded-lg max-w-2xl w-full my-8 max-h-[90vh] flex flex-col">
+        {/* Header - Sticky so close button always visible */}
+        <div className="flex justify-between items-start p-4 sm:p-6 border-b border-gray-700 flex-shrink-0">
           <div className="flex items-center">
-            <div className="bg-gray-700 p-3 rounded-lg mr-4">
-              <Lock className="w-6 h-6 text-yellow-400" />
+            <div className="bg-gray-700 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
+              <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Unlock {featureName}</h2>
-              <p className="text-gray-400">Upgrade to access this powerful feature</p>
+              <h2 className="text-lg sm:text-2xl font-bold text-white">Unlock {featureName}</h2>
+              <p className="text-gray-400 text-xs sm:text-sm">Upgrade to access this powerful feature</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
+            className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700 flex-shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
+        {/* Content - Scrollable */}
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1">
           {/* Feature Description */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-white mb-2">Why You'll Love {featureName}</h3>
@@ -160,9 +160,9 @@ const UpgradePrompt = ({
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-gray-700 p-4 text-center">
-          <p className="text-gray-400 text-sm">
+        {/* Footer - Sticky */}
+        <div className="border-t border-gray-700 p-3 sm:p-4 text-center flex-shrink-0">
+          <p className="text-gray-400 text-xs sm:text-sm">
             ✅ 30-Day Money-Back Guarantee • Cancel Anytime • Instant Access
           </p>
         </div>
