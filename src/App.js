@@ -2936,8 +2936,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
               </div>
             </div>
           </Card>
-        ))
-        )}
+        ))}
       </div>
 
       {/* Add Item Modal */}
