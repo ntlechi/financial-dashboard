@@ -3745,47 +3745,47 @@ const InvestmentTab = ({ data, setData, userId }) => {
       </div>
 
       {/* Enhanced Dividend Tracker */}
-              <Card className="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-500/30">
+              <Card style={{ backgroundColor: '#18212F' }} className="border-cyan-500/20">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-            <Repeat className="w-6 h-6 mr-3 text-green-400" />
+            <Repeat className="w-6 h-6 mr-3 text-cyan-400" />
             💰 Dividend Income Tracker
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
+              <div className="text-2xl font-bold text-cyan-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Monthly Income</div>
+              <div className="text-sm text-cyan-200">Monthly Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
+              <div className="text-2xl font-bold text-cyan-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Quarterly Income</div>
+              <div className="text-sm text-cyan-200">Quarterly Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
+              <div className="text-2xl font-bold text-cyan-300">
                 ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Annual Income</div>
+              <div className="text-sm text-cyan-200">Annual Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
+              <div className="text-2xl font-bold text-cyan-300">
                 {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
               </div>
-              <div className="text-sm text-green-200">Portfolio Yield</div>
+              <div className="text-sm text-cyan-200">Portfolio Yield</div>
             </div>
           </div>
         
         {/* Dividend Calendar & Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Upcoming Dividends */}
-            <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-              <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+            <div className="bg-gradient-to-br from-blue-900/20 to-indigo-900/20 rounded-lg p-4 border border-blue-500/30">
+              <h4 className="text-lg font-semibold text-blue-200 mb-3 flex items-center">
                 📅 Upcoming Dividends
               </h4>
             <div className="space-y-3">
@@ -3793,7 +3793,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 .filter(h => h.nextDividendDate && h.dividendYield > 0)
                 .sort((a, b) => new Date(a.nextDividendDate) - new Date(b.nextDividendDate))
                                   .map(holding => (
-                    <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                    <div key={holding.id} className="flex justify-between items-center bg-blue-800/20 rounded p-2 border border-blue-600/20">
                       <div>
                         <div className="font-semibold text-white">{holding.symbol}</div>
                         <div className="text-xs text-gray-400">
@@ -3803,7 +3803,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-purple-300 font-semibold">
+                        <div className="text-cyan-300 font-semibold">
                           ${(holding.annualDividend / 4).toFixed(0)}
                         </div>
                         <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
@@ -3814,8 +3814,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           {/* DRIP Status */}
-          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
-            <h4 className="text-lg font-semibold text-purple-200 mb-3 flex items-center">
+          <div className="bg-gradient-to-br from-indigo-900/20 to-violet-900/20 rounded-lg p-4 border border-indigo-500/30">
+            <h4 className="text-lg font-semibold text-indigo-200 mb-3 flex items-center">
               🔄 DRIP Status
             </h4>
             <div className="space-y-3">
@@ -5428,82 +5428,82 @@ const TravelTab = ({ data, setData, userId }) => {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
-      <Card className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 border-amber-500/30 relative">
+      <Card style={{ backgroundColor: '#18212F' }} className="border-cyan-500/20 relative">
         <button
           onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-amber-700/20 hover:bg-amber-600/30 rounded-lg transition-colors"
+          className="absolute top-4 right-4 p-2 bg-cyan-700/20 hover:bg-cyan-600/30 rounded-lg transition-colors border border-cyan-500/30"
           title="Edit Travel Runway Settings"
         >
-          <Edit className="w-4 h-4 text-amber-300" />
+          <Edit className="w-4 h-4 text-cyan-300" />
         </button>
         
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-amber-200 mb-6">Smart destination-based travel planning with cost tiers</p>
+          <p className="text-cyan-200 mb-6">Smart destination-based travel planning with cost tiers</p>
           
           {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-amber-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-amber-300">{runway.totalPossibleDays}</div>
-              <div className="text-amber-200">Total Possible Days</div>
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-4 border border-cyan-500/30">
+              <div className="text-3xl font-bold text-cyan-300">{runway.totalPossibleDays}</div>
+              <div className="text-cyan-200">Total Possible Days</div>
             </div>
-            <div className="bg-amber-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-amber-300">{runway.weeksRemaining}</div>
-              <div className="text-amber-200">Weeks of Travel</div>
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-4 border border-cyan-500/30">
+              <div className="text-3xl font-bold text-cyan-300">{runway.weeksRemaining}</div>
+              <div className="text-cyan-200">Weeks of Travel</div>
             </div>
-            <div className="bg-amber-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-amber-300">{runway.monthsRemaining}</div>
-              <div className="text-amber-200">Months of Travel</div>
+            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-4 border border-cyan-500/30">
+              <div className="text-3xl font-bold text-cyan-300">{runway.monthsRemaining}</div>
+              <div className="text-cyan-200">Months of Travel</div>
             </div>
           </div>
 
           {/* Destination Cost Breakdown */}
-          <div className="bg-blue-900/30 rounded-lg p-4 mb-6">
-            <h3 className="text-lg font-semibold text-blue-200 mb-4">🎯 Your Travel Plan</h3>
+          <div className="bg-gradient-to-br from-indigo-900/20 to-violet-900/20 rounded-lg p-4 mb-6 border border-indigo-500/30">
+            <h3 className="text-lg font-semibold text-indigo-200 mb-4">🎯 Your Travel Plan</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-green-900/30 rounded-lg p-3 border border-green-600/30">
-                <div className="text-green-400 font-semibold">🟢 Cheap Destinations</div>
+              <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
+                <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
-                <div className="text-green-300">${runway.costTiers.cheap}/day</div>
-                <div className="text-green-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
-                <div className="text-xs text-green-300 mt-1">Southeast Asia, Eastern Europe, India</div>
+                <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
+                <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
+                <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
               </div>
-              <div className="bg-yellow-900/30 rounded-lg p-3 border border-yellow-600/30">
-                <div className="text-yellow-400 font-semibold">🟡 Moderate Destinations</div>
+              <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
+                <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
-                <div className="text-yellow-300">${runway.costTiers.moderate}/day</div>
-                <div className="text-yellow-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
-                <div className="text-xs text-yellow-300 mt-1">South America, Southern Europe</div>
+                <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
+                <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
+                <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
               </div>
-              <div className="bg-red-900/30 rounded-lg p-3 border border-red-600/30">
-                <div className="text-red-400 font-semibold">🔴 Expensive Destinations</div>
+              <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
+                <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
-                <div className="text-red-300">${runway.costTiers.expensive}/day</div>
-                <div className="text-red-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
-                <div className="text-xs text-red-300 mt-1">Western Europe, Scandinavia, Japan</div>
+                <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
+                <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
+                <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
               </div>
             </div>
           </div>
 
           {/* Financial Summary */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
-            <div className="bg-blue-700/20 rounded-lg p-3">
+            <div className="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 rounded-lg p-3 border border-blue-500/30">
               <div className="text-blue-200">Total Travel Funds</div>
               <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
             </div>
-            <div className="bg-blue-700/20 rounded-lg p-3">
-              <div className="text-blue-200">Planned Trip Cost</div>
+            <div className="bg-gradient-to-br from-violet-600/20 to-purple-600/20 rounded-lg p-3 border border-violet-500/30">
+              <div className="text-violet-200">Planned Trip Cost</div>
               <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
-              <div className="text-xs text-blue-300">{runway.totalPlannedDays} days planned</div>
+              <div className="text-xs text-violet-300">{runway.totalPlannedDays} days planned</div>
             </div>
-            <div className="bg-green-700/20 rounded-lg p-3">
-              <div className="text-green-200">Remaining Funds</div>
-              <div className="text-xl font-bold text-green-400">${runway.remainingFunds.toLocaleString()}</div>
-              <div className="text-xs text-green-300">+{runway.extensionDays} days possible</div>
+            <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
+              <div className="text-emerald-200">Remaining Funds</div>
+              <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
+              <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
             </div>
           </div>
           
-          <div className="text-xs text-blue-300 text-center">
+          <div className="text-xs text-cyan-300 text-center">
             💡 Extend your journey by choosing cheaper destinations with remaining funds
           </div>
         </div>
