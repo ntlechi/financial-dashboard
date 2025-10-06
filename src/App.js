@@ -6981,15 +6981,15 @@ function App() {
           lastProcessed: resetStartDate,
           createdDate: resetStartDate
         })),
-        history: [{
+        monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
           netWorth: initialData.netWorth.total,
           income: initialData.income.total,
           expenses: initialData.expenses.total,
-          cashflow: initialData.cashflow.monthly,
-          businessIncome: initialData.businesses.reduce((sum, b) => sum + b.totalIncome, 0),
-          businessExpenses: initialData.businesses.reduce((sum, b) => sum + b.totalExpenses, 0),
-          investmentValue: initialData.investments.totalValue,
+          cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
+          businessIncome: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalIncome || 0), 0),
+          businessExpenses: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalExpenses || 0), 0),
+          investmentValue: initialData.investments.totalValue || 0,
           savingsRate: initialData.savingsRate.current
         }]
       };
@@ -7017,23 +7017,32 @@ function App() {
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
+        debt: {
+          total: 0,
+          accounts: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
         registeredAccounts: {
-          tfsa: {
-            currentBalance: 0,
-            contributionRoom: 95000,
-            contributionLimit: 95000,
-            annualContributionLimit: 7000,
-            withdrawals: 0,
-            contributionsThisYear: 0
-          },
-          rrsp: {
-            currentBalance: 0,
-            contributionRoom: 127000,
-            contributionLimit: 127000,
-            annualContributionLimit: 31560,
-            contributionsThisYear: 0,
-            carryForward: 0
-          }
+          accounts: [
+            {
+              id: 'tfsa',
+              name: 'TFSA',
+              contributed: 0,
+              limit: 88000,
+              goal: 10000,
+              type: 'tax-free',
+              description: 'Tax-free growth and withdrawals'
+            },
+            {
+              id: 'rrsp', 
+              name: 'RRSP',
+              contributed: 0,
+              limit: 31560,
+              goal: 5000,
+              type: 'tax-deferred',
+              description: 'Tax-deferred retirement savings'
+            }
+          ]
         },
         businesses: [],
         netWorth: {
@@ -7052,19 +7061,18 @@ function App() {
           history: [{ date: resetStartDate, total: 0 }]
         },
         cashflow: {
+          total: 0,
           monthly: 0,
           history: [{ date: resetStartDate, amount: 0 }]
         },
         savingsRate: {
           current: 0,
           target: 20,
+          monthly: 0,
+          monthlyIncome: 0,
           history: [{ date: resetStartDate, rate: 0 }]
         },
-        goals: {
-          items: [],
-          totalTarget: 0,
-          totalProgress: 0
-        },
+        goals: [],
         investments: {
           totalValue: 0,
           totalGainLoss: 0,
@@ -7074,7 +7082,7 @@ function App() {
         },
         transactions: [],
         recurringExpenses: [],
-        history: [{
+        monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
           netWorth: 0,
           income: 0,
@@ -7084,7 +7092,53 @@ function App() {
           businessExpenses: 0,
           investmentValue: 0,
           savingsRate: 0
-        }]
+        }],
+        travel: {
+          totalSavings: 0,
+          homeCurrency: 'CAD',
+          exchangeRates: {
+            'USD': 1.35,
+            'EUR': 1.47,
+            'GBP': 1.70,
+            'THB': 0.037,
+            'COP': 0.00033
+          },
+          trips: [],
+          runwayCalculation: {
+            averageDailySpend: 0,
+            totalAvailableFunds: 0,
+            estimatedDaysRemaining: 0,
+            lastUpdated: resetStartDate
+          },
+          tripPlan: {
+            cheap: 90,
+            moderate: 30,
+            expensive: 15
+          },
+          expenseCategories: [
+            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
+            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
+            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
+          ]
+        },
+        budgetSettings: {
+          fiftyThirtyTwenty: {
+            needs: 50,
+            wants: 30,
+            savings: 20
+          },
+          sixJars: {
+            necessities: 55,
+            education: 10,
+            play: 10,
+            longTermSavings: 10,
+            financial: 10,
+            give: 5
+          }
+        }
       };
     }
 
