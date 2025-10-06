@@ -7462,24 +7462,61 @@ function App() {
                 </FinancialErrorBoundary>
               )}
               
-              {/* FREE TIER CARDS: Net Worth, Cash Flow, Savings Rate */}
+              {/* 🎯 OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
               
-              {/* Net Worth - FREE+ */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Cash Flow - FREE+ (Left) */}
+              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
+              
+              {/* Rainy Day Fund - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
+                <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Monthly Income - CLIMBER+ (Left) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <IncomeCard data={displayData.income} viewMode={viewMode} />
+              ) : (
+                <LockedCard cardName="Monthly Income" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* Monthly Expenses - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
+              ) : (
+                <LockedCard cardName="Monthly Expenses" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 3: THE BIG PICTURE (Assets & Liabilities) */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Net Worth - FREE+ (Left) */}
               <FinancialErrorBoundary componentName="Net Worth Calculator">
                 <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
-              {/* Cash Flow - FREE+ */}
-              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
+              {/* Total Debt - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
+                <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Total Debt" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Savings Rate - FREE+ */}
-              <FinancialErrorBoundary componentName="Savings Rate Tracker">
-                <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
+              {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* CLIMBER+ CARDS: Advanced Dashboard */}
-              
-              {/* Financial Freedom Goal - CLIMBER+ */}
+              {/* Financial Freedom Goal - CLIMBER+ (Left) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                 <FinancialErrorBoundary componentName="Financial Freedom Goal">
                   <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
@@ -7488,57 +7525,62 @@ function App() {
                 <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
               
-              {/* Emergency Fund - CLIMBER+ */}
-              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
-              ) : (
-                <LockedCard cardName="Emergency Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              {/* Savings Rate - FREE+ (Right) */}
+              <FinancialErrorBoundary componentName="Savings Rate Tracker">
+                <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
               
-              {/* Debt Payoff - CLIMBER+ */}
-              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-                <DebtCard data={displayData.debt} onEdit={openCardEditor} />
-              ) : (
-                <LockedCard cardName="Debt Payoff Calculator" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* FULL-WIDTH CARDS: Detailed Intelligence */}
+              {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* Credit Score - CLIMBER+ */}
+              {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (
-                <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
+                </div>
               ) : (
-                <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
               )}
               
-              {/* Goals - CLIMBER+ */}
+              {/* Cash on Hand - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <FinancialErrorBoundary componentName="Cash Management">
+                    <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+                  </FinancialErrorBoundary>
+                </div>
               ) : (
-                <LockedCard cardName="Goal Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
               )}
               
-              {/* Retirement Accounts - CLIMBER+ */}
+              {/* Financial Goals - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <RegisteredAccountsCard 
-                  data={displayData.registeredAccounts} 
-                  onEdit={openCardEditor} 
-                />
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+                </div>
               ) : (
-                <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
               )}
               
-              {/* Income and Expenses - CLIMBER+ (for detailed view) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') && (
-                <>
-                  <IncomeCard data={displayData.income} viewMode={viewMode} />
-                  <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
-                </>
-              )}
-              
-              {/* Cash on Hand - CLIMBER+ */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') && (
-                <FinancialErrorBoundary componentName="Cash Management">
-                  <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
-                </FinancialErrorBoundary>
+              {/* Retirement Accounts - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <RegisteredAccountsCard 
+                    data={displayData.registeredAccounts} 
+                    onEdit={openCardEditor} 
+                  />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
               )}
             </>
           )}
