@@ -659,6 +659,21 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 
 // Financial Freedom Goal Card
 const FinancialFreedomCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.targetAmount) {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-emerald-900/40 to-teal-900/40">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <Target className="w-6 h-6 mr-3 text-emerald-400" />
+            Financial Freedom Goal
+          </h2>
+        </div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const progressPercentage = (data.currentInvestments / data.targetAmount) * 100;
   const monthsToGoal = data.monthlyContribution > 0 
     ? Math.ceil((data.targetAmount - data.currentInvestments) / data.monthlyContribution) 
@@ -715,6 +730,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
 
 // Savings Rate Card
 const SavingsRateCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.current === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+            Savings Rate
+          </h2>
+        </div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const getRateColor = (rate) => {
     if (rate >= 50) return 'text-emerald-400';
     if (rate >= 30) return 'text-yellow-400';
@@ -7521,7 +7551,7 @@ function App() {
               
               {/* Savings Rate - FREE+ (Right) */}
               <FinancialErrorBoundary componentName="Savings Rate Tracker">
-                <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
+                <SavingsRateCard data={displayData?.savingsRate} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
               {/* ═══════════════════════════════════════════════════════ */}
