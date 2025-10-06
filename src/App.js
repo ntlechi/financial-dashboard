@@ -256,18 +256,18 @@ const initialData = {
       {
         id: 'tfsa',
         name: 'TFSA',
-        contributed: 45000,
+        contributed: 0,  // Just starting out
         limit: 88000,
-        goal: 88000,
+        goal: 10000,  // Realistic first goal
         type: 'tax-free',
         description: 'Tax-free growth and withdrawals'
       },
       {
         id: 'rrsp', 
         name: 'RRSP',
-        contributed: 25000,
+        contributed: 0,  // Just starting out
         limit: 31560,
-        goal: 31560,
+        goal: 5000,  // Realistic first goal
         type: 'tax-deferred',
         description: 'Tax-deferred retirement savings'
       }
