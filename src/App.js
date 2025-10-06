@@ -246,46 +246,9 @@ const initialData = {
     { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
     { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
   ],
-  businesses: [
-    {
-      id: 1,
-      name: "Trading Business",
-      description: "Stock and crypto trading",
-      startDate: "2024-01-01",
-      totalIncome: 15000,
-      totalExpenses: 2500,
-      netProfit: 12500,
-      incomeItems: [
-        { id: 1, description: "Q4 Trading Profits", amount: 8000, date: "2025-01-10" },
-        { id: 2, description: "Crypto Gains", amount: 4500, date: "2025-01-08" },
-        { id: 3, description: "Dividend Income", amount: 2500, date: "2025-01-05" }
-      ],
-      expenseItems: [
-        { id: 1, description: "Trading Platform Fees", amount: 1200, date: "2025-01-12" },
-        { id: 2, description: "Market Data Subscription", amount: 800, date: "2025-01-01" },
-        { id: 3, description: "Tax Preparation", amount: 500, date: "2025-01-15" }
-      ]
-    },
-    {
-      id: 2,
-      name: "Consulting Services",
-      description: "Tech consulting and advisory",
-      startDate: "2023-06-01",
-      totalIncome: 25000,
-      totalExpenses: 3500,
-      netProfit: 21500,
-      incomeItems: [
-        { id: 1, description: "Client A - Project Completion", amount: 15000, date: "2025-01-14" },
-        { id: 2, description: "Client B - Monthly Retainer", amount: 5000, date: "2025-01-01" },
-        { id: 3, description: "Client C - Strategy Session", amount: 5000, date: "2025-01-07" }
-      ],
-      expenseItems: [
-        { id: 1, description: "Business License Renewal", amount: 1500, date: "2025-01-03" },
-        { id: 2, description: "Professional Development", amount: 1200, date: "2025-01-11" },
-        { id: 3, description: "Office Supplies", amount: 800, date: "2025-01-09" }
-      ]
-    }
-  ],
+  // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
+  // FREE tier users shouldn't have phantom businesses affecting their calculations
+  businesses: [],
   investments: {
     totalValue: 270000, // Calculated: VTI (1200 * 225) = 270,000
     portfolioAllocation: [
