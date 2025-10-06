@@ -1056,8 +1056,8 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
   }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 🛡️ NULL SAFETY CHECK - After hooks, before render
-  if (!data || typeof data.score === 'undefined' || typeof data.current === 'undefined') {
+  // 🛡️ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
+  if (!data || typeof data.current === 'undefined') {
     return (
       <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
