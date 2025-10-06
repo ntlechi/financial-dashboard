@@ -1195,7 +1195,8 @@ const NetWorthCard = ({ data, onEdit }) => {
               </div>
               <span className="text-emerald-400 font-medium">+${item.value.toLocaleString()}</span>
             </div>
-          ))}
+          ))
+          )}
         </div>
       </div>
 
@@ -2608,8 +2609,9 @@ const SideHustleTab = ({ data, setData, userId }) => {
     date: new Date().toISOString().split('T')[0]
   });
 
-  const totalBusinessIncome = data.businesses.reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
-  const totalBusinessExpenses = data.businesses.reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
+  // 🔧 EDGE CASE FIX: Null safety for empty businesses array
+  const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
+  const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
   const handleAddBusiness = async () => {
@@ -2935,7 +2937,8 @@ const SideHustleTab = ({ data, setData, userId }) => {
               </div>
             </div>
           </Card>
-        ))}
+        ))
+        )}
       </div>
 
       {/* Add Item Modal */}
@@ -3122,13 +3125,13 @@ const InvestmentTab = ({ data, setData, userId }) => {
     currency: 'CAD'
   });
 
-  // Calculate dynamic totals from actual holdings
-  const actualTotalValue = data.investments.holdings.reduce((sum, holding) => {
-    return sum + (holding.shares * holding.currentPrice);
+  // 🔧 EDGE CASE FIX: Null safety for empty holdings array
+  const actualTotalValue = (data.investments?.holdings || []).reduce((sum, holding) => {
+    return sum + ((holding.shares || 0) * (holding.currentPrice || 0));
   }, 0);
 
-  const actualTotalCost = data.investments.holdings.reduce((sum, holding) => {
-    return sum + (holding.shares * holding.avgCost);
+  const actualTotalCost = (data.investments?.holdings || []).reduce((sum, holding) => {
+    return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
   useEffect(() => {
@@ -3852,7 +3855,25 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </button>
         </div>
         <div className="space-y-4">
-          {data.investments.holdings.map(holding => (
+          {data.investments.holdings.length === 0 ? (
+            <Card className="bg-gradient-to-br from-violet-900/20 to-blue-900/20 border-violet-500/30">
+              <div className="text-center py-12">
+                <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-white mb-2">No Investments Yet</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start building your investment portfolio. Track stocks, ETFs, crypto, and dividends all in one place!
+                </p>
+                <button
+                  onClick={() => setShowAddHolding(true)}
+                  className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Your First Investment
+                </button>
+              </div>
+            </Card>
+          ) : (
+            data.investments.holdings.map(holding => (
             <div key={holding.id} className="bg-gray-700/30 rounded-lg p-4">
               <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-center">
                 <div className="lg:col-span-2">
@@ -5469,7 +5490,27 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* Trip Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {(data.travel?.trips || []).map(trip => {
+        {(data.travel?.trips || []).length === 0 ? (
+          <div className="col-span-1 lg:col-span-2">
+            <Card className="bg-gradient-to-br from-blue-900/20 to-emerald-900/20 border-blue-500/30">
+              <div className="text-center py-12">
+                <Target className="w-16 h-16 text-blue-400 mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-white mb-2">No Trips Planned Yet</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.
+                </p>
+                <button
+                  onClick={() => setShowAddTrip(true)}
+                  className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Plan Your First Trip
+                </button>
+              </div>
+            </Card>
+          </div>
+        ) : (
+          (data.travel?.trips || []).map(trip => {
           const progress = trip.targetBudget > 0 ? (trip.currentSavings / trip.targetBudget) * 100 : 0;
           const totalExpenses = trip.expenses?.reduce((sum, exp) => {
             return sum + convertCurrency(exp.amount, exp.currency, 'CAD');
@@ -5578,7 +5619,8 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
             </Card>
           );
-        })}
+        })
+        )}
       </div>
 
       {/* Add Trip Modal */}
@@ -7221,7 +7263,8 @@ function App() {
   const getAnnualizedData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
+    // 🔧 EDGE CASE FIX: Null safety for transactions and businesses
+    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     
     return {
       ...data,
@@ -7256,8 +7299,9 @@ function App() {
   const getDisplayData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
-    const actualInvestmentTotal = calculateInvestmentTotal(data.investments.holdings);
+    // 🔧 EDGE CASE FIX: Ensure all required data structures exist
+    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
+    const actualInvestmentTotal = calculateInvestmentTotal(data.investments?.holdings || []);
     
     // Update Net Worth with dynamic investment value
     const updatedNetWorth = {
@@ -7288,9 +7332,10 @@ function App() {
         monthly: calculatedData.income.total - calculatedData.expenses.total
       },
       savingsRate: { 
-        ...data.savingsRate, 
+        ...data.savingsRate,
+        // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
         current: calculatedData.income.total > 0 ? 
-          Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100 : 0
+          Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
       }
     };
     
