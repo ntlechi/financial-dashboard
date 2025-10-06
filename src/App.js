@@ -811,6 +811,19 @@ const SavingsRateCard = ({ data, onEdit }) => {
 
 // Rainy Day Fund Card
 const RainyDayFundCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
+          Rainy Day Fund
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = data.total / 6500; // Assuming monthly expenses
   
@@ -876,6 +889,19 @@ const RainyDayFundCard = ({ data, onEdit }) => {
 // Credit Score Card with History Chart
 const CreditScoreCard = ({ data, onEdit }) => {
   const svgRef = useRef();
+
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.score === 'undefined') {
+    return (
+      <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Award className="w-6 h-6 mr-3 text-indigo-400" />
+          Credit Score
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
 
   const getScoreColor = (score) => {
     if (score >= 800) return 'text-emerald-400';
@@ -1119,6 +1145,19 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
 // Goals Card
 const GoalsCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !Array.isArray(data)) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Calendar className="w-6 h-6 mr-3 text-amber-400" />
+          Financial Goals
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
       <div className="flex justify-between items-start mb-4">
@@ -1185,7 +1224,21 @@ const GoalsCard = ({ data, onEdit }) => {
 };
 
 // Net Worth Card
-const NetWorthCard = ({ data, onEdit }) => (
+const NetWorthCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+          Net Worth
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
@@ -1240,6 +1293,19 @@ const NetWorthCard = ({ data, onEdit }) => (
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/30 to-indigo-900/30">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+          Retirement Accounts
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const accounts = data?.accounts || [];
   
   // Calculate totals
@@ -1343,6 +1409,19 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
 
 // Debt Management Card
 const DebtCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+          Total Debt
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const totalDebt = data.accounts?.reduce((sum, account) => sum + account.balance, 0) || 0;
   const totalMinPayment = data.accounts?.reduce((sum, account) => sum + account.minPayment, 0) || 0;
   const avgInterestRate = data.accounts?.length > 0 ? 
@@ -1404,7 +1483,21 @@ const DebtCard = ({ data, onEdit }) => {
 };
 
 // Cash on Hand Card
-const CashOnHandCard = ({ data, onEdit }) => (
+const CashOnHandCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.amount === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <Wallet className="w-6 h-6 mr-3 text-teal-400" />
+          Cash on Hand
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
@@ -1439,7 +1532,21 @@ const CashOnHandCard = ({ data, onEdit }) => (
 );
 
 // Income Card
-const IncomeCard = ({ data, viewMode }) => (
+const IncomeCard = ({ data, viewMode }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+          {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
@@ -1458,7 +1565,21 @@ const IncomeCard = ({ data, viewMode }) => (
 );
 
 // Expenses Card
-const ExpensesCard = ({ data, viewMode }) => (
+const ExpensesCard = ({ data, viewMode }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
+          {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
@@ -1478,6 +1599,19 @@ const ExpensesCard = ({ data, viewMode }) => (
 
 // Cash Flow Card
 const CashFlowCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+          Cash Flow
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const isPositive = data.total >= 0;
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
