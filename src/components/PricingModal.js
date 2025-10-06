@@ -383,15 +383,18 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         </div>
 
         {/* Guarantee */}
-        <div className="border-t border-gray-700 p-6 text-center">
+        <div className="border-t border-gray-700 p-4 sm:p-6 text-center">
           <div className="flex items-center justify-center mb-2">
-            <Check className="w-5 h-5 text-green-400 mr-2" />
-            <span className="text-white font-semibold">30-Day Money-Back Guarantee</span>
+            <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 mr-2" />
+            <span className="text-white font-semibold text-sm sm:text-base">30-Day Money-Back Guarantee</span>
           </div>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-xs sm:text-sm">
             Try any paid plan risk-free. If you're not completely satisfied, get a full refund within 30 days.
           </p>
         </div>
+        
+        </div>
+        {/* End Scrollable Content */}
       </div>
     </div>
   );
