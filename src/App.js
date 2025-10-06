@@ -5619,11 +5619,22 @@ const TravelTab = ({ data, setData, userId }) => {
                 {trip.expenses && trip.expenses.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
-                    <div className="space-y-1 max-h-24 overflow-y-auto">
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.expenses.slice(0, 3).map(expense => (
                         <div key={expense.id} className="flex justify-between text-xs">
-                          <span className="text-gray-400">{expense.description}</span>
-                          <span className="text-white">
+                          <div className="flex flex-col">
+                            <span className="text-gray-400">{expense.description}</span>
+                            {expense.date && (
+                              <span className="text-gray-500 text-xs mt-0.5">
+                                {new Date(expense.date).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric', 
+                                  year: 'numeric' 
+                                })}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-white flex-shrink-0 ml-3">
                             {expense.amount} {expense.currency}
                             {expense.currency !== 'CAD' && (
                               <span className="text-gray-500 ml-1">
