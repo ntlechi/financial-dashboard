@@ -3745,47 +3745,47 @@ const InvestmentTab = ({ data, setData, userId }) => {
       </div>
 
       {/* Enhanced Dividend Tracker */}
-              <Card style={{ backgroundColor: '#18212F' }} className="border-cyan-500/20">
+              <Card style={{ backgroundColor: '#18212F' }} className="border-amber-500/30">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-            <Repeat className="w-6 h-6 mr-3 text-cyan-400" />
+            <Repeat className="w-6 h-6 mr-3 text-amber-400" />
             💰 Dividend Income Tracker
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
-              <div className="text-2xl font-bold text-cyan-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
               </div>
-              <div className="text-sm text-cyan-200">Monthly Income</div>
+              <div className="text-sm text-amber-200">Monthly Income</div>
             </div>
             
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
-              <div className="text-2xl font-bold text-cyan-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
               </div>
-              <div className="text-sm text-cyan-200">Quarterly Income</div>
+              <div className="text-sm text-amber-200">Quarterly Income</div>
             </div>
             
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
-              <div className="text-2xl font-bold text-cyan-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
               </div>
-              <div className="text-sm text-cyan-200">Annual Income</div>
+              <div className="text-sm text-amber-200">Annual Income</div>
             </div>
             
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-3 text-center border border-cyan-500/30">
-              <div className="text-2xl font-bold text-cyan-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
               </div>
-              <div className="text-sm text-cyan-200">Portfolio Yield</div>
+              <div className="text-sm text-amber-200">Portfolio Yield</div>
             </div>
           </div>
         
         {/* Dividend Calendar & Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Upcoming Dividends */}
-            <div className="bg-gradient-to-br from-blue-900/20 to-indigo-900/20 rounded-lg p-4 border border-blue-500/30">
-              <h4 className="text-lg font-semibold text-blue-200 mb-3 flex items-center">
+            <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
+              <h4 className="text-lg font-semibold text-amber-200 mb-3 flex items-center">
                 📅 Upcoming Dividends
               </h4>
             <div className="space-y-3">
@@ -3793,7 +3793,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 .filter(h => h.nextDividendDate && h.dividendYield > 0)
                 .sort((a, b) => new Date(a.nextDividendDate) - new Date(b.nextDividendDate))
                                   .map(holding => (
-                    <div key={holding.id} className="flex justify-between items-center bg-blue-800/20 rounded p-2 border border-blue-600/20">
+                    <div key={holding.id} className="flex justify-between items-center bg-amber-800/20 rounded p-2 border border-amber-600/20">
                       <div>
                         <div className="font-semibold text-white">{holding.symbol}</div>
                         <div className="text-xs text-gray-400">
@@ -3803,7 +3803,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-cyan-300 font-semibold">
+                        <div className="text-amber-300 font-semibold">
                           ${(holding.annualDividend / 4).toFixed(0)}
                         </div>
                         <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
@@ -3814,8 +3814,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           {/* DRIP Status */}
-          <div className="bg-gradient-to-br from-indigo-900/20 to-violet-900/20 rounded-lg p-4 border border-indigo-500/30">
-            <h4 className="text-lg font-semibold text-indigo-200 mb-3 flex items-center">
+          <div className="bg-gradient-to-br from-yellow-900/20 to-amber-900/20 rounded-lg p-4 border border-yellow-500/30">
+            <h4 className="text-lg font-semibold text-yellow-200 mb-3 flex items-center">
               🔄 DRIP Status
             </h4>
             <div className="space-y-3">
@@ -5428,38 +5428,38 @@ const TravelTab = ({ data, setData, userId }) => {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
-      <Card style={{ backgroundColor: '#18212F' }} className="border-cyan-500/20 relative">
+      <Card style={{ backgroundColor: '#18212F' }} className="border-slate-500/30 relative">
         <button
           onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-cyan-700/20 hover:bg-cyan-600/30 rounded-lg transition-colors border border-cyan-500/30"
+          className="absolute top-4 right-4 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
           title="Edit Travel Runway Settings"
         >
-          <Edit className="w-4 h-4 text-cyan-300" />
+          <Edit className="w-4 h-4 text-slate-300" />
         </button>
         
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-cyan-200 mb-6">Smart destination-based travel planning with cost tiers</p>
+          <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
           
           {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-4 border border-cyan-500/30">
-              <div className="text-3xl font-bold text-cyan-300">{runway.totalPossibleDays}</div>
-              <div className="text-cyan-200">Total Possible Days</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
+              <div className="text-slate-300">Total Possible Days</div>
             </div>
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-4 border border-cyan-500/30">
-              <div className="text-3xl font-bold text-cyan-300">{runway.weeksRemaining}</div>
-              <div className="text-cyan-200">Weeks of Travel</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
+              <div className="text-slate-300">Weeks of Travel</div>
             </div>
-            <div className="bg-gradient-to-br from-cyan-600/20 to-blue-600/20 rounded-lg p-4 border border-cyan-500/30">
-              <div className="text-3xl font-bold text-cyan-300">{runway.monthsRemaining}</div>
-              <div className="text-cyan-200">Months of Travel</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
+              <div className="text-slate-300">Months of Travel</div>
             </div>
           </div>
 
           {/* Destination Cost Breakdown */}
-          <div className="bg-gradient-to-br from-indigo-900/20 to-violet-900/20 rounded-lg p-4 mb-6 border border-indigo-500/30">
-            <h3 className="text-lg font-semibold text-indigo-200 mb-4">🎯 Your Travel Plan</h3>
+          <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
+            <h3 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
                 <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
@@ -5487,14 +5487,14 @@ const TravelTab = ({ data, setData, userId }) => {
 
           {/* Financial Summary */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
-            <div className="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 rounded-lg p-3 border border-blue-500/30">
-              <div className="text-blue-200">Total Travel Funds</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+              <div className="text-slate-300">Total Travel Funds</div>
               <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
             </div>
-            <div className="bg-gradient-to-br from-violet-600/20 to-purple-600/20 rounded-lg p-3 border border-violet-500/30">
-              <div className="text-violet-200">Planned Trip Cost</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+              <div className="text-slate-300">Planned Trip Cost</div>
               <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
-              <div className="text-xs text-violet-300">{runway.totalPlannedDays} days planned</div>
+              <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
             </div>
             <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
               <div className="text-emerald-200">Remaining Funds</div>
@@ -5503,7 +5503,7 @@ const TravelTab = ({ data, setData, userId }) => {
             </div>
           </div>
           
-          <div className="text-xs text-cyan-300 text-center">
+          <div className="text-xs text-slate-400 text-center">
             💡 Extend your journey by choosing cheaper destinations with remaining funds
           </div>
         </div>
