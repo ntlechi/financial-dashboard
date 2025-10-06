@@ -415,76 +415,79 @@ const initialData = {
       tags: ['insurance', 'essential']
     }
   ],
+  // 🔧 FIX: Monthly history updated to match realistic beginner sample data
   monthlyHistory: [
     { 
       month: '2025-01', 
-      netWorth: 550000, 
-      income: 12500, 
-      expenses: 6500, 
-      cashflow: 6000, 
-      businessIncome: 4500, 
-      businessExpenses: 1000,
-      investmentValue: 450000,
-      savingsRate: 48
+      netWorth: 4700,      // Realistic beginner: cash + car - debt
+      income: 3000,        // Entry-level job
+      expenses: 2000,      // Manageable expenses
+      cashflow: 1000,      // $1k/month savings
+      businessIncome: 0,   // No business yet
+      businessExpenses: 0,
+      investmentValue: 0,  // Learning phase
+      savingsRate: 33      // Achievable 33%
     },
     { 
       month: '2024-12', 
-      netWorth: 535000, 
-      income: 11800, 
-      expenses: 6200, 
-      cashflow: 5600, 
-      businessIncome: 4200, 
-      businessExpenses: 950,
-      investmentValue: 445000,
-      savingsRate: 47
+      netWorth: 4500, 
+      income: 3000, 
+      expenses: 2100, 
+      cashflow: 900, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 30
     },
     { 
       month: '2024-11', 
-      netWorth: 528000, 
-      income: 12200, 
-      expenses: 6400, 
-      cashflow: 5800, 
-      businessIncome: 4400, 
-      businessExpenses: 1100,
-      investmentValue: 440000,
-      savingsRate: 48
+      netWorth: 4200, 
+      income: 3000, 
+      expenses: 2050, 
+      cashflow: 950, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 32
     },
     { 
       month: '2024-10', 
-      netWorth: 522000, 
-      income: 11900, 
-      expenses: 6300, 
-      cashflow: 5600, 
-      businessIncome: 4100, 
-      businessExpenses: 980,
-      investmentValue: 435000,
-      savingsRate: 47
+      netWorth: 4000, 
+      income: 2900,        // Slight variation (realistic)
+      expenses: 2150, 
+      cashflow: 750, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 26
     },
     { 
       month: '2024-09', 
-      netWorth: 515000, 
-      income: 12000, 
-      expenses: 6100, 
-      cashflow: 5900, 
-      businessIncome: 4300, 
-      businessExpenses: 920,
-      investmentValue: 425000,
-      savingsRate: 49
+      netWorth: 3800, 
+      income: 3000, 
+      expenses: 2100, 
+      cashflow: 900, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 30
     },
     { 
       month: '2024-08', 
-      netWorth: 508000, 
-      income: 11700, 
-      expenses: 5900, 
-      cashflow: 5800, 
-      businessIncome: 4000, 
-      businessExpenses: 850,
-      investmentValue: 415000,
-      savingsRate: 50
+      netWorth: 3500, 
+      income: 2800,        // First job - lower starting salary
+      expenses: 2000, 
+      cashflow: 800, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 29
     }
   ],
+  // 🔧 FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
+  // FREE tier users shouldn't have phantom travel data, consistent with businesses fix
   travel: {
-    totalSavings: 85000,
+    totalSavings: 0,  // Just starting out - building travel fund
     homeCurrency: 'CAD',
     exchangeRates: {
       'USD': 0.70,        // 1 CAD = 0.70 USD (realistic rate)
@@ -495,41 +498,11 @@ const initialData = {
       'VND': 17800,       // 1 CAD = 17,800 Vietnamese Dong
       'MXN': 14.2         // 1 CAD = 14.2 Mexican Pesos
     },
-    trips: [
-      {
-        id: 1,
-        name: "Southeast Asia Adventure 2025",
-        description: "3 months backpacking through Thailand, Vietnam, Cambodia",
-        targetBudget: 45000,
-        currentSavings: 32000,
-        startDate: "2025-06-01",
-        endDate: "2025-09-01",
-        estimatedDailySpend: 500, // in CAD
-        countries: ["Thailand", "Vietnam", "Cambodia"],
-        status: "planning",
-        expenses: [
-          { id: 1, date: "2025-01-15", description: "Flight to Bangkok", amount: 1200, currency: "CAD", category: "transport" },
-          { id: 2, date: "2025-01-10", description: "Travel Insurance", amount: 450, currency: "CAD", category: "insurance" }
-        ]
-      },
-      {
-        id: 2,
-        name: "Colombia & Peru 2026",
-        description: "6 weeks exploring South American culture and coffee",
-        targetBudget: 28000,
-        currentSavings: 8500,
-        startDate: "2026-03-15",
-        endDate: "2026-05-01",
-        estimatedDailySpend: 350,
-        countries: ["Colombia", "Peru"],
-        status: "saving",
-        expenses: []
-      }
-    ],
+    trips: [],  // Empty - Operator users can add their own trips
     runwayCalculation: {
-      averageDailySpend: 425, // Average across all travel styles
-      totalAvailableFunds: 85000,
-      estimatedDaysRemaining: 200,
+      averageDailySpend: 0,
+      totalAvailableFunds: 0,
+      estimatedDaysRemaining: 0,
       lastUpdated: "2025-01-15"
     },
     expenseCategories: [
