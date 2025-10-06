@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -890,19 +890,6 @@ const RainyDayFundCard = ({ data, onEdit }) => {
 const CreditScoreCard = ({ data, onEdit }) => {
   const svgRef = useRef();
 
-  // 🛡️ NULL SAFETY CHECK
-  if (!data || typeof data.score === 'undefined') {
-    return (
-      <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <Award className="w-6 h-6 mr-3 text-indigo-400" />
-          Credit Score
-        </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
-      </Card>
-    );
-  }
-
   const getScoreColor = (score) => {
     if (score >= 800) return 'text-emerald-400';
     if (score >= 740) return 'text-green-400';
@@ -923,8 +910,9 @@ const CreditScoreCard = ({ data, onEdit }) => {
   // const getScoreProgress = (score) => (score / 850) * 100;
 
   // Create line chart for credit score history
+  // 🛡️ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
   useEffect(() => {
-    if (!data.history || data.history.length === 0) return;
+    if (!data || !data.history || data.history.length === 0 || !svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -1067,6 +1055,19 @@ const CreditScoreCard = ({ data, onEdit }) => {
       .style("stroke-width", 1);
 
   }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 🛡️ NULL SAFETY CHECK - After hooks, before render
+  if (!data || typeof data.score === 'undefined') {
+    return (
+      <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Award className="w-6 h-6 mr-3 text-indigo-400" />
+          Credit Score
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
 
   // Calculate score change
   const getScoreChange = () => {
