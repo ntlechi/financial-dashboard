@@ -5259,27 +5259,27 @@ const TravelTab = ({ data, setData, userId }) => {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
-      <Card className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30 relative">
+      <Card className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 border-amber-500/30 relative">
         <button
           onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-blue-700/20 hover:bg-blue-600/30 rounded-lg transition-colors"
+          className="absolute top-4 right-4 p-2 bg-amber-700/20 hover:bg-amber-600/30 rounded-lg transition-colors"
           title="Edit Travel Runway Settings"
         >
-          <Edit className="w-4 h-4 text-blue-300" />
+          <Edit className="w-4 h-4 text-amber-300" />
         </button>
         
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-blue-200 mb-6">Smart destination-based travel planning with cost tiers</p>
+          <p className="text-amber-200 mb-6">Smart destination-based travel planning with cost tiers</p>
           
           {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.totalPossibleDays}</div>
-              <div className="text-blue-200">Total Possible Days</div>
+            <div className="bg-amber-800/30 rounded-lg p-4">
+              <div className="text-3xl font-bold text-amber-300">{runway.totalPossibleDays}</div>
+              <div className="text-amber-200">Total Possible Days</div>
             </div>
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.weeksRemaining}</div>
+            <div className="bg-amber-800/30 rounded-lg p-4">
+              <div className="text-3xl font-bold text-amber-300">{runway.weeksRemaining}</div>
               <div className="text-blue-200">Weeks of Travel</div>
             </div>
             <div className="bg-blue-800/30 rounded-lg p-4">
