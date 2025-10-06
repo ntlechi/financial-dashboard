@@ -7633,11 +7633,11 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Cash Flow - FREE+ (Left) */}
-              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
+              <CashFlowCard data={displayData?.cashflow} onEdit={openCardEditor} />
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
+                <RainyDayFundCard data={displayData?.rainyDayFund} onEdit={openCardEditor} />
               ) : (
                 <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
@@ -7647,10 +7647,10 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Monthly Income - FREE+ (Left) */}
-              <IncomeCard data={displayData.income} viewMode={viewMode} />
+              <IncomeCard data={displayData?.income} viewMode={viewMode} />
               
               {/* Monthly Expenses - FREE+ (Right) */}
-              <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
+              <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
@@ -7658,13 +7658,13 @@ function App() {
               
               {/* Net Worth - FREE+ (Left) */}
               <FinancialErrorBoundary componentName="Net Worth Calculator">
-                <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
+                <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
               {/* Cash on Hand - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                 <FinancialErrorBoundary componentName="Cash Management">
-                  <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+                  <CashOnHandCard data={displayData?.cashOnHand} onEdit={openCardEditor} />
                 </FinancialErrorBoundary>
               ) : (
                 <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
@@ -7695,7 +7695,7 @@ function App() {
               {/* Total Debt - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+                  <DebtCard data={displayData?.debt} onEdit={openCardEditor} />
                 </div>
               ) : (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -7706,7 +7706,7 @@ function App() {
               {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
+                  <CreditScoreCard data={displayData?.creditScore} onEdit={openCardEditor} />
                 </div>
               ) : (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -7717,7 +7717,7 @@ function App() {
               {/* Financial Goals - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+                  <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
                 </div>
               ) : (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -7729,7 +7729,7 @@ function App() {
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
                   <RegisteredAccountsCard 
-                    data={displayData.registeredAccounts} 
+                    data={displayData?.registeredAccounts} 
                     onEdit={openCardEditor} 
                   />
                 </div>
