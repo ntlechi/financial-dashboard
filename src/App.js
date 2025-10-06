@@ -515,6 +515,21 @@ const initialData = {
       { name: "visa", color: "bg-orange-500", icon: "📋" },
       { name: "other", color: "bg-gray-500", icon: "💫" }
     ]
+  },
+  budgetSettings: {
+    fiftyThirtyTwenty: {
+      needs: 50,
+      wants: 30,
+      savings: 20
+    },
+    sixJars: {
+      necessities: 55,
+      education: 10,
+      play: 10,
+      longTermSavings: 10,
+      financial: 10,
+      give: 5
+    }
   }
 };
 
