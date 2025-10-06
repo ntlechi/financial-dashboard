@@ -274,16 +274,13 @@ const initialData = {
     ]
   },
   transactions: [
-    { id: 1, date: '2025-01-15', description: 'Main Job Salary', amount: 8000, type: 'income', category: 'personal', subcategory: 'salary' },
-    { id: 2, date: '2025-01-15', description: 'Rent Payment', amount: -2500, type: 'expense', category: 'personal', subcategory: 'housing' },
-    { id: 3, date: '2025-01-14', description: 'Trading Profit', amount: 2500, type: 'income', category: 'business', subcategory: 'trading' },
-    { id: 4, date: '2025-01-13', description: 'Groceries', amount: -150, type: 'expense', category: 'personal', subcategory: 'food' },
-    { id: 5, date: '2025-01-12', description: 'Side Business Revenue', amount: 2000, type: 'income', category: 'business', subcategory: 'consulting' },
-    { id: 6, date: '2025-01-12', description: 'Software Subscription', amount: -100, type: 'expense', category: 'business', subcategory: 'software' },
-    { id: 7, date: '2025-01-11', description: 'Gas Station', amount: -80, type: 'expense', category: 'personal', subcategory: 'transport' },
-    { id: 8, date: '2025-01-10', description: 'Dividend Payment', amount: 500, type: 'income', category: 'personal', subcategory: 'investment' },
-    { id: 9, date: '2025-01-10', description: 'Coffee Shop', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
-    { id: 10, date: '2025-01-09', description: 'Business Lunch', amount: -75, type: 'expense', category: 'business', subcategory: 'meals' },
+    { id: 1, date: '2025-01-15', description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
+    { id: 2, date: '2025-01-01', description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
+    { id: 3, date: '2025-01-12', description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
+    { id: 4, date: '2025-01-10', description: 'Gas', amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
+    { id: 5, date: '2025-01-08', description: 'Credit Card Payment', amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
+    { id: 6, date: '2025-01-05', description: 'Netflix', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 7, date: '2025-01-03', description: 'Coffee', amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
   ],
   recurringExpenses: [
     {
