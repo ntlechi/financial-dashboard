@@ -1486,8 +1486,8 @@ const DebtCard = ({ data, onEdit }) => {
 
 // Cash on Hand Card
 const CashOnHandCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
-  if (!data || typeof data.amount === 'undefined') {
+  // 🛡️ NULL SAFETY CHECK - Fixed: checking for 'total' not 'amount'
+  if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
