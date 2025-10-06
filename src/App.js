@@ -1195,8 +1195,7 @@ const NetWorthCard = ({ data, onEdit }) => {
               </div>
               <span className="text-emerald-400 font-medium">+${item.value.toLocaleString()}</span>
             </div>
-          ))
-          )}
+          ))}
         </div>
       </div>
 
