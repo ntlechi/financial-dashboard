@@ -7201,7 +7201,7 @@ function App() {
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
-    const totalExpenses = transactions
+    const totalTransactionExpenses = transactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
@@ -7209,8 +7209,15 @@ function App() {
     const totalBusinessIncome = businesses.reduce((sum, business) => 
       sum + (business.totalIncome || business.income || 0), 0);
 
+    // 🔧 FIX: Calculate business expenses (CRITICAL BUG FIX!)
+    const totalBusinessExpenses = businesses.reduce((sum, business) => 
+      sum + (business.totalExpenses || business.expenses || 0), 0);
+
     // Combine transaction and business income
     const totalIncome = totalTransactionIncome + totalBusinessIncome;
+
+    // 🔧 FIX: Combine transaction and business expenses
+    const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
 
     // Group income by subcategory (from transactions)
     const incomeByCategory = {};
@@ -7243,6 +7250,14 @@ function App() {
         }
         expensesByCategory[category] += Math.abs(t.amount);
       });
+
+    // 🔧 FIX: Add business expenses as separate categories
+    businesses.forEach((business, index) => {
+      if ((business.totalExpenses || business.expenses || 0) > 0) {
+        const businessKey = `${business.name || `Business ${index + 1}`} Expenses`;
+        expensesByCategory[businessKey] = business.totalExpenses || business.expenses || 0;
+      }
+    });
 
     // Convert to array format
     const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => ({
