@@ -6809,7 +6809,7 @@ function App() {
     }
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), resetData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
       setData(resetData);
       setShowResetModal(false);
       setResetToSample(false);
