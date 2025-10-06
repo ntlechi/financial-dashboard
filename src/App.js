@@ -5280,11 +5280,11 @@ const TravelTab = ({ data, setData, userId }) => {
             </div>
             <div className="bg-amber-800/30 rounded-lg p-4">
               <div className="text-3xl font-bold text-amber-300">{runway.weeksRemaining}</div>
-              <div className="text-blue-200">Weeks of Travel</div>
+              <div className="text-amber-200">Weeks of Travel</div>
             </div>
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.monthsRemaining}</div>
-              <div className="text-blue-200">Months of Travel</div>
+            <div className="bg-amber-800/30 rounded-lg p-4">
+              <div className="text-3xl font-bold text-amber-300">{runway.monthsRemaining}</div>
+              <div className="text-amber-200">Months of Travel</div>
             </div>
           </div>
 
