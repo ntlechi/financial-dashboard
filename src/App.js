@@ -2977,9 +2977,18 @@ const SideHustleTab = ({ data, setData, userId }) => {
                     const isIncome = business.incomeItems.includes(item);
                     return (
                       <div key={`${isIncome ? 'income' : 'expense'}-${item.id}`} className="flex items-center justify-between bg-gray-700/30 rounded p-2">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                          <span className="text-sm text-white">{item.description}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                            <span className="text-sm text-white">{item.description}</span>
+                          </div>
+                          <div className="text-xs text-gray-400 ml-4">
+                            {new Date(item.date).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric', 
+                              year: 'numeric' 
+                            })}
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-semibold ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
