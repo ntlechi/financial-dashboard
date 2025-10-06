@@ -3823,15 +3823,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           {/* DRIP Status */}
-          <div className="bg-gradient-to-br from-yellow-900/20 to-amber-900/20 rounded-lg p-4 border border-yellow-500/30">
-            <h4 className="text-lg font-semibold text-yellow-200 mb-3 flex items-center">
+          <div style={{ backgroundColor: '#141F3B' }} className="rounded-lg p-4 border border-blue-500/30">
+            <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
               🔄 DRIP Status
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
                 .filter(h => h.dividendYield > 0)
                 .map(holding => (
-                  <div key={holding.id} className="flex justify-between items-center bg-purple-800/20 rounded p-2">
+                  <div key={holding.id} className="flex justify-between items-center bg-blue-800/30 rounded p-2 border border-blue-600/20">
                     <div>
                       <div className="font-semibold text-white">{holding.symbol}</div>
                       <div className="text-xs text-gray-400">
@@ -3840,7 +3840,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                     </div>
                     <div className="text-right">
                       <div className={`text-sm font-semibold ${
-                        holding.dripEnabled ? 'text-purple-400' : 'text-gray-400'
+                        holding.dripEnabled ? 'text-cyan-300' : 'text-gray-400'
                       }`}>
                         <Tooltip 
                           text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
@@ -3849,7 +3849,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
-                        <div className="text-xs text-purple-300">
+                        <div className="text-xs text-cyan-200">
                           {holding.dripProgress.toFixed(1)}% to next share
                         </div>
                       )}
@@ -3861,8 +3861,9 @@ const InvestmentTab = ({ data, setData, userId }) => {
         </div>
         
               {/* Dividend Breakdown by Holding */}
-      <div className="mt-6 bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
-        <h4 className="text-lg font-semibold text-purple-200 mb-3 flex items-center">
+      <div className="mt-6" style={{ backgroundColor: '#141F3B' }}>
+        <div className="rounded-lg p-4 border border-blue-500/30">
+        <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
           📊 Dividend Breakdown by Holding
         </h4>
           <div className="space-y-2">
@@ -3874,16 +3875,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 const percentage = totalDividends > 0 ? (holding.annualDividend / totalDividends * 100) : 0;
                 
                                   return (
-                    <div key={holding.id} className="flex items-center justify-between bg-purple-800/20 rounded p-3">
+                    <div key={holding.id} className="flex items-center justify-between bg-blue-800/30 rounded p-3 border border-blue-600/20">
                       <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
                         <div>
                           <div className="font-semibold text-white">{holding.symbol}</div>
                           <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-purple-300">
+                        <div className="font-semibold text-white">
                           ${holding.annualDividend.toLocaleString()}
                         </div>
                         <div className="text-xs text-gray-400">
@@ -3894,6 +3895,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   );
               })}
           </div>
+        </div>
           
                       <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
               <div className="text-sm text-purple-200 mb-2">
