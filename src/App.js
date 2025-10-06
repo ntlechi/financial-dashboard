@@ -7482,19 +7482,11 @@ function App() {
               {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
               {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* Monthly Income - CLIMBER+ (Left) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <IncomeCard data={displayData.income} viewMode={viewMode} />
-              ) : (
-                <LockedCard cardName="Monthly Income" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              {/* Monthly Income - FREE+ (Left) */}
+              <IncomeCard data={displayData.income} viewMode={viewMode} />
               
-              {/* Monthly Expenses - CLIMBER+ (Right) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
-              ) : (
-                <LockedCard cardName="Monthly Expenses" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              {/* Monthly Expenses - FREE+ (Right) */}
+              <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
