@@ -6224,10 +6224,10 @@ function App() {
     // Add more admin emails here as needed
   ];
   
-  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+  const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
   
   // Get current plan (with dev override if admin)
-  const currentUserPlan = isAdmin && devOverridePlan ? devOverridePlan : userPlan;
+  const currentUserPlan = (isAdmin && devOverridePlan) ? devOverridePlan : userPlan;
   
   // Modal states for dashboard cards
   const [editingCard, setEditingCard] = useState(null);
