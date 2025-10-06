@@ -3987,8 +3987,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
               </div>
             </div>
           ))}
-                  </div>
-        </Card>
+        </div>
+      </Card>
 
         {/* Add Holding Modal */}
         {showAddHolding && (
