@@ -6949,7 +6949,15 @@ function App() {
   };
 
   const confirmResetData = async () => {
-    if (!userId) return;
+    console.log('🔧 Reset Data: Function called');
+    console.log('🔧 Reset Data: userId =', userId);
+    console.log('🔧 Reset Data: resetToSample =', resetToSample);
+    
+    if (!userId) {
+      console.error('❌ Reset Data: No userId available!');
+      showNotification('❌ Please sign in to reset data', 'error');
+      return;
+    }
 
     let resetData;
     
@@ -7082,15 +7090,23 @@ function App() {
     }
 
     try {
+      console.log('🔧 Reset Data: Starting Firebase write...');
       // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
+      console.log('✅ Reset Data: Firebase write successful');
+      
       setData(resetData);
+      console.log('✅ Reset Data: Local state updated');
+      
       setShowResetModal(false);
       setResetToSample(false);
+      console.log('✅ Reset Data: Modal closed');
+      
       showNotification('✅ Data reset successfully!', 'success');
     } catch (error) {
-      console.error('Error resetting data:', error);
-      showNotification('❌ Failed to reset data. Please try again.', 'error');
+      console.error('❌ Reset Data Error:', error);
+      console.error('❌ Reset Data Error Details:', error.message, error.code);
+      showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
     }
   };
 
