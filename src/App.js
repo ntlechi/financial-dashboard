@@ -7497,7 +7497,7 @@ function App() {
               )}
               
               {/* ═══════════════════════════════════════════════════════ */}
-              {/* ROW 3: THE BIG PICTURE (Assets & Liabilities) */}
+              {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Net Worth - FREE+ (Left) */}
@@ -7505,11 +7505,13 @@ function App() {
                 <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
-              {/* Total Debt - CLIMBER+ (Right) */}
-              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-                <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              {/* Cash on Hand - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <FinancialErrorBoundary componentName="Cash Management">
+                  <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
               ) : (
-                <LockedCard cardName="Total Debt" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
               
               {/* ═══════════════════════════════════════════════════════ */}
