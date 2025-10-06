@@ -3986,7 +3986,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
       </Card>
 
