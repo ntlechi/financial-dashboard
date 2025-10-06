@@ -7534,6 +7534,17 @@ function App() {
               {/* FULL-WIDTH CARDS: Detailed Intelligence */}
               {/* ═══════════════════════════════════════════════════════ */}
               
+              {/* Total Debt - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Total Debt & Payoff Plan" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
               {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -7542,19 +7553,6 @@ function App() {
               ) : (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
                   <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-                </div>
-              )}
-              
-              {/* Cash on Hand - CLIMBER+ (Full Width) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <FinancialErrorBoundary componentName="Cash Management">
-                    <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
-                  </FinancialErrorBoundary>
-                </div>
-              ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
