@@ -2323,14 +2323,19 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedBusinesses = [...data.businesses, business];
     const updatedData = { ...data, businesses: updatedBusinesses };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
-      setShowAddBusiness(false);
-    } catch (error) {
-      console.error('Error adding business:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error adding business:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
+    setShowAddBusiness(false);
   };
 
   const handleAddItem = async () => {
@@ -2363,14 +2368,19 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     const updatedData = { ...data, businesses: updatedBusinesses };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0] });
-      setShowAddItem(false);
-    } catch (error) {
-      console.error('Error adding item:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error adding item:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0] });
+    setShowAddItem(false);
   };
 
   const initiateDeleteBusiness = (business) => {
@@ -2389,14 +2399,19 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedBusinesses = data.businesses.filter(business => business.id !== businessToDelete.id);
     const updatedData = { ...data, businesses: updatedBusinesses };
 
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setBusinessToDelete(null);
-      setShowDeleteConfirm(false);
-    } catch (error) {
-      console.error('Error deleting business:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error deleting business:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setBusinessToDelete(null);
+    setShowDeleteConfirm(false);
   };
 
   const handleDeleteItem = async (businessId, itemId, type) => {
@@ -2422,12 +2437,17 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     const updatedData = { ...data, businesses: updatedBusinesses };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-    } catch (error) {
-      console.error('Error deleting item:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error deleting item:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
   };
 
   return (
@@ -4004,21 +4024,26 @@ const TransactionsTab = ({ data, setData, userId }) => {
     const updatedTransactions = [transaction, ...data.transactions];
     const updatedData = { ...data, transactions: updatedTransactions };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setNewTransaction({
-        description: '',
-        amount: '',
-        type: 'expense',
-        category: 'personal',
-        subcategory: '',
-        date: new Date().toISOString().split('T')[0]
-      });
-      setShowAddForm(false);
-    } catch (error) {
-      console.error('Error adding transaction:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error adding transaction:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setNewTransaction({
+      description: '',
+      amount: '',
+      type: 'expense',
+      category: 'personal',
+      subcategory: '',
+      date: new Date().toISOString().split('T')[0]
+    });
+    setShowAddForm(false);
   };
 
   const handleEditTransaction = async (transaction) => {
@@ -4030,25 +4055,35 @@ const TransactionsTab = ({ data, setData, userId }) => {
     );
     const updatedData = { ...data, transactions: updatedTransactions };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setEditingTransaction(null);
-    } catch (error) {
-      console.error('Error updating transaction:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error updating transaction:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setEditingTransaction(null);
   };
 
   const handleDeleteTransaction = async (transactionId) => {
     const updatedTransactions = data.transactions.filter(t => t.id !== transactionId);
     const updatedData = { ...data, transactions: updatedTransactions };
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-    } catch (error) {
-      console.error('Error deleting transaction:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error deleting transaction:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
   };
 
   const filteredTransactions = data.transactions
@@ -4591,31 +4626,36 @@ const TravelTab = ({ data, setData, userId }) => {
   };
 
   const handleSaveRunwaySettings = async () => {
-    try {
-      const updatedData = {
-        ...data,
-        travel: {
-          ...data.travel,
-          totalSavings: Number(runwaySettings.totalSavings),
-          homeCurrency: runwaySettings.homeCurrency,
-          tripPlan: runwaySettings.tripPlan
-        }
-      };
-        
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setShowRunwayModal(false);
-      
-      // Force viewport cleanup after modal close
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-      }, 100);
-    } catch (error) {
-      console.error('Error saving runway settings:', error);
+    const updatedData = {
+      ...data,
+      travel: {
+        ...data.travel,
+        totalSavings: Number(runwaySettings.totalSavings),
+        homeCurrency: runwaySettings.homeCurrency,
+        tripPlan: runwaySettings.tripPlan
+      }
+    };
+    
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error saving runway settings:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setShowRunwayModal(false);
+    
+    // Force viewport cleanup after modal close
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.height = '';
+    }, 100);
   };
 
    const handleAddExpense = async () => {
@@ -4667,29 +4707,34 @@ const TravelTab = ({ data, setData, userId }) => {
        transactions: updatedTransactions
      };
 
-     try {
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
-       setNewExpense({
-         description: '',
-         amount: '',
-         currency: data.travel?.homeCurrency || 'CAD',
-         category: 'other',
-         date: new Date().toISOString().split('T')[0]
-       });
-       setShowExpenseModal(false);
-       setSelectedTrip(null);
-       
-       // Force viewport cleanup after modal close
-       setTimeout(() => {
-         window.scrollTo(0, 0);
-         document.body.style.overflow = '';
-         document.body.style.position = '';
-         document.body.style.height = '';
-       }, 100);
-     } catch (error) {
-       console.error('Error adding expense:', error);
+     // Save to Firebase only if auth is enabled and user exists
+     if (userId && userId !== 'dev-user') {
+       try {
+         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       } catch (error) {
+         console.error('Error adding expense:', error);
+       }
      }
+     
+     // Always update local state
+     setData(updatedData);
+     setNewExpense({
+       description: '',
+       amount: '',
+       currency: data.travel?.homeCurrency || 'CAD',
+       category: 'other',
+       date: new Date().toISOString().split('T')[0]
+     });
+     setShowExpenseModal(false);
+     setSelectedTrip(null);
+     
+     // Force viewport cleanup after modal close
+     setTimeout(() => {
+       window.scrollTo(0, 0);
+       document.body.style.overflow = '';
+       document.body.style.position = '';
+       document.body.style.height = '';
+     }, 100);
    };
 
    const handleEditTrip = async () => {
@@ -4711,21 +4756,26 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedTravel = { ...data.travel, trips: updatedTrips };
      const updatedData = { ...data, travel: updatedTravel };
 
-     try {
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
-       setEditingTrip(null);
-       
-       // Force viewport cleanup after modal close
-       setTimeout(() => {
-         window.scrollTo(0, 0);
-         document.body.style.overflow = '';
-         document.body.style.position = '';
-         document.body.style.height = '';
-       }, 100);
-     } catch (error) {
-       console.error('Error editing trip:', error);
+     // Save to Firebase only if auth is enabled and user exists
+     if (userId && userId !== 'dev-user') {
+       try {
+         await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       } catch (error) {
+         console.error('Error editing trip:', error);
+       }
      }
+     
+     // Always update local state
+     setData(updatedData);
+     setEditingTrip(null);
+     
+     // Force viewport cleanup after modal close
+     setTimeout(() => {
+       window.scrollTo(0, 0);
+       document.body.style.overflow = '';
+       document.body.style.position = '';
+       document.body.style.height = '';
+     }, 100);
    };
 
    const handleAddTrip = async () => {
@@ -4746,22 +4796,27 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedTravel = { ...data.travel, trips: updatedTrips };
     const updatedData = { ...data, travel: updatedTravel };
 
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
-      setShowAddTrip(false);
-      
-      // Force viewport cleanup after modal close
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-      }, 100);
-    } catch (error) {
-      console.error('Error adding trip:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error adding trip:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
+    setShowAddTrip(false);
+    
+    // Force viewport cleanup after modal close
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.height = '';
+    }, 100);
   };
 
   const runway = calculateRunway();
@@ -6004,13 +6059,18 @@ export default function App() {
       updatedData = { ...data, [editingCard]: tempCardData };
     }
     
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      closeCardEditor();
-    } catch (error) {
-      console.error('Error saving card data:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error saving card data:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    closeCardEditor();
   };
 
   // CSV Export Functions
@@ -6214,14 +6274,19 @@ export default function App() {
       };
     }
 
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), resetData);
-      setData(resetData);
-      setShowResetModal(false);
-      setResetToSample(false);
-    } catch (error) {
-      console.error('Error resetting data:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), resetData);
+      } catch (error) {
+        console.error('Error resetting data:', error);
+      }
     }
+    
+    // Always update local state
+    setData(resetData);
+    setShowResetModal(false);
+    setResetToSample(false);
   };
 
   const openQuickExpense = () => {
@@ -6274,23 +6339,28 @@ export default function App() {
     const updatedTransactions = [transaction, ...(data.transactions || [])];
     const updatedData = { ...data, transactions: updatedTransactions };
 
-    try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      closeQuickExpense();
-      
-      // Additional viewport cleanup after successful save
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-        
-
-      }, 150);
-    } catch (error) {
-      console.error('Error adding quick expense:', error);
+    // Save to Firebase only if auth is enabled and user exists
+    if (userId && userId !== 'dev-user') {
+      try {
+        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      } catch (error) {
+        console.error('Error adding quick expense:', error);
+      }
     }
+    
+    // Always update local state
+    setData(updatedData);
+    closeQuickExpense();
+    
+    // Additional viewport cleanup after successful save
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.height = '';
+      
+
+    }, 150);
   };
 
   // Calculate income and expenses from transactions
