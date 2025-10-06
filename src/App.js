@@ -1289,7 +1289,8 @@ const NetWorthCard = ({ data, onEdit }) => {
       )}
     </div>
   </Card>
-);
+  );
+};
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
@@ -1529,7 +1530,8 @@ const CashOnHandCard = ({ data, onEdit }) => {
       {data.accounts.length} accounts • Last updated {new Date().toLocaleDateString()}
     </div>
   </Card>
-);
+  );
+};
 
 // Income Card
 const IncomeCard = ({ data, viewMode }) => {
@@ -1562,7 +1564,8 @@ const IncomeCard = ({ data, viewMode }) => {
       ))}
     </div>
   </Card>
-);
+  );
+};
 
 // Expenses Card
 const ExpensesCard = ({ data, viewMode }) => {
