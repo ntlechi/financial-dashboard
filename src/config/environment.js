@@ -10,11 +10,12 @@ const requiredEnvVars = [
   'REACT_APP_FIREBASE_APP_ID'
 ];
 
-const optionalEnvVars = [
-  'REACT_APP_STRIPE_PUBLISHABLE_KEY',
-  'REACT_APP_VERSION',
-  'REACT_APP_ENVIRONMENT'
-];
+// Optional environment variables for future features
+// const optionalEnvVars = [
+//   'REACT_APP_STRIPE_PUBLISHABLE_KEY',
+//   'REACT_APP_VERSION',
+//   'REACT_APP_ENVIRONMENT'
+// ];
 
 // Validate required environment variables
 const validateEnvironment = () => {

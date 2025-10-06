@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { pricingPlans, stripeConfig, planLimits } from './pricing';
+import React, { useState } from 'react';
+// import { loadStripe } from '@stripe/stripe-js';
+import { pricingPlans } from './pricing';
 import { Check, Crown, Zap, ArrowRight, X } from 'lucide-react';
 
-// Initialize Stripe
-const stripePromise = loadStripe(stripeConfig.publishableKey);
+// Initialize Stripe for future use
+// const stripePromise = loadStripe(stripeConfig.publishableKey);
 
 const SubscriptionManager = ({ user, currentPlan = 'free', onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const SubscriptionManager = ({ user, currentPlan = 'free', onClose }) => {
 
     try {
       setLoading(true);
-      const stripe = await stripePromise;
+      // const stripe = await stripePromise; // Available for future Stripe integration
 
       // In a real app, you'd call your backend to create a checkout session
       // For now, we'll simulate the Stripe checkout flow
