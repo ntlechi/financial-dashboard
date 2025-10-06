@@ -165,98 +165,90 @@ const processDueRecurringExpenses = (recurringExpenses, existingTransactions) =>
   };
 };
 
+// 🎯 REALISTIC BEGINNER SAMPLE DATA
+// Designed for someone just starting their financial journey
 const initialData = {
   financialFreedom: {
-    targetAmount: 2000000,
-    currentInvestments: 450000,
-    monthlyContribution: 1500,
+    targetAmount: 500000,  // More realistic first goal
+    currentInvestments: 0,  // Just starting out
+    monthlyContribution: 0,  // Not investing yet
     annualReturn: 7,
   },
   creditScore: {
-    current: 750,
-    history: [ { date: '2025-06-30', score: 720 }, { date: '2025-08-09', score: 750 } ]
+    current: 650,  // Average starting credit score
+    history: [ { date: '2025-06-30', score: 630 }, { date: '2025-08-09', score: 650 } ]
   },
   cashOnHand: {
-    total: 75000,
+    total: 2500,  // Small but realistic emergency fund
     accounts: [
-        { id: 1, name: 'CIBC Chequing', balance: 15000, type: 'Checking' },
-        { id: 2, name: 'Tangerine Savings', balance: 45000, type: 'Savings' },
-        { id: 3, name: 'Wealthsimple Cash', balance: 15000, type: 'Investment Cash' },
+        { id: 1, name: 'Checking Account', balance: 1200, type: 'Checking' },
+        { id: 2, name: 'Savings Account', balance: 1300, type: 'Savings' },
     ],
-    history: [ { date: '2025-08-09', total: 75000 } ]
+    history: [ { date: '2025-08-09', total: 2500 } ]
   },
   rainyDayFund: {
-    total: 20000,
-    goal: 30000,
+    total: 1300,  // Building emergency fund (goal: 3-6 months expenses)
+    goal: 6000,  // 3 months of $2,000 expenses
     accounts: [
-        { id: 1, name: 'Emergency Fund', balance: 20000 }
+        { id: 1, name: 'Emergency Savings', balance: 1300 }
     ],
-    history: [ { date: '2025-08-09', total: 20000 } ]
+    history: [ { date: '2025-08-09', total: 1300 } ]
   },
   debt: {
-    total: 45000,
+    total: 2800,  // Small credit card debt
     accounts: [
-        { id: 1, name: 'Visa Card', balance: 5000, interestRate: 19.99, minPayment: 100 },
-        { id: 2, name: 'Mastercard', balance: 10000, interestRate: 22.99, minPayment: 200 },
-        { id: 3, name: 'Line of Credit', balance: 30000, interestRate: 8.5, minPayment: 300 },
+        { id: 1, name: 'Credit Card', balance: 2800, interestRate: 19.99, minPayment: 75 },
     ],
     history: [
-        { date: '2025-06-30', total: 50000 },
-        { date: '2025-07-31', total: 48000 },
-        { date: '2025-08-09', total: 45000 },
+        { date: '2025-06-30', total: 3200 },
+        { date: '2025-07-31', total: 3000 },
+        { date: '2025-08-09', total: 2800 },
     ]
   },
   netWorth: { 
-    total: 550000, 
+    total: 4700,  // Small positive net worth ($2,500 cash + $5,000 car - $2,800 debt)
     breakdown: [
-      { id: 1, name: 'Cash', value: 75000, color: 'bg-sky-500', type: 'asset' },
-      { id: 2, name: 'Investments', value: 350000, color: 'bg-violet-500', type: 'asset' },
-      { id: 3, name: 'Real Estate', value: 250000, color: 'bg-emerald-500', type: 'asset' },
-      { id: 4, name: 'Liabilities', value: -125000, color: 'bg-red-500', type: 'liability' },
+      { id: 1, name: 'Cash & Savings', value: 2500, color: 'bg-sky-500', type: 'asset' },
+      { id: 2, name: 'Vehicle', value: 5000, color: 'bg-emerald-500', type: 'asset' },
+      { id: 3, name: 'Credit Card Debt', value: -2800, color: 'bg-red-500', type: 'liability' },
     ],
-    history: [ { date: '2025-08-09', total: 550000 } ]
+    history: [ { date: '2025-08-09', total: 4700 } ]
   },
   income: { 
-    total: 12500, 
+    total: 3000,  // Entry-level job income
     sources: [
-      { id: 1, name: 'Main Job', amount: 8000, type: 'active' },
-      { id: 2, name: 'Trading', amount: 2500, type: 'passive' },
-      { id: 3, name: 'Side Business', amount: 2000, type: 'passive' },
+      { id: 1, name: 'Full-Time Job', amount: 3000, type: 'active' },
     ]
   },
   expenses: { 
-    total: 6500, 
+    total: 2000,  // Realistic monthly expenses
     categories: [
-      { id: 1, name: 'Housing', amount: 2500, color: 'bg-red-500' },
-      { id: 2, name: 'Transport', amount: 800, color: 'bg-yellow-500' },
-      { id: 3, name: 'Food', amount: 1200, color: 'bg-green-500' },
-      { id: 4, name: 'Entertainment', amount: 1000, color: 'bg-purple-500' },
-      { id: 5, name: 'Other', amount: 1000, color: 'bg-gray-400' },
+      { id: 1, name: 'Rent', amount: 900, color: 'bg-red-500' },
+      { id: 2, name: 'Transportation', amount: 300, color: 'bg-yellow-500' },
+      { id: 3, name: 'Groceries', amount: 400, color: 'bg-green-500' },
+      { id: 4, name: 'Utilities & Phone', amount: 200, color: 'bg-blue-500' },
+      { id: 5, name: 'Entertainment', amount: 150, color: 'bg-purple-500' },
+      { id: 6, name: 'Other', amount: 50, color: 'bg-gray-400' },
     ]
   },
-  cashflow: { total: 6000 },
+  cashflow: { total: 1000 },  // $1k/month savings
   savingsRate: { 
-    current: 48, // 48% savings rate
-    target: 50,
-    monthly: 6000,
-    monthlyIncome: 12500
+    current: 33,  // 33% savings rate (very achievable!)
+    target: 40,
+    monthly: 1000,
+    monthlyIncome: 3000
   },
   goals: [
-    { id: 1, name: 'House Down Payment', targetAmount: 75000, currentAmount: 25000, targetDate: '2025-12-31' },
-    { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
-    { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
+    { id: 1, name: 'Emergency Fund (3 months)', targetAmount: 6000, currentAmount: 1300, targetDate: '2026-06-30' },
+    { id: 2, name: 'Pay Off Credit Card', targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
+    { id: 3, name: 'Vacation Fund', targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
   ],
   // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
   // FREE tier users shouldn't have phantom businesses affecting their calculations
   businesses: [],
   investments: {
-    totalValue: 270000, // Calculated: VTI (1200 * 225) = 270,000
-    portfolioAllocation: [
-      { id: 1, name: 'Stocks', value: 270000, percentage: 60, color: '#3B82F6' },
-      { id: 2, name: 'Bonds', value: 90000, percentage: 20, color: '#10B981' },
-      { id: 3, name: 'Real Estate', value: 45000, percentage: 10, color: '#F59E0B' },
-      { id: 4, name: 'Crypto', value: 45000, percentage: 10, color: '#8B5CF6' }
-    ],
+    totalValue: 0,  // Just starting out - no investments yet
+    portfolioAllocation: [],  // Will build portfolio over time
     holdings: [
       {
         id: 1,
@@ -374,14 +366,14 @@ const initialData = {
     {
       id: 1,
       description: 'Rent Payment',
-      amount: 2500,
+      amount: 900,  // Updated to match realistic beginner rent
       type: 'expense',
       category: 'personal',
       subcategory: 'housing',
-      frequency: 'monthly', // monthly, weekly, yearly
-      dayOfMonth: 1, // For monthly: day of month (1-31)
-      dayOfWeek: null, // For weekly: day of week (0-6, 0=Sunday)
-      monthOfYear: null, // For yearly: month (1-12)
+      frequency: 'monthly',
+      dayOfMonth: 1,
+      dayOfWeek: null,
+      monthOfYear: null,
       isActive: true,
       nextDueDate: '2025-02-01',
       lastProcessed: '2025-01-01',
@@ -390,8 +382,8 @@ const initialData = {
     },
     {
       id: 2,
-      description: 'Netflix Subscription',
-      amount: 15.99,
+      description: 'Netflix',
+      amount: 15,
       type: 'expense',
       category: 'personal',
       subcategory: 'entertainment',
@@ -7075,12 +7067,15 @@ function App() {
     }
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), resetData);
+      // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
       setData(resetData);
       setShowResetModal(false);
       setResetToSample(false);
+      showNotification('✅ Data reset successfully!', 'success');
     } catch (error) {
       console.error('Error resetting data:', error);
+      showNotification('❌ Failed to reset data. Please try again.', 'error');
     }
   };
 
