@@ -1598,7 +1598,8 @@ const ExpensesCard = ({ data, viewMode }) => {
       ))}
     </div>
   </Card>
-);
+  );
+};
 
 // Cash Flow Card
 const CashFlowCard = ({ data, onEdit }) => {
