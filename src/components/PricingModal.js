@@ -122,8 +122,8 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
     icon: Crown,
     color: 'from-amber-500 to-yellow-600',
     features: [
-      'Full Operator Plan Access ($14.99 value)',
-      'Lifetime Price Lock ($7.49/mo forever)',
+      'Full Operator Plan Access ($14.99 USD value)',
+      'Lifetime Price Lock ($7.49 USD/mo forever)',
       'Exclusive Founder Badge',
       'Early Access to New Features',
       'Priority Support (12hr response)',
@@ -144,7 +144,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
 
   const formatPrice = (price) => {
     if (price === 0) return 'Free';
-    return `$${price.toFixed(2)}`;
+    return `$${price.toFixed(2)} USD`;
   };
 
   const getButtonText = (planId) => {
@@ -222,7 +222,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                 <Crown className="w-8 h-8 text-amber-400 mr-3" />
                 <div>
                   <h3 className="text-xl font-bold text-amber-400">🔥 Limited Launch Offer</h3>
-                  <p className="text-amber-200">Full Operator features for $7.49/mo - Only {foundersCircle.spotsRemaining} spots left!</p>
+                  <p className="text-amber-200">Full Operator features for $7.49 USD/mo - Only {foundersCircle.spotsRemaining} spots left!</p>
                 </div>
               </div>
               {timeRemaining && (
@@ -258,7 +258,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                 <div className="text-center mb-4">
                   <div className="text-3xl font-bold text-white">
                     {formatPrice(foundersCircle.monthlyPrice)}
-                    <span className="text-lg text-amber-100">/month</span>
+                    <span className="text-lg text-amber-100"> /month</span>
                   </div>
                   <div className="text-amber-100 text-sm">Locked in for life</div>
                   <div className="text-amber-200 text-xs mt-1">
@@ -315,7 +315,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                   <div className="text-center mb-4">
                     <div className="text-3xl font-bold text-white">
                       {formatPrice(price)}
-                      {price > 0 && <span className="text-lg text-gray-400">/{billingCycle === 'annual' ? 'year' : 'month'}</span>}
+                      {price > 0 && <span className="text-lg text-gray-400"> /{billingCycle === 'annual' ? 'year' : 'month'}</span>}
                     </div>
                     {billingCycle === 'annual' && plan.savings > 0 && (
                       <div className="text-green-400 text-sm">Save {plan.savings}% annually</div>

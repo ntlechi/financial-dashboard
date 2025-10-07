@@ -59,7 +59,7 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 6,
           question: 'What are the different pricing tiers?',
-          answer: 'We have 3 main tiers: 1) Recon Kit "The Recruit" (Free Forever) - Basic tracking and budgeting, 2) Climber Plan "The Climber" ($7.99/mo or $79/year) - Advanced analytics and full dashboard, 3) Operator Plan "The Operator" ($14.99/mo or $149/year) - Complete toolkit with side hustle and investment tracking. Plus our limited Founder\'s Circle offer ($7.49/mo) for the first 100 members.',
+          answer: 'We have 3 main tiers: 1) Recon Kit "The Recruit" (Free Forever) - Basic tracking and budgeting, 2) Climber Plan "The Climber" ($7.99 USD/mo or $79 USD/year) - Advanced analytics and full dashboard, 3) Operator Plan "The Operator" ($14.99 USD/mo or $149 USD/year) - Complete toolkit with side hustle and investment tracking. Plus our limited Founder\'s Circle offer ($7.49 USD/mo) for the first 100 members.',
           tags: ['pricing', 'tiers', 'plans', 'features'],
           popular: true
         },
@@ -73,7 +73,7 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 8,
           question: 'Why these specific price points?',
-          answer: 'Our pricing reflects the value delivered at each level. The Recon Kit is free because everyone deserves basic financial tools. Climber ($7.99) provides advanced analytics that replace expensive financial advisors. Operator ($14.99) includes business tools that typically cost $100+ elsewhere. Founder\'s Circle ($7.49) gives you full Operator features at half price - our way of rewarding early supporters.',
+          answer: 'Our pricing reflects the value delivered at each level. The Recon Kit is free because everyone deserves basic financial tools. Climber ($7.99 USD) provides advanced analytics that replace expensive financial advisors. Operator ($14.99 USD) includes business tools that typically cost $100+ elsewhere. Founder\'s Circle ($7.49 USD) gives you full Operator features at half price - our way of rewarding early supporters.',
           tags: ['pricing strategy', 'value', 'comparison'],
           popular: false
         },
@@ -95,7 +95,7 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 10,
           question: 'What is The Founder\'s Circle?',
-          answer: 'The Founder\'s Circle is an exclusive group of our first 100 users who get full Operator-level features ($14.99 value) for just $7.49/month. This price is locked in for life as long as your subscription remains active. Founders get lifetime priority support, early access to new features, exclusive Founder badge, and access to our private Founder-only Discord channel.',
+          answer: 'The Founder\'s Circle is an exclusive group of our first 100 users who get full Operator-level features ($14.99 USD value) for just $7.49 USD/month. This price is locked in for life as long as your subscription remains active. Founders get lifetime priority support, early access to new features, exclusive Founder badge, and access to our private Founder-only Discord channel.',
           tags: ['founders circle', 'exclusive', 'benefits', 'lifetime pricing'],
           popular: true
         },

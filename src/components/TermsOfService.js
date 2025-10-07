@@ -83,7 +83,7 @@ const TermsOfService = ({ onClose }) => {
               Subscription & Payment Terms
             </h3>
             <div className="space-y-3">
-              <p><strong>Founder's Circle:</strong> Limited-time offer for first 100 members at $7.49/month</p>
+              <p><strong>Founder's Circle:</strong> Limited-time offer for first 100 members at $7.49 USD /month</p>
               <p><strong>Billing:</strong> Subscriptions are billed monthly in advance</p>
               <p><strong>Auto-Renewal:</strong> Subscriptions automatically renew unless cancelled</p>
               <p><strong>Cancellation:</strong> Cancel anytime - access continues until end of billing period</p>

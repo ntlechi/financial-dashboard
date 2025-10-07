@@ -12,7 +12,7 @@ const UpgradePrompt = ({
   const planDetails = {
     'climber': {
       name: 'Climber Plan',
-      price: '$7.99/month',
+      price: '$7.99 USD /month',
       icon: Zap,
       color: 'from-blue-600 to-blue-700',
       features: [
@@ -24,7 +24,7 @@ const UpgradePrompt = ({
     },
     'operator': {
       name: 'Operator Plan',
-      price: '$14.99/month',
+      price: '$14.99 USD /month',
       icon: Rocket,
       color: 'from-purple-600 to-purple-700',
       features: [
@@ -38,7 +38,7 @@ const UpgradePrompt = ({
 
   const foundersCircle = {
     name: "Founder's Circle",
-    price: '$7.49/month',
+    price: '$7.49 USD /month',
     icon: Crown,
     color: 'from-amber-500 to-yellow-600',
     features: [
@@ -102,7 +102,7 @@ const UpgradePrompt = ({
                 <Crown className="w-6 h-6 text-amber-400 mr-3" />
                 <div>
                   <h4 className="text-lg font-bold text-amber-400">🔥 Limited Launch Offer</h4>
-                  <p className="text-amber-200 text-sm">Get full Operator access for just $7.49/month</p>
+                  <p className="text-amber-200 text-sm">Get full Operator access for just $7.49 USD /month</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mb-4">
