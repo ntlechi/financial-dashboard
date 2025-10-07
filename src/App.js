@@ -1167,7 +1167,7 @@ const NetWorthCard = ({ data, onEdit }) => {
         <Edit className="w-4 h-4" />
       </button>
     </div>
-    <p className="text-5xl font-extrabold text-sky-400">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1341,7 +1341,7 @@ const DebtCard = ({ data, onEdit }) => {
         <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
         Total Debt
       </h2>
-      <p className="text-5xl font-extrabold text-rose-400">${totalDebt.toLocaleString()}</p>
+      <p className="text-5xl font-extrabold text-white">${totalDebt.toLocaleString()}</p>
       
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-rose-800/20 rounded-lg p-3">
@@ -1515,7 +1515,7 @@ const IncomeCard = ({ data, viewMode }) => {
       <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
       {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
     </h2>
-    <p className="text-5xl font-extrabold text-teal-400">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1621,7 +1621,7 @@ const ExpensesCard = ({ data, viewMode }) => {
       <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
       {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
     </h2>
-    <p className="text-5xl font-extrabold text-rose-400">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1669,7 +1669,7 @@ const CashFlowCard = ({ data, onEdit }) => {
         </h2>
         {/* Cash Flow is calculated - no edit needed */}
       </div>
-      <p className={`text-5xl font-extrabold ${isPositive ? 'text-teal-400' : 'text-rose-500'}`}>
+      <p className="text-5xl font-extrabold text-white">
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
       <p className="text-gray-400 mt-2">Monthly income minus expenses</p>
