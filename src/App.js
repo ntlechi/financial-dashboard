@@ -6138,16 +6138,17 @@ const TravelTab = ({ data, setData, userId }) => {
             const countries = trip.countries || [];
             
             countries.forEach(country => {
+              const normalizedCountry = country.trim().toLowerCase();
               if (isPast) {
-                if (!visitedCountries.has(country)) {
-                  visitedCountries.set(country, []);
+                if (!visitedCountries.has(normalizedCountry)) {
+                  visitedCountries.set(normalizedCountry, []);
                 }
-                visitedCountries.get(country).push(trip);
+                visitedCountries.get(normalizedCountry).push(trip);
               } else {
-                if (!plannedCountries.has(country)) {
-                  plannedCountries.set(country, []);
+                if (!plannedCountries.has(normalizedCountry)) {
+                  plannedCountries.set(normalizedCountry, []);
                 }
-                plannedCountries.get(country).push(trip);
+                plannedCountries.get(normalizedCountry).push(trip);
               }
             });
           });
@@ -6160,6 +6161,56 @@ const TravelTab = ({ data, setData, userId }) => {
         const totalPlanned = plannedCountries.size;
         const allVisitedCountries = Array.from(visitedCountries.keys());
         const allPlannedCountries = Array.from(plannedCountries.keys());
+        
+        // Simple world map data - major countries with approximate positions
+        const worldMapCountries = [
+          // North America
+          { name: 'usa', display: 'USA', x: 15, y: 25, region: 'North America' },
+          { name: 'canada', display: 'Canada', x: 15, y: 15, region: 'North America' },
+          { name: 'mexico', display: 'Mexico', x: 15, y: 35, region: 'North America' },
+          // South America
+          { name: 'brazil', display: 'Brazil', x: 35, y: 60, region: 'South America' },
+          { name: 'argentina', display: 'Argentina', x: 30, y: 75, region: 'South America' },
+          { name: 'colombia', display: 'Colombia', x: 25, y: 50, region: 'South America' },
+          { name: 'peru', display: 'Peru', x: 25, y: 60, region: 'South America' },
+          { name: 'chile', display: 'Chile', x: 28, y: 70, region: 'South America' },
+          // Europe
+          { name: 'uk', display: 'UK', x: 48, y: 20, region: 'Europe' },
+          { name: 'france', display: 'France', x: 50, y: 25, region: 'Europe' },
+          { name: 'germany', display: 'Germany', x: 52, y: 22, region: 'Europe' },
+          { name: 'italy', display: 'Italy', x: 53, y: 28, region: 'Europe' },
+          { name: 'spain', display: 'Spain', x: 48, y: 28, region: 'Europe' },
+          { name: 'portugal', display: 'Portugal', x: 46, y: 28, region: 'Europe' },
+          { name: 'netherlands', display: 'Netherlands', x: 50, y: 21, region: 'Europe' },
+          { name: 'sweden', display: 'Sweden', x: 54, y: 15, region: 'Europe' },
+          { name: 'norway', display: 'Norway', x: 52, y: 12, region: 'Europe' },
+          { name: 'greece', display: 'Greece', x: 56, y: 30, region: 'Europe' },
+          { name: 'switzerland', display: 'Switzerland', x: 51, y: 25, region: 'Europe' },
+          // Africa
+          { name: 'egypt', display: 'Egypt', x: 58, y: 38, region: 'Africa' },
+          { name: 'south africa', display: 'South Africa', x: 58, y: 70, region: 'Africa' },
+          { name: 'morocco', display: 'Morocco', x: 46, y: 36, region: 'Africa' },
+          { name: 'kenya', display: 'Kenya', x: 62, y: 52, region: 'Africa' },
+          { name: 'tanzania', display: 'Tanzania', x: 62, y: 55, region: 'Africa' },
+          // Asia
+          { name: 'china', display: 'China', x: 75, y: 32, region: 'Asia' },
+          { name: 'japan', display: 'Japan', x: 85, y: 30, region: 'Asia' },
+          { name: 'south korea', display: 'South Korea', x: 82, y: 30, region: 'Asia' },
+          { name: 'thailand', display: 'Thailand', x: 75, y: 45, region: 'Asia' },
+          { name: 'vietnam', display: 'Vietnam', x: 77, y: 45, region: 'Asia' },
+          { name: 'cambodia', display: 'Cambodia', x: 76, y: 46, region: 'Asia' },
+          { name: 'singapore', display: 'Singapore', x: 77, y: 52, region: 'Asia' },
+          { name: 'malaysia', display: 'Malaysia', x: 76, y: 50, region: 'Asia' },
+          { name: 'indonesia', display: 'Indonesia', x: 80, y: 55, region: 'Asia' },
+          { name: 'philippines', display: 'Philippines', x: 82, y: 48, region: 'Asia' },
+          { name: 'india', display: 'India', x: 70, y: 42, region: 'Asia' },
+          { name: 'nepal', display: 'Nepal', x: 72, y: 38, region: 'Asia' },
+          { name: 'uae', display: 'UAE', x: 65, y: 42, region: 'Middle East' },
+          { name: 'turkey', display: 'Turkey', x: 58, y: 30, region: 'Middle East' },
+          // Oceania
+          { name: 'australia', display: 'Australia', x: 85, y: 68, region: 'Oceania' },
+          { name: 'new zealand', display: 'New Zealand', x: 92, y: 75, region: 'Oceania' },
+        ];
         
         return (
           <Card className="bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/30">
@@ -6208,8 +6259,126 @@ const TravelTab = ({ data, setData, userId }) => {
                 </button>
               </div>
             ) : (
-              <div className="bg-slate-800/40 rounded-lg p-6 border border-gray-700">
-                {/* Country List View (Simplified for now) */}
+              <div className="bg-slate-800/40 rounded-lg p-4 md:p-6 border border-gray-700">
+                {/* 🗺️ VISUAL WORLD MAP */}
+                <div className="relative w-full overflow-x-auto mb-6">
+                  <svg 
+                    viewBox="0 0 100 90" 
+                    className="w-full h-auto min-h-[300px] md:min-h-[400px]"
+                    style={{ maxWidth: '1200px', margin: '0 auto' }}
+                  >
+                    {/* World Map Background Grid */}
+                    <rect x="0" y="0" width="100" height="90" fill="#1e293b" opacity="0.3" rx="2"/>
+                    
+                    {/* Latitude/Longitude Grid Lines */}
+                    {[...Array(10)].map((_, i) => (
+                      <line 
+                        key={`lat-${i}`} 
+                        x1="0" 
+                        y1={i * 10} 
+                        x2="100" 
+                        y2={i * 10} 
+                        stroke="#334155" 
+                        strokeWidth="0.1" 
+                        opacity="0.3"
+                      />
+                    ))}
+                    {[...Array(10)].map((_, i) => (
+                      <line 
+                        key={`lon-${i}`} 
+                        x1={i * 10} 
+                        y1="0" 
+                        x2={i * 10} 
+                        y2="90" 
+                        stroke="#334155" 
+                        strokeWidth="0.1" 
+                        opacity="0.3"
+                      />
+                    ))}
+                    
+                    {/* Continents Outlines (Simplified) */}
+                    {/* North America */}
+                    <path d="M 5 10 Q 10 8 18 12 L 22 20 L 20 35 L 12 38 L 8 32 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    {/* South America */}
+                    <path d="M 22 45 L 30 48 L 35 60 L 32 75 L 28 78 L 25 65 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    {/* Europe */}
+                    <path d="M 45 15 L 56 12 L 58 20 L 54 30 L 48 32 L 45 25 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    {/* Africa */}
+                    <path d="M 48 35 L 56 34 L 62 45 L 62 65 L 56 72 L 50 65 L 48 50 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    {/* Asia */}
+                    <path d="M 60 15 L 85 15 L 88 30 L 82 45 L 75 50 L 68 48 L 62 35 L 60 25 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    {/* Australia */}
+                    <path d="M 78 62 L 92 64 L 93 72 L 88 75 L 80 74 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    
+                    {/* Country Markers */}
+                    {worldMapCountries.map(country => {
+                      const isVisited = visitedCountries.has(country.name);
+                      const isPlanned = plannedCountries.has(country.name);
+                      
+                      return (
+                        <g key={country.name}>
+                          {/* Country Marker Circle */}
+                          <circle
+                            cx={country.x}
+                            cy={country.y}
+                            r={isVisited || isPlanned ? "1.2" : "0.6"}
+                            fill={isVisited ? "#FBBF24" : isPlanned ? "#38BDF8" : "#475569"}
+                            opacity={isVisited || isPlanned ? "1" : "0.3"}
+                            stroke={isVisited ? "#F59E0B" : isPlanned ? "#0EA5E9" : "none"}
+                            strokeWidth="0.3"
+                            className="transition-all duration-300 hover:r-2 cursor-pointer"
+                          />
+                          {/* Glow Effect for Visited/Planned */}
+                          {(isVisited || isPlanned) && (
+                            <circle
+                              cx={country.x}
+                              cy={country.y}
+                              r="2"
+                              fill={isVisited ? "#FBBF24" : "#38BDF8"}
+                              opacity="0.2"
+                              className="animate-pulse"
+                            />
+                          )}
+                          {/* Country Label (show for visited/planned) */}
+                          {(isVisited || isPlanned) && (
+                            <text
+                              x={country.x}
+                              y={country.y - 2}
+                              fontSize="2"
+                              fill="white"
+                              textAnchor="middle"
+                              className="pointer-events-none"
+                              style={{ textShadow: '0 0 3px #000' }}
+                            >
+                              {country.display}
+                            </text>
+                          )}
+                        </g>
+                      );
+                    })}
+                    
+                    {/* Legend */}
+                    <g transform="translate(5, 80)">
+                      <circle cx="1" cy="0" r="0.8" fill="#FBBF24" stroke="#F59E0B" strokeWidth="0.2"/>
+                      <text x="3" y="0.5" fontSize="2" fill="#FCD34D">Completed</text>
+                      
+                      <circle cx="20" cy="0" r="0.8" fill="#38BDF8" stroke="#0EA5E9" strokeWidth="0.2"/>
+                      <text x="22" y="0.5" fontSize="2" fill="#7DD3FC">Planned</text>
+                      
+                      <circle cx="38" cy="0" r="0.6" fill="#475569" opacity="0.3"/>
+                      <text x="40" y="0.5" fontSize="2" fill="#94a3b8">Not Visited</text>
+                    </g>
+                  </svg>
+                </div>
+                
+                {/* Country List View - Collapsible */}
+                <details className="border-t border-gray-700 pt-4">
+                  <summary className="cursor-pointer text-gray-400 hover:text-white transition-colors mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                    View Detailed Country List
+                  </summary>
                 <div className="space-y-4">
                   {totalVisited > 0 && (
                     <div>
@@ -6294,6 +6463,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     </div>
                   </div>
                 </div>
+                </details>
               </div>
             )}
           </Card>
