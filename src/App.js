@@ -5944,6 +5944,183 @@ const TravelTab = ({ data, setData, userId }) => {
         </div>
       </Card>
 
+      {/* 🗺️ OPERATOR'S WORLD MAP - Epic Interactive Visualization */}
+      {(() => {
+        // Calculate visited countries from trips
+        const calculateCountryData = () => {
+          const trips = data.travel?.trips || [];
+          const today = new Date();
+          const visitedCountries = new Map();
+          const plannedCountries = new Map();
+          
+          trips.forEach(trip => {
+            const endDate = new Date(trip.endDate);
+            const isPast = endDate < today;
+            const countries = trip.countries || [];
+            
+            countries.forEach(country => {
+              if (isPast) {
+                if (!visitedCountries.has(country)) {
+                  visitedCountries.set(country, []);
+                }
+                visitedCountries.get(country).push(trip);
+              } else {
+                if (!plannedCountries.has(country)) {
+                  plannedCountries.set(country, []);
+                }
+                plannedCountries.get(country).push(trip);
+              }
+            });
+          });
+          
+          return { visitedCountries, plannedCountries };
+        };
+        
+        const { visitedCountries, plannedCountries } = calculateCountryData();
+        const totalVisited = visitedCountries.size;
+        const totalPlanned = plannedCountries.size;
+        const allVisitedCountries = Array.from(visitedCountries.keys());
+        const allPlannedCountries = Array.from(plannedCountries.keys());
+        
+        return (
+          <Card className="bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/30">
+            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 mb-2">
+                  <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Operator's World Map
+                </h2>
+                <p className="text-gray-400">Your quest to paint the map - track every expedition</p>
+              </div>
+              
+              {/* Statistics Counter */}
+              <div className="flex flex-wrap gap-4">
+                <div className="bg-amber-900/30 rounded-lg px-4 py-3 border border-amber-600/40">
+                  <div className="text-xs text-amber-300 uppercase tracking-wide">Completed Expeditions</div>
+                  <div className="text-2xl font-bold text-amber-400">{totalVisited} / 195</div>
+                  <div className="text-xs text-gray-400">Countries Visited</div>
+                </div>
+                <div className="bg-blue-900/30 rounded-lg px-4 py-3 border border-blue-600/40">
+                  <div className="text-xs text-blue-300 uppercase tracking-wide">Future Missions</div>
+                  <div className="text-2xl font-bold text-blue-400">{totalPlanned}</div>
+                  <div className="text-xs text-gray-400">Countries Planned</div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Map Visualization */}
+            {totalVisited === 0 && totalPlanned === 0 ? (
+              <div className="text-center py-16 bg-gradient-to-br from-slate-800/30 to-gray-800/30 rounded-lg border-2 border-dashed border-gray-600">
+                <svg className="w-24 h-24 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 className="text-xl font-bold text-white mb-2">Your World Map Awaits</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start planning trips and watch your map come to life! Add countries to your trips to begin painting your journey.
+                </p>
+                <button
+                  onClick={() => setShowAddTrip(true)}
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg inline-flex items-center gap-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  Plan Your First Expedition
+                </button>
+              </div>
+            ) : (
+              <div className="bg-slate-800/40 rounded-lg p-6 border border-gray-700">
+                {/* Country List View (Simplified for now) */}
+                <div className="space-y-4">
+                  {totalVisited > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-amber-400 mb-3 flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        Completed Expeditions
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        {allVisitedCountries.map(country => {
+                          const trips = visitedCountries.get(country);
+                          return (
+                            <div 
+                              key={country}
+                              className="group relative bg-amber-900/20 hover:bg-amber-900/40 border border-amber-600/40 rounded-lg p-3 transition-all cursor-pointer"
+                            >
+                              <div className="text-amber-400 font-semibold text-sm">{country}</div>
+                              <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
+                              
+                              {/* Tooltip */}
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                                <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg border border-amber-500/50 whitespace-nowrap">
+                                  {trips.map((trip, idx) => (
+                                    <div key={idx} className="py-1">
+                                      <div className="font-semibold text-amber-300">{trip.name}</div>
+                                      <div className="text-gray-400">Status: Completed ✓</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {totalPlanned > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-blue-400 mb-3 flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                        </svg>
+                        Future Missions
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        {allPlannedCountries.map(country => {
+                          const trips = plannedCountries.get(country);
+                          return (
+                            <div 
+                              key={country}
+                              className="group relative bg-blue-900/20 hover:bg-blue-900/40 border border-blue-600/40 rounded-lg p-3 transition-all cursor-pointer"
+                            >
+                              <div className="text-blue-400 font-semibold text-sm">{country}</div>
+                              <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
+                              
+                              {/* Tooltip */}
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                                <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg border border-blue-500/50 whitespace-nowrap">
+                                  {trips.map((trip, idx) => (
+                                    <div key={idx} className="py-1">
+                                      <div className="font-semibold text-blue-300">{trip.name}</div>
+                                      <div className="text-gray-400">Status: Planned 📅</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="mt-6 p-4 bg-gradient-to-r from-amber-900/20 to-blue-900/20 rounded-lg border border-gray-700">
+                    <div className="text-sm text-gray-300 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <strong className="text-white">Pro Tip:</strong> The more countries you visit, the more epic your journey becomes. Keep painting that map, Operator! 🌍
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </Card>
+        );
+      })()}
+
       {/* Trip Planning Header */}
       <Card>
         <div className="flex flex-wrap justify-between items-center gap-4">
@@ -6185,6 +6362,38 @@ const TravelTab = ({ data, setData, userId }) => {
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
                   />
                 </div>
+              </div>
+
+              {/* 🗺️ Countries Selector - For World Map */}
+              <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
+                <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Countries (Paint the Map!)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., Thailand, Vietnam, Cambodia"
+                  value={newTrip.countries ? newTrip.countries.join(', ') : ''}
+                  onChange={(e) => {
+                    const countries = e.target.value.split(',').map(c => c.trim()).filter(c => c);
+                    setNewTrip({...newTrip, countries});
+                  }}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  💡 Separate multiple countries with commas. These will appear on your Operator's World Map!
+                </p>
+                {newTrip.countries && newTrip.countries.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {newTrip.countries.map((country, idx) => (
+                      <span key={idx} className="px-2 py-1 bg-amber-600/30 text-amber-200 text-xs rounded-full border border-amber-500/50">
+                        🌍 {country}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             
