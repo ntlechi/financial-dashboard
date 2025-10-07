@@ -591,12 +591,12 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   );
 };
 
-// Savings Rate Card
+// Savings Rate Card (AMBER - Progress/KPI)
 const SavingsRateCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
             <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
@@ -622,10 +622,10 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+          <PiggyBank className="w-6 h-6 mr-3 text-amber-400" />
           <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
             Savings Rate
           </Tooltip>
@@ -636,7 +636,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
           </div>
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
-            className="text-gray-400 hover:text-blue-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+            className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Edit target savings rate"
           >
             <Target className="w-4 h-4" />
@@ -1087,14 +1087,16 @@ const GoalsCard = ({ data, onEdit }) => {
   );
 };
 
-// Net Worth Card
+// 🎯 COMMAND CENTER: Net Worth Card with Donut Chart
 const NetWorthCard = ({ data, onEdit }) => {
+  const netWorthChartRef = useRef(null);
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-cyan-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+          <DollarSign className="w-6 h-6 mr-3 text-cyan-400" />
           Net Worth
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1102,55 +1104,101 @@ const NetWorthCard = ({ data, onEdit }) => {
     );
   }
 
+  // Calculate totals for donut chart
+  const totalAssets = data.breakdown.filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0);
+  const totalLiabilities = Math.abs(data.breakdown.filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0));
+
+  // 📊 D3.js Donut Chart Effect
+  useEffect(() => {
+    if (netWorthChartRef.current && (totalAssets > 0 || totalLiabilities > 0)) {
+      const svg = d3.select(netWorthChartRef.current);
+      svg.selectAll("*").remove();
+      
+      const isMobile = window.innerWidth <= 768;
+      const width = isMobile ? 200 : 220;
+      const height = isMobile ? 200 : 220;
+      const radius = Math.min(width, height) / 2;
+      
+      const chartData = [
+        { label: 'Assets', value: totalAssets, color: '#3B82F6' },
+        { label: 'Liabilities', value: totalLiabilities, color: '#EF4444' }
+      ].filter(d => d.value > 0);
+      
+      const pie = d3.pie().value(d => d.value).sort(null);
+      const arc = d3.arc().innerRadius(radius * 0.6).outerRadius(radius);
+      
+      const g = svg.attr("width", width).attr("height", height)
+        .append("g").attr("transform", `translate(${width/2},${height/2})`);
+      
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "d3-tooltip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background-color", "#1f2937")
+        .style("color", "white")
+        .style("padding", "8px 12px")
+        .style("border-radius", "6px")
+        .style("font-size", "14px")
+        .style("pointer-events", "none")
+        .style("z-index", "1000");
+      
+      g.selectAll(".arc").data(pie(chartData)).enter().append("g").attr("class", "arc")
+        .append("path")
+        .attr("d", arc)
+        .attr("fill", d => d.data.color)
+        .attr("stroke", "#1f2937")
+        .attr("stroke-width", 2)
+        .on("mouseover", function(event, d) {
+          d3.select(this).attr("opacity", 0.8);
+          tooltip.style("visibility", "visible")
+            .html(`<strong>${d.data.label}</strong><br/>$${d.data.value.toLocaleString()}`);
+        })
+        .on("mousemove", function(event) {
+          tooltip.style("top", (event.pageY - 10) + "px")
+            .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select(this).attr("opacity", 1);
+          tooltip.style("visibility", "hidden");
+        });
+      
+      return () => { tooltip.remove(); };
+    }
+  }, [totalAssets, totalLiabilities]);
+
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-cyan-900/40">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
-        <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+        <DollarSign className="w-6 h-6 mr-3 text-cyan-400" />
         Net Worth
       </h2>
       <button
         onClick={() => onEdit('netWorth', data)}
-        className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        className="text-gray-400 hover:text-cyan-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
       >
         <Edit className="w-4 h-4" />
       </button>
     </div>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-4">
-      {/* Assets Section */}
-      <div>
-        <h4 className="text-sm font-semibold text-emerald-400 mb-2">Assets</h4>
-        <div className="space-y-2">
-          {data.breakdown.filter(item => item.type === 'asset').map((item) => (
-            <div key={item.id} className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
-                <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
-                <span className="text-gray-300">{item.name}</span>
-              </div>
-              <span className="text-emerald-400 font-medium">+${item.value.toLocaleString()}</span>
-            </div>
-          ))}
+    <p className="text-5xl font-extrabold text-cyan-400">${data.total.toLocaleString()}</p>
+    
+    {/* Donut Chart */}
+    <div className="mt-4 flex flex-col items-center">
+      <svg ref={netWorthChartRef}></svg>
+      
+      {/* Legend */}
+      <div className="mt-3 flex gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+          <span className="text-sm text-gray-300">Assets: ${totalAssets.toLocaleString()}</span>
         </div>
-      </div>
-
-      {/* Liabilities Section */}
-      {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
-        <div>
-          <h4 className="text-sm font-semibold text-red-400 mb-2">Liabilities</h4>
-          <div className="space-y-2">
-            {data.breakdown.filter(item => item.type === 'liability').map((item) => (
-              <div key={item.id} className="flex items-center justify-between text-sm">
-                <div className="flex items-center">
-                  <span className={`w-2.5 h-2.5 rounded-full mr-2 ${item.color}`}></span>
-                  <span className="text-gray-300">{item.name}</span>
-                </div>
-                <span className="text-red-400 font-medium">-${Math.abs(item.value).toLocaleString()}</span>
-              </div>
-            ))}
+        {totalLiabilities > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <span className="text-sm text-gray-300">Liabilities: ${totalLiabilities.toLocaleString()}</span>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   </Card>
   );
@@ -1179,15 +1227,15 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-purple-900/30 to-indigo-900/30 border-purple-600/30">
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-600/30">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <ShieldCheck className="w-6 h-6 mr-3 text-purple-400" />
+          <ShieldCheck className="w-6 h-6 mr-3 text-cyan-400" />
           Retirement Accounts
         </h2>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
-          className="text-gray-400 hover:text-purple-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="text-gray-400 hover:text-cyan-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -1397,14 +1445,16 @@ const CashOnHandCard = ({ data, onEdit }) => {
   );
 };
 
-// Income Card
+// 🎯 COMMAND CENTER: Income Card with Donut Chart
 const IncomeCard = ({ data, viewMode }) => {
+  const incomeChartRef = useRef(null);
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+          <ArrowUp className="w-6 h-6 mr-3 text-green-400" />
           {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1412,33 +1462,105 @@ const IncomeCard = ({ data, viewMode }) => {
     );
   }
 
+  // 📊 D3.js Donut Chart Effect
+  useEffect(() => {
+    if (incomeChartRef.current && data.sources && data.sources.length > 0) {
+      const svg = d3.select(incomeChartRef.current);
+      svg.selectAll("*").remove();
+      
+      const isMobile = window.innerWidth <= 768;
+      const width = isMobile ? 200 : 220;
+      const height = isMobile ? 200 : 220;
+      const radius = Math.min(width, height) / 2;
+      
+      const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
+      const chartData = data.sources.map((source, idx) => ({
+        label: source.name,
+        value: source.amount,
+        color: colors[idx % colors.length]
+      }));
+      
+      const pie = d3.pie().value(d => d.value).sort(null);
+      const arc = d3.arc().innerRadius(radius * 0.6).outerRadius(radius);
+      
+      const g = svg.attr("width", width).attr("height", height)
+        .append("g").attr("transform", `translate(${width/2},${height/2})`);
+      
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "d3-tooltip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background-color", "#1f2937")
+        .style("color", "white")
+        .style("padding", "8px 12px")
+        .style("border-radius", "6px")
+        .style("font-size", "14px")
+        .style("pointer-events", "none")
+        .style("z-index", "1000");
+      
+      g.selectAll(".arc").data(pie(chartData)).enter().append("g").attr("class", "arc")
+        .append("path")
+        .attr("d", arc)
+        .attr("fill", d => d.data.color)
+        .attr("stroke", "#1f2937")
+        .attr("stroke-width", 2)
+        .on("mouseover", function(event, d) {
+          d3.select(this).attr("opacity", 0.8);
+          tooltip.style("visibility", "visible")
+            .html(`<strong>${d.data.label}</strong><br/>$${d.data.value.toLocaleString()}`);
+        })
+        .on("mousemove", function(event) {
+          tooltip.style("top", (event.pageY - 10) + "px")
+            .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select(this).attr("opacity", 1);
+          tooltip.style("visibility", "hidden");
+        });
+      
+      return () => { tooltip.remove(); };
+    }
+  }, [data.sources]);
+
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+      <ArrowUp className="w-6 h-6 mr-3 text-green-400" />
       {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
     </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-2">
-      {data.sources.map(source => (
-        <div key={source.id} className="flex justify-between items-center text-sm">
-          <span className="text-gray-300">{source.name}</span>
-          <span className="font-semibold text-white">${source.amount.toLocaleString()}</span>
-        </div>
-      ))}
+    <p className="text-5xl font-extrabold text-green-400">${data.total.toLocaleString()}</p>
+    
+    {/* Donut Chart */}
+    <div className="mt-4 flex flex-col items-center">
+      <svg ref={incomeChartRef}></svg>
+      
+      {/* Legend */}
+      <div className="mt-3 space-y-1">
+        {data.sources.map((source, idx) => {
+          const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
+          return (
+            <div key={source.id} className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></div>
+              <span className="text-xs text-gray-300">{source.name}: ${source.amount.toLocaleString()}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   </Card>
   );
 };
 
-// Expenses Card
+// 🎯 COMMAND CENTER: Expenses Card with Donut Chart
 const ExpensesCard = ({ data, viewMode }) => {
+  const expensesChartRef = useRef(null);
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
+          <ArrowDown className="w-6 h-6 mr-3 text-red-400" />
           {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1446,33 +1568,103 @@ const ExpensesCard = ({ data, viewMode }) => {
     );
   }
 
+  // 📊 D3.js Donut Chart Effect
+  useEffect(() => {
+    if (expensesChartRef.current && data.categories && data.categories.length > 0) {
+      const svg = d3.select(expensesChartRef.current);
+      svg.selectAll("*").remove();
+      
+      const isMobile = window.innerWidth <= 768;
+      const width = isMobile ? 200 : 220;
+      const height = isMobile ? 200 : 220;
+      const radius = Math.min(width, height) / 2;
+      
+      const colors = ['#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2'];
+      const chartData = data.categories.map((cat, idx) => ({
+        label: cat.name,
+        value: cat.amount,
+        color: colors[idx % colors.length]
+      }));
+      
+      const pie = d3.pie().value(d => d.value).sort(null);
+      const arc = d3.arc().innerRadius(radius * 0.6).outerRadius(radius);
+      
+      const g = svg.attr("width", width).attr("height", height)
+        .append("g").attr("transform", `translate(${width/2},${height/2})`);
+      
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "d3-tooltip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background-color", "#1f2937")
+        .style("color", "white")
+        .style("padding", "8px 12px")
+        .style("border-radius", "6px")
+        .style("font-size", "14px")
+        .style("pointer-events", "none")
+        .style("z-index", "1000");
+      
+      g.selectAll(".arc").data(pie(chartData)).enter().append("g").attr("class", "arc")
+        .append("path")
+        .attr("d", arc)
+        .attr("fill", d => d.data.color)
+        .attr("stroke", "#1f2937")
+        .attr("stroke-width", 2)
+        .on("mouseover", function(event, d) {
+          d3.select(this).attr("opacity", 0.8);
+          tooltip.style("visibility", "visible")
+            .html(`<strong>${d.data.label}</strong><br/>$${d.data.value.toLocaleString()}`);
+        })
+        .on("mousemove", function(event) {
+          tooltip.style("top", (event.pageY - 10) + "px")
+            .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select(this).attr("opacity", 1);
+          tooltip.style("visibility", "hidden");
+        });
+      
+      return () => { tooltip.remove(); };
+    }
+  }, [data.categories]);
+
   return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
+      <ArrowDown className="w-6 h-6 mr-3 text-red-400" />
       {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
     </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
-    <div className="mt-4 space-y-2">
-      {data.categories.map(cat => (
-        <div key={cat.id} className="flex justify-between items-center text-sm">
-          <span className="text-gray-300">{cat.name}</span>
-          <span className="font-semibold text-white">${cat.amount.toLocaleString()}</span>
-        </div>
-      ))}
+    <p className="text-5xl font-extrabold text-red-400">${data.total.toLocaleString()}</p>
+    
+    {/* Donut Chart */}
+    <div className="mt-4 flex flex-col items-center">
+      <svg ref={expensesChartRef}></svg>
+      
+      {/* Legend */}
+      <div className="mt-3 space-y-1">
+        {data.categories.map((cat, idx) => {
+          const colors = ['#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2'];
+          return (
+            <div key={cat.id} className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></div>
+              <span className="text-xs text-gray-300">{cat.name}: ${cat.amount.toLocaleString()}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   </Card>
   );
 };
 
-// Cash Flow Card
+// Cash Flow Card (GREEN - Positive Growth)
 const CashFlowCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+          <TrendingUp className="w-6 h-6 mr-3 text-green-400" />
           Cash Flow
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1482,15 +1674,15 @@ const CashFlowCard = ({ data, onEdit }) => {
 
   const isPositive = data.total >= 0;
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
       <div className="flex justify-between items-start mb-2">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+          <TrendingUp className="w-6 h-6 mr-3 text-green-400" />
           Cash Flow
         </h2>
         {/* Cash Flow is calculated - no edit needed */}
       </div>
-      <p className={`text-5xl font-extrabold ${isPositive ? 'text-amber-400' : 'text-red-500'}`}>
+      <p className={`text-5xl font-extrabold ${isPositive ? 'text-green-400' : 'text-red-500'}`}>
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
       <p className="text-gray-400 mt-2">Monthly income minus expenses</p>
@@ -9933,3 +10125,4 @@ const AppWithErrorBoundary = () => (
 );
 
 export default AppWithErrorBoundary;
+rBoundary;
