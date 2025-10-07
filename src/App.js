@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award } from 'lucide-react';
 import * as d3 from 'd3';
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
 import ErrorBoundary from './components/ErrorBoundary';
 import FinancialErrorBoundary from './components/FinancialErrorBoundary';
@@ -6262,151 +6263,105 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
             ) : (
               <div className="bg-slate-800/40 rounded-lg p-4 md:p-6 border border-gray-700">
-                {/* 🗺️ VISUAL WORLD MAP */}
-                <div className="relative w-full overflow-x-auto mb-6">
-                  <svg 
-                    viewBox="0 0 100 50" 
-                    className="w-full h-auto"
-                    style={{ maxWidth: '1400px', margin: '0 auto', minHeight: '400px' }}
+                {/* 🗺️ VINTAGE EXPEDITION WORLD MAP */}
+                <div className="relative w-full mb-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border-2 border-amber-900/40 p-4 shadow-2xl">
+                  {/* Decorative Compass Rose */}
+                  <div className="absolute top-4 right-4 w-16 h-16 opacity-20 pointer-events-none">
+                    <svg viewBox="0 0 100 100" className="text-amber-400">
+                      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2"/>
+                      <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="1"/>
+                      <path d="M 50 5 L 55 45 L 50 50 L 45 45 Z" fill="currentColor"/>
+                      <path d="M 95 50 L 55 55 L 50 50 L 55 45 Z" fill="currentColor" opacity="0.7"/>
+                      <path d="M 50 95 L 45 55 L 50 50 L 55 55 Z" fill="currentColor" opacity="0.5"/>
+                      <path d="M 5 50 L 45 45 L 50 50 L 45 55 Z" fill="currentColor" opacity="0.3"/>
+                      <text x="50" y="15" fontSize="12" fill="currentColor" textAnchor="middle" fontWeight="bold">N</text>
+                    </svg>
+                  </div>
+                  
+                  {/* The Map */}
+                  <ComposableMap
+                    projection="geoMercator"
+                    projectionConfig={{
+                      scale: 100,
+                      center: [0, 20]
+                    }}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      minHeight: '400px',
+                      background: 'linear-gradient(to bottom, #1e3a5f, #0f1f3d)'
+                    }}
                   >
-                    {/* Ocean Background */}
-                    <defs>
-                      <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style={{stopColor: '#1e3a5f', stopOpacity: 1}} />
-                        <stop offset="100%" style={{stopColor: '#0f1f3d', stopOpacity: 1}} />
-                      </linearGradient>
-                    </defs>
-                    <rect x="0" y="0" width="100" height="50" fill="url(#oceanGradient)" />
-                    
-                    {/* Latitude/Longitude Grid Lines */}
-                    {[...Array(6)].map((_, i) => (
-                      <line 
-                        key={`lat-${i}`} 
-                        x1="0" 
-                        y1={i * 10} 
-                        x2="100" 
-                        y2={i * 10} 
-                        stroke="#2d4a6f" 
-                        strokeWidth="0.15" 
-                        opacity="0.4"
-                      />
-                    ))}
-                    {[...Array(13)].map((_, i) => (
-                      <line 
-                        key={`lon-${i}`} 
-                        x1={i * 8} 
-                        y1="0" 
-                        x2={i * 8} 
-                        y2="50" 
-                        stroke="#2d4a6f" 
-                        strokeWidth="0.15" 
-                        opacity="0.4"
-                      />
-                    ))}
-                    
-                    {/* REALISTIC CONTINENTS */}
-                    
-                    {/* North America - Better shape */}
-                    <path d="M 7 8 Q 6 7 8 6 L 11 6 Q 13 5 14 7 L 15 9 Q 16 10 17 12 L 18 15 L 19 18 Q 19 20 18 22 L 17 25 Q 16 27 15 28 L 14 30 Q 13 31 12 31 L 11 32 Q 10 32 9 31 L 8 29 Q 7 27 7 25 L 7 23 Q 7 21 8 19 L 9 17 Q 9 15 8 13 L 7 11 Q 7 9 7 8 Z" 
-                      fill="#1a2b3d" 
-                      stroke="#3d5a7a" 
-                      strokeWidth="0.15"
-                      opacity="0.9"/>
-                    
-                    {/* South America - Better shape */}
-                    <path d="M 23 30 Q 24 29 25 30 L 26 32 Q 27 34 28 36 L 29 39 Q 30 41 30 43 L 30 45 Q 30 46 29 47 L 28 48 Q 27 48 26 47 L 25 46 Q 24 45 24 44 L 23 42 Q 23 40 23 38 L 23 36 Q 23 34 23 32 L 23 30 Z" 
-                      fill="#1a2b3d" 
-                      stroke="#3d5a7a" 
-                      strokeWidth="0.15"
-                      opacity="0.9"/>
-                    
-                    {/* Europe - Better shape */}
-                    <path d="M 44 8 Q 45 7 46 8 L 48 9 Q 50 10 52 11 L 54 12 Q 55 13 55 14 L 55 16 Q 54 17 53 18 L 52 19 Q 51 19 50 19 L 49 19 Q 48 18 47 18 L 46 17 Q 45 16 45 15 L 44 13 Q 44 11 44 9 L 44 8 Z" 
-                      fill="#1a2b3d" 
-                      stroke="#3d5a7a" 
-                      strokeWidth="0.15"
-                      opacity="0.9"/>
-                    
-                    {/* Africa - Much better recognizable shape */}
-                    <path d="M 48 20 Q 49 19 50 20 L 52 22 Q 53 24 54 26 L 55 29 Q 56 31 56 33 L 56 36 Q 56 38 56 40 L 55 42 Q 54 43 53 44 L 52 45 Q 51 45 50 44 L 49 43 Q 48 41 48 39 L 48 37 Q 48 35 48 33 L 48 31 Q 48 29 48 27 L 48 25 Q 48 23 48 21 L 48 20 Z" 
-                      fill="#1a2b3d" 
-                      stroke="#3d5a7a" 
-                      strokeWidth="0.15"
-                      opacity="0.9"/>
-                    
-                    {/* Asia - Large recognizable mass */}
-                    <path d="M 58 6 Q 60 5 62 6 L 65 7 Q 68 8 71 10 L 74 12 Q 77 14 79 16 L 81 18 Q 83 20 84 22 L 85 24 Q 85 26 84 28 L 83 30 Q 81 31 79 32 L 77 33 Q 75 33 73 32 L 71 31 Q 69 30 67 29 L 65 28 Q 63 27 62 26 L 60 24 Q 59 22 59 20 L 58 18 Q 58 16 58 14 L 58 12 Q 58 10 58 8 L 58 6 Z" 
-                      fill="#1a2b3d" 
-                      stroke="#3d5a7a" 
-                      strokeWidth="0.15"
-                      opacity="0.9"/>
-                    
-                    {/* Australia - Better shape */}
-                    <path d="M 79 36 Q 80 35 82 36 L 84 37 Q 86 38 87 39 L 88 41 Q 88 42 87 43 L 86 44 Q 84 44 82 43 L 80 42 Q 79 41 79 40 L 79 38 Q 79 37 79 36 Z" 
-                      fill="#1a2b3d" 
-                      stroke="#3d5a7a" 
-                      strokeWidth="0.15"
-                      opacity="0.9"/>
-                    
-                    {/* Country Markers */}
-                    {worldMapCountries.map(country => {
-                      const isVisited = visitedCountries.has(country.name);
-                      const isPlanned = plannedCountries.has(country.name);
-                      
-                      return (
-                        <g key={country.name}>
-                          {/* Country Marker Circle */}
-                          <circle
-                            cx={country.x}
-                            cy={country.y}
-                            r={isVisited || isPlanned ? "1.2" : "0.6"}
-                            fill={isVisited ? "#FBBF24" : isPlanned ? "#38BDF8" : "#475569"}
-                            opacity={isVisited || isPlanned ? "1" : "0.3"}
-                            stroke={isVisited ? "#F59E0B" : isPlanned ? "#0EA5E9" : "none"}
-                            strokeWidth="0.3"
-                            className="transition-all duration-300 hover:r-2 cursor-pointer"
-                          />
-                          {/* Glow Effect for Visited/Planned */}
-                          {(isVisited || isPlanned) && (
-                            <circle
-                              cx={country.x}
-                              cy={country.y}
-                              r="2"
-                              fill={isVisited ? "#FBBF24" : "#38BDF8"}
-                              opacity="0.2"
-                              className="animate-pulse"
-                            />
-                          )}
-                          {/* Country Label (show for visited/planned) */}
-                          {(isVisited || isPlanned) && (
-                            <text
-                              x={country.x}
-                              y={country.y - 2}
-                              fontSize="2"
-                              fill="white"
-                              textAnchor="middle"
-                              className="pointer-events-none"
-                              style={{ textShadow: '0 0 3px #000' }}
-                            >
-                              {country.display}
-                            </text>
-                          )}
-                        </g>
-                      );
-                    })}
-                    
-                    {/* Legend */}
-                    <g transform="translate(5, 45)">
-                      <circle cx="1" cy="0" r="0.8" fill="#FBBF24" stroke="#F59E0B" strokeWidth="0.2"/>
-                      <text x="3" y="0.5" fontSize="2.5" fill="#FCD34D" fontWeight="bold">Completed</text>
-                      
-                      <circle cx="22" cy="0" r="0.8" fill="#38BDF8" stroke="#0EA5E9" strokeWidth="0.2"/>
-                      <text x="24" y="0.5" fontSize="2.5" fill="#7DD3FC" fontWeight="bold">Planned</text>
-                      
-                      <circle cx="40" cy="0" r="0.6" fill="#475569" opacity="0.3"/>
-                      <text x="42" y="0.5" fontSize="2.5" fill="#94a3b8">Not Visited</text>
-                    </g>
-                  </svg>
+                    <ZoomableGroup>
+                      <Geographies geography="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json">
+                        {({ geographies }) =>
+                          geographies.map((geo) => {
+                            const countryName = geo.properties.name.toLowerCase();
+                            const isVisited = visitedCountries.has(countryName);
+                            const isPlanned = plannedCountries.has(countryName);
+                            
+                            return (
+                              <Geography
+                                key={geo.rsmKey}
+                                geography={geo}
+                                fill={
+                                  isVisited 
+                                    ? "#FBBF24"  // Amber/Gold for completed
+                                    : isPlanned 
+                                    ? "#38BDF8"  // Sky Blue for planned
+                                    : "#2d3748"  // Dark gray for unvisited
+                                }
+                                stroke={
+                                  isVisited
+                                    ? "#F59E0B"  // Darker amber border
+                                    : isPlanned
+                                    ? "#0EA5E9"  // Darker blue border
+                                    : "#4a5568"  // Gray border
+                                }
+                                strokeWidth={isVisited || isPlanned ? 0.75 : 0.3}
+                                style={{
+                                  default: { 
+                                    outline: 'none',
+                                    transition: 'all 0.3s ease'
+                                  },
+                                  hover: { 
+                                    fill: isVisited ? "#FCD34D" : isPlanned ? "#7DD3FC" : "#3d4552",
+                                    stroke: isVisited ? "#F59E0B" : isPlanned ? "#0EA5E9" : "#5a6678",
+                                    strokeWidth: 1,
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                  },
+                                  pressed: { outline: 'none' }
+                                }}
+                              />
+                            );
+                          })
+                        }
+                      </Geographies>
+                    </ZoomableGroup>
+                  </ComposableMap>
+                  
+                  {/* Vintage Map Legend */}
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-6 text-sm bg-slate-900/60 rounded-lg p-3 border border-amber-900/30">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-sm bg-amber-500 border-2 border-amber-600"></div>
+                      <span className="text-amber-200 font-semibold">Completed Expeditions</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-sm bg-sky-400 border-2 border-sky-600"></div>
+                      <span className="text-sky-200 font-semibold">Future Missions</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-sm bg-gray-700 border-2 border-gray-600"></div>
+                      <span className="text-gray-400">Unexplored</span>
+                    </div>
+                  </div>
+                  
+                  {/* Vintage Paper Texture Overlay */}
+                  <div className="absolute inset-0 pointer-events-none rounded-xl" style={{
+                    backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(251, 191, 36, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.03) 0%, transparent 50%)',
+                    mixBlendMode: 'overlay'
+                  }}></div>
                 </div>
                 
                 {/* Country List View - Collapsible */}
