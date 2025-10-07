@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - The Freedom Compass</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease;
+        }
+        .checkmark {
+            width: 40px;
+            height: 40px;
+            border: 4px solid white;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+            margin-bottom: 10px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .benefits {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .benefits h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+        }
+        .benefit-icon {
+            width: 30px;
+            height: 30px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 20px 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .cta-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #999;
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">
+            <div class="checkmark"></div>
+        </div>
+        
+        <h1>🎉 Payment Successful!</h1>
+        <p>Welcome to your new subscription tier!</p>
+        <p>Your payment has been processed successfully and your account is being upgraded right now.</p>
+        
+        <div class="benefits">
+            <h2>✨ What Happens Next</h2>
+            <div class="benefit-item">
+                <div class="benefit-icon">1</div>
+                <div>
+                    <strong>Your features are being unlocked</strong><br>
+                    <span style="color: #666;">Access to all premium features is being activated</span>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">2</div>
+                <div>
+                    <strong>Confirmation email sent</strong><br>
+                    <span style="color: #666;">Check your inbox for your receipt and welcome guide</span>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">3</div>
+                <div>
+                    <strong>Start using premium features</strong><br>
+                    <span style="color: #666;">Head back to the dashboard to explore your new capabilities</span>
+                </div>
+            </div>
+        </div>
+
+        <a href="/" class="cta-button">🚀 Go to Dashboard</a>
+        <a href="mailto:support@survivebackpacking.com" class="cta-button cta-secondary">📧 Contact Support</a>
+
+        <p class="footer-note">
+            <strong>Note:</strong> It may take a few seconds for your subscription to fully activate.<br>
+            If you don't see your new features immediately, please refresh the page.
+        </p>
+    </div>
+
+    <script>
+        // Redirect to dashboard after 5 seconds
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 5000);
+    </script>
+</body>
+</html>

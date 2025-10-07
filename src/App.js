@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -10,7 +10,7 @@ import TermsOfService from './components/TermsOfService';
 import HelpFAQ from './components/HelpFAQ';
 import PricingModal from './components/PricingModal';
 import UpgradePrompt from './components/UpgradePrompt';
-import { hasFeatureAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
+import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -165,260 +165,135 @@ const processDueRecurringExpenses = (recurringExpenses, existingTransactions) =>
   };
 };
 
+// 🎯 REALISTIC BEGINNER SAMPLE DATA
+// Designed for someone just starting their financial journey
 const initialData = {
   financialFreedom: {
-    targetAmount: 2000000,
-    currentInvestments: 450000,
-    monthlyContribution: 1500,
+    targetAmount: 500000,  // More realistic first goal
+    currentInvestments: 0,  // Just starting out
+    monthlyContribution: 0,  // Not investing yet
     annualReturn: 7,
   },
   creditScore: {
-    current: 750,
-    history: [ { date: '2025-06-30', score: 720 }, { date: '2025-08-09', score: 750 } ]
+    current: 650,  // Average starting credit score
+    history: [ { date: '2025-06-30', score: 630 }, { date: '2025-08-09', score: 650 } ]
   },
   cashOnHand: {
-    total: 75000,
+    total: 2500,  // Small but realistic emergency fund
     accounts: [
-        { id: 1, name: 'CIBC Chequing', balance: 15000, type: 'Checking' },
-        { id: 2, name: 'Tangerine Savings', balance: 45000, type: 'Savings' },
-        { id: 3, name: 'Wealthsimple Cash', balance: 15000, type: 'Investment Cash' },
+        { id: 1, name: 'Checking Account', balance: 1200, type: 'Checking' },
+        { id: 2, name: 'Savings Account', balance: 1300, type: 'Savings' },
     ],
-    history: [ { date: '2025-08-09', total: 75000 } ]
+    history: [ { date: '2025-08-09', total: 2500 } ]
   },
   rainyDayFund: {
-    total: 20000,
-    goal: 30000,
+    total: 1300,  // Building emergency fund (goal: 3-6 months expenses)
+    goal: 6000,  // 3 months of $2,000 expenses
     accounts: [
-        { id: 1, name: 'Emergency Fund', balance: 20000 }
+        { id: 1, name: 'Emergency Savings', balance: 1300 }
     ],
-    history: [ { date: '2025-08-09', total: 20000 } ]
+    history: [ { date: '2025-08-09', total: 1300 } ]
   },
   debt: {
-    total: 45000,
+    total: 2800,  // Small credit card debt
     accounts: [
-        { id: 1, name: 'Visa Card', balance: 5000, interestRate: 19.99, minPayment: 100 },
-        { id: 2, name: 'Mastercard', balance: 10000, interestRate: 22.99, minPayment: 200 },
-        { id: 3, name: 'Line of Credit', balance: 30000, interestRate: 8.5, minPayment: 300 },
+        { id: 1, name: 'Credit Card', balance: 2800, interestRate: 19.99, minPayment: 75 },
     ],
     history: [
-        { date: '2025-06-30', total: 50000 },
-        { date: '2025-07-31', total: 48000 },
-        { date: '2025-08-09', total: 45000 },
+        { date: '2025-06-30', total: 3200 },
+        { date: '2025-07-31', total: 3000 },
+        { date: '2025-08-09', total: 2800 },
     ]
   },
   netWorth: { 
-    total: 550000, 
+    total: 4700,  // Small positive net worth ($2,500 cash + $5,000 car - $2,800 debt)
     breakdown: [
-      { id: 1, name: 'Cash', value: 75000, color: 'bg-sky-500', type: 'asset' },
-      { id: 2, name: 'Investments', value: 350000, color: 'bg-violet-500', type: 'asset' },
-      { id: 3, name: 'Real Estate', value: 250000, color: 'bg-emerald-500', type: 'asset' },
-      { id: 4, name: 'Liabilities', value: -125000, color: 'bg-red-500', type: 'liability' },
+      { id: 1, name: 'Cash & Savings', value: 2500, color: 'bg-sky-500', type: 'asset' },
+      { id: 2, name: 'Vehicle', value: 5000, color: 'bg-emerald-500', type: 'asset' },
+      { id: 3, name: 'Credit Card Debt', value: -2800, color: 'bg-red-500', type: 'liability' },
     ],
-    history: [ { date: '2025-08-09', total: 550000 } ]
+    history: [ { date: '2025-08-09', total: 4700 } ]
   },
   income: { 
-    total: 12500, 
+    total: 3000,  // Entry-level job income
     sources: [
-      { id: 1, name: 'Main Job', amount: 8000, type: 'active' },
-      { id: 2, name: 'Trading', amount: 2500, type: 'passive' },
-      { id: 3, name: 'Side Business', amount: 2000, type: 'passive' },
+      { id: 1, name: 'Full-Time Job', amount: 3000, type: 'active' },
     ]
   },
   expenses: { 
-    total: 6500, 
+    total: 2000,  // Realistic monthly expenses
     categories: [
-      { id: 1, name: 'Housing', amount: 2500, color: 'bg-red-500' },
-      { id: 2, name: 'Transport', amount: 800, color: 'bg-yellow-500' },
-      { id: 3, name: 'Food', amount: 1200, color: 'bg-green-500' },
-      { id: 4, name: 'Entertainment', amount: 1000, color: 'bg-purple-500' },
-      { id: 5, name: 'Other', amount: 1000, color: 'bg-gray-400' },
+      { id: 1, name: 'Rent', amount: 900, color: 'bg-red-500' },
+      { id: 2, name: 'Transportation', amount: 300, color: 'bg-yellow-500' },
+      { id: 3, name: 'Groceries', amount: 400, color: 'bg-green-500' },
+      { id: 4, name: 'Utilities & Phone', amount: 200, color: 'bg-blue-500' },
+      { id: 5, name: 'Entertainment', amount: 150, color: 'bg-purple-500' },
+      { id: 6, name: 'Other', amount: 50, color: 'bg-gray-400' },
     ]
   },
-  cashflow: { total: 6000 },
+  cashflow: { total: 1000 },  // $1k/month savings
   savingsRate: { 
-    current: 48, // 48% savings rate
-    target: 50,
-    monthly: 6000,
-    monthlyIncome: 12500
+    current: 33,  // 33% savings rate (very achievable!)
+    target: 40,
+    monthly: 1000,
+    monthlyIncome: 3000
   },
   goals: [
-    { id: 1, name: 'House Down Payment', targetAmount: 75000, currentAmount: 25000, targetDate: '2025-12-31' },
-    { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
-    { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
+    { id: 1, name: 'Emergency Fund (3 months)', targetAmount: 6000, currentAmount: 1300, targetDate: '2026-06-30' },
+    { id: 2, name: 'Pay Off Credit Card', targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
+    { id: 3, name: 'Vacation Fund', targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
   ],
-  businesses: [
-    {
-      id: 1,
-      name: "Trading Business",
-      description: "Stock and crypto trading",
-      startDate: "2024-01-01",
-      totalIncome: 15000,
-      totalExpenses: 2500,
-      netProfit: 12500,
-      incomeItems: [
-        { id: 1, description: "Q4 Trading Profits", amount: 8000, date: "2025-01-10" },
-        { id: 2, description: "Crypto Gains", amount: 4500, date: "2025-01-08" },
-        { id: 3, description: "Dividend Income", amount: 2500, date: "2025-01-05" }
-      ],
-      expenseItems: [
-        { id: 1, description: "Trading Platform Fees", amount: 1200, date: "2025-01-12" },
-        { id: 2, description: "Market Data Subscription", amount: 800, date: "2025-01-01" },
-        { id: 3, description: "Tax Preparation", amount: 500, date: "2025-01-15" }
-      ]
-    },
-    {
-      id: 2,
-      name: "Consulting Services",
-      description: "Tech consulting and advisory",
-      startDate: "2023-06-01",
-      totalIncome: 25000,
-      totalExpenses: 3500,
-      netProfit: 21500,
-      incomeItems: [
-        { id: 1, description: "Client A - Project Completion", amount: 15000, date: "2025-01-14" },
-        { id: 2, description: "Client B - Monthly Retainer", amount: 5000, date: "2025-01-01" },
-        { id: 3, description: "Client C - Strategy Session", amount: 5000, date: "2025-01-07" }
-      ],
-      expenseItems: [
-        { id: 1, description: "Business License Renewal", amount: 1500, date: "2025-01-03" },
-        { id: 2, description: "Professional Development", amount: 1200, date: "2025-01-11" },
-        { id: 3, description: "Office Supplies", amount: 800, date: "2025-01-09" }
-      ]
-    }
-  ],
+  // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
+  // FREE tier users shouldn't have phantom businesses affecting their calculations
+  businesses: [],
   investments: {
-    totalValue: 270000, // Calculated: VTI (1200 * 225) = 270,000
-    portfolioAllocation: [
-      { id: 1, name: 'Stocks', value: 270000, percentage: 60, color: '#3B82F6' },
-      { id: 2, name: 'Bonds', value: 90000, percentage: 20, color: '#10B981' },
-      { id: 3, name: 'Real Estate', value: 45000, percentage: 10, color: '#F59E0B' },
-      { id: 4, name: 'Crypto', value: 45000, percentage: 10, color: '#8B5CF6' }
-    ],
-    holdings: [
-      {
-        id: 1,
-        symbol: 'VTI',
-        name: 'Vanguard Total Stock Market ETF',
-        shares: 1200,
-        avgCost: 180.50,
-        currentPrice: 225.00,
-        totalValue: 270000, // 1200 * 225 = 270000 ✅
-        dividendYield: 1.8,
-        annualDividend: 4860,
-        nextDividendDate: '2025-03-15',
-        dripEnabled: true,
-        dividendAccumulated: 1215,
-        dripProgress: 27.0, // 27% towards next share
-        accountType: 'RRSP',
-        isUSStock: true,
-        withholdingTax: 15, // US withholding tax for RRSP
-        currency: 'USD'
-      },
-      {
-        id: 2,
-        symbol: 'BND',
-        name: 'Vanguard Total Bond Market ETF',
-        shares: 1125,
-        avgCost: 75.00,
-        currentPrice: 80.00,
-        totalValue: 90000, // 1125 * 80 = 90000 ✅
-        dividendYield: 4.2,
-        annualDividend: 3780,
-        nextDividendDate: '2025-02-28',
-        dripEnabled: true,
-        dividendAccumulated: 65,
-        dripProgress: 81.3, // 81% towards next share
-        accountType: 'TFSA',
-        isUSStock: true,
-        withholdingTax: 30, // US withholding tax for TFSA
-        currency: 'USD'
-      },
-      {
-        id: 3,
-        symbol: 'VNQ',
-        name: 'Vanguard Real Estate ETF',
-        shares: 500,
-        avgCost: 85.00,
-        currentPrice: 90.00,
-        totalValue: 45000, // 500 * 90 = 45000 ✅
-        dividendYield: 3.5,
-        annualDividend: 1575,
-        nextDividendDate: '2025-03-20',
-        dripEnabled: false,
-        dividendAccumulated: 262,
-        dripProgress: 0, // DRIP disabled
-        accountType: 'Taxable',
-        isUSStock: true,
-        withholdingTax: 30, // US withholding tax for non-registered
-        currency: 'USD'
-      },
-      {
-        id: 4,
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        shares: 0.5,
-        avgCost: 45000,
-        currentPrice: 90000,
-        totalValue: 45000, // 0.5 * 90000 = 45000 ✅
-        dividendYield: 0,
-        annualDividend: 0,
-        nextDividendDate: null,
-        dripEnabled: false,
-        dividendAccumulated: 0,
-        dripProgress: 0,
-        accountType: 'Taxable',
-        isUSStock: false,
-        withholdingTax: 0, // No withholding tax on crypto
-        currency: 'USD'
-      }
-    ]
+    totalValue: 0,  // Just starting out - no investments yet
+    portfolioAllocation: [],  // Will build portfolio over time
+    holdings: []  // Empty - beginners start with 0 investments
   },
   registeredAccounts: {
     accounts: [
       {
         id: 'tfsa',
         name: 'TFSA',
-        contributed: 45000,
+        contributed: 0,  // Just starting out
         limit: 88000,
-        goal: 88000,
+        goal: 10000,  // Realistic first goal
         type: 'tax-free',
         description: 'Tax-free growth and withdrawals'
       },
       {
         id: 'rrsp', 
         name: 'RRSP',
-        contributed: 25000,
+        contributed: 0,  // Just starting out
         limit: 31560,
-        goal: 31560,
+        goal: 5000,  // Realistic first goal
         type: 'tax-deferred',
         description: 'Tax-deferred retirement savings'
       }
     ]
   },
   transactions: [
-    { id: 1, date: '2025-01-15', description: 'Main Job Salary', amount: 8000, type: 'income', category: 'personal', subcategory: 'salary' },
-    { id: 2, date: '2025-01-15', description: 'Rent Payment', amount: -2500, type: 'expense', category: 'personal', subcategory: 'housing' },
-    { id: 3, date: '2025-01-14', description: 'Trading Profit', amount: 2500, type: 'income', category: 'business', subcategory: 'trading' },
-    { id: 4, date: '2025-01-13', description: 'Groceries', amount: -150, type: 'expense', category: 'personal', subcategory: 'food' },
-    { id: 5, date: '2025-01-12', description: 'Side Business Revenue', amount: 2000, type: 'income', category: 'business', subcategory: 'consulting' },
-    { id: 6, date: '2025-01-12', description: 'Software Subscription', amount: -100, type: 'expense', category: 'business', subcategory: 'software' },
-    { id: 7, date: '2025-01-11', description: 'Gas Station', amount: -80, type: 'expense', category: 'personal', subcategory: 'transport' },
-    { id: 8, date: '2025-01-10', description: 'Dividend Payment', amount: 500, type: 'income', category: 'personal', subcategory: 'investment' },
-    { id: 9, date: '2025-01-10', description: 'Coffee Shop', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
-    { id: 10, date: '2025-01-09', description: 'Business Lunch', amount: -75, type: 'expense', category: 'business', subcategory: 'meals' },
+    { id: 1, date: '2025-01-15', description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
+    { id: 2, date: '2025-01-01', description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
+    { id: 3, date: '2025-01-12', description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
+    { id: 4, date: '2025-01-10', description: 'Gas', amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
+    { id: 5, date: '2025-01-08', description: 'Credit Card Payment', amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
+    { id: 6, date: '2025-01-05', description: 'Netflix', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 7, date: '2025-01-03', description: 'Coffee', amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
   ],
   recurringExpenses: [
     {
       id: 1,
       description: 'Rent Payment',
-      amount: 2500,
+      amount: 900,  // Updated to match realistic beginner rent
       type: 'expense',
       category: 'personal',
       subcategory: 'housing',
-      frequency: 'monthly', // monthly, weekly, yearly
-      dayOfMonth: 1, // For monthly: day of month (1-31)
-      dayOfWeek: null, // For weekly: day of week (0-6, 0=Sunday)
-      monthOfYear: null, // For yearly: month (1-12)
+      frequency: 'monthly',
+      dayOfMonth: 1,
+      dayOfWeek: null,
+      monthOfYear: null,
       isActive: true,
       nextDueDate: '2025-02-01',
       lastProcessed: '2025-01-01',
@@ -427,8 +302,8 @@ const initialData = {
     },
     {
       id: 2,
-      description: 'Netflix Subscription',
-      amount: 15.99,
+      description: 'Netflix',
+      amount: 15,
       type: 'expense',
       category: 'personal',
       subcategory: 'entertainment',
@@ -460,76 +335,79 @@ const initialData = {
       tags: ['insurance', 'essential']
     }
   ],
+  // 🔧 FIX: Monthly history updated to match realistic beginner sample data
   monthlyHistory: [
     { 
       month: '2025-01', 
-      netWorth: 550000, 
-      income: 12500, 
-      expenses: 6500, 
-      cashflow: 6000, 
-      businessIncome: 4500, 
-      businessExpenses: 1000,
-      investmentValue: 450000,
-      savingsRate: 48
+      netWorth: 4700,      // Realistic beginner: cash + car - debt
+      income: 3000,        // Entry-level job
+      expenses: 2000,      // Manageable expenses
+      cashflow: 1000,      // $1k/month savings
+      businessIncome: 0,   // No business yet
+      businessExpenses: 0,
+      investmentValue: 0,  // Learning phase
+      savingsRate: 33      // Achievable 33%
     },
     { 
       month: '2024-12', 
-      netWorth: 535000, 
-      income: 11800, 
-      expenses: 6200, 
-      cashflow: 5600, 
-      businessIncome: 4200, 
-      businessExpenses: 950,
-      investmentValue: 445000,
-      savingsRate: 47
+      netWorth: 4500, 
+      income: 3000, 
+      expenses: 2100, 
+      cashflow: 900, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 30
     },
     { 
       month: '2024-11', 
-      netWorth: 528000, 
-      income: 12200, 
-      expenses: 6400, 
-      cashflow: 5800, 
-      businessIncome: 4400, 
-      businessExpenses: 1100,
-      investmentValue: 440000,
-      savingsRate: 48
+      netWorth: 4200, 
+      income: 3000, 
+      expenses: 2050, 
+      cashflow: 950, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 32
     },
     { 
       month: '2024-10', 
-      netWorth: 522000, 
-      income: 11900, 
-      expenses: 6300, 
-      cashflow: 5600, 
-      businessIncome: 4100, 
-      businessExpenses: 980,
-      investmentValue: 435000,
-      savingsRate: 47
+      netWorth: 4000, 
+      income: 2900,        // Slight variation (realistic)
+      expenses: 2150, 
+      cashflow: 750, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 26
     },
     { 
       month: '2024-09', 
-      netWorth: 515000, 
-      income: 12000, 
-      expenses: 6100, 
-      cashflow: 5900, 
-      businessIncome: 4300, 
-      businessExpenses: 920,
-      investmentValue: 425000,
-      savingsRate: 49
+      netWorth: 3800, 
+      income: 3000, 
+      expenses: 2100, 
+      cashflow: 900, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 30
     },
     { 
       month: '2024-08', 
-      netWorth: 508000, 
-      income: 11700, 
-      expenses: 5900, 
-      cashflow: 5800, 
-      businessIncome: 4000, 
-      businessExpenses: 850,
-      investmentValue: 415000,
-      savingsRate: 50
+      netWorth: 3500, 
+      income: 2800,        // First job - lower starting salary
+      expenses: 2000, 
+      cashflow: 800, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 29
     }
   ],
+  // 🔧 FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
+  // FREE tier users shouldn't have phantom travel data, consistent with businesses fix
   travel: {
-    totalSavings: 85000,
+    totalSavings: 0,  // Just starting out - building travel fund
     homeCurrency: 'CAD',
     exchangeRates: {
       'USD': 0.70,        // 1 CAD = 0.70 USD (realistic rate)
@@ -540,41 +418,11 @@ const initialData = {
       'VND': 17800,       // 1 CAD = 17,800 Vietnamese Dong
       'MXN': 14.2         // 1 CAD = 14.2 Mexican Pesos
     },
-    trips: [
-      {
-        id: 1,
-        name: "Southeast Asia Adventure 2025",
-        description: "3 months backpacking through Thailand, Vietnam, Cambodia",
-        targetBudget: 45000,
-        currentSavings: 32000,
-        startDate: "2025-06-01",
-        endDate: "2025-09-01",
-        estimatedDailySpend: 500, // in CAD
-        countries: ["Thailand", "Vietnam", "Cambodia"],
-        status: "planning",
-        expenses: [
-          { id: 1, date: "2025-01-15", description: "Flight to Bangkok", amount: 1200, currency: "CAD", category: "transport" },
-          { id: 2, date: "2025-01-10", description: "Travel Insurance", amount: 450, currency: "CAD", category: "insurance" }
-        ]
-      },
-      {
-        id: 2,
-        name: "Colombia & Peru 2026",
-        description: "6 weeks exploring South American culture and coffee",
-        targetBudget: 28000,
-        currentSavings: 8500,
-        startDate: "2026-03-15",
-        endDate: "2026-05-01",
-        estimatedDailySpend: 350,
-        countries: ["Colombia", "Peru"],
-        status: "saving",
-        expenses: []
-      }
-    ],
+    trips: [],  // Empty - Operator users can add their own trips
     runwayCalculation: {
-      averageDailySpend: 425, // Average across all travel styles
-      totalAvailableFunds: 85000,
-      estimatedDaysRemaining: 200,
+      averageDailySpend: 0,
+      totalAvailableFunds: 0,
+      estimatedDaysRemaining: 0,
       lastUpdated: "2025-01-15"
     },
     expenseCategories: [
@@ -587,12 +435,56 @@ const initialData = {
       { name: "visa", color: "bg-orange-500", icon: "📋" },
       { name: "other", color: "bg-gray-500", icon: "💫" }
     ]
+  },
+  budgetSettings: {
+    fiftyThirtyTwenty: {
+      needs: 50,
+      wants: 30,
+      savings: 20
+    },
+    sixJars: {
+      necessities: 55,
+      education: 10,
+      play: 10,
+      longTermSavings: 10,
+      financial: 10,
+      give: 5
+    }
   }
 };
 
 const Card = ({ children, className = '' }) => (
   <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 ${className}`}>
     {children}
+  </div>
+);
+
+// 🔒 Locked Card Component - Shows upgrade prompt for locked dashboard cards
+const LockedCard = ({ cardName, requiredTier, onUpgrade }) => (
+  <div className="bg-gray-800/50 backdrop-blur-sm border-2 border-amber-500/30 rounded-2xl shadow-lg p-6 relative overflow-hidden col-span-1 md:col-span-2 lg:col-span-2">
+    {/* Blur overlay */}
+    <div className="absolute inset-0 backdrop-blur-sm bg-gray-900/80 flex items-center justify-center z-10">
+      <div className="text-center p-6">
+        <Crown className="w-12 h-12 text-amber-400 mx-auto mb-3 animate-pulse" />
+        <h3 className="text-lg font-bold text-white mb-2">{cardName}</h3>
+        <p className="text-gray-400 text-sm mb-4">
+          Upgrade to <span className="text-amber-400 font-semibold">{requiredTier === 'climber' ? 'Climber Plan' : 'Operator Plan'}</span> to unlock
+        </p>
+        <button
+          onClick={onUpgrade}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg"
+        >
+          View Plans
+        </button>
+      </div>
+    </div>
+    
+    {/* Blurred preview content */}
+    <div className="opacity-10 pointer-events-none">
+      <h3 className="text-xl font-bold text-white mb-4">{cardName}</h3>
+      <div className="h-24 bg-gray-700 rounded mb-4"></div>
+      <div className="h-16 bg-gray-700 rounded"></div>
+    </div>
   </div>
 );
 
@@ -630,6 +522,21 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 
 // Financial Freedom Goal Card
 const FinancialFreedomCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.targetAmount) {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-emerald-900/40 to-teal-900/40">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <Target className="w-6 h-6 mr-3 text-emerald-400" />
+            Financial Freedom Goal
+          </h2>
+        </div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const progressPercentage = (data.currentInvestments / data.targetAmount) * 100;
   const monthsToGoal = data.monthlyContribution > 0 
     ? Math.ceil((data.targetAmount - data.currentInvestments) / data.monthlyContribution) 
@@ -686,6 +593,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
 
 // Savings Rate Card
 const SavingsRateCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.current === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+            Savings Rate
+          </h2>
+        </div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const getRateColor = (rate) => {
     if (rate >= 50) return 'text-emerald-400';
     if (rate >= 30) return 'text-yellow-400';
@@ -752,6 +674,19 @@ const SavingsRateCard = ({ data, onEdit }) => {
 
 // Rainy Day Fund Card
 const RainyDayFundCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
+          Rainy Day Fund
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = data.total / 6500; // Assuming monthly expenses
   
@@ -838,8 +773,9 @@ const CreditScoreCard = ({ data, onEdit }) => {
   // const getScoreProgress = (score) => (score / 850) * 100;
 
   // Create line chart for credit score history
+  // 🛡️ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
   useEffect(() => {
-    if (!data.history || data.history.length === 0) return;
+    if (!data || !data.history || data.history.length === 0 || !svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -983,6 +919,19 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
   }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 🛡️ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
+  if (!data || typeof data.current === 'undefined') {
+    return (
+      <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
+          Credit Score
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   // Calculate score change
   const getScoreChange = () => {
     if (!data.history || data.history.length === 0) return null;
@@ -1060,6 +1009,19 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
 // Goals Card
 const GoalsCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !Array.isArray(data)) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Calendar className="w-6 h-6 mr-3 text-amber-400" />
+          Financial Goals
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
       <div className="flex justify-between items-start mb-4">
@@ -1126,7 +1088,21 @@ const GoalsCard = ({ data, onEdit }) => {
 };
 
 // Net Worth Card
-const NetWorthCard = ({ data, onEdit }) => (
+const NetWorthCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+          Net Worth
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
@@ -1177,10 +1153,24 @@ const NetWorthCard = ({ data, onEdit }) => (
       )}
     </div>
   </Card>
-);
+  );
+};
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/30 to-indigo-900/30">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+          Retirement Accounts
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const accounts = data?.accounts || [];
   
   // Calculate totals
@@ -1284,6 +1274,19 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
 
 // Debt Management Card
 const DebtCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+          Total Debt
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const totalDebt = data.accounts?.reduce((sum, account) => sum + account.balance, 0) || 0;
   const totalMinPayment = data.accounts?.reduce((sum, account) => sum + account.minPayment, 0) || 0;
   const avgInterestRate = data.accounts?.length > 0 ? 
@@ -1345,7 +1348,21 @@ const DebtCard = ({ data, onEdit }) => {
 };
 
 // Cash on Hand Card
-const CashOnHandCard = ({ data, onEdit }) => (
+const CashOnHandCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK - Fixed: checking for 'total' not 'amount'
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <Wallet className="w-6 h-6 mr-3 text-teal-400" />
+          Cash on Hand
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
@@ -1377,10 +1394,25 @@ const CashOnHandCard = ({ data, onEdit }) => (
       {data.accounts.length} accounts • Last updated {new Date().toLocaleDateString()}
     </div>
   </Card>
-);
+  );
+};
 
 // Income Card
-const IncomeCard = ({ data, viewMode }) => (
+const IncomeCard = ({ data, viewMode }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+          {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
@@ -1396,10 +1428,25 @@ const IncomeCard = ({ data, viewMode }) => (
       ))}
     </div>
   </Card>
-);
+  );
+};
 
 // Expenses Card
-const ExpensesCard = ({ data, viewMode }) => (
+const ExpensesCard = ({ data, viewMode }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
+          {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
@@ -1415,10 +1462,24 @@ const ExpensesCard = ({ data, viewMode }) => (
       ))}
     </div>
   </Card>
-);
+  );
+};
 
 // Cash Flow Card
 const CashFlowCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+          Cash Flow
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const isPositive = data.total >= 0;
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
@@ -2156,7 +2217,7 @@ const DebtPayoffCalculator = () => {
 };
 
 // Budget Calculator Component with the critical layout fix
-const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }) => {
+const BudgetCalculatorTab = () => {
   const [budgetType, setBudgetType] = useState('50-30-20');
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
   const [showFFCalculator, setShowFFCalculator] = useState(false);
@@ -2234,37 +2295,23 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
             
             <button
-              onClick={() => {
-                if (checkFeatureAccess('financial-calculators')) {
-                  setShowFFCalculator(!showFFCalculator);
-                } else {
-                  showUpgradePromptForFeature('Financial Freedom Calculator', 'financial-calculators');
-                }
-              }}
+              onClick={() => setShowFFCalculator(!showFFCalculator)}
               className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
                 showFFCalculator ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
               <Target className="w-4 h-4 mr-2" />
               {showFFCalculator ? 'Hide FF Calculator' : 'Financial Freedom'}
-              {!checkFeatureAccess('financial-calculators') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
             </button>
             
             <button
-              onClick={() => {
-                if (checkFeatureAccess('financial-calculators')) {
-                  setShowDebtCalculator(!showDebtCalculator);
-                } else {
-                  showUpgradePromptForFeature('Debt Payoff Calculator', 'financial-calculators');
-                }
-              }}
+              onClick={() => setShowDebtCalculator(!showDebtCalculator)}
               className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
                 showDebtCalculator ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
               <CreditCard className="w-4 h-4 mr-2" />
               {showDebtCalculator ? 'Hide Debt Calculator' : 'Debt Payoff'}
-              {!checkFeatureAccess('financial-calculators') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
             </button>
           </div>
         </div>
@@ -2467,10 +2514,10 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
       )}
       
       {/* Financial Freedom Calculator */}
-      {showFFCalculator && checkFeatureAccess('financial-calculators') && <FinancialFreedomCalculator />}
+      {showFFCalculator && <FinancialFreedomCalculator />}
       
       {/* Debt Payoff Calculator */}
-      {showDebtCalculator && checkFeatureAccess('financial-calculators') && <DebtPayoffCalculator />}
+      {showDebtCalculator && <DebtPayoffCalculator />}
     </div>
   );
 };
@@ -2496,8 +2543,9 @@ const SideHustleTab = ({ data, setData, userId }) => {
     date: new Date().toISOString().split('T')[0]
   });
 
-  const totalBusinessIncome = data.businesses.reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
-  const totalBusinessExpenses = data.businesses.reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
+  // 🔧 EDGE CASE FIX: Null safety for empty businesses array
+  const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
+  const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
   const handleAddBusiness = async () => {
@@ -2793,9 +2841,18 @@ const SideHustleTab = ({ data, setData, userId }) => {
                     const isIncome = business.incomeItems.includes(item);
                     return (
                       <div key={`${isIncome ? 'income' : 'expense'}-${item.id}`} className="flex items-center justify-between bg-gray-700/30 rounded p-2">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                          <span className="text-sm text-white">{item.description}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                            <span className="text-sm text-white">{item.description}</span>
+                          </div>
+                          <div className="text-xs text-gray-400 ml-4">
+                            {new Date(item.date).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric', 
+                              year: 'numeric' 
+                            })}
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-semibold ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
@@ -3001,13 +3058,13 @@ const InvestmentTab = ({ data, setData, userId }) => {
     currency: 'CAD'
   });
 
-  // Calculate dynamic totals from actual holdings
-  const actualTotalValue = data.investments.holdings.reduce((sum, holding) => {
-    return sum + (holding.shares * holding.currentPrice);
+  // 🔧 EDGE CASE FIX: Null safety for empty holdings array
+  const actualTotalValue = (data.investments?.holdings || []).reduce((sum, holding) => {
+    return sum + ((holding.shares || 0) * (holding.currentPrice || 0));
   }, 0);
 
-  const actualTotalCost = data.investments.holdings.reduce((sum, holding) => {
-    return sum + (holding.shares * holding.avgCost);
+  const actualTotalCost = (data.investments?.holdings || []).reduce((sum, holding) => {
+    return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
   useEffect(() => {
@@ -3561,47 +3618,47 @@ const InvestmentTab = ({ data, setData, userId }) => {
       </div>
 
       {/* Enhanced Dividend Tracker */}
-              <Card className="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-500/30">
+              <Card style={{ backgroundColor: '#18212F' }} className="border-amber-500/30">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-            <Repeat className="w-6 h-6 mr-3 text-green-400" />
+            <Repeat className="w-6 h-6 mr-3 text-amber-400" />
             💰 Dividend Income Tracker
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Monthly Income</div>
+              <div className="text-sm text-amber-200">Monthly Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Quarterly Income</div>
+              <div className="text-sm text-amber-200">Quarterly Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Annual Income</div>
+              <div className="text-sm text-amber-200">Annual Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
               </div>
-              <div className="text-sm text-green-200">Portfolio Yield</div>
+              <div className="text-sm text-amber-200">Portfolio Yield</div>
             </div>
           </div>
         
         {/* Dividend Calendar & Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Upcoming Dividends */}
-            <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-              <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+            <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
+              <h4 className="text-lg font-semibold text-amber-200 mb-3 flex items-center">
                 📅 Upcoming Dividends
               </h4>
             <div className="space-y-3">
@@ -3609,7 +3666,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 .filter(h => h.nextDividendDate && h.dividendYield > 0)
                 .sort((a, b) => new Date(a.nextDividendDate) - new Date(b.nextDividendDate))
                                   .map(holding => (
-                    <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                    <div key={holding.id} className="flex justify-between items-center bg-amber-800/20 rounded p-2 border border-amber-600/20">
                       <div>
                         <div className="font-semibold text-white">{holding.symbol}</div>
                         <div className="text-xs text-gray-400">
@@ -3619,7 +3676,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-green-300 font-semibold">
+                        <div className="text-amber-300 font-semibold">
                           ${(holding.annualDividend / 4).toFixed(0)}
                         </div>
                         <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
@@ -3630,15 +3687,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           {/* DRIP Status */}
-          <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-            <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+          <div style={{ backgroundColor: '#141F3B' }} className="rounded-lg p-4 border border-blue-500/30">
+            <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
               🔄 DRIP Status
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
                 .filter(h => h.dividendYield > 0)
                 .map(holding => (
-                  <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                  <div key={holding.id} className="flex justify-between items-center bg-blue-800/30 rounded p-2 border border-blue-600/20">
                     <div>
                       <div className="font-semibold text-white">{holding.symbol}</div>
                       <div className="text-xs text-gray-400">
@@ -3647,7 +3704,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                     </div>
                     <div className="text-right">
                       <div className={`text-sm font-semibold ${
-                        holding.dripEnabled ? 'text-green-400' : 'text-gray-400'
+                        holding.dripEnabled ? 'text-cyan-300' : 'text-gray-400'
                       }`}>
                         <Tooltip 
                           text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
@@ -3656,7 +3713,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
-                        <div className="text-xs text-green-300">
+                        <div className="text-xs text-cyan-200">
                           {holding.dripProgress.toFixed(1)}% to next share
                         </div>
                       )}
@@ -3668,8 +3725,9 @@ const InvestmentTab = ({ data, setData, userId }) => {
         </div>
         
               {/* Dividend Breakdown by Holding */}
-      <div className="mt-6 bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-        <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+      <div className="mt-6" style={{ backgroundColor: '#141F3B' }}>
+        <div className="rounded-lg p-4 border border-blue-500/30">
+        <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
           📊 Dividend Breakdown by Holding
         </h4>
           <div className="space-y-2">
@@ -3681,16 +3739,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 const percentage = totalDividends > 0 ? (holding.annualDividend / totalDividends * 100) : 0;
                 
                                   return (
-                    <div key={holding.id} className="flex items-center justify-between bg-green-800/20 rounded p-3">
+                    <div key={holding.id} className="flex items-center justify-between bg-blue-800/30 rounded p-3 border border-blue-600/20">
                       <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
                         <div>
                           <div className="font-semibold text-white">{holding.symbol}</div>
                           <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-green-300">
+                        <div className="font-semibold text-white">
                           ${holding.annualDividend.toLocaleString()}
                         </div>
                         <div className="text-xs text-gray-400">
@@ -3701,14 +3759,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   );
               })}
           </div>
+        </div>
           
-                      <div className="mt-4 p-3 bg-green-800/20 rounded border border-green-600/30">
-              <div className="text-sm text-green-200 mb-2">
+                      <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
+              <div className="text-sm text-purple-200 mb-2">
                 💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
                 in passive income - perfect for travel funding! 🌍
               </div>
-              <div className="text-xs text-green-300 border-t border-green-600/30 pt-2">
+              <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
                 📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
                 Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
               </div>
@@ -3729,7 +3788,25 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </button>
         </div>
         <div className="space-y-4">
-          {data.investments.holdings.map(holding => (
+          {data.investments.holdings.length === 0 ? (
+            <Card className="bg-gradient-to-br from-violet-900/20 to-blue-900/20 border-violet-500/30">
+              <div className="text-center py-12">
+                <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-white mb-2">No Investments Yet</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start building your investment portfolio. Track stocks, ETFs, crypto, and dividends all in one place!
+                </p>
+                <button
+                  onClick={() => setShowAddHolding(true)}
+                  className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Your First Investment
+                </button>
+              </div>
+            </Card>
+          ) : (
+            data.investments.holdings.map(holding => (
             <div key={holding.id} className="bg-gray-700/30 rounded-lg p-4">
               <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-center">
                 <div className="lg:col-span-2">
@@ -3844,9 +3921,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </div>
               </div>
             </div>
-          ))}
-                  </div>
-        </Card>
+          ))
+          )}
+        </div>
+      </Card>
 
         {/* Add Holding Modal */}
         {showAddHolding && (
@@ -5244,82 +5322,82 @@ const TravelTab = ({ data, setData, userId }) => {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
-      <Card className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30 relative">
+      <Card style={{ backgroundColor: '#18212F' }} className="border-slate-500/30 relative">
         <button
           onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-blue-700/20 hover:bg-blue-600/30 rounded-lg transition-colors"
+          className="absolute top-4 right-4 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
           title="Edit Travel Runway Settings"
         >
-          <Edit className="w-4 h-4 text-blue-300" />
+          <Edit className="w-4 h-4 text-slate-300" />
         </button>
         
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-blue-200 mb-6">Smart destination-based travel planning with cost tiers</p>
+          <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
           
           {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.totalPossibleDays}</div>
-              <div className="text-blue-200">Total Possible Days</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
+              <div className="text-slate-300">Total Possible Days</div>
             </div>
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.weeksRemaining}</div>
-              <div className="text-blue-200">Weeks of Travel</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
+              <div className="text-slate-300">Weeks of Travel</div>
             </div>
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.monthsRemaining}</div>
-              <div className="text-blue-200">Months of Travel</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
+              <div className="text-slate-300">Months of Travel</div>
             </div>
           </div>
 
           {/* Destination Cost Breakdown */}
-          <div className="bg-blue-900/30 rounded-lg p-4 mb-6">
-            <h3 className="text-lg font-semibold text-blue-200 mb-4">🎯 Your Travel Plan</h3>
+          <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
+            <h3 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-green-900/30 rounded-lg p-3 border border-green-600/30">
-                <div className="text-green-400 font-semibold">🟢 Cheap Destinations</div>
+              <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
+                <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
-                <div className="text-green-300">${runway.costTiers.cheap}/day</div>
-                <div className="text-green-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
-                <div className="text-xs text-green-300 mt-1">Southeast Asia, Eastern Europe, India</div>
+                <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
+                <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
+                <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
               </div>
-              <div className="bg-yellow-900/30 rounded-lg p-3 border border-yellow-600/30">
-                <div className="text-yellow-400 font-semibold">🟡 Moderate Destinations</div>
+              <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
+                <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
-                <div className="text-yellow-300">${runway.costTiers.moderate}/day</div>
-                <div className="text-yellow-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
-                <div className="text-xs text-yellow-300 mt-1">South America, Southern Europe</div>
+                <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
+                <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
+                <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
               </div>
-              <div className="bg-red-900/30 rounded-lg p-3 border border-red-600/30">
-                <div className="text-red-400 font-semibold">🔴 Expensive Destinations</div>
+              <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
+                <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
-                <div className="text-red-300">${runway.costTiers.expensive}/day</div>
-                <div className="text-red-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
-                <div className="text-xs text-red-300 mt-1">Western Europe, Scandinavia, Japan</div>
+                <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
+                <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
+                <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
               </div>
             </div>
           </div>
 
           {/* Financial Summary */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
-            <div className="bg-blue-700/20 rounded-lg p-3">
-              <div className="text-blue-200">Total Travel Funds</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+              <div className="text-slate-300">Total Travel Funds</div>
               <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
             </div>
-            <div className="bg-blue-700/20 rounded-lg p-3">
-              <div className="text-blue-200">Planned Trip Cost</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+              <div className="text-slate-300">Planned Trip Cost</div>
               <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
-              <div className="text-xs text-blue-300">{runway.totalPlannedDays} days planned</div>
+              <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
             </div>
-            <div className="bg-green-700/20 rounded-lg p-3">
-              <div className="text-green-200">Remaining Funds</div>
-              <div className="text-xl font-bold text-green-400">${runway.remainingFunds.toLocaleString()}</div>
-              <div className="text-xs text-green-300">+{runway.extensionDays} days possible</div>
+            <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
+              <div className="text-emerald-200">Remaining Funds</div>
+              <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
+              <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
             </div>
           </div>
           
-          <div className="text-xs text-blue-300 text-center">
+          <div className="text-xs text-slate-400 text-center">
             💡 Extend your journey by choosing cheaper destinations with remaining funds
           </div>
         </div>
@@ -5346,7 +5424,27 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* Trip Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {(data.travel?.trips || []).map(trip => {
+        {(data.travel?.trips || []).length === 0 ? (
+          <div className="col-span-1 lg:col-span-2">
+            <Card className="bg-gradient-to-br from-blue-900/20 to-emerald-900/20 border-blue-500/30">
+              <div className="text-center py-12">
+                <Target className="w-16 h-16 text-blue-400 mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-white mb-2">No Trips Planned Yet</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.
+                </p>
+                <button
+                  onClick={() => setShowAddTrip(true)}
+                  className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Plan Your First Trip
+                </button>
+              </div>
+            </Card>
+          </div>
+        ) : (
+          (data.travel?.trips || []).map(trip => {
           const progress = trip.targetBudget > 0 ? (trip.currentSavings / trip.targetBudget) * 100 : 0;
           const totalExpenses = trip.expenses?.reduce((sum, exp) => {
             return sum + convertCurrency(exp.amount, exp.currency, 'CAD');
@@ -5424,11 +5522,22 @@ const TravelTab = ({ data, setData, userId }) => {
                 {trip.expenses && trip.expenses.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
-                    <div className="space-y-1 max-h-24 overflow-y-auto">
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.expenses.slice(0, 3).map(expense => (
                         <div key={expense.id} className="flex justify-between text-xs">
-                          <span className="text-gray-400">{expense.description}</span>
-                          <span className="text-white">
+                          <div className="flex flex-col">
+                            <span className="text-gray-400">{expense.description}</span>
+                            {expense.date && (
+                              <span className="text-gray-500 text-xs mt-0.5">
+                                {new Date(expense.date).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric', 
+                                  year: 'numeric' 
+                                })}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-white flex-shrink-0 ml-3">
                             {expense.amount} {expense.currency}
                             {expense.currency !== 'CAD' && (
                               <span className="text-gray-500 ml-1">
@@ -5444,7 +5553,8 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
             </Card>
           );
-        })}
+        })
+        )}
       </div>
 
       {/* Add Trip Modal */}
@@ -6187,6 +6297,11 @@ function App() {
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
+  
+  // 🛠️ SECURE DEVELOPER PANEL (only for admins)
+  const [showDevPanel, setShowDevPanel] = useState(false);
+  const [devOverridePlan, setDevOverridePlan] = useState(null);
+  
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
   const [showHelpFAQ, setShowHelpFAQ] = useState(false);
@@ -6197,6 +6312,17 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
+  
+  // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
+  const ADMIN_EMAILS = [
+    'janara.nguon@gmail.com',
+    // Add more admin emails here as needed
+  ];
+  
+  const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
+  
+  // Get current plan (with dev override if admin)
+  const currentUserPlan = (isAdmin && devOverridePlan) ? devOverridePlan : userPlan;
   
   // Modal states for dashboard cards
   const [editingCard, setEditingCard] = useState(null);
@@ -6235,36 +6361,52 @@ function App() {
     setShowUpgradePrompt(true);
   }, []);
 
-  const handleUpgrade = useCallback((planId, billingCycle = 'monthly') => {
+  const handleUpgrade = useCallback(async (planId, billingCycle = 'monthly') => {
     if (planId === 'view-all') {
       setShowUpgradePrompt(false);
       setShowPricingModal(true);
       return;
     }
 
-    // Here you would integrate with Stripe for actual payment processing
-    console.log(`Upgrading to ${planId} with ${billingCycle} billing`);
-    
-    // For demo purposes, simulate successful upgrade
-    setUserPlan(planId);
-    setShowUpgradePrompt(false);
-    setShowPricingModal(false);
-    showNotification(`Successfully upgraded to ${planId}!`, 'success');
-    
-    // In production, this would:
-    // 1. Create Stripe checkout session
-    // 2. Handle payment success webhook
-    // 3. Update user subscription in database
-    // 4. Update local state
-  }, [showNotification]);
+    // Don't allow upgrading if not authenticated
+    if (!user) {
+      showNotification('Please sign in to upgrade your plan', 'error');
+      return;
+    }
+
+    try {
+      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing`);
+      
+      // Import Stripe utilities dynamically
+      const { createCheckoutSession } = await import('./utils/stripeUtils');
+      
+      // Show loading notification
+      showNotification('Redirecting to secure checkout...', 'info');
+      
+      // Create Stripe checkout session and redirect
+      await createCheckoutSession(planId, billingCycle, user);
+      
+      // Note: User will be redirected to Stripe, so code after this may not execute
+      // Subscription update happens via webhook after successful payment
+      
+    } catch (error) {
+      console.error('❌ Upgrade error:', error);
+      showNotification(
+        error.message || 'Failed to process upgrade. Please try again.',
+        'error'
+      );
+    }
+  }, [user, showNotification]);
 
   const handleTabClick = useCallback((tab) => {
     // Check if user has access to the tab
     const tabFeatures = {
       'dashboard': 'basic-dashboard',
       'budget': 'budget-calculator', 
+      'investment': 'investment-portfolio',
       'investments': 'investment-portfolio',
       'side-hustle': 'side-hustle',
+      'travel': 'travel-mode',
       'transactions': 'transaction-management'
     };
 
@@ -6272,12 +6414,13 @@ function App() {
     if (requiredFeature && !checkFeatureAccess(requiredFeature)) {
       const featureNames = {
         'investment-portfolio': 'Investment Portfolio',
-        'side-hustle': 'Side Hustle Management'
+        'side-hustle': 'Side Hustle Management',
+        'travel-mode': 'Travel Mode'
       };
       showUpgradePromptForFeature(featureNames[requiredFeature] || tab, requiredFeature);
       return;
     }
-
+    
     setActiveTab(tab);
   }, [checkFeatureAccess, showUpgradePromptForFeature]);
 
@@ -6362,20 +6505,48 @@ function App() {
           // Fallback to initial data
           setData(initialData);
         }
-      } else {
-        // User is signed out - automatically sign in anonymously
-        console.log('No user found, signing in anonymously...');
+        
+        // 💳 Load user's subscription data
         try {
-          await signInAnonymously(auth);
-          // onAuthStateChanged will handle the rest
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            const userDoc = userDocSnap.data();
+            const subscription = userDoc.subscription;
+            
+            if (subscription && subscription.plan && subscription.status === 'active') {
+              console.log('✅ Active subscription found:', subscription.plan);
+              setUserPlan(subscription.plan);
+            } else {
+              console.log('📋 No active subscription, using free tier');
+              setUserPlan(SUBSCRIPTION_TIERS.FREE);
+            }
+          } else {
+            console.log('📋 No user document, using free tier');
+            setUserPlan(SUBSCRIPTION_TIERS.FREE);
+          }
         } catch (error) {
-          console.error('Anonymous sign-in failed:', error);
-          // Fallback to showing auth screen
-          setUser(null);
-          setUserId(null);
-          setData(null);
-          setShowAuth(true);
+          console.error('Error loading subscription:', error);
+          setUserPlan(SUBSCRIPTION_TIERS.FREE);
         }
+      } else {
+        // User is signed out - show authentication screen
+        console.log('No user found, showing auth screen...');
+        setUser(null);
+        setUserId(null);
+        setData(null);
+        setShowAuth(true);
+        
+        // TEMPORARILY DISABLED: Auto anonymous sign-in (for Stripe testing)
+        // Uncomment below to re-enable anonymous sign-in after payment testing
+        // try {
+        //   await signInAnonymously(auth);
+        //   // onAuthStateChanged will handle the rest
+        // } catch (error) {
+        //   console.error('Anonymous sign-in failed:', error);
+        //   setShowAuth(true);
+        // }
       }
       
       setAuthLoading(false);
@@ -6384,6 +6555,28 @@ function App() {
 
     return () => unsubscribe();
   }, [processRecurringExpenses, showNotification]);
+  
+  // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      // Only works for admin emails
+      if (!isAdmin) return;
+      
+      // Secret combo: Ctrl + Shift + Alt + D
+      if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'D') {
+        e.preventDefault();
+        setShowDevPanel(prev => !prev);
+      }
+      
+      // Quick close: Escape
+      if (e.key === 'Escape' && showDevPanel) {
+        setShowDevPanel(false);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isAdmin, showDevPanel]);
 
 
   // 🔐 Authentication Functions
@@ -6690,7 +6883,15 @@ function App() {
   };
 
   const confirmResetData = async () => {
-    if (!userId) return;
+    console.log('🔧 Reset Data: Function called');
+    console.log('🔧 Reset Data: userId =', userId);
+    console.log('🔧 Reset Data: resetToSample =', resetToSample);
+    
+    if (!userId) {
+      console.error('❌ Reset Data: No userId available!');
+      showNotification('❌ Please sign in to reset data', 'error');
+      return;
+    }
 
     let resetData;
     
@@ -6715,15 +6916,15 @@ function App() {
           lastProcessed: resetStartDate,
           createdDate: resetStartDate
         })),
-        history: [{
+        monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
           netWorth: initialData.netWorth.total,
           income: initialData.income.total,
           expenses: initialData.expenses.total,
-          cashflow: initialData.cashflow.monthly,
-          businessIncome: initialData.businesses.reduce((sum, b) => sum + b.totalIncome, 0),
-          businessExpenses: initialData.businesses.reduce((sum, b) => sum + b.totalExpenses, 0),
-          investmentValue: initialData.investments.totalValue,
+          cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
+          businessIncome: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalIncome || 0), 0),
+          businessExpenses: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalExpenses || 0), 0),
+          investmentValue: initialData.investments.totalValue || 0,
           savingsRate: initialData.savingsRate.current
         }]
       };
@@ -6751,23 +6952,32 @@ function App() {
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
+        debt: {
+          total: 0,
+          accounts: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
         registeredAccounts: {
-          tfsa: {
-            currentBalance: 0,
-            contributionRoom: 95000,
-            contributionLimit: 95000,
-            annualContributionLimit: 7000,
-            withdrawals: 0,
-            contributionsThisYear: 0
-          },
-          rrsp: {
-            currentBalance: 0,
-            contributionRoom: 127000,
-            contributionLimit: 127000,
-            annualContributionLimit: 31560,
-            contributionsThisYear: 0,
-            carryForward: 0
-          }
+          accounts: [
+            {
+              id: 'tfsa',
+              name: 'TFSA',
+              contributed: 0,
+              limit: 88000,
+              goal: 10000,
+              type: 'tax-free',
+              description: 'Tax-free growth and withdrawals'
+            },
+            {
+              id: 'rrsp', 
+              name: 'RRSP',
+              contributed: 0,
+              limit: 31560,
+              goal: 5000,
+              type: 'tax-deferred',
+              description: 'Tax-deferred retirement savings'
+            }
+          ]
         },
         businesses: [],
         netWorth: {
@@ -6786,19 +6996,18 @@ function App() {
           history: [{ date: resetStartDate, total: 0 }]
         },
         cashflow: {
+          total: 0,
           monthly: 0,
           history: [{ date: resetStartDate, amount: 0 }]
         },
         savingsRate: {
           current: 0,
           target: 20,
+          monthly: 0,
+          monthlyIncome: 0,
           history: [{ date: resetStartDate, rate: 0 }]
         },
-        goals: {
-          items: [],
-          totalTarget: 0,
-          totalProgress: 0
-        },
+        goals: [],
         investments: {
           totalValue: 0,
           totalGainLoss: 0,
@@ -6808,7 +7017,7 @@ function App() {
         },
         transactions: [],
         recurringExpenses: [],
-        history: [{
+        monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
           netWorth: 0,
           income: 0,
@@ -6818,17 +7027,74 @@ function App() {
           businessExpenses: 0,
           investmentValue: 0,
           savingsRate: 0
-        }]
+        }],
+        travel: {
+          totalSavings: 0,
+          homeCurrency: 'CAD',
+          exchangeRates: {
+            'USD': 1.35,
+            'EUR': 1.47,
+            'GBP': 1.70,
+            'THB': 0.037,
+            'COP': 0.00033
+          },
+          trips: [],
+          runwayCalculation: {
+            averageDailySpend: 0,
+            totalAvailableFunds: 0,
+            estimatedDaysRemaining: 0,
+            lastUpdated: resetStartDate
+          },
+          tripPlan: {
+            cheap: 90,
+            moderate: 30,
+            expensive: 15
+          },
+          expenseCategories: [
+            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
+            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
+            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
+          ]
+        },
+        budgetSettings: {
+          fiftyThirtyTwenty: {
+            needs: 50,
+            wants: 30,
+            savings: 20
+          },
+          sixJars: {
+            necessities: 55,
+            education: 10,
+            play: 10,
+            longTermSavings: 10,
+            financial: 10,
+            give: 5
+          }
+        }
       };
     }
 
     try {
+      console.log('🔧 Reset Data: Starting Firebase write...');
+      // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
+      console.log('✅ Reset Data: Firebase write successful');
+      
       setData(resetData);
+      console.log('✅ Reset Data: Local state updated');
+      
       setShowResetModal(false);
       setResetToSample(false);
+      console.log('✅ Reset Data: Modal closed');
+      
+      showNotification('✅ Data reset successfully!', 'success');
     } catch (error) {
-      console.error('Error resetting data:', error);
+      console.error('❌ Reset Data Error:', error);
+      console.error('❌ Reset Data Error Details:', error.message, error.code);
+      showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
     }
   };
 
@@ -6912,7 +7178,7 @@ function App() {
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
-    const totalExpenses = transactions
+    const totalTransactionExpenses = transactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
@@ -6920,8 +7186,15 @@ function App() {
     const totalBusinessIncome = businesses.reduce((sum, business) => 
       sum + (business.totalIncome || business.income || 0), 0);
 
+    // 🔧 FIX: Calculate business expenses (CRITICAL BUG FIX!)
+    const totalBusinessExpenses = businesses.reduce((sum, business) => 
+      sum + (business.totalExpenses || business.expenses || 0), 0);
+
     // Combine transaction and business income
     const totalIncome = totalTransactionIncome + totalBusinessIncome;
+
+    // 🔧 FIX: Combine transaction and business expenses
+    const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
 
     // Group income by subcategory (from transactions)
     const incomeByCategory = {};
@@ -6955,6 +7228,14 @@ function App() {
         expensesByCategory[category] += Math.abs(t.amount);
       });
 
+    // 🔧 FIX: Add business expenses as separate categories
+    businesses.forEach((business, index) => {
+      if ((business.totalExpenses || business.expenses || 0) > 0) {
+        const businessKey = `${business.name || `Business ${index + 1}`} Expenses`;
+        expensesByCategory[businessKey] = business.totalExpenses || business.expenses || 0;
+      }
+    });
+
     // Convert to array format
     const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => ({
       id: index + 1,
@@ -6986,7 +7267,8 @@ function App() {
   const getAnnualizedData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
+    // 🔧 EDGE CASE FIX: Null safety for transactions and businesses
+    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     
     return {
       ...data,
@@ -7021,8 +7303,9 @@ function App() {
   const getDisplayData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
-    const actualInvestmentTotal = calculateInvestmentTotal(data.investments.holdings);
+    // 🔧 EDGE CASE FIX: Ensure all required data structures exist
+    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
+    const actualInvestmentTotal = calculateInvestmentTotal(data.investments?.holdings || []);
     
     // Update Net Worth with dynamic investment value
     const updatedNetWorth = {
@@ -7053,9 +7336,10 @@ function App() {
         monthly: calculatedData.income.total - calculatedData.expenses.total
       },
       savingsRate: { 
-        ...data.savingsRate, 
+        ...data.savingsRate,
+        // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
         current: calculatedData.income.total > 0 ? 
-          Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100 : 0
+          Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
       }
     };
     
@@ -7089,8 +7373,23 @@ function App() {
       {authLoading && (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
-            <p className="text-amber-200">Loading The Freedom Compass...</p>
+            <div className="relative mb-6">
+              {/* Spinning ring */}
+              <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-amber-500 mx-auto"></div>
+              {/* Inner pulsing circle */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full opacity-50 animate-pulse"></div>
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+              The Freedom Compass
+            </h2>
+            <p className="text-gray-400 animate-pulse">Loading your dashboard...</p>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+            </div>
           </div>
         </div>
       )}
@@ -7194,11 +7493,16 @@ function App() {
                 <p className="text-gray-400 text-sm flex items-center gap-1">
                   {user?.email}
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    userPlan === 'free' ? 'bg-gray-600 text-gray-300' :
-                    userPlan === 'backpacker' ? 'bg-blue-600 text-blue-100' :
-                    'bg-purple-600 text-purple-100'
+                    userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
+                    userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
+                    userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
+                    'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
                   }`}>
-                    {userPlan === 'free' ? 'Free' : userPlan === 'backpacker' ? 'Backpacker' : 'Entrepreneur'}
+                    {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon' : 
+                     userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber' : 
+                     userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator' :
+                     userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder' : 
+                     'Free'}
                   </span>
                 </p>
               </div>
@@ -7273,9 +7577,6 @@ function App() {
                   <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
                   </button>
-                  <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <CreditCard className="w-4 h-4 mr-2"/>Transactions
-                  </button>
                   <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
@@ -7286,6 +7587,9 @@ function App() {
                   <button onClick={() => handleTabClick('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Briefcase className="w-4 h-4 mr-2"/>Investment
                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                  </button>
+                  <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <CreditCard className="w-4 h-4 mr-2"/>Transactions
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
@@ -7344,51 +7648,124 @@ function App() {
                 </FinancialErrorBoundary>
               )}
               
-              {/* Top Row - Financial Freedom Goal */}
-              <FinancialErrorBoundary componentName="Financial Freedom Goal">
-                <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
-              <FinancialErrorBoundary componentName="Savings Rate Tracker">
-                <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
+              {/* 🎯 OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
               
-              {/* Second Row - Net Worth and Cash on Hand */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Cash Flow - FREE+ (Left) */}
+              <CashFlowCard data={displayData?.cashflow} onEdit={openCardEditor} />
+              
+              {/* Rainy Day Fund - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
+                <RainyDayFundCard data={displayData?.rainyDayFund} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Monthly Income - FREE+ (Left) */}
+              <IncomeCard data={displayData?.income} viewMode={viewMode} />
+              
+              {/* Monthly Expenses - FREE+ (Right) */}
+              <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Net Worth - FREE+ (Left) */}
               <FinancialErrorBoundary componentName="Net Worth Calculator">
-                <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
-              <FinancialErrorBoundary componentName="Cash Management">
-                <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+                <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
-              {/* Third Row - Income and Expenses Side by Side */}
-              <IncomeCard data={displayData.income} viewMode={viewMode} />
-              <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
+              {/* Cash on Hand - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <FinancialErrorBoundary componentName="Cash Management">
+                  <CashOnHandCard data={displayData?.cashOnHand} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              ) : (
+                <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Fourth Row - Cash Flow and Rainy Day Fund */}
-              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
-              <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
+              {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* Fifth Row - Debt (Full Width) */}
-              <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              {/* Financial Freedom Goal - CLIMBER+ (Left) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <FinancialErrorBoundary componentName="Financial Freedom Goal">
+                  <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              ) : (
+                <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Sixth Row - Credit Score and Goals */}
-              <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
-              <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+              {/* Savings Rate - FREE+ (Right) */}
+              <FinancialErrorBoundary componentName="Savings Rate Tracker">
+                <SavingsRateCard data={displayData?.savingsRate} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
               
-              {/* Seventh Row - Retirement Accounts */}
-              <RegisteredAccountsCard 
-                data={displayData.registeredAccounts} 
-                onEdit={openCardEditor} 
-              />
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* FULL-WIDTH CARDS: Detailed Intelligence */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Total Debt - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <DebtCard data={displayData?.debt} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Total Debt & Payoff Plan" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
+              {/* Credit Score - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'credit-score') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <CreditScoreCard data={displayData?.creditScore} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
+              {/* Financial Goals - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
+              {/* Retirement Accounts - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <RegisteredAccountsCard 
+                    data={displayData?.registeredAccounts} 
+                    onEdit={openCardEditor} 
+                  />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
             </>
           )}
           
           {activeTab === 'budget' && (
             <ErrorBoundary>
-              <BudgetCalculatorTab 
-                checkFeatureAccess={checkFeatureAccess}
-                showUpgradePromptForFeature={showUpgradePromptForFeature}
-              />
+              <BudgetCalculatorTab />
             </ErrorBoundary>
           )}
           
@@ -8710,10 +9087,86 @@ function App() {
           onClose={() => setShowUpgradePrompt(false)}
           featureName={upgradePromptData.featureName}
           requiredPlan={upgradePromptData.requiredPlan}
+          onViewPlans={() => {
+            setShowUpgradePrompt(false);
+            setShowPricingModal(true);
+          }}
           currentPlan={userPlan}
           onUpgrade={handleUpgrade}
           isFoundersCircleAvailable={isFoundersCircleAvailable()}
         />
+      )}
+      
+      {/* 🛠️ SECURE DEVELOPER PANEL - Only visible to admin emails */}
+      {showDevPanel && isAdmin && (
+        <div className="fixed bottom-4 right-4 bg-gray-900 border-2 border-amber-500 rounded-lg shadow-2xl p-6 z-50 min-w-[300px]">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
+              <h3 className="text-white font-bold text-sm">🛠️ DEVELOPER MODE</h3>
+            </div>
+            <button
+              onClick={() => setShowDevPanel(false)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
+              <span className="text-green-400">●</span>
+              Admin: {user?.email}
+            </div>
+            
+            <div>
+              <label className="text-gray-300 text-sm font-semibold block mb-2">
+                Override Subscription Tier:
+              </label>
+              <select
+                value={devOverridePlan || 'none'}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === 'none') {
+                    setDevOverridePlan(null);
+                  } else {
+                    setDevOverridePlan(value);
+                    setUserPlan(value);
+                  }
+                }}
+                className="w-full bg-gray-800 text-white border border-gray-700 hover:border-amber-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+              >
+                <option value="none">🔄 Use Real Subscription</option>
+                <option value={SUBSCRIPTION_TIERS.FREE}>🆓 FREE (Recon Kit)</option>
+                <option value={SUBSCRIPTION_TIERS.CLIMBER}>🧗 CLIMBER ($7.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.OPERATOR}>⚙️ OPERATOR ($14.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
+              </select>
+            </div>
+            
+            <div className="pt-3 border-t border-gray-700 space-y-2">
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Active Plan:</span>
+                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Real Subscription:</span>
+                  <span className="text-blue-400">{userPlan}</span>
+                </div>
+                {devOverridePlan && (
+                  <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
+                    ⚠️ Dev Override Active
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="pt-2 text-xs text-gray-500 text-center border-t border-gray-700">
+              Press <kbd className="px-1 py-0.5 bg-gray-800 rounded text-amber-400">Ctrl+Shift+Alt+D</kbd> to toggle
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

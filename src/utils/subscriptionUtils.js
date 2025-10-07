@@ -14,14 +14,14 @@ export const TIER_HIERARCHY = {
   [SUBSCRIPTION_TIERS.OPERATOR]: 2
 };
 
-// Feature access definitions
+// Feature access definitions (v1.1 UPDATE)
 export const FEATURE_ACCESS = {
   // Dashboard Features
   'basic-dashboard': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'advanced-dashboard': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'full-dashboard': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   
-  // Core Features
+  // Core Features (Recon Kit + All)
   'budget-calculator': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'transaction-management': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'data-export': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
@@ -32,13 +32,25 @@ export const FEATURE_ACCESS = {
   'goal-tracking': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'projections': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   
-  // Operator+ Features  
+  // Side Hustle: Operator+ only (SIMPLIFIED - no limits to enforce)
   'side-hustle': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  
+  // Operator+ Features  
   'investment-portfolio': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  'investment': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE], // Alias for tab
   'travel-mode': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  'travel': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE], // Alias for tab
   'business-analytics': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'tax-optimization': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
   'multi-currency': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]
+};
+
+// Side hustle limits by tier
+export const SIDE_HUSTLE_LIMITS = {
+  [SUBSCRIPTION_TIERS.FREE]: 0,
+  [SUBSCRIPTION_TIERS.CLIMBER]: 1,
+  [SUBSCRIPTION_TIERS.OPERATOR]: Infinity,
+  [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: Infinity
 };
 
 // Dashboard card access control
@@ -70,6 +82,26 @@ export const DASHBOARD_CARDS = {
 export const hasFeatureAccess = (userTier, feature) => {
   const allowedTiers = FEATURE_ACCESS[feature];
   return allowedTiers ? allowedTiers.includes(userTier) : false;
+};
+
+/**
+ * Get side hustle limit for user's tier
+ * @param {string} userTier - User's current subscription tier
+ * @returns {number} - Maximum number of side hustles allowed
+ */
+export const getSideHustleLimit = (userTier) => {
+  return SIDE_HUSTLE_LIMITS[userTier] || 0;
+};
+
+/**
+ * Check if user can add another side hustle
+ * @param {string} userTier - User's current subscription tier
+ * @param {number} currentCount - Current number of active side hustles
+ * @returns {boolean} - Whether user can add more
+ */
+export const canAddSideHustle = (userTier, currentCount) => {
+  const limit = getSideHustleLimit(userTier);
+  return currentCount < limit;
 };
 
 /**
@@ -125,7 +157,7 @@ export const getTierDisplayName = (tier) => {
  * @param {Date} launchDate - Launch date
  * @returns {boolean} - Whether offer is available
  */
-export const isFoundersCircleAvailable = (foundersCount = 0, launchDate = new Date('2025-10-19T13:00:00.000Z')) => {
+export const isFoundersCircleAvailable = (foundersCount = 0, launchDate = new Date('2025-10-05T13:00:00.000Z')) => {
   const now = new Date();
   const launchEndDate = new Date(launchDate.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days later
   
@@ -172,10 +204,13 @@ export default {
   TIER_HIERARCHY,
   FEATURE_ACCESS,
   DASHBOARD_CARDS,
+  SIDE_HUSTLE_LIMITS,
   hasFeatureAccess,
   hasDashboardCardAccess,
   getRequiredTier,
   getTierDisplayName,
   isFoundersCircleAvailable,
-  getUpgradeSuggestions
+  getUpgradeSuggestions,
+  getSideHustleLimit,
+  canAddSideHustle
 };
