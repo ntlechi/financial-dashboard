@@ -3082,35 +3082,38 @@ const InvestmentTab = ({ data, setData, userId }) => {
   }, 0);
 
   // 📊 Calculate portfolio allocation dynamically from holdings
+  // Each holding (ticker) gets its own slice in the donut chart
   const calculatePortfolioAllocation = () => {
     if (!data.investments?.holdings || data.investments.holdings.length === 0) {
       return [];
     }
 
     const holdings = data.investments.holdings;
-    const categoryMap = {};
-    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#06b6d4'];
     
-    holdings.forEach(holding => {
-      const category = holding.category || 'Other';
-      const value = (holding.shares || 0) * (holding.currentPrice || 0);
+    // Calculate total portfolio value from all holdings
+    const totalPortfolioValue = holdings.reduce((sum, holding) => {
+      return sum + (holding.totalValue || 0);
+    }, 0);
+
+    // Create allocation array with ticker symbols and percentages
+    const allocation = holdings.map((holding, index) => {
+      const holdingValue = holding.totalValue || 0;
+      const percentage = totalPortfolioValue > 0 ? ((holdingValue / totalPortfolioValue) * 100) : 0;
       
-      if (!categoryMap[category]) {
-        categoryMap[category] = { name: category, value: 0, holdings: [] };
-      }
-      categoryMap[category].value += value;
-      categoryMap[category].holdings.push(holding);
+      return {
+        id: holding.id || index + 1,
+        label: holding.symbol || 'Unknown',  // Ticker symbol (e.g., "AAPL", "BIT")
+        name: holding.symbol || 'Unknown',   // Keep for compatibility
+        value: holdingValue,                 // Actual dollar value
+        percentage: percentage.toFixed(1),   // Percentage as string (e.g., "50.0")
+        percentageNum: percentage,           // Percentage as number for sorting
+        color: colors[index % colors.length]
+      };
     });
 
-    const allocation = Object.values(categoryMap).map((cat, index) => ({
-      id: index + 1,
-      name: cat.name,
-      value: cat.value,
-      percentage: actualTotalValue > 0 ? ((cat.value / actualTotalValue) * 100).toFixed(1) : 0,
-      color: colors[index % colors.length]
-    }));
-
-    return allocation.sort((a, b) => b.value - a.value);
+    // Sort by percentage (largest to smallest)
+    return allocation.sort((a, b) => b.percentageNum - a.percentageNum);
   };
 
   const portfolioAllocation = calculatePortfolioAllocation();
@@ -3639,18 +3642,22 @@ const InvestmentTab = ({ data, setData, userId }) => {
             <svg ref={pieChartRef}></svg>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
-            {data.investments.portfolioAllocation.map(item => (
+            {portfolioAllocation.length > 0 ? portfolioAllocation.map(item => (
               <div key={item.id} className="flex items-center gap-2">
                 <div 
                   className="w-3 h-3 rounded-full" 
                   style={{ backgroundColor: item.color }}
                 ></div>
-                <span className="text-sm text-gray-300">{item.name}</span>
+                <span className="text-sm text-gray-300">{item.label}</span>
                 <span className="text-sm text-white font-semibold ml-auto">
-                  ${(item.value/1000).toFixed(0)}k
+                  {item.percentage}%
                 </span>
               </div>
-            ))}
+            )) : (
+              <div className="col-span-2 text-center text-gray-400 py-4">
+                Add holdings to see portfolio allocation
+              </div>
+            )}
           </div>
         </Card>
         
