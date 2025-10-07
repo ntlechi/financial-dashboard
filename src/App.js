@@ -2156,7 +2156,7 @@ const DebtPayoffCalculator = () => {
 };
 
 // Budget Calculator Component with the critical layout fix
-const BudgetCalculatorTab = () => {
+const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }) => {
   const [budgetType, setBudgetType] = useState('50-30-20');
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
   const [showFFCalculator, setShowFFCalculator] = useState(false);
@@ -2234,23 +2234,37 @@ const BudgetCalculatorTab = () => {
             </div>
             
             <button
-              onClick={() => setShowFFCalculator(!showFFCalculator)}
+              onClick={() => {
+                if (checkFeatureAccess('financial-calculators')) {
+                  setShowFFCalculator(!showFFCalculator);
+                } else {
+                  showUpgradePromptForFeature('Financial Freedom Calculator', 'financial-calculators');
+                }
+              }}
               className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
                 showFFCalculator ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
               <Target className="w-4 h-4 mr-2" />
               {showFFCalculator ? 'Hide FF Calculator' : 'Financial Freedom'}
+              {!checkFeatureAccess('financial-calculators') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
             </button>
             
             <button
-              onClick={() => setShowDebtCalculator(!showDebtCalculator)}
+              onClick={() => {
+                if (checkFeatureAccess('financial-calculators')) {
+                  setShowDebtCalculator(!showDebtCalculator);
+                } else {
+                  showUpgradePromptForFeature('Debt Payoff Calculator', 'financial-calculators');
+                }
+              }}
               className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
                 showDebtCalculator ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
               <CreditCard className="w-4 h-4 mr-2" />
               {showDebtCalculator ? 'Hide Debt Calculator' : 'Debt Payoff'}
+              {!checkFeatureAccess('financial-calculators') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
             </button>
           </div>
         </div>
@@ -2453,10 +2467,10 @@ const BudgetCalculatorTab = () => {
       )}
       
       {/* Financial Freedom Calculator */}
-      {showFFCalculator && <FinancialFreedomCalculator />}
+      {showFFCalculator && checkFeatureAccess('financial-calculators') && <FinancialFreedomCalculator />}
       
       {/* Debt Payoff Calculator */}
-      {showDebtCalculator && <DebtPayoffCalculator />}
+      {showDebtCalculator && checkFeatureAccess('financial-calculators') && <DebtPayoffCalculator />}
     </div>
   );
 };
@@ -7371,7 +7385,10 @@ function App() {
           
           {activeTab === 'budget' && (
             <ErrorBoundary>
-              <BudgetCalculatorTab />
+              <BudgetCalculatorTab 
+                checkFeatureAccess={checkFeatureAccess}
+                showUpgradePromptForFeature={showUpgradePromptForFeature}
+              />
             </ErrorBoundary>
           )}
           
