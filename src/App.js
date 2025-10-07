@@ -1436,20 +1436,7 @@ const CashOnHandCard = ({ data, onEdit }) => {
 const IncomeCard = ({ data, viewMode }) => {
   const incomeChartRef = useRef(null);
   
-  // 🛡️ NULL SAFETY CHECK
-  if (!data || typeof data.total === 'undefined') {
-    return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
-        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <ArrowUp className="w-6 h-6 mr-3 text-green-400" />
-          {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
-        </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
-      </Card>
-    );
-  }
-
-  // 📊 D3.js Donut Chart Effect
+  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (incomeChartRef.current && data.sources && data.sources.length > 0) {
       const svg = d3.select(incomeChartRef.current);
@@ -1555,20 +1542,7 @@ const IncomeCard = ({ data, viewMode }) => {
 const ExpensesCard = ({ data, viewMode }) => {
   const expensesChartRef = useRef(null);
   
-  // 🛡️ NULL SAFETY CHECK
-  if (!data || typeof data.total === 'undefined') {
-    return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
-        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <ArrowDown className="w-6 h-6 mr-3 text-red-400" />
-          {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
-        </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
-      </Card>
-    );
-  }
-
-  // 📊 D3.js Donut Chart Effect
+  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (expensesChartRef.current && data.categories && data.categories.length > 0) {
       const svg = d3.select(expensesChartRef.current);
