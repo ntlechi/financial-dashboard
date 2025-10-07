@@ -4393,12 +4393,20 @@ const InvestmentTab = ({ data, setData, userId }) => {
 
 // Transaction Management Component
 const TransactionsTab = ({ data, setData, userId }) => {
+  const spendingChartRef = useRef(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterType, setFilterType] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [sortBy, setSortBy] = useState('date');
   const [showTransactionHistory, setShowTransactionHistory] = useState(false);
+  
+  // 🔍 UPGRADE 2: Advanced Search & Filter System
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [selectedTypes, setSelectedTypes] = useState(['income', 'expense', 'transfer']);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   
   const [newTransaction, setNewTransaction] = useState({
     description: '',
@@ -4531,14 +4539,85 @@ const TransactionsTab = ({ data, setData, userId }) => {
     }
   };
 
+  // 🔍 UPGRADE 2: Advanced Filtering Logic with Search
   const filteredTransactions = data.transactions
-    .filter(t => filterType === 'all' || t.type === filterType)
-    .filter(t => filterCategory === 'all' || t.category === filterCategory)
+    // Keyword search (description)
+    .filter(t => {
+      if (!searchKeyword) return true;
+      return t.description.toLowerCase().includes(searchKeyword.toLowerCase());
+    })
+    // Type filter (multiple selection)
+    .filter(t => {
+      if (selectedTypes.length === 0 || selectedTypes.length === 3) return true; // All types selected
+      const transactionType = t.amount > 0 ? 'income' : (t.type === 'transfer' ? 'transfer' : 'expense');
+      return selectedTypes.includes(transactionType);
+    })
+    // Category filter (multiple selection)
+    .filter(t => {
+      if (selectedCategories.length === 0) return true;
+      return selectedCategories.includes(t.subcategory) || selectedCategories.includes(t.category);
+    })
+    // Date range filter
+    .filter(t => {
+      if (!dateRange.start && !dateRange.end) return true;
+      const transactionDate = new Date(t.date);
+      if (dateRange.start && new Date(dateRange.start) > transactionDate) return false;
+      if (dateRange.end && new Date(dateRange.end) < transactionDate) return false;
+      return true;
+    })
+    // Sorting
     .sort((a, b) => {
-      if (sortBy === 'date') return new Date(b.date) - new Date(a.date);
-      if (sortBy === 'amount') return Math.abs(b.amount) - Math.abs(a.amount);
-      return a.description.localeCompare(b.description);
+      if (sortBy === 'date-desc') return new Date(b.date) - new Date(a.date);
+      if (sortBy === 'date-asc') return new Date(a.date) - new Date(b.date);
+      if (sortBy === 'amount-desc') return Math.abs(b.amount) - Math.abs(a.amount);
+      if (sortBy === 'amount-asc') return Math.abs(a.amount) - Math.abs(b.amount);
+      if (sortBy === 'date') return new Date(b.date) - new Date(a.date); // Legacy support
+      if (sortBy === 'amount') return Math.abs(b.amount) - Math.abs(a.amount); // Legacy support
+      return new Date(b.date) - new Date(a.date); // default
     });
+
+  // 📊 UPGRADE 1: Calculate Spending by Category (Current Month)
+  const calculateSpendingByCategory = () => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Filter expenses for current month only
+    const currentMonthExpenses = data.transactions.filter(t => {
+      if (t.amount >= 0) return false; // Only expenses
+      const tDate = new Date(t.date);
+      return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+    });
+    
+    if (currentMonthExpenses.length === 0) return [];
+    
+    // Group by subcategory
+    const categoryTotals = {};
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#14b8a6'];
+    
+    currentMonthExpenses.forEach(t => {
+      const category = t.subcategory || t.category || 'Other';
+      if (!categoryTotals[category]) {
+        categoryTotals[category] = 0;
+      }
+      categoryTotals[category] += Math.abs(t.amount);
+    });
+    
+    const totalExpenses = Object.values(categoryTotals).reduce((sum, val) => sum + val, 0);
+    
+    // Create array with percentages
+    const spendingData = Object.entries(categoryTotals).map(([category, amount], index) => ({
+      category,
+      amount,
+      percentage: ((amount / totalExpenses) * 100).toFixed(1),
+      percentageNum: (amount / totalExpenses) * 100,
+      color: colors[index % colors.length]
+    }));
+    
+    return spendingData.sort((a, b) => b.amount - a.amount);
+  };
+  
+  const spendingByCategory = calculateSpendingByCategory();
 
   const totalIncome = data.transactions
     .filter(t => t.amount > 0)
@@ -4563,6 +4642,87 @@ const TransactionsTab = ({ data, setData, userId }) => {
   const businessExpenses = data.transactions
     .filter(t => t.amount < 0 && t.category === 'business')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  // 📊 UPGRADE 1: D3.js Donut Chart for Spending by Category
+  useEffect(() => {
+    if (spendingChartRef.current && spendingByCategory && spendingByCategory.length > 0) {
+      const svg = d3.select(spendingChartRef.current);
+      svg.selectAll("*").remove();
+      
+      const width = 300;
+      const height = 300;
+      const radius = Math.min(width, height) / 2;
+      
+      const color = d3.scaleOrdinal()
+        .domain(spendingByCategory.map(d => d.category))
+        .range(spendingByCategory.map(d => d.color));
+      
+      const pie = d3.pie()
+        .value(d => d.amount)
+        .sort(null);
+      
+      const arc = d3.arc()
+        .innerRadius(60)
+        .outerRadius(radius);
+      
+      const g = svg
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width/2},${height/2})`);
+      
+      const arcs = g.selectAll(".arc")
+        .data(pie(spendingByCategory))
+        .enter().append("g")
+        .attr("class", "arc");
+      
+      // Tooltip
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "d3-tooltip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background-color", "#1f2937")
+        .style("color", "white")
+        .style("padding", "8px 12px")
+        .style("border-radius", "6px")
+        .style("font-size", "14px")
+        .style("pointer-events", "none")
+        .style("z-index", "1000");
+      
+      arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => color(d.data.category))
+        .attr("stroke", "#1f2937")
+        .attr("stroke-width", 2)
+        .on("mouseover", function(event, d) {
+          d3.select(this).attr("opacity", 0.8);
+          tooltip.style("visibility", "visible")
+            .html(`<strong>${d.data.category}</strong><br/>$${d.data.amount.toLocaleString()}`);
+        })
+        .on("mousemove", function(event) {
+          tooltip.style("top", (event.pageY - 10) + "px")
+            .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select(this).attr("opacity", 1);
+          tooltip.style("visibility", "hidden");
+        });
+      
+      arcs.append("text")
+        .attr("transform", d => `translate(${arc.centroid(d)})`)
+        .attr("dy", "0.35em")
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("fill", "white")
+        .style("font-weight", "bold")
+        .text(d => `${d.data.percentage}%`);
+      
+      // Cleanup tooltip on unmount
+      return () => {
+        tooltip.remove();
+      };
+    }
+  }, [spendingByCategory]);
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
@@ -4948,6 +5108,64 @@ const TransactionsTab = ({ data, setData, userId }) => {
         </Card>
       )}
 
+      {/* 📊 UPGRADE 1: Spending by Category Visualization */}
+      <Card className="bg-gradient-to-br from-indigo-900/40 to-blue-900/40 border-blue-500/30">
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+          <PieChart className="w-6 h-6 mr-3 text-blue-400" />
+          💰 Spending by Category
+          <span className="ml-2 text-sm text-gray-400 font-normal">(This Month)</span>
+        </h3>
+        
+        {spendingByCategory.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Donut Chart */}
+            <div className="flex justify-center items-center">
+              <svg ref={spendingChartRef}></svg>
+            </div>
+            
+            {/* Legend */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold text-gray-300 mb-3">Category Breakdown</h4>
+              {spendingByCategory.map(item => (
+                <div key={item.category} className="flex items-center justify-between p-2 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-4 h-4 rounded-full" 
+                      style={{ backgroundColor: item.color }}
+                    ></div>
+                    <span className="text-sm text-gray-200 capitalize">{item.category}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-white">${item.amount.toLocaleString()}</span>
+                    <span className="text-sm text-blue-400 font-semibold min-w-[3rem] text-right">
+                      {item.percentage}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <div className="mt-4 pt-3 border-t border-gray-600">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-300">Total Spending This Month:</span>
+                  <span className="text-lg font-bold text-red-400">
+                    ${spendingByCategory.reduce((sum, cat) => sum + cat.amount, 0).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <PieChart className="w-16 h-16 mx-auto text-gray-600 mb-4" />
+            <p className="text-gray-400 text-lg font-semibold">
+              Log your first expense to see your spending analysis
+            </p>
+            <p className="text-gray-500 text-sm mt-2">
+              Track where your money goes each month with visual insights
+            </p>
+          </div>
+        )}
+      </Card>
+
       {/* Recurring Expenses Management */}
       {data.recurringExpenses && data.recurringExpenses.length > 0 && (
         <Card className="border-purple-500/30">
@@ -5057,10 +5275,172 @@ const TransactionsTab = ({ data, setData, userId }) => {
         </Card>
       )}
 
+      {/* 🔍 UPGRADE 2: Advanced Search & Filter System */}
+      <Card className="bg-gradient-to-br from-slate-900/40 to-gray-900/40">
+        <div className="space-y-4">
+          {/* Search Bar & Filters Button */}
+          <div className="flex flex-col md:flex-row gap-3">
+            {/* Keyword Search */}
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                placeholder="🔍 Search transactions by description..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="w-full bg-gray-700/50 text-white px-4 py-3 pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              <div className="absolute left-3 top-3.5 text-gray-400">
+                🔍
+              </div>
+            </div>
+            
+            {/* Advanced Filters Button */}
+            <button
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                showAdvancedFilters 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filters
+              {(selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
+                <span className="bg-blue-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {[
+                    selectedCategories.length > 0 ? 1 : 0,
+                    dateRange.start || dateRange.end ? 1 : 0,
+                    selectedTypes.length < 3 ? 1 : 0
+                  ].reduce((a, b) => a + b, 0)}
+                </span>
+              )}
+            </button>
+            
+            {/* Reset Filters */}
+            {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
+              <button
+                onClick={() => {
+                  setSearchKeyword('');
+                  setSelectedCategories([]);
+                  setSelectedTypes(['income', 'expense', 'transfer']);
+                  setDateRange({ start: '', end: '' });
+                  setSortBy('date-desc');
+                }}
+                className="px-4 py-3 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg font-semibold transition-colors"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+          
+          {/* Advanced Filters Panel */}
+          {showAdvancedFilters && (
+            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-600 space-y-4 animate-fadeIn">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Transaction Type Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Transaction Type</label>
+                  <div className="space-y-2">
+                    {['income', 'expense', 'transfer'].map(type => (
+                      <label key={type} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedTypes.includes(type)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedTypes([...selectedTypes, type]);
+                            } else {
+                              setSelectedTypes(selectedTypes.filter(t => t !== type));
+                            }
+                          }}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-200 capitalize">{type}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Category Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Category</label>
+                  <select
+                    multiple
+                    value={selectedCategories}
+                    onChange={(e) => {
+                      const selected = Array.from(e.target.selectedOptions, option => option.value);
+                      setSelectedCategories(selected);
+                    }}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    size="3"
+                  >
+                    <option value="housing">Housing</option>
+                    <option value="food">Food</option>
+                    <option value="transport">Transport</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="personal">Personal</option>
+                    <option value="business">Business</option>
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">Hold Ctrl/Cmd for multiple</p>
+                </div>
+                
+                {/* Date Range Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Date Range</label>
+                  <input
+                    type="date"
+                    value={dateRange.start}
+                    onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none mb-2"
+                    placeholder="Start Date"
+                  />
+                  <input
+                    type="date"
+                    value={dateRange.end}
+                    onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    placeholder="End Date"
+                  />
+                </div>
+                
+                {/* Sort By */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Sort By</label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="date-desc">📅 Date (Newest First)</option>
+                    <option value="date-asc">📅 Date (Oldest First)</option>
+                    <option value="amount-desc">💰 Amount (High to Low)</option>
+                    <option value="amount-asc">💰 Amount (Low to High)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </Card>
+
       {/* Transaction List */}
       <Card>
-        <h3 className="text-xl font-bold text-white mb-4">
-          Recent Transactions ({filteredTransactions.length})
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
+          <span>Recent Transactions ({filteredTransactions.length})</span>
+          {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
+            <span className="text-sm text-blue-400 font-normal">
+              {[
+                searchKeyword ? 1 : 0,
+                selectedCategories.length > 0 ? 1 : 0,
+                dateRange.start || dateRange.end ? 1 : 0,
+                selectedTypes.length < 3 ? 1 : 0
+              ].reduce((a, b) => a + b, 0)} Filter{[searchKeyword, selectedCategories.length > 0, dateRange.start || dateRange.end, selectedTypes.length < 3].filter(Boolean).length !== 1 ? 's' : ''} Active
+            </span>
+          )}
         </h3>
         
         <div className="space-y-2 max-h-96 overflow-y-auto">
