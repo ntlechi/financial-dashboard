@@ -1447,11 +1447,11 @@ const IncomeCard = ({ data, viewMode }) => {
       const height = isMobile ? 200 : 220;
       const radius = Math.min(width, height) / 2;
       
-      const colors = ['#14B8A6', '#2DD4BF', '#5EEAD4', '#99F6E4', '#CCFBF1'];
+      const vibrantColors = ['#FBBF24', '#38BDF8', '#F43F5E', '#8B5CF6', '#14B8A6', '#84CC16'];
       const chartData = data.sources.map((source, idx) => ({
         label: source.name,
         value: source.amount,
-        color: colors[idx % colors.length]
+        color: vibrantColors[idx % vibrantColors.length]
       }));
       
       const pie = d3.pie().value(d => d.value).sort(null);
@@ -1524,10 +1524,10 @@ const IncomeCard = ({ data, viewMode }) => {
       {/* Legend */}
       <div className="mt-3 space-y-1">
         {data.sources.map((source, idx) => {
-          const colors = ['#14B8A6', '#2DD4BF', '#5EEAD4', '#99F6E4', '#CCFBF1'];
+          const vibrantColors = ['#FBBF24', '#38BDF8', '#F43F5E', '#8B5CF6', '#14B8A6', '#84CC16'];
           return (
             <div key={source.id} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
               <span className="text-xs text-gray-300">{source.name}: ${source.amount.toLocaleString()}</span>
             </div>
           );
@@ -1553,11 +1553,11 @@ const ExpensesCard = ({ data, viewMode }) => {
       const height = isMobile ? 200 : 220;
       const radius = Math.min(width, height) / 2;
       
-      const colors = ['#F43F5E', '#FB7185', '#FDA4AF', '#FECDD3', '#FFE4E6'];
+      const vibrantColors = ['#FBBF24', '#38BDF8', '#F43F5E', '#8B5CF6', '#14B8A6', '#84CC16'];
       const chartData = data.categories.map((cat, idx) => ({
         label: cat.name,
         value: cat.amount,
-        color: colors[idx % colors.length]
+        color: vibrantColors[idx % vibrantColors.length]
       }));
       
       const pie = d3.pie().value(d => d.value).sort(null);
@@ -1630,10 +1630,10 @@ const ExpensesCard = ({ data, viewMode }) => {
       {/* Legend */}
       <div className="mt-3 space-y-1">
         {data.categories.map((cat, idx) => {
-          const colors = ['#F43F5E', '#FB7185', '#FDA4AF', '#FECDD3', '#FFE4E6'];
+          const vibrantColors = ['#FBBF24', '#38BDF8', '#F43F5E', '#8B5CF6', '#14B8A6', '#84CC16'];
           return (
             <div key={cat.id} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
               <span className="text-xs text-gray-300">{cat.name}: ${cat.amount.toLocaleString()}</span>
             </div>
           );
