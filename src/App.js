@@ -3909,9 +3909,9 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-lg font-bold text-purple-400">${holding.annualDividend.toLocaleString()}</div>
+                  <div className="text-lg font-bold text-cyan-400">${holding.annualDividend.toLocaleString()}</div>
                   <div className="text-xs text-gray-400">Annual Dividend</div>
-                  <div className="text-xs text-purple-300">{holding.dividendYield}% yield</div>
+                  <div className="text-xs text-cyan-300">{holding.dividendYield}% yield</div>
                 </div>
                 
                 <div className="text-center">
