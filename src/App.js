@@ -1107,7 +1107,7 @@ const NetWorthCard = ({ data, onEdit }) => {
       const radius = Math.min(width, height) / 2;
       
       const chartData = [
-        { label: 'Assets', value: totalAssets, color: '#38BDF8' },
+        { label: 'Assets', value: totalAssets, color: '#84CC16' },
         { label: 'Liabilities', value: totalLiabilities, color: '#F43F5E' }
       ].filter(d => d.value > 0);
       
@@ -1176,7 +1176,7 @@ const NetWorthCard = ({ data, onEdit }) => {
       {/* Legend */}
       <div className="mt-3 flex gap-4">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#38BDF8'}}></div>
+          <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#84CC16'}}></div>
           <span className="text-sm text-gray-300">Assets: ${totalAssets.toLocaleString()}</span>
         </div>
         {totalLiabilities > 0 && (
