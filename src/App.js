@@ -3081,9 +3081,43 @@ const InvestmentTab = ({ data, setData, userId }) => {
     return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
+  // 📊 Calculate portfolio allocation dynamically from holdings
+  const calculatePortfolioAllocation = () => {
+    if (!data.investments?.holdings || data.investments.holdings.length === 0) {
+      return [];
+    }
+
+    const holdings = data.investments.holdings;
+    const categoryMap = {};
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+    
+    holdings.forEach(holding => {
+      const category = holding.category || 'Other';
+      const value = (holding.shares || 0) * (holding.currentPrice || 0);
+      
+      if (!categoryMap[category]) {
+        categoryMap[category] = { name: category, value: 0, holdings: [] };
+      }
+      categoryMap[category].value += value;
+      categoryMap[category].holdings.push(holding);
+    });
+
+    const allocation = Object.values(categoryMap).map((cat, index) => ({
+      id: index + 1,
+      name: cat.name,
+      value: cat.value,
+      percentage: actualTotalValue > 0 ? ((cat.value / actualTotalValue) * 100).toFixed(1) : 0,
+      color: colors[index % colors.length]
+    }));
+
+    return allocation.sort((a, b) => b.value - a.value);
+  };
+
+  const portfolioAllocation = calculatePortfolioAllocation();
+
   useEffect(() => {
-    // Pie Chart
-    if (pieChartRef.current && data.investments.portfolioAllocation) {
+    // Pie Chart - Use dynamically calculated allocation
+    if (pieChartRef.current && portfolioAllocation && portfolioAllocation.length > 0) {
       const svg = d3.select(pieChartRef.current);
       svg.selectAll("*").remove();
       
@@ -3092,8 +3126,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
       const radius = Math.min(width, height) / 2;
       
       const color = d3.scaleOrdinal()
-        .domain(data.investments.portfolioAllocation.map(d => d.name))
-        .range(data.investments.portfolioAllocation.map(d => d.color));
+        .domain(portfolioAllocation.map(d => d.name))
+        .range(portfolioAllocation.map(d => d.color));
       
       const pie = d3.pie()
         .value(d => d.value)
@@ -3110,7 +3144,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("transform", `translate(${width/2},${height/2})`);
       
       const arcs = g.selectAll(".arc")
-        .data(pie(data.investments.portfolioAllocation))
+        .data(pie(portfolioAllocation))
         .enter().append("g")
         .attr("class", "arc");
       
@@ -3292,7 +3326,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stroke", "#1F2937")
         .attr("stroke-width", 2);
     }
-  }, [data.investments, actualTotalCost, actualTotalValue]);
+  }, [data.investments, actualTotalCost, actualTotalValue, portfolioAllocation]);
 
   const totalGainLoss = actualTotalValue - actualTotalCost;
   const totalGainLossPercent = actualTotalCost > 0 ? (totalGainLoss / actualTotalCost) * 100 : 0;
@@ -3567,12 +3601,12 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </p>
         </Card>
         
-        <Card className="bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+        <Card style={{ backgroundColor: '#141F3B' }} className="border-blue-500/30">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <Repeat className="w-5 h-5 mr-2 text-purple-400" />
+            <Repeat className="w-5 h-5 mr-2 text-cyan-400" />
             Annual Dividends
           </h3>
-          <p className="text-2xl font-bold text-purple-400">
+          <p className="text-2xl font-bold text-cyan-400">
             ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()}
           </p>
           <p className="text-sm text-gray-300 mt-2">
