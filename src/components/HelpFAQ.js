@@ -124,7 +124,7 @@ const HelpFAQ = ({ onClose }) => {
         {
           id: 13,
           question: 'What\'s included in the Budget Calculator?',
-          answer: 'Our Budget Calculator includes multiple methodologies: 50/30/20 rule (needs/wants/savings), 6 Jars system (financial/education/play/etc.), and custom budget categories. It automatically calculates your savings rate, shows spending patterns, and suggests optimizations based on your goals.',
+          answer: 'Our Budget Calculator includes multiple methodologies: 50/30/20 rule (needs/wants/savings) and 6 Jars system (financial/education/play/etc.) - both available on the FREE tier! Climber and Operator tiers also unlock the Financial Freedom Calculator and Debt Payoff Calculator for advanced planning. It automatically calculates your savings rate, shows spending patterns, and suggests optimizations based on your goals.',
           tags: ['budget calculator', '50/30/20', '6 jars', 'savings rate'],
           popular: true
         },
