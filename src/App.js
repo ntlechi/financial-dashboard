@@ -4643,14 +4643,16 @@ const TransactionsTab = ({ data, setData, userId }) => {
     .filter(t => t.amount < 0 && t.category === 'business')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-  // 📊 UPGRADE 1: D3.js Donut Chart for Spending by Category
+  // 📊 UPGRADE 1: D3.js Donut Chart for Spending by Category (Mobile Optimized)
   useEffect(() => {
     if (spendingChartRef.current && spendingByCategory && spendingByCategory.length > 0) {
       const svg = d3.select(spendingChartRef.current);
       svg.selectAll("*").remove();
       
-      const width = 300;
-      const height = 300;
+      // 📱 Mobile-responsive sizing
+      const isMobile = window.innerWidth <= 768;
+      const width = isMobile ? Math.min(window.innerWidth - 40, 280) : 300;
+      const height = isMobile ? Math.min(window.innerWidth - 40, 280) : 300;
       const radius = Math.min(width, height) / 2;
       
       const color = d3.scaleOrdinal()
@@ -4712,7 +4714,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
         .attr("transform", d => `translate(${arc.centroid(d)})`)
         .attr("dy", "0.35em")
         .style("text-anchor", "middle")
-        .style("font-size", "12px")
+        .style("font-size", isMobile ? "10px" : "12px")
         .style("fill", "white")
         .style("font-weight", "bold")
         .text(d => `${d.data.percentage}%`);
@@ -5108,34 +5110,36 @@ const TransactionsTab = ({ data, setData, userId }) => {
         </Card>
       )}
 
-      {/* 📊 UPGRADE 1: Spending by Category Visualization */}
+      {/* 📊 UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-indigo-900/40 to-blue-900/40 border-blue-500/30">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-          <PieChart className="w-6 h-6 mr-3 text-blue-400" />
-          💰 Spending by Category
-          <span className="ml-2 text-sm text-gray-400 font-normal">(This Month)</span>
+        <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex flex-wrap items-center gap-2">
+          <div className="flex items-center">
+            <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
+            💰 Spending by Category
+          </div>
+          <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
         </h3>
         
         {spendingByCategory.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Donut Chart */}
-            <div className="flex justify-center items-center">
+            {/* Donut Chart - Centered on mobile */}
+            <div className="flex justify-center items-center py-4 md:py-0">
               <svg ref={spendingChartRef}></svg>
             </div>
             
-            {/* Legend */}
+            {/* Legend - Mobile optimized with larger tap targets */}
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-gray-300 mb-3">Category Breakdown</h4>
+              <h4 className="text-sm font-semibold text-gray-300 mb-3 px-1">Category Breakdown</h4>
               {spendingByCategory.map(item => (
-                <div key={item.category} className="flex items-center justify-between p-2 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors">
+                <div key={item.category} className="flex items-center justify-between p-3 md:p-2 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors min-h-[3rem] md:min-h-0">
                   <div className="flex items-center gap-3">
                     <div 
-                      className="w-4 h-4 rounded-full" 
+                      className="w-5 h-5 md:w-4 md:h-4 rounded-full flex-shrink-0" 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm text-gray-200 capitalize">{item.category}</span>
+                    <span className="text-sm md:text-sm text-gray-200 capitalize">{item.category}</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3">
                     <span className="text-sm font-semibold text-white">${item.amount.toLocaleString()}</span>
                     <span className="text-sm text-blue-400 font-semibold min-w-[3rem] text-right">
                       {item.percentage}%
@@ -5275,38 +5279,38 @@ const TransactionsTab = ({ data, setData, userId }) => {
         </Card>
       )}
 
-      {/* 🔍 UPGRADE 2: Advanced Search & Filter System */}
+      {/* 🔍 UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-slate-900/40 to-gray-900/40">
         <div className="space-y-4">
-          {/* Search Bar & Filters Button */}
-          <div className="flex flex-col md:flex-row gap-3">
-            {/* Keyword Search */}
+          {/* Search Bar & Filters Button - Mobile optimized */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Keyword Search - Large tap target on mobile */}
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="🔍 Search transactions by description..."
+                placeholder="🔍 Search transactions..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="w-full bg-gray-700/50 text-white px-4 py-3 pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full bg-gray-700/50 text-white px-4 py-4 md:py-3 pl-12 md:pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
               />
-              <div className="absolute left-3 top-3.5 text-gray-400">
+              <div className="absolute left-3 md:left-3 top-4 md:top-3.5 text-gray-400 text-lg md:text-base">
                 🔍
               </div>
             </div>
             
-            {/* Advanced Filters Button */}
+            {/* Advanced Filters Button - Extra large on mobile */}
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+              className={`px-6 py-4 md:py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 min-h-[3rem] md:min-h-0 ${
                 showAdvancedFilters 
                   ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-600'
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              Filters
+              <span className="text-base md:text-sm">Filters</span>
               {(selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
                 <span className="bg-blue-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   {[
@@ -5318,7 +5322,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
               )}
             </button>
             
-            {/* Reset Filters */}
+            {/* Reset Filters - Large tap target on mobile */}
             {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
               <button
                 onClick={() => {
@@ -5328,7 +5332,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                   setDateRange({ start: '', end: '' });
                   setSortBy('date-desc');
                 }}
-                className="px-4 py-3 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg font-semibold transition-colors"
+                className="px-5 py-4 md:px-4 md:py-3 bg-red-600/20 text-red-400 hover:bg-red-600/30 active:bg-red-600/40 rounded-lg font-semibold transition-colors min-h-[3rem] md:min-h-0 text-base md:text-sm"
               >
                 Reset
               </button>
@@ -5363,9 +5367,9 @@ const TransactionsTab = ({ data, setData, userId }) => {
                   </div>
                 </div>
                 
-                {/* Category Filter */}
+                {/* Category Filter - Mobile friendly */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Category</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Category</label>
                   <select
                     multiple
                     value={selectedCategories}
@@ -5373,7 +5377,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                       const selected = Array.from(e.target.selectedOptions, option => option.value);
                       setSelectedCategories(selected);
                     }}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
                     size="3"
                   >
                     <option value="housing">Housing</option>
@@ -5385,35 +5389,35 @@ const TransactionsTab = ({ data, setData, userId }) => {
                     <option value="personal">Personal</option>
                     <option value="business">Business</option>
                   </select>
-                  <p className="text-xs text-gray-400 mt-1">Hold Ctrl/Cmd for multiple</p>
+                  <p className="text-xs text-gray-400 mt-2 md:mt-1">Hold Ctrl/Cmd for multiple</p>
                 </div>
                 
-                {/* Date Range Filter */}
+                {/* Date Range Filter - Large tap targets */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Date Range</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Date Range</label>
                   <input
                     type="date"
                     value={dateRange.start}
                     onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none mb-2"
+                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none mb-3 md:mb-2 text-base md:text-sm"
                     placeholder="Start Date"
                   />
                   <input
                     type="date"
                     value={dateRange.end}
                     onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
                     placeholder="End Date"
                   />
                 </div>
                 
-                {/* Sort By */}
+                {/* Sort By - Large tap target */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Sort By</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Sort By</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
                   >
                     <option value="date-desc">📅 Date (Newest First)</option>
                     <option value="date-asc">📅 Date (Oldest First)</option>
