@@ -6162,54 +6162,56 @@ const TravelTab = ({ data, setData, userId }) => {
         const allVisitedCountries = Array.from(visitedCountries.keys());
         const allPlannedCountries = Array.from(plannedCountries.keys());
         
-        // Simple world map data - major countries with approximate positions
+        // World map data - major countries with positions adjusted for new viewBox (100x50)
         const worldMapCountries = [
           // North America
-          { name: 'usa', display: 'USA', x: 15, y: 25, region: 'North America' },
-          { name: 'canada', display: 'Canada', x: 15, y: 15, region: 'North America' },
-          { name: 'mexico', display: 'Mexico', x: 15, y: 35, region: 'North America' },
+          { name: 'usa', display: 'USA', x: 12, y: 18, region: 'North America' },
+          { name: 'united states', display: 'USA', x: 12, y: 18, region: 'North America' },
+          { name: 'canada', display: 'Canada', x: 12, y: 12, region: 'North America' },
+          { name: 'mexico', display: 'Mexico', x: 12, y: 25, region: 'North America' },
           // South America
-          { name: 'brazil', display: 'Brazil', x: 35, y: 60, region: 'South America' },
-          { name: 'argentina', display: 'Argentina', x: 30, y: 75, region: 'South America' },
-          { name: 'colombia', display: 'Colombia', x: 25, y: 50, region: 'South America' },
-          { name: 'peru', display: 'Peru', x: 25, y: 60, region: 'South America' },
-          { name: 'chile', display: 'Chile', x: 28, y: 70, region: 'South America' },
+          { name: 'brazil', display: 'Brazil', x: 27, y: 38, region: 'South America' },
+          { name: 'argentina', display: 'Argentina', x: 25, y: 45, region: 'South America' },
+          { name: 'colombia', display: 'Colombia', x: 22, y: 32, region: 'South America' },
+          { name: 'peru', display: 'Peru', x: 23, y: 37, region: 'South America' },
+          { name: 'chile', display: 'Chile', x: 24, y: 42, region: 'South America' },
           // Europe
-          { name: 'uk', display: 'UK', x: 48, y: 20, region: 'Europe' },
-          { name: 'france', display: 'France', x: 50, y: 25, region: 'Europe' },
-          { name: 'germany', display: 'Germany', x: 52, y: 22, region: 'Europe' },
-          { name: 'italy', display: 'Italy', x: 53, y: 28, region: 'Europe' },
-          { name: 'spain', display: 'Spain', x: 48, y: 28, region: 'Europe' },
-          { name: 'portugal', display: 'Portugal', x: 46, y: 28, region: 'Europe' },
-          { name: 'netherlands', display: 'Netherlands', x: 50, y: 21, region: 'Europe' },
-          { name: 'sweden', display: 'Sweden', x: 54, y: 15, region: 'Europe' },
-          { name: 'norway', display: 'Norway', x: 52, y: 12, region: 'Europe' },
-          { name: 'greece', display: 'Greece', x: 56, y: 30, region: 'Europe' },
-          { name: 'switzerland', display: 'Switzerland', x: 51, y: 25, region: 'Europe' },
+          { name: 'uk', display: 'UK', x: 46, y: 12, region: 'Europe' },
+          { name: 'united kingdom', display: 'UK', x: 46, y: 12, region: 'Europe' },
+          { name: 'france', display: 'France', x: 48, y: 15, region: 'Europe' },
+          { name: 'germany', display: 'Germany', x: 50, y: 13, region: 'Europe' },
+          { name: 'italy', display: 'Italy', x: 51, y: 17, region: 'Europe' },
+          { name: 'spain', display: 'Spain', x: 46, y: 17, region: 'Europe' },
+          { name: 'portugal', display: 'Portugal', x: 44, y: 17, region: 'Europe' },
+          { name: 'netherlands', display: 'Netherlands', x: 49, y: 13, region: 'Europe' },
+          { name: 'sweden', display: 'Sweden', x: 52, y: 10, region: 'Europe' },
+          { name: 'norway', display: 'Norway', x: 51, y: 8, region: 'Europe' },
+          { name: 'greece', display: 'Greece', x: 54, y: 18, region: 'Europe' },
+          { name: 'switzerland', display: 'Switzerland', x: 49, y: 15, region: 'Europe' },
           // Africa
-          { name: 'egypt', display: 'Egypt', x: 58, y: 38, region: 'Africa' },
-          { name: 'south africa', display: 'South Africa', x: 58, y: 70, region: 'Africa' },
-          { name: 'morocco', display: 'Morocco', x: 46, y: 36, region: 'Africa' },
-          { name: 'kenya', display: 'Kenya', x: 62, y: 52, region: 'Africa' },
-          { name: 'tanzania', display: 'Tanzania', x: 62, y: 55, region: 'Africa' },
+          { name: 'egypt', display: 'Egypt', x: 54, y: 23, region: 'Africa' },
+          { name: 'south africa', display: 'South Africa', x: 52, y: 42, region: 'Africa' },
+          { name: 'morocco', display: 'Morocco', x: 45, y: 22, region: 'Africa' },
+          { name: 'kenya', display: 'Kenya', x: 56, y: 32, region: 'Africa' },
+          { name: 'tanzania', display: 'Tanzania', x: 56, y: 34, region: 'Africa' },
           // Asia
-          { name: 'china', display: 'China', x: 75, y: 32, region: 'Asia' },
-          { name: 'japan', display: 'Japan', x: 85, y: 30, region: 'Asia' },
-          { name: 'south korea', display: 'South Korea', x: 82, y: 30, region: 'Asia' },
-          { name: 'thailand', display: 'Thailand', x: 75, y: 45, region: 'Asia' },
-          { name: 'vietnam', display: 'Vietnam', x: 77, y: 45, region: 'Asia' },
-          { name: 'cambodia', display: 'Cambodia', x: 76, y: 46, region: 'Asia' },
-          { name: 'singapore', display: 'Singapore', x: 77, y: 52, region: 'Asia' },
-          { name: 'malaysia', display: 'Malaysia', x: 76, y: 50, region: 'Asia' },
-          { name: 'indonesia', display: 'Indonesia', x: 80, y: 55, region: 'Asia' },
-          { name: 'philippines', display: 'Philippines', x: 82, y: 48, region: 'Asia' },
-          { name: 'india', display: 'India', x: 70, y: 42, region: 'Asia' },
-          { name: 'nepal', display: 'Nepal', x: 72, y: 38, region: 'Asia' },
-          { name: 'uae', display: 'UAE', x: 65, y: 42, region: 'Middle East' },
-          { name: 'turkey', display: 'Turkey', x: 58, y: 30, region: 'Middle East' },
+          { name: 'china', display: 'China', x: 72, y: 20, region: 'Asia' },
+          { name: 'japan', display: 'Japan', x: 82, y: 19, region: 'Asia' },
+          { name: 'south korea', display: 'South Korea', x: 80, y: 19, region: 'Asia' },
+          { name: 'thailand', display: 'Thailand', x: 74, y: 27, region: 'Asia' },
+          { name: 'vietnam', display: 'Vietnam', x: 76, y: 27, region: 'Asia' },
+          { name: 'cambodia', display: 'Cambodia', x: 75, y: 28, region: 'Asia' },
+          { name: 'singapore', display: 'Singapore', x: 76, y: 31, region: 'Asia' },
+          { name: 'malaysia', display: 'Malaysia', x: 75, y: 30, region: 'Asia' },
+          { name: 'indonesia', display: 'Indonesia', x: 78, y: 33, region: 'Asia' },
+          { name: 'philippines', display: 'Philippines', x: 79, y: 28, region: 'Asia' },
+          { name: 'india', display: 'India', x: 68, y: 25, region: 'Asia' },
+          { name: 'nepal', display: 'Nepal', x: 70, y: 23, region: 'Asia' },
+          { name: 'uae', display: 'UAE', x: 62, y: 25, region: 'Middle East' },
+          { name: 'turkey', display: 'Turkey', x: 56, y: 18, region: 'Middle East' },
           // Oceania
-          { name: 'australia', display: 'Australia', x: 85, y: 68, region: 'Oceania' },
-          { name: 'new zealand', display: 'New Zealand', x: 92, y: 75, region: 'Oceania' },
+          { name: 'australia', display: 'Australia', x: 83, y: 39, region: 'Oceania' },
+          { name: 'new zealand', display: 'New Zealand', x: 90, y: 44, region: 'Oceania' },
         ];
         
         return (
@@ -6263,52 +6265,88 @@ const TravelTab = ({ data, setData, userId }) => {
                 {/* 🗺️ VISUAL WORLD MAP */}
                 <div className="relative w-full overflow-x-auto mb-6">
                   <svg 
-                    viewBox="0 0 100 90" 
-                    className="w-full h-auto min-h-[300px] md:min-h-[400px]"
-                    style={{ maxWidth: '1200px', margin: '0 auto' }}
+                    viewBox="0 0 100 50" 
+                    className="w-full h-auto"
+                    style={{ maxWidth: '1400px', margin: '0 auto', minHeight: '400px' }}
                   >
-                    {/* World Map Background Grid */}
-                    <rect x="0" y="0" width="100" height="90" fill="#1e293b" opacity="0.3" rx="2"/>
+                    {/* Ocean Background */}
+                    <defs>
+                      <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style={{stopColor: '#1e3a5f', stopOpacity: 1}} />
+                        <stop offset="100%" style={{stopColor: '#0f1f3d', stopOpacity: 1}} />
+                      </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="100" height="50" fill="url(#oceanGradient)" />
                     
                     {/* Latitude/Longitude Grid Lines */}
-                    {[...Array(10)].map((_, i) => (
+                    {[...Array(6)].map((_, i) => (
                       <line 
                         key={`lat-${i}`} 
                         x1="0" 
                         y1={i * 10} 
                         x2="100" 
                         y2={i * 10} 
-                        stroke="#334155" 
-                        strokeWidth="0.1" 
-                        opacity="0.3"
+                        stroke="#2d4a6f" 
+                        strokeWidth="0.15" 
+                        opacity="0.4"
                       />
                     ))}
-                    {[...Array(10)].map((_, i) => (
+                    {[...Array(13)].map((_, i) => (
                       <line 
                         key={`lon-${i}`} 
-                        x1={i * 10} 
+                        x1={i * 8} 
                         y1="0" 
-                        x2={i * 10} 
-                        y2="90" 
-                        stroke="#334155" 
-                        strokeWidth="0.1" 
-                        opacity="0.3"
+                        x2={i * 8} 
+                        y2="50" 
+                        stroke="#2d4a6f" 
+                        strokeWidth="0.15" 
+                        opacity="0.4"
                       />
                     ))}
                     
-                    {/* Continents Outlines (Simplified) */}
-                    {/* North America */}
-                    <path d="M 5 10 Q 10 8 18 12 L 22 20 L 20 35 L 12 38 L 8 32 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
-                    {/* South America */}
-                    <path d="M 22 45 L 30 48 L 35 60 L 32 75 L 28 78 L 25 65 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
-                    {/* Europe */}
-                    <path d="M 45 15 L 56 12 L 58 20 L 54 30 L 48 32 L 45 25 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
-                    {/* Africa */}
-                    <path d="M 48 35 L 56 34 L 62 45 L 62 65 L 56 72 L 50 65 L 48 50 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
-                    {/* Asia */}
-                    <path d="M 60 15 L 85 15 L 88 30 L 82 45 L 75 50 L 68 48 L 62 35 L 60 25 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
-                    {/* Australia */}
-                    <path d="M 78 62 L 92 64 L 93 72 L 88 75 L 80 74 Z" fill="#0f172a" opacity="0.5" stroke="#334155" strokeWidth="0.2"/>
+                    {/* REALISTIC CONTINENTS */}
+                    
+                    {/* North America - Better shape */}
+                    <path d="M 7 8 Q 6 7 8 6 L 11 6 Q 13 5 14 7 L 15 9 Q 16 10 17 12 L 18 15 L 19 18 Q 19 20 18 22 L 17 25 Q 16 27 15 28 L 14 30 Q 13 31 12 31 L 11 32 Q 10 32 9 31 L 8 29 Q 7 27 7 25 L 7 23 Q 7 21 8 19 L 9 17 Q 9 15 8 13 L 7 11 Q 7 9 7 8 Z" 
+                      fill="#1a2b3d" 
+                      stroke="#3d5a7a" 
+                      strokeWidth="0.15"
+                      opacity="0.9"/>
+                    
+                    {/* South America - Better shape */}
+                    <path d="M 23 30 Q 24 29 25 30 L 26 32 Q 27 34 28 36 L 29 39 Q 30 41 30 43 L 30 45 Q 30 46 29 47 L 28 48 Q 27 48 26 47 L 25 46 Q 24 45 24 44 L 23 42 Q 23 40 23 38 L 23 36 Q 23 34 23 32 L 23 30 Z" 
+                      fill="#1a2b3d" 
+                      stroke="#3d5a7a" 
+                      strokeWidth="0.15"
+                      opacity="0.9"/>
+                    
+                    {/* Europe - Better shape */}
+                    <path d="M 44 8 Q 45 7 46 8 L 48 9 Q 50 10 52 11 L 54 12 Q 55 13 55 14 L 55 16 Q 54 17 53 18 L 52 19 Q 51 19 50 19 L 49 19 Q 48 18 47 18 L 46 17 Q 45 16 45 15 L 44 13 Q 44 11 44 9 L 44 8 Z" 
+                      fill="#1a2b3d" 
+                      stroke="#3d5a7a" 
+                      strokeWidth="0.15"
+                      opacity="0.9"/>
+                    
+                    {/* Africa - Much better recognizable shape */}
+                    <path d="M 48 20 Q 49 19 50 20 L 52 22 Q 53 24 54 26 L 55 29 Q 56 31 56 33 L 56 36 Q 56 38 56 40 L 55 42 Q 54 43 53 44 L 52 45 Q 51 45 50 44 L 49 43 Q 48 41 48 39 L 48 37 Q 48 35 48 33 L 48 31 Q 48 29 48 27 L 48 25 Q 48 23 48 21 L 48 20 Z" 
+                      fill="#1a2b3d" 
+                      stroke="#3d5a7a" 
+                      strokeWidth="0.15"
+                      opacity="0.9"/>
+                    
+                    {/* Asia - Large recognizable mass */}
+                    <path d="M 58 6 Q 60 5 62 6 L 65 7 Q 68 8 71 10 L 74 12 Q 77 14 79 16 L 81 18 Q 83 20 84 22 L 85 24 Q 85 26 84 28 L 83 30 Q 81 31 79 32 L 77 33 Q 75 33 73 32 L 71 31 Q 69 30 67 29 L 65 28 Q 63 27 62 26 L 60 24 Q 59 22 59 20 L 58 18 Q 58 16 58 14 L 58 12 Q 58 10 58 8 L 58 6 Z" 
+                      fill="#1a2b3d" 
+                      stroke="#3d5a7a" 
+                      strokeWidth="0.15"
+                      opacity="0.9"/>
+                    
+                    {/* Australia - Better shape */}
+                    <path d="M 79 36 Q 80 35 82 36 L 84 37 Q 86 38 87 39 L 88 41 Q 88 42 87 43 L 86 44 Q 84 44 82 43 L 80 42 Q 79 41 79 40 L 79 38 Q 79 37 79 36 Z" 
+                      fill="#1a2b3d" 
+                      stroke="#3d5a7a" 
+                      strokeWidth="0.15"
+                      opacity="0.9"/>
                     
                     {/* Country Markers */}
                     {worldMapCountries.map(country => {
@@ -6358,15 +6396,15 @@ const TravelTab = ({ data, setData, userId }) => {
                     })}
                     
                     {/* Legend */}
-                    <g transform="translate(5, 80)">
+                    <g transform="translate(5, 45)">
                       <circle cx="1" cy="0" r="0.8" fill="#FBBF24" stroke="#F59E0B" strokeWidth="0.2"/>
-                      <text x="3" y="0.5" fontSize="2" fill="#FCD34D">Completed</text>
+                      <text x="3" y="0.5" fontSize="2.5" fill="#FCD34D" fontWeight="bold">Completed</text>
                       
-                      <circle cx="20" cy="0" r="0.8" fill="#38BDF8" stroke="#0EA5E9" strokeWidth="0.2"/>
-                      <text x="22" y="0.5" fontSize="2" fill="#7DD3FC">Planned</text>
+                      <circle cx="22" cy="0" r="0.8" fill="#38BDF8" stroke="#0EA5E9" strokeWidth="0.2"/>
+                      <text x="24" y="0.5" fontSize="2.5" fill="#7DD3FC" fontWeight="bold">Planned</text>
                       
-                      <circle cx="38" cy="0" r="0.6" fill="#475569" opacity="0.3"/>
-                      <text x="40" y="0.5" fontSize="2" fill="#94a3b8">Not Visited</text>
+                      <circle cx="40" cy="0" r="0.6" fill="#475569" opacity="0.3"/>
+                      <text x="42" y="0.5" fontSize="2.5" fill="#94a3b8">Not Visited</text>
                     </g>
                   </svg>
                 </div>
@@ -6724,21 +6762,32 @@ const TravelTab = ({ data, setData, userId }) => {
                 <input
                   type="text"
                   placeholder="e.g., Thailand, Vietnam, Cambodia"
-                  value={newTrip.countries ? newTrip.countries.join(', ') : ''}
+                  value={Array.isArray(newTrip.countries) ? newTrip.countries.join(', ') : (newTrip.countries || '')}
                   onChange={(e) => {
-                    const countries = e.target.value.split(',').map(c => c.trim()).filter(c => c);
-                    setNewTrip({...newTrip, countries});
+                    const inputValue = e.target.value;
+                    const countries = inputValue.split(',').map(c => c.trim()).filter(c => c.length > 0);
+                    setNewTrip({...newTrip, countries: countries});
                   }}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
                   💡 Separate multiple countries with commas. These will appear on your Operator's World Map!
                 </p>
-                {newTrip.countries && newTrip.countries.length > 0 && (
+                {Array.isArray(newTrip.countries) && newTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {newTrip.countries.map((country, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-amber-600/30 text-amber-200 text-xs rounded-full border border-amber-500/50">
+                      <span key={idx} className="px-2 py-1 bg-amber-600/30 text-amber-200 text-xs rounded-full border border-amber-500/50 flex items-center gap-1">
                         🌍 {country}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updatedCountries = newTrip.countries.filter((_, i) => i !== idx);
+                            setNewTrip({...newTrip, countries: updatedCountries});
+                          }}
+                          className="hover:text-red-400 transition-colors"
+                        >
+                          ×
+                        </button>
                       </span>
                     ))}
                   </div>
