@@ -520,15 +520,15 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
   );
 };
 
-// Financial Freedom Goal Card
+// Financial Freedom Goal Card (VIOLET - Aspirational)
 const FinancialFreedomCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.targetAmount) {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-emerald-900/40 to-teal-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
-            <Target className="w-6 h-6 mr-3 text-emerald-400" />
+            <Target className="w-6 h-6 mr-3 text-violet-400" />
             Financial Freedom Goal
           </h2>
         </div>
@@ -545,19 +545,19 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-emerald-900/40 to-teal-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <Target className="w-6 h-6 mr-3 text-emerald-400" />
+          <Target className="w-6 h-6 mr-3 text-violet-400" />
           Financial Freedom Goal
         </h2>
         <button
           onClick={() => onEdit('financialFreedom', data)}
-          className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="text-gray-400 hover:text-violet-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
-        <span className="text-emerald-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+        <span className="text-violet-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
       </div>
       
       <div className="space-y-4">
@@ -569,21 +569,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
           <ProgressBar 
             value={data.currentInvestments} 
             maxValue={data.targetAmount} 
-            color="bg-emerald-500"
+            color="bg-violet-500"
             height="h-3"
           />
         </div>
         
         <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-emerald-900/30 rounded-lg p-3">
+          <div className="bg-violet-900/30 rounded-lg p-3">
             <div className="text-lg font-bold text-white">${data.monthlyContribution.toLocaleString()}</div>
-            <div className="text-xs text-emerald-400">Monthly Contribution</div>
+            <div className="text-xs text-violet-400">Monthly Contribution</div>
           </div>
-          <div className="bg-emerald-900/30 rounded-lg p-3">
+          <div className="bg-violet-900/30 rounded-lg p-3">
             <div className="text-lg font-bold text-white">
               {yearsToGoal}y {remainingMonths}m
             </div>
-            <div className="text-xs text-emerald-400">Time to Goal</div>
+            <div className="text-xs text-violet-400">Time to Goal</div>
           </div>
         </div>
       </div>
@@ -1107,8 +1107,8 @@ const NetWorthCard = ({ data, onEdit }) => {
       const radius = Math.min(width, height) / 2;
       
       const chartData = [
-        { label: 'Assets', value: totalAssets, color: '#3B82F6' },
-        { label: 'Liabilities', value: totalLiabilities, color: '#EF4444' }
+        { label: 'Assets', value: totalAssets, color: '#38BDF8' },
+        { label: 'Liabilities', value: totalLiabilities, color: '#F43F5E' }
       ].filter(d => d.value > 0);
       
       const pie = d3.pie().value(d => d.value).sort(null);
@@ -1154,20 +1154,20 @@ const NetWorthCard = ({ data, onEdit }) => {
   }, [totalAssets, totalLiabilities]);
 
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-cyan-900/40">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-sky-900/40 to-blue-900/40">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
-        <DollarSign className="w-6 h-6 mr-3 text-cyan-400" />
+        <DollarSign className="w-6 h-6 mr-3 text-sky-400" />
         Net Worth
       </h2>
       <button
         onClick={() => onEdit('netWorth', data)}
-        className="text-gray-400 hover:text-cyan-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+        className="text-gray-400 hover:text-sky-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
       >
         <Edit className="w-4 h-4" />
       </button>
     </div>
-    <p className="text-5xl font-extrabold text-cyan-400">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-sky-400">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1176,12 +1176,12 @@ const NetWorthCard = ({ data, onEdit }) => {
       {/* Legend */}
       <div className="mt-3 flex gap-4">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+          <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#38BDF8'}}></div>
           <span className="text-sm text-gray-300">Assets: ${totalAssets.toLocaleString()}</span>
         </div>
         {totalLiabilities > 0 && (
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#F43F5E'}}></div>
             <span className="text-sm text-gray-300">Liabilities: ${totalLiabilities.toLocaleString()}</span>
           </div>
         )}
@@ -1214,15 +1214,15 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-600/30">
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-sky-900/40 to-blue-900/40 border-sky-600/30">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <ShieldCheck className="w-6 h-6 mr-3 text-cyan-400" />
+          <ShieldCheck className="w-6 h-6 mr-3 text-sky-400" />
           Retirement Accounts
         </h2>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
-          className="text-gray-400 hover:text-cyan-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="text-gray-400 hover:text-sky-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -1447,7 +1447,7 @@ const IncomeCard = ({ data, viewMode }) => {
       const height = isMobile ? 200 : 220;
       const radius = Math.min(width, height) / 2;
       
-      const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
+      const colors = ['#14B8A6', '#2DD4BF', '#5EEAD4', '#99F6E4', '#CCFBF1'];
       const chartData = data.sources.map((source, idx) => ({
         label: source.name,
         value: source.amount,
@@ -1499,9 +1499,9 @@ const IncomeCard = ({ data, viewMode }) => {
   // 🛡️ NULL SAFETY CHECK (after hooks)
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <ArrowUp className="w-6 h-6 mr-3 text-green-400" />
+          <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
           {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1510,12 +1510,12 @@ const IncomeCard = ({ data, viewMode }) => {
   }
 
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <ArrowUp className="w-6 h-6 mr-3 text-green-400" />
+      <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
       {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
     </h2>
-    <p className="text-5xl font-extrabold text-green-400">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-teal-400">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1524,7 +1524,7 @@ const IncomeCard = ({ data, viewMode }) => {
       {/* Legend */}
       <div className="mt-3 space-y-1">
         {data.sources.map((source, idx) => {
-          const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
+          const colors = ['#14B8A6', '#2DD4BF', '#5EEAD4', '#99F6E4', '#CCFBF1'];
           return (
             <div key={source.id} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></div>
@@ -1553,7 +1553,7 @@ const ExpensesCard = ({ data, viewMode }) => {
       const height = isMobile ? 200 : 220;
       const radius = Math.min(width, height) / 2;
       
-      const colors = ['#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2'];
+      const colors = ['#F43F5E', '#FB7185', '#FDA4AF', '#FECDD3', '#FFE4E6'];
       const chartData = data.categories.map((cat, idx) => ({
         label: cat.name,
         value: cat.amount,
@@ -1616,12 +1616,12 @@ const ExpensesCard = ({ data, viewMode }) => {
   }
 
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-      <ArrowDown className="w-6 h-6 mr-3 text-red-400" />
+      <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
       {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
     </h2>
-    <p className="text-5xl font-extrabold text-red-400">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-rose-400">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1630,7 +1630,7 @@ const ExpensesCard = ({ data, viewMode }) => {
       {/* Legend */}
       <div className="mt-3 space-y-1">
         {data.categories.map((cat, idx) => {
-          const colors = ['#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2'];
+          const colors = ['#F43F5E', '#FB7185', '#FDA4AF', '#FECDD3', '#FFE4E6'];
           return (
             <div key={cat.id} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></div>
@@ -1644,14 +1644,14 @@ const ExpensesCard = ({ data, viewMode }) => {
   );
 };
 
-// Cash Flow Card (GREEN - Positive Growth)
+// Cash Flow Card (TEAL - Positive Growth)
 const CashFlowCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-          <TrendingUp className="w-6 h-6 mr-3 text-green-400" />
+          <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
           Cash Flow
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1661,15 +1661,15 @@ const CashFlowCard = ({ data, onEdit }) => {
 
   const isPositive = data.total >= 0;
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
       <div className="flex justify-between items-start mb-2">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <TrendingUp className="w-6 h-6 mr-3 text-green-400" />
+          <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
           Cash Flow
         </h2>
         {/* Cash Flow is calculated - no edit needed */}
       </div>
-      <p className={`text-5xl font-extrabold ${isPositive ? 'text-green-400' : 'text-red-500'}`}>
+      <p className={`text-5xl font-extrabold ${isPositive ? 'text-teal-400' : 'text-rose-500'}`}>
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
       <p className="text-gray-400 mt-2">Monthly income minus expenses</p>
