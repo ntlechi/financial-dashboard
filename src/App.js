@@ -677,9 +677,9 @@ const RainyDayFundCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
+          <Umbrella className="w-6 h-6 mr-3 text-amber-400" />
           Rainy Day Fund
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -699,17 +699,17 @@ const RainyDayFundCard = ({ data, onEdit }) => {
   const { status, color } = getFundStatus(monthsOfExpenses);
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
+          <Umbrella className="w-6 h-6 mr-3 text-amber-400" />
           Rainy Day Fund
         </h2>
         <div className="flex items-center gap-2">
-          <span className="text-purple-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+          <span className="text-amber-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
           <button
             onClick={() => onEdit('rainyDayFund', data)}
-            className="text-gray-400 hover:text-purple-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+            className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
           >
             <Edit className="w-4 h-4" />
           </button>
@@ -1312,9 +1312,9 @@ const DebtCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30">
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+          <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
           Total Debt
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1328,24 +1328,24 @@ const DebtCard = ({ data, onEdit }) => {
     data.accounts.reduce((sum, account) => sum + account.interestRate, 0) / data.accounts.length : 0;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30 relative">
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40 relative">
       <button
         onClick={() => onEdit('debt', data)}
-        className="absolute top-4 right-4 p-2 bg-red-700/20 hover:bg-red-600/30 rounded-lg transition-colors"
+        className="absolute top-4 right-4 p-2 bg-rose-700/20 hover:bg-rose-600/30 rounded-lg transition-colors"
         title="Edit Debt"
       >
-        <Edit className="w-4 h-4 text-red-300" />
+        <Edit className="w-4 h-4 text-rose-300" />
       </button>
 
       <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-        <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+        <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
         Total Debt
       </h2>
-      <p className="text-5xl font-extrabold text-red-400">${totalDebt.toLocaleString()}</p>
+      <p className="text-5xl font-extrabold text-rose-400">${totalDebt.toLocaleString()}</p>
       
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-red-800/20 rounded-lg p-3">
-          <p className="text-red-300 text-sm">Min. Payment</p>
+        <div className="bg-rose-800/20 rounded-lg p-3">
+          <p className="text-rose-300 text-sm">Min. Payment</p>
           <p className="text-white font-bold">${totalMinPayment.toLocaleString()}/mo</p>
         </div>
         <div className="bg-orange-800/20 rounded-lg p-3">
