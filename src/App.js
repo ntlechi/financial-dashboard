@@ -3057,6 +3057,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
   const lineChartRef = useRef(null);
   const [showAddHolding, setShowAddHolding] = useState(false);
   const [editingHolding, setEditingHolding] = useState(null);
+  const [allocationView, setAllocationView] = useState('ticker'); // 'ticker' or 'category'
   
   const [newHolding, setNewHolding] = useState({
     symbol: '',
@@ -3069,7 +3070,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     accountType: 'TFSA',
     isUSStock: false,
     withholdingTax: 0,
-    currency: 'CAD'
+    currency: 'CAD',
+    category: 'US Stocks' // Default category
   });
 
   // 🔧 EDGE CASE FIX: Null safety for empty holdings array
@@ -3081,15 +3083,14 @@ const InvestmentTab = ({ data, setData, userId }) => {
     return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
-  // 📊 Calculate portfolio allocation dynamically from holdings
-  // Each holding (ticker) gets its own slice in the donut chart
-  const calculatePortfolioAllocation = () => {
+  // 📊 Calculate portfolio allocation by TICKER
+  const calculateAllocationByTicker = () => {
     if (!data.investments?.holdings || data.investments.holdings.length === 0) {
       return [];
     }
 
     const holdings = data.investments.holdings;
-    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#06b6d4'];
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#14b8a6'];
     
     // Calculate total portfolio value from all holdings
     const totalPortfolioValue = holdings.reduce((sum, holding) => {
@@ -3116,7 +3117,56 @@ const InvestmentTab = ({ data, setData, userId }) => {
     return allocation.sort((a, b) => b.percentageNum - a.percentageNum);
   };
 
-  const portfolioAllocation = calculatePortfolioAllocation();
+  // 📊 Calculate portfolio allocation by CATEGORY
+  const calculateAllocationByCategory = () => {
+    if (!data.investments?.holdings || data.investments.holdings.length === 0) {
+      return [];
+    }
+
+    const holdings = data.investments.holdings;
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#14b8a6'];
+    
+    // Calculate total portfolio value
+    const totalPortfolioValue = holdings.reduce((sum, holding) => {
+      return sum + (holding.totalValue || 0);
+    }, 0);
+
+    // Group holdings by category
+    const categoryMap = {};
+    holdings.forEach(holding => {
+      const category = holding.category || 'Uncategorized';
+      const value = holding.totalValue || 0;
+      
+      if (!categoryMap[category]) {
+        categoryMap[category] = { name: category, value: 0, holdings: [] };
+      }
+      categoryMap[category].value += value;
+      categoryMap[category].holdings.push(holding);
+    });
+
+    // Create allocation array with category names and percentages
+    const allocation = Object.values(categoryMap).map((cat, index) => {
+      const percentage = totalPortfolioValue > 0 ? ((cat.value / totalPortfolioValue) * 100) : 0;
+      
+      return {
+        id: index + 1,
+        label: cat.name,                     // Category name (e.g., "US Stocks")
+        name: cat.name,
+        value: cat.value,                    // Total dollar value in category
+        percentage: percentage.toFixed(1),   // Percentage as string
+        percentageNum: percentage,           // Percentage as number for sorting
+        color: colors[index % colors.length]
+      };
+    });
+
+    // Sort by percentage (largest to smallest)
+    return allocation.sort((a, b) => b.percentageNum - a.percentageNum);
+  };
+
+  // Switch between ticker and category allocation based on view mode
+  const portfolioAllocation = allocationView === 'ticker' 
+    ? calculateAllocationByTicker() 
+    : calculateAllocationByCategory();
 
   useEffect(() => {
     // Pie Chart - Use dynamically calculated allocation
@@ -3329,7 +3379,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stroke", "#1F2937")
         .attr("stroke-width", 2);
     }
-  }, [data.investments, actualTotalCost, actualTotalValue, portfolioAllocation]);
+  }, [data.investments, actualTotalCost, actualTotalValue, portfolioAllocation, allocationView]);
 
   const totalGainLoss = actualTotalValue - actualTotalCost;
   const totalGainLossPercent = actualTotalCost > 0 ? (totalGainLoss / actualTotalCost) * 100 : 0;
@@ -3453,7 +3503,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
       accountType: newHolding.accountType,
       isUSStock: newHolding.isUSStock,
       withholdingTax,
-      currency: newHolding.currency
+      currency: newHolding.currency,
+      category: newHolding.category || 'US Stocks' // Include category for allocation
     };
     
     const updatedHoldings = [...data.investments.holdings, holding];
@@ -3471,7 +3522,8 @@ const InvestmentTab = ({ data, setData, userId }) => {
     setData(updatedData);
     setNewHolding({ 
       symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
-      dripEnabled: true, accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable', isUSStock: false, withholdingTax: 0, currency: 'CAD' 
+      dripEnabled: true, accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable', isUSStock: false, withholdingTax: 0, currency: 'CAD',
+      category: 'US Stocks' // Reset to default category
     });
     setShowAddHolding(false);
     
@@ -3634,10 +3686,37 @@ const InvestmentTab = ({ data, setData, userId }) => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-            <PieChart className="w-6 h-6 mr-3 text-blue-400" />
-            Portfolio Allocation
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-white flex items-center">
+              <PieChart className="w-6 h-6 mr-3 text-blue-400" />
+              Portfolio Allocation
+            </h3>
+            
+            {/* Toggle between Ticker and Category views */}
+            <div className="flex gap-2 bg-gray-700/50 rounded-lg p-1">
+              <button
+                onClick={() => setAllocationView('ticker')}
+                className={`px-3 py-1 rounded text-sm font-semibold transition-all ${
+                  allocationView === 'ticker' 
+                    ? 'bg-blue-600 text-white shadow-lg' 
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                By Ticker
+              </button>
+              <button
+                onClick={() => setAllocationView('category')}
+                className={`px-3 py-1 rounded text-sm font-semibold transition-all ${
+                  allocationView === 'category' 
+                    ? 'bg-blue-600 text-white shadow-lg' 
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                By Category
+              </button>
+            </div>
+          </div>
+          
           <div className="flex justify-center">
             <svg ref={pieChartRef}></svg>
           </div>
@@ -4011,6 +4090,29 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   onChange={(e) => setNewHolding({...newHolding, name: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                 />
+                
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">
+                    Category <span className="text-blue-400">(for allocation grouping)</span>
+                  </label>
+                  <select
+                    value={newHolding.category}
+                    onChange={(e) => setNewHolding({...newHolding, category: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="US Stocks">US Stocks</option>
+                    <option value="International Stocks">International Stocks</option>
+                    <option value="Bonds">Bonds</option>
+                    <option value="Real Estate">Real Estate (REITs)</option>
+                    <option value="Crypto">Cryptocurrency</option>
+                    <option value="Commodities">Commodities</option>
+                    <option value="Cash & Equivalents">Cash & Equivalents</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">
+                    💡 Group similar holdings for category view
+                  </p>
+                </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <input
