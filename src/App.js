@@ -2725,6 +2725,10 @@ const SideHustleTab = ({ data, setData, userId }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
   
+  // 🔄 RECURRING ITEMS - New Feature!
+  const [showAddRecurring, setShowAddRecurring] = useState(false);
+  const [recurringType, setRecurringType] = useState('income');
+  
   const [newBusiness, setNewBusiness] = useState({
     name: '',
     description: '',
@@ -2736,6 +2740,15 @@ const SideHustleTab = ({ data, setData, userId }) => {
     amount: '',
     date: new Date().toISOString().split('T')[0],
     isPassive: false // 🏔️ NEW: Passive income flag
+  });
+
+  const [newRecurringItem, setNewRecurringItem] = useState({
+    name: '',
+    amount: '',
+    isPassive: false,
+    frequency: 'monthly',
+    startDate: new Date().toISOString().split('T')[0],
+    category: ''
   });
 
   // 🔧 EDGE CASE FIX: Null safety for empty businesses array
@@ -2974,6 +2987,195 @@ const SideHustleTab = ({ data, setData, userId }) => {
       console.error('Error deleting item:', error);
     }
   };
+
+  // 🔄 ADD RECURRING ITEM HANDLER
+  const handleAddRecurringItem = async () => {
+    if (!newRecurringItem.name || !newRecurringItem.amount || !selectedBusiness) return;
+
+    const amount = parseFloat(newRecurringItem.amount);
+    const recurringItem = {
+      id: Date.now(),
+      ...newRecurringItem,
+      amount,
+      type: recurringType,
+      isPassive: recurringType === 'income' ? newRecurringItem.isPassive : false,
+      businessId: selectedBusiness.id,
+      isActive: true,
+      nextDueDate: newRecurringItem.startDate,
+      lastProcessed: null
+    };
+
+    const updatedBusinesses = data.businesses.map(business => {
+      if (business.id === selectedBusiness.id) {
+        return {
+          ...business,
+          recurringItems: [...(business.recurringItems || []), recurringItem]
+        };
+      }
+      return business;
+    });
+
+    const updatedData = { ...data, businesses: updatedBusinesses };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setNewRecurringItem({
+        name: '',
+        amount: '',
+        isPassive: false,
+        frequency: 'monthly',
+        startDate: new Date().toISOString().split('T')[0],
+        category: ''
+      });
+      setShowAddRecurring(false);
+    } catch (error) {
+      console.error('Error adding recurring item:', error);
+    }
+  };
+
+  // 🔄 TOGGLE RECURRING ITEM ACTIVE/PAUSED
+  const handleToggleRecurringItem = async (businessId, itemId) => {
+    const updatedBusinesses = data.businesses.map(business => {
+      if (business.id === businessId) {
+        return {
+          ...business,
+          recurringItems: (business.recurringItems || []).map(item =>
+            item.id === itemId ? { ...item, isActive: !item.isActive } : item
+          )
+        };
+      }
+      return business;
+    });
+
+    const updatedData = { ...data, businesses: updatedBusinesses };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error toggling recurring item:', error);
+    }
+  };
+
+  // 🔄 DELETE RECURRING ITEM
+  const handleDeleteRecurringItem = async (businessId, itemId) => {
+    if (!window.confirm('Delete this recurring item?')) return;
+
+    const updatedBusinesses = data.businesses.map(business => {
+      if (business.id === businessId) {
+        return {
+          ...business,
+          recurringItems: (business.recurringItems || []).filter(item => item.id !== itemId)
+        };
+      }
+      return business;
+    });
+
+    const updatedData = { ...data, businesses: updatedBusinesses };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error deleting recurring item:', error);
+    }
+  };
+
+  // 🔄 PROCESS DUE RECURRING ITEMS - Automation Engine
+  const processDueRecurringItems = () => {
+    const today = new Date();
+    let hasUpdates = false;
+
+    const updatedBusinesses = data.businesses.map(business => {
+      const recurringItems = business.recurringItems || [];
+      const updatedRecurringItems = [];
+      let updatedBusiness = { ...business };
+
+      recurringItems.forEach(recurring => {
+        if (!recurring.isActive) {
+          updatedRecurringItems.push(recurring);
+          return;
+        }
+
+        const dueDate = new Date(recurring.nextDueDate);
+
+        // Check if due (due date is today or in the past)
+        if (dueDate <= today) {
+          hasUpdates = true;
+
+          // Create new transaction item
+          const newItem = {
+            id: Date.now() + Math.random(),
+            description: recurring.name,
+            amount: recurring.amount,
+            date: recurring.nextDueDate,
+            isPassive: recurring.isPassive || false,
+            category: recurring.category,
+            isRecurring: true,
+            recurringId: recurring.id
+          };
+
+          // Add to appropriate array
+          if (recurring.type === 'income') {
+            updatedBusiness.incomeItems = [newItem, ...(updatedBusiness.incomeItems || [])];
+            updatedBusiness.totalIncome = (updatedBusiness.totalIncome || 0) + recurring.amount;
+          } else {
+            updatedBusiness.expenseItems = [newItem, ...(updatedBusiness.expenseItems || [])];
+            updatedBusiness.totalExpenses = (updatedBusiness.totalExpenses || 0) + recurring.amount;
+          }
+
+          updatedBusiness.netProfit = (updatedBusiness.totalIncome || 0) - (updatedBusiness.totalExpenses || 0);
+
+          // Calculate next due date
+          let nextDate = new Date(recurring.nextDueDate);
+          switch (recurring.frequency) {
+            case 'weekly':
+              nextDate.setDate(nextDate.getDate() + 7);
+              break;
+            case 'monthly':
+              nextDate.setMonth(nextDate.getMonth() + 1);
+              break;
+            case 'quarterly':
+              nextDate.setMonth(nextDate.getMonth() + 3);
+              break;
+            case 'annually':
+              nextDate.setFullYear(nextDate.getFullYear() + 1);
+              break;
+            default:
+              nextDate.setMonth(nextDate.getMonth() + 1);
+          }
+
+          updatedRecurringItems.push({
+            ...recurring,
+            lastProcessed: recurring.nextDueDate,
+            nextDueDate: nextDate.toISOString().split('T')[0]
+          });
+        } else {
+          updatedRecurringItems.push(recurring);
+        }
+      });
+
+      updatedBusiness.recurringItems = updatedRecurringItems;
+      return updatedBusiness;
+    });
+
+    if (hasUpdates) {
+      const updatedData = { ...data, businesses: updatedBusinesses };
+      setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData)
+        .then(() => setData(updatedData))
+        .catch(error => console.error('Error processing recurring items:', error));
+    }
+  };
+
+  // Auto-process recurring items on component mount and daily
+  useEffect(() => {
+    processDueRecurringItems();
+    
+    // Run daily check
+    const interval = setInterval(processDueRecurringItems, 24 * 60 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [data.businesses]);
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
@@ -3218,7 +3420,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 <p className="text-gray-400 text-sm">{business.description}</p>
                 <p className="text-gray-500 text-xs">Since {new Date(business.startDate).toLocaleDateString()}</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => {
                     setSelectedBusiness(business);
@@ -3228,6 +3430,16 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 >
                   <Plus className="w-3 h-3 mr-1" />
                   Add Item
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedBusiness(business);
+                    setShowAddRecurring(true);
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
+                >
+                  <Repeat className="w-3 h-3 mr-1" />
+                  Recurring
                 </button>
                 <button
                   onClick={() => initiateDeleteBusiness(business)}
@@ -3296,6 +3508,66 @@ const SideHustleTab = ({ data, setData, userId }) => {
                   })}
               </div>
             </div>
+
+            {/* 🔄 RECURRING ITEMS SECTION - NEW! */}
+            {business.recurringItems && business.recurringItems.length > 0 && (
+              <div className="space-y-2 border-t border-gray-700 pt-4">
+                <h4 className="font-semibold text-blue-300 flex items-center gap-2">
+                  <Repeat className="w-4 h-4" />
+                  Recurring Items ({business.recurringItems.filter(r => r.isActive).length} active)
+                </h4>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {business.recurringItems.map(recurring => (
+                    <div key={recurring.id} className={`p-3 rounded-lg border ${
+                      recurring.isActive 
+                        ? 'bg-blue-900/20 border-blue-500/30' 
+                        : 'bg-gray-800/50 border-gray-600/30'
+                    }`}>
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-semibold text-white">{recurring.name}</span>
+                            {recurring.isPassive && (
+                              <span className="px-2 py-0.5 bg-amber-600/30 text-amber-300 text-xs rounded-full">
+                                Passive
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-gray-400">
+                            <span className="capitalize">{recurring.frequency}</span>
+                            <span>•</span>
+                            <span>Next: {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-bold ${recurring.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
+                            {recurring.type === 'income' ? '+' : '-'}${recurring.amount.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleToggleRecurringItem(business.id, recurring.id)}
+                          className={`flex-1 px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                            recurring.isActive
+                              ? 'bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30'
+                              : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
+                          }`}
+                        >
+                          {recurring.isActive ? 'Pause' : 'Resume'}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteRecurringItem(business.id, recurring.id)}
+                          className="flex-1 px-2 py-1 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </Card>
         ))}
       </div>
@@ -3396,6 +3668,166 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Add {itemType === 'income' ? 'Income' : 'Expense'}
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* 🔄 Add Recurring Item Modal */}
+      {showAddRecurring && selectedBusiness && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl border-blue-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Repeat className="w-5 h-5 text-blue-400" />
+                Add Recurring Item to {selectedBusiness.name}
+              </h3>
+              <button
+                onClick={() => setShowAddRecurring(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Type Selector */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setRecurringType('income')}
+                  className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
+                    recurringType === 'income' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Income
+                </button>
+                <button
+                  onClick={() => setRecurringType('expense')}
+                  className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
+                    recurringType === 'expense' 
+                      ? 'bg-red-600 text-white' 
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Expense
+                </button>
+              </div>
+
+              {/* Item Name */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Item Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., SaaS Subscription, Client Retainer"
+                  value={newRecurringItem.name}
+                  onChange={(e) => setNewRecurringItem({...newRecurringItem, name: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              {/* Amount & Frequency */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Amount
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="500"
+                    value={newRecurringItem.amount || ''}
+                    onChange={(e) => setNewRecurringItem({...newRecurringItem, amount: e.target.value === '' ? '' : e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Frequency
+                  </label>
+                  <select
+                    value={newRecurringItem.frequency}
+                    onChange={(e) => setNewRecurringItem({...newRecurringItem, frequency: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="annually">Annually</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Start Date & Category */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={newRecurringItem.startDate}
+                    onChange={(e) => setNewRecurringItem({...newRecurringItem, startDate: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., software, marketing"
+                    value={newRecurringItem.category}
+                    onChange={(e) => setNewRecurringItem({...newRecurringItem, category: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* 🏔️ Passive Income Checkbox - Only for Income */}
+              {recurringType === 'income' && (
+                <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={newRecurringItem.isPassive || false}
+                      onChange={(e) => setNewRecurringItem({...newRecurringItem, isPassive: e.target.checked})}
+                      className="w-5 h-5 rounded border-amber-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-gray-800"
+                    />
+                    <div>
+                      <span className="text-white font-semibold">Passive Income</span>
+                      <p className="text-xs text-amber-300 mt-1">
+                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              )}
+
+              <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
+                <p className="text-xs text-blue-200">
+                  🔄 This item will be automatically added to your business on schedule. You can pause or delete it anytime.
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setShowAddRecurring(false)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddRecurringItem}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Repeat className="w-4 h-4" />
+                Add Recurring {recurringType === 'income' ? 'Income' : 'Expense'}
               </button>
             </div>
           </Card>
