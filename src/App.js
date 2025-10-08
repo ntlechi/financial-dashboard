@@ -11108,7 +11108,7 @@ function App() {
                 <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
               </FinancialErrorBoundary>
               
-              {/* Cash on Hand - CLIMBER+ (Right) */}
+              {/* Survival Runway - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                 <FinancialErrorBoundary componentName="Cash Management">
                   <CashOnHandCard 
@@ -11119,7 +11119,7 @@ function App() {
                   />
                 </FinancialErrorBoundary>
               ) : (
-                <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                <LockedCard cardName="Survival Runway" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
               
               {/* ═══════════════════════════════════════════════════════ */}
@@ -11370,7 +11370,7 @@ function App() {
                      editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
                      editingCard === 'creditScore' ? 'Credit Score' :
                      editingCard === 'netWorth' ? 'Net Worth' :
-                     editingCard === 'cashOnHand' ? 'Cash on Hand' :
+                     editingCard === 'cashOnHand' ? 'Survival Runway' :
                      editingCard === 'debt' ? 'Debt Management' :
 
                      editingCard === 'registeredAccounts' ? 'Registered Accounts' :
@@ -11431,7 +11431,7 @@ function App() {
                 </>
               )}
 
-              {/* Cash on Hand Modal */}
+              {/* Survival Runway Modal */}
               {editingCard === 'cashOnHand' && (
                 <>
                   <div className="mb-4">
