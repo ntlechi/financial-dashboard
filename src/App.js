@@ -6220,27 +6220,46 @@ const TravelTab = ({ data, setData, userId }) => {
         // Calculate visited countries from trips
         const calculateCountryData = () => {
           const trips = data.travel?.trips || [];
+          
+          // Normalize today to midnight for proper date comparison
           const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
           const visitedCountries = new Map();
           const plannedCountries = new Map();
           
           trips.forEach(trip => {
+            if (!trip.endDate) return; // Skip trips without end date
+            
+            // Normalize trip end date to midnight for comparison
             const endDate = new Date(trip.endDate);
+            endDate.setHours(0, 0, 0, 0);
+            
+            // Compare dates: if end date is BEFORE today, it's completed
             const isPast = endDate < today;
             const countries = trip.countries || [];
+            
+            // Debug logging (can remove later)
+            if (countries.length > 0) {
+              console.log(`🗺️ Trip: "${trip.name}" | End: ${trip.endDate} | isPast: ${isPast}`);
+            }
             
             countries.forEach(country => {
               const normalizedCountry = normalizeCountryName(country);
               if (isPast) {
+                // COMPLETED EXPEDITION → AMBER/GOLD
                 if (!visitedCountries.has(normalizedCountry)) {
                   visitedCountries.set(normalizedCountry, []);
                 }
                 visitedCountries.get(normalizedCountry).push(trip);
+                console.log(`✅ COMPLETED: ${country} → ${normalizedCountry} (AMBER)`);
               } else {
+                // FUTURE MISSION → BLUE
                 if (!plannedCountries.has(normalizedCountry)) {
                   plannedCountries.set(normalizedCountry, []);
                 }
                 plannedCountries.get(normalizedCountry).push(trip);
+                console.log(`🔵 PLANNED: ${country} → ${normalizedCountry} (BLUE)`);
               }
             });
           });
