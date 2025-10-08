@@ -5414,7 +5414,15 @@ const TransactionsTab = ({ data, setData, userId }) => {
                   </div>
                 )}
                 
-                <div className="mt-3 flex justify-between items-center">
+                <div className="mt-3 flex gap-2 flex-wrap">
+                  <button
+                    onClick={() => setEditingRecurring(recurring)}
+                    className="flex-1 px-3 py-1.5 bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+                  >
+                    <Edit className="w-3 h-3" />
+                    Edit
+                  </button>
+                  
                   <button
                     onClick={async () => {
                       const updatedRecurring = data.recurringExpenses.map(r => 
@@ -5428,7 +5436,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                         console.error('Error updating recurring expense:', error);
                       }
                     }}
-                    className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
+                    className={`flex-1 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
                       recurring.isActive
                         ? 'bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30'
                         : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
@@ -5439,6 +5447,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                   
                   <button
                     onClick={async () => {
+                      if (!window.confirm('Delete this recurring expense?')) return;
                       const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
                       const updatedData = { ...data, recurringExpenses: updatedRecurring };
                       try {
@@ -5448,7 +5457,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
                         console.error('Error deleting recurring expense:', error);
                       }
                     }}
-                    className="px-3 py-1 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
+                    className="flex-1 px-3 py-1.5 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
                   >
                     Delete
                   </button>
@@ -5457,6 +5466,160 @@ const TransactionsTab = ({ data, setData, userId }) => {
             ))}
           </div>
         </Card>
+      )}
+
+      {/* ✏️ EDIT RECURRING EXPENSE MODAL */}
+      {editingRecurring && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg max-w-2xl w-full border border-purple-500/30">
+            <div className="flex justify-between items-center p-4 border-b border-gray-700">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Edit className="w-5 h-5 text-purple-400" />
+                Edit Recurring Expense
+              </h3>
+              <button
+                onClick={() => setEditingRecurring(null)}
+                className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Description
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., Netflix Subscription"
+                  value={editingRecurring.description || ''}
+                  onChange={(e) => setEditingRecurring({...editingRecurring, description: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                />
+              </div>
+
+              {/* Amount & Type */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Amount
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="50"
+                    value={editingRecurring.amount || ''}
+                    onChange={(e) => setEditingRecurring({...editingRecurring, amount: parseFloat(e.target.value) || 0})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Type
+                  </label>
+                  <select
+                    value={editingRecurring.type || 'expense'}
+                    onChange={(e) => setEditingRecurring({...editingRecurring, type: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  >
+                    <option value="expense">Expense</option>
+                    <option value="income">Income</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Frequency */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Frequency
+                </label>
+                <select
+                  value={editingRecurring.frequency || 'monthly'}
+                  onChange={(e) => setEditingRecurring({...editingRecurring, frequency: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+
+              {/* Category & Subcategory */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Category
+                  </label>
+                  <select
+                    value={editingRecurring.category || 'personal'}
+                    onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  >
+                    <option value="personal">Personal</option>
+                    <option value="business">Business</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Subcategory
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., entertainment"
+                    value={editingRecurring.subcategory || ''}
+                    onChange={(e) => setEditingRecurring({...editingRecurring, subcategory: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Next Due Date */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  Next Due Date
+                </label>
+                <input
+                  type="date"
+                  value={editingRecurring.nextDueDate || ''}
+                  onChange={(e) => setEditingRecurring({...editingRecurring, nextDueDate: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                />
+              </div>
+
+              {/* Active Status */}
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="edit-active"
+                  checked={editingRecurring.isActive || false}
+                  onChange={(e) => setEditingRecurring({...editingRecurring, isActive: e.target.checked})}
+                  className="w-4 h-4 rounded border-gray-600"
+                />
+                <label htmlFor="edit-active" className="text-sm text-gray-300">
+                  Active (will process automatically)
+                </label>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="p-4 border-t border-gray-700 flex justify-end gap-3">
+              <button
+                onClick={() => setEditingRecurring(null)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditRecurringExpense}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* 🔍 UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
@@ -6054,6 +6217,26 @@ const TravelTab = ({ data, setData, userId }) => {
      setData(updatedData);
    } catch (error) {
      console.error('Error deleting trip:', error);
+   }
+ };
+
+ // ✏️ EDIT RECURRING EXPENSE HANDLER
+ const handleEditRecurringExpense = async () => {
+   if (!editingRecurring) return;
+
+   const updatedRecurring = data.recurringExpenses.map(r =>
+     r.id === editingRecurring.id ? editingRecurring : r
+   );
+   const updatedData = { ...data, recurringExpenses: updatedRecurring };
+
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+     setEditingRecurring(null);
+     showNotification('Recurring expense updated successfully!', 'success');
+   } catch (error) {
+     console.error('Error updating recurring expense:', error);
+     showNotification('Error updating recurring expense', 'error');
    }
  };
 
@@ -7548,6 +7731,7 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [editingRecurring, setEditingRecurring] = useState(null); // For editing recurring expenses
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
