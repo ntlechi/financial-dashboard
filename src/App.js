@@ -1872,8 +1872,10 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         </h2>
       </div>
       
-      {/* Main Cash Flow Number */}
-      <p className="text-5xl font-extrabold text-white mb-3">
+      {/* Main Cash Flow Number - Dynamic Color for Instant Status Recognition */}
+      <p className={`text-5xl font-extrabold mb-3 ${isPositive ? 'text-lime-500' : 'text-rose-500'}`} style={{
+        color: isPositive ? '#84CC16' : '#F43F5E'
+      }}>
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
       
