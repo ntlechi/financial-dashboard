@@ -4101,6 +4101,30 @@ const InvestmentTab = ({ data, setData, userId }) => {
   const [showAddHolding, setShowAddHolding] = useState(false);
   const [editingHolding, setEditingHolding] = useState(null);
   const [allocationView, setAllocationView] = useState('ticker'); // 'ticker' or 'category'
+  const [hoveredInfo, setHoveredInfo] = useState(null);
+
+  // ℹ️ Info Tooltip Component - Beginner-friendly explanations
+  const InfoTooltip = ({ id, text, children }) => (
+    <span className="relative inline-flex items-center gap-1 group">
+      {children}
+      <svg 
+        className="w-4 h-4 text-gray-400 hover:text-blue-400 cursor-help transition-colors"
+        fill="currentColor" 
+        viewBox="0 0 20 20"
+        onMouseEnter={() => setHoveredInfo(id)}
+        onMouseLeave={() => setHoveredInfo(null)}
+      >
+        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+      </svg>
+      {hoveredInfo === id && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50 pointer-events-none">
+          <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-2xl border border-blue-500/50 w-64">
+            <p className="leading-relaxed">{text}</p>
+          </div>
+        </div>
+      )}
+    </span>
+  );
   
   const [newHolding, setNewHolding] = useState({
     symbol: '',
@@ -4678,18 +4702,28 @@ const InvestmentTab = ({ data, setData, userId }) => {
       {/* Portfolio Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <Briefcase className="w-5 h-5 mr-2 text-blue-400" />
-            Total Value
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+            <Briefcase className="w-5 h-5 text-blue-400" />
+            <InfoTooltip 
+              id="total-portfolio-value"
+              text="Total Value = Sum of all your investments at current market prices. This is what you could sell everything for today."
+            >
+              <span>Total Value</span>
+            </InfoTooltip>
           </h3>
           <p className="text-3xl font-bold text-blue-400">${actualTotalValue.toLocaleString()}</p>
           <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} holdings</p>
         </Card>
         
         <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-green-400" />
-            Total Gain/Loss
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-green-400" />
+            <InfoTooltip 
+              id="total-gain-loss"
+              text="Total Gain/Loss = Current Value - What You Paid. This is your unrealized profit (or loss) on paper. You only realize it when you sell."
+            >
+              <span>Total Gain/Loss</span>
+            </InfoTooltip>
           </h3>
           <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toLocaleString()}
@@ -4700,9 +4734,14 @@ const InvestmentTab = ({ data, setData, userId }) => {
         </Card>
         
         <Card style={{ backgroundColor: '#141F3B' }} className="border-blue-500/30">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <Repeat className="w-5 h-5 mr-2 text-cyan-400" />
-            Annual Dividends
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+            <Repeat className="w-5 h-5 text-cyan-400" />
+            <InfoTooltip 
+              id="annual-dividends"
+              text="Annual Dividends = Total dividend income you'll receive per year from all holdings. This is passive income!"
+            >
+              <span>Annual Dividends</span>
+            </InfoTooltip>
           </h3>
           <p className="text-2xl font-bold text-cyan-400">
             ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()}
@@ -4713,9 +4752,14 @@ const InvestmentTab = ({ data, setData, userId }) => {
         </Card>
         
         <Card className="bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-amber-400" />
-            DRIP Progress
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-amber-400" />
+            <InfoTooltip 
+              id="drip-progress"
+              text="DRIP Progress = How close you are to buying another share with reinvested dividends. Free shares = faster wealth!"
+            >
+              <span>DRIP Progress</span>
+            </InfoTooltip>
           </h3>
           <p className="text-2xl font-bold text-amber-400">
             {data.investments.holdings.filter(h => h.dripEnabled).length} Active
@@ -4967,19 +5011,108 @@ const InvestmentTab = ({ data, setData, userId }) => {
         <div className="space-y-4">
           {data.investments.holdings.length === 0 ? (
             <Card className="bg-gradient-to-br from-violet-900/20 to-blue-900/20 border-violet-500/30">
-              <div className="text-center py-12">
-                <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-bold text-white mb-2">No Investments Yet</h3>
-                <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                  Start building your investment portfolio. Track stocks, ETFs, crypto, and dividends all in one place!
-                </p>
-                <button
-                  onClick={() => setShowAddHolding(true)}
-                  className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Your First Investment
-                </button>
+              <div className="max-w-4xl mx-auto">
+                {/* Getting Started Guide */}
+                <div className="text-center mb-8">
+                  <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4" />
+                  <h3 className="text-3xl font-bold text-white mb-2">💼 Getting Started with Investing</h3>
+                  <p className="text-gray-300 text-lg">
+                    New to investing? Don't worry! Here's everything you need to know.
+                  </p>
+                </div>
+
+                {/* Step-by-Step Guide */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Step 1 */}
+                  <div className="bg-gradient-to-br from-violet-900/40 to-violet-800/20 rounded-lg p-6 border border-violet-600/30">
+                    <div className="text-3xl mb-3">1️⃣</div>
+                    <h4 className="text-lg font-bold text-white mb-2">Add Your Investment</h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Click "Add Investment" and enter your stock info:
+                    </p>
+                    <ul className="text-sm text-gray-400 space-y-1">
+                      <li>• <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
+                      <li>• <strong>Shares:</strong> How many you own</li>
+                      <li>• <strong>Price:</strong> What you paid per share</li>
+                    </ul>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-lg p-6 border border-blue-600/30">
+                    <div className="text-3xl mb-3">2️⃣</div>
+                    <h4 className="text-lg font-bold text-white mb-2">Track Your Growth</h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Watch your portfolio come to life:
+                    </p>
+                    <ul className="text-sm text-gray-400 space-y-1">
+                      <li>• See real-time value</li>
+                      <li>• Track gains & losses</li>
+                      <li>• View allocation charts</li>
+                      <li>• Monitor dividends</li>
+                    </ul>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="bg-gradient-to-br from-green-900/40 to-green-800/20 rounded-lg p-6 border border-green-600/30">
+                    <div className="text-3xl mb-3">3️⃣</div>
+                    <h4 className="text-lg font-bold text-white mb-2">Build Wealth</h4>
+                    <p className="text-sm text-gray-300 mb-3">
+                      Enable DRIP to grow faster:
+                    </p>
+                    <ul className="text-sm text-gray-400 space-y-1">
+                      <li>• Auto-reinvest dividends</li>
+                      <li>• Compound your returns</li>
+                      <li>• Build wealth passively</li>
+                      <li>• Track your progress</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Quick Tips */}
+                <div className="bg-amber-900/20 rounded-lg p-6 border border-amber-600/30 mb-8">
+                  <h4 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    Beginner Tips
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-300">
+                        <strong className="text-white">💡 Start Small:</strong> You don't need thousands to start. Even one share counts!
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-300">
+                        <strong className="text-white">📚 Learn As You Go:</strong> Each investment teaches you something new.
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-300">
+                        <strong className="text-white">🎯 Diversify:</strong> Don't put all eggs in one basket. Spread your investments.
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-300">
+                        <strong className="text-white">⏳ Think Long-Term:</strong> Wealth builds over time. Be patient!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <div className="text-center">
+                  <button
+                    onClick={() => setShowAddHolding(true)}
+                    className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-lg inline-flex items-center gap-3 hover:scale-105"
+                  >
+                    <Plus className="w-6 h-6" />
+                    Add Your First Investment
+                  </button>
+                  <p className="text-sm text-gray-400 mt-3">
+                    Ready to start? Click above to add your first investment! 🚀
+                  </p>
+                </div>
               </div>
             </Card>
           ) : (
@@ -5026,7 +5159,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 
                 <div className="text-center">
                   <div className="text-lg font-bold text-white">${holding.currentPrice.toFixed(2)}</div>
-                  <div className="text-xs text-gray-400">Current</div>
+                  <div className="text-xs text-gray-400">Current Price</div>
                   <div className={`text-xs ${holding.currentPrice >= holding.avgCost ? 'text-green-400' : 'text-red-400'}`}>
                     {((holding.currentPrice - holding.avgCost) / holding.avgCost * 100).toFixed(1)}%
                   </div>
@@ -5034,12 +5167,22 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 
                 <div className="text-center">
                   <div className="text-lg font-bold text-white">${holding.totalValue.toLocaleString()}</div>
-                  <div className="text-xs text-gray-400">Total Value</div>
+                  <InfoTooltip 
+                    id={`total-value-${holding.id}`}
+                    text="Total Value = Shares × Current Price. This is what your investment is worth right now."
+                  >
+                    <div className="text-xs text-gray-400">Total Value</div>
+                  </InfoTooltip>
                 </div>
                 
                 <div className="text-center">
                   <div className="text-lg font-bold text-cyan-400">${holding.annualDividend.toLocaleString()}</div>
-                  <div className="text-xs text-gray-400">Annual Dividend</div>
+                  <InfoTooltip 
+                    id={`dividend-${holding.id}`}
+                    text="Annual Dividend = Money the company pays you each year for owning shares. Like rent from your investment!"
+                  >
+                    <div className="text-xs text-gray-400">Annual Dividend</div>
+                  </InfoTooltip>
                   <div className="text-xs text-cyan-300">{holding.dividendYield}% yield</div>
                 </div>
                 
@@ -5052,7 +5195,12 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         : 'bg-gray-600 text-white hover:bg-gray-700'
                     }`}
                   >
-                    DRIP {holding.dripEnabled ? 'ON' : 'OFF'}
+                    <InfoTooltip 
+                      id={`drip-${holding.id}`}
+                      text="DRIP (Dividend Reinvestment Plan) = Automatically use dividend payments to buy more shares. Grows wealth faster!"
+                    >
+                      <span>DRIP {holding.dripEnabled ? 'ON' : 'OFF'}</span>
+                    </InfoTooltip>
                   </button>
                   
                   {holding.dripEnabled ? (
@@ -5118,21 +5266,36 @@ const InvestmentTab = ({ data, setData, userId }) => {
               </div>
               
               <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Symbol (e.g., AAPL)"
-                  value={newHolding.symbol}
-                  onChange={(e) => setNewHolding({...newHolding, symbol: e.target.value})}
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                />
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
+                    <InfoTooltip 
+                      id="ticker-info"
+                      text="Stock Ticker = A unique code to identify the stock (e.g., AAPL for Apple, TSLA for Tesla). Find it on Yahoo Finance or Google."
+                    >
+                      <span>Stock Ticker Symbol</span>
+                    </InfoTooltip>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., AAPL, TSLA, MSFT"
+                    value={newHolding.symbol}
+                    onChange={(e) => setNewHolding({...newHolding, symbol: e.target.value.toUpperCase()})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
                 
-                <input
-                  type="text"
-                  placeholder="Company Name"
-                  value={newHolding.name}
-                  onChange={(e) => setNewHolding({...newHolding, name: e.target.value})}
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                />
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">
+                    Company Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Apple Inc."
+                    value={newHolding.name}
+                    onChange={(e) => setNewHolding({...newHolding, name: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
                 
                 <div>
                   <label className="block text-sm text-gray-300 mb-1">
@@ -5158,39 +5321,79 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="number"
-                    placeholder="Shares"
-                    value={newHolding.shares || ''}
-                    onChange={(e) => setNewHolding({...newHolding, shares: e.target.value === '' ? '' : e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  />
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
+                      <InfoTooltip 
+                        id="shares-info"
+                        text="Shares = How many pieces of the company you own. Even 1 share makes you a part-owner!"
+                      >
+                        <span>Shares Owned</span>
+                      </InfoTooltip>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 10"
+                      value={newHolding.shares || ''}
+                      onChange={(e) => setNewHolding({...newHolding, shares: e.target.value === '' ? '' : e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
                   
-                  <input
-                    type="number"
-                    placeholder="Avg Cost"
-                    value={newHolding.avgCost || ''}
-                    onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value === '' ? '' : e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  />
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
+                      <InfoTooltip 
+                        id="avg-cost-info"
+                        text="Average Cost = The price you paid per share. If you bought at different times, calculate the average: Total Invested ÷ Total Shares."
+                      >
+                        <span>Avg Cost per Share</span>
+                      </InfoTooltip>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 150.00"
+                      value={newHolding.avgCost || ''}
+                      onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value === '' ? '' : e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="number"
-                    placeholder="Current Price"
-                    value={newHolding.currentPrice || ''}
-                    onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value === '' ? '' : e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  />
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
+                      <InfoTooltip 
+                        id="current-price-info"
+                        text="Current Price = What the stock is trading at right now. Check Yahoo Finance, Google Finance, or your broker's app."
+                      >
+                        <span>Current Price</span>
+                      </InfoTooltip>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 175.50"
+                      value={newHolding.currentPrice || ''}
+                      onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value === '' ? '' : e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
                   
-                  <input
-                    type="number"
-                    placeholder="Dividend Yield %"
-                    value={newHolding.dividendYield || ''}
-                    onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value === '' ? '' : e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  />
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
+                      <InfoTooltip 
+                        id="dividend-yield-info"
+                        text="Dividend Yield = Annual dividend payment as a % of stock price. Higher yield = more passive income! (0% if stock doesn't pay dividends)"
+                      >
+                        <span>Dividend Yield %</span>
+                      </InfoTooltip>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 2.5"
+                      value={newHolding.dividendYield || ''}
+                      onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value === '' ? '' : e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">

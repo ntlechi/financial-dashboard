@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Search, ChevronDown, ChevronRight, Rocket, DollarSign, Crown, Wrench, Settings, AlertTriangle } from 'lucide-react';
+import { X, Search, ChevronDown, ChevronRight, Rocket, DollarSign, Crown, Wrench, Settings, AlertTriangle, TrendingUp } from 'lucide-react';
 
 const HelpFAQ = ({ onClose }) => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -148,6 +148,77 @@ const HelpFAQ = ({ onClose }) => {
           answer: 'Currently, the app works best with a single primary currency (USD, CAD, EUR, etc.). Multi-currency support is on our roadmap for future updates, especially for users with international investments or income sources.',
           tags: ['currency', 'international', 'multi-currency'],
           popular: false
+        }
+      ]
+    },
+    'investing': {
+      title: 'Investing for Beginners',
+      icon: TrendingUp,
+      color: 'text-violet-400',
+      description: 'Learn investing basics step-by-step',
+      faqs: [
+        {
+          id: 24,
+          question: 'What is a stock ticker symbol?',
+          answer: 'A stock ticker is a unique code that identifies a publicly traded company (e.g., AAPL for Apple, TSLA for Tesla). Think of it like a company\'s nickname on the stock market. You can find ticker symbols on Yahoo Finance, Google Finance, or your broker\'s app. Just search for the company name!',
+          tags: ['ticker', 'symbol', 'basics', 'stocks'],
+          popular: true
+        },
+        {
+          id: 25,
+          question: 'How many shares should I buy?',
+          answer: 'Start with what you can afford! Even 1 share makes you a part-owner of the company. Many beginners start with 1-5 shares to learn without risking too much. As you gain confidence and income, you can buy more. Remember: It\'s better to own 1 share of a good company than 0 shares of any company. Start small, learn as you go!',
+          tags: ['shares', 'how many', 'beginner', 'starting out'],
+          popular: true
+        },
+        {
+          id: 26,
+          question: 'What is Average Cost and why does it matter?',
+          answer: 'Average Cost is the average price you paid per share. If you bought 5 shares at $100 and 5 shares at $120, your average cost is $110. This matters because your profit/loss is calculated from this number: if the stock is at $150, you\'re up $40 per share ($150 - $110). If you buy at multiple times, calculate: Total Money Spent ÷ Total Shares = Average Cost.',
+          tags: ['average cost', 'cost basis', 'calculation', 'profit'],
+          popular: true
+        },
+        {
+          id: 27,
+          question: 'What does DRIP mean and should I use it?',
+          answer: 'DRIP = Dividend Reinvestment Plan. When a company pays you dividends (like rent from your investment), DRIP automatically uses that money to buy more shares instead of giving you cash. Why use it? It compounds your wealth faster! Example: You own 10 shares → earn $50 dividend → DRIP buys 1 more share → now you own 11 shares → next dividend is bigger! It\'s wealth on autopilot. Highly recommended for long-term investors!',
+          tags: ['drip', 'dividends', 'reinvestment', 'compounding', 'passive income'],
+          popular: true
+        },
+        {
+          id: 28,
+          question: 'What are dividends and how do they work?',
+          answer: 'Dividends are cash payments companies give to shareholders - like rent from owning property! Example: You own 10 shares of a stock paying $2/share annually. You\'ll receive $20 per year in dividends. Some companies pay quarterly (every 3 months), others monthly. Dividend Yield shows this as a percentage (e.g., 3% yield means you earn $3 for every $100 invested). This is PASSIVE INCOME!',
+          tags: ['dividends', 'passive income', 'yield', 'payments'],
+          popular: true
+        },
+        {
+          id: 29,
+          question: 'What\'s the difference between Realized and Unrealized Gains?',
+          answer: 'Unrealized Gain = Profit "on paper" (you haven\'t sold yet). Example: You bought at $100, stock is now $150 - you have $50 unrealized gain. Realized Gain = Profit you actually locked in by selling. If you sell those shares at $150, that $50 becomes a realized gain. Important: You only pay taxes on REALIZED gains (when you sell), not unrealized gains. Until you sell, it\'s just potential profit!',
+          tags: ['realized gains', 'unrealized gains', 'profit', 'taxes', 'selling'],
+          popular: true
+        },
+        {
+          id: 30,
+          question: 'What account type should I choose (TFSA vs RRSP)?',
+          answer: 'TFSA (Tax-Free Savings Account) = Contributions use after-tax money, but ALL gains are tax-free forever. Perfect for: Short-mid term goals, flexible withdrawals. RRSP (Registered Retirement Savings Plan) = Contributions are tax-deductible now, but you pay tax when withdrawing. Perfect for: Retirement savings, reducing current taxes. Simple rule: Use TFSA if you want flexibility, RRSP if you want tax deductions now. Many investors use both!',
+          tags: ['tfsa', 'rrsp', 'account types', 'tax', 'canada'],
+          popular: false
+        },
+        {
+          id: 31,
+          question: 'How do I find the current price of a stock?',
+          answer: 'Easy! Go to Yahoo Finance (finance.yahoo.com), Google Finance, or your broker\'s app. Type the ticker symbol (e.g., AAPL) and you\'ll see the current price. Prices update throughout the trading day (9:30 AM - 4:00 PM EST, Monday-Friday). You can also just Google "AAPL stock price" and it shows right in search results!',
+          tags: ['stock price', 'current price', 'how to find', 'yahoo finance'],
+          popular: false
+        },
+        {
+          id: 32,
+          question: 'I\'m completely new - where do I start?',
+          answer: 'Start here: 1) Learn the basics (you\'re doing it now!), 2) Open a brokerage account (Wealthsimple, Questrade, etc. in Canada), 3) Start with 1 share of a company you know (Apple, Microsoft, etc.), 4) Add it to this app and watch it grow!, 5) Learn as you go - each investment teaches you something new. Remember: Every expert investor started exactly where you are now. You\'ve got this! 💪',
+          tags: ['beginner', 'getting started', 'first investment', 'how to start'],
+          popular: true
         }
       ]
     },
