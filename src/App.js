@@ -6812,6 +6812,7 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showRunwayModal, setShowRunwayModal] = useState(false);
+  const [hoveredCountry, setHoveredCountry] = useState(null);
   const [runwaySettings, setRunwaySettings] = useState({
     totalSavings: data.travel?.totalSavings || 0,
     homeCurrency: data.travel?.homeCurrency || 'CAD',
@@ -7496,6 +7497,16 @@ const TravelTab = ({ data, setData, userId }) => {
                                     : "#4a5568"  // Gray border
                                 }
                                 strokeWidth={isVisited || isPlanned ? 0.75 : 0.3}
+                                onMouseEnter={() => {
+                                  setHoveredCountry({
+                                    name: geo.properties.name,
+                                    isVisited,
+                                    isPlanned
+                                  });
+                                }}
+                                onMouseLeave={() => {
+                                  setHoveredCountry(null);
+                                }}
                                 style={{
                                   default: { 
                                     outline: 'none',
@@ -7517,6 +7528,40 @@ const TravelTab = ({ data, setData, userId }) => {
                       </Geographies>
                     </ZoomableGroup>
                   </ComposableMap>
+                  
+                  {/* 🌍 Country Tooltip - Appears on Hover */}
+                  {hoveredCountry && (
+                    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-none z-50">
+                      <div className="bg-gradient-to-r from-slate-900 to-gray-900 px-6 py-3 rounded-xl border-2 shadow-2xl animate-fadeIn"
+                        style={{
+                          borderColor: hoveredCountry.isVisited ? '#F59E0B' : hoveredCountry.isPlanned ? '#0EA5E9' : '#6B7280'
+                        }}
+                      >
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-white mb-1">
+                            {hoveredCountry.name}
+                          </div>
+                          <div className="flex items-center justify-center gap-2 text-sm">
+                            {hoveredCountry.isVisited && (
+                              <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/40 font-semibold">
+                                ✅ Completed Expedition
+                              </span>
+                            )}
+                            {hoveredCountry.isPlanned && (
+                              <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/40 font-semibold">
+                                🔵 Future Mission
+                              </span>
+                            )}
+                            {!hoveredCountry.isVisited && !hoveredCountry.isPlanned && (
+                              <span className="px-3 py-1 bg-gray-600/20 text-gray-400 rounded-full border border-gray-600/40">
+                                🌍 Unexplored
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Vintage Map Legend */}
                   <div className="mt-4 flex flex-wrap items-center justify-center gap-6 text-sm bg-slate-900/60 rounded-lg p-3 border border-amber-900/30">
