@@ -420,6 +420,7 @@ const initialData = {
       'MXN': 14.2         // 1 CAD = 14.2 Mexican Pesos
     },
     trips: [],  // Empty - Operator users can add their own trips
+    wishlistCountries: [],  // Quick wishlist - countries you want to visit (no full trip needed)
     runwayCalculation: {
       averageDailySpend: 0,
       totalAvailableFunds: 0,
@@ -6834,6 +6835,10 @@ const TravelTab = ({ data, setData, userId }) => {
     countryInput: ''
   });
 
+  // 🌍 Wishlist editing states
+  const [showAddWishlistCountry, setShowAddWishlistCountry] = useState(false);
+  const [wishlistCountryInput, setWishlistCountryInput] = useState('');
+
   const [newExpense, setNewExpense] = useState({
     description: '',
     amount: '',
@@ -6841,6 +6846,60 @@ const TravelTab = ({ data, setData, userId }) => {
     category: 'other',
     date: new Date().toISOString().split('T')[0]
   });
+
+  // 🔤 Auto-capitalize first letter of country name
+  const capitalizeCountryName = (name) => {
+    if (!name) return '';
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
+
+  // 🌍 Add country to wishlist
+  const handleAddWishlistCountry = async () => {
+    if (!wishlistCountryInput.trim()) return;
+    
+    const formattedCountry = capitalizeCountryName(wishlistCountryInput.trim());
+    const currentWishlist = data.travel?.wishlistCountries || [];
+    
+    // Check if already in wishlist
+    if (currentWishlist.some(c => c.toLowerCase() === formattedCountry.toLowerCase())) {
+      alert('This country is already in your wishlist!');
+      return;
+    }
+    
+    const updatedWishlist = [...currentWishlist, formattedCountry];
+    const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        ...data,
+        travel: updatedTravel
+      });
+      setData({ ...data, travel: updatedTravel });
+      setWishlistCountryInput('');
+      setShowAddWishlistCountry(false);
+    } catch (error) {
+      console.error('Error adding wishlist country:', error);
+      alert('Failed to add country. Please try again.');
+    }
+  };
+
+  // 🗑️ Remove country from wishlist
+  const handleRemoveWishlistCountry = async (countryToRemove) => {
+    const currentWishlist = data.travel?.wishlistCountries || [];
+    const updatedWishlist = currentWishlist.filter(c => c !== countryToRemove);
+    const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        ...data,
+        travel: updatedTravel
+      });
+      setData({ ...data, travel: updatedTravel });
+    } catch (error) {
+      console.error('Error removing wishlist country:', error);
+      alert('Failed to remove country. Please try again.');
+    }
+  };
 
   // Enhanced Travel Runway Calculation with Destination Tiers
   const calculateRunway = () => {
@@ -7611,7 +7670,7 @@ const TravelTab = ({ data, setData, userId }) => {
                               key={country}
                               className="group relative bg-amber-900/20 hover:bg-amber-900/40 border border-amber-600/40 rounded-lg p-3 transition-all cursor-pointer"
                             >
-                              <div className="text-amber-400 font-semibold text-sm">{country}</div>
+                              <div className="text-amber-400 font-semibold text-sm">{capitalizeCountryName(country)}</div>
                               <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
                               
                               {/* Tooltip */}
@@ -7648,7 +7707,7 @@ const TravelTab = ({ data, setData, userId }) => {
                               key={country}
                               className="group relative bg-blue-900/20 hover:bg-blue-900/40 border border-blue-600/40 rounded-lg p-3 transition-all cursor-pointer"
                             >
-                              <div className="text-blue-400 font-semibold text-sm">{country}</div>
+                              <div className="text-blue-400 font-semibold text-sm">{capitalizeCountryName(country)}</div>
                               <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
                               
                               {/* Tooltip */}
@@ -7669,12 +7728,70 @@ const TravelTab = ({ data, setData, userId }) => {
                     </div>
                   )}
                   
+                  {/* 🌍 EDITABLE TRAVEL WISHLIST */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-purple-400 flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        My Travel Wishlist
+                      </h3>
+                      <button
+                        onClick={() => setShowAddWishlistCountry(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Country
+                      </button>
+                    </div>
+                    
+                    {/* Wishlist Countries Grid */}
+                    {data.travel?.wishlistCountries && data.travel.wishlistCountries.length > 0 ? (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        {data.travel.wishlistCountries.map((country, idx) => (
+                          <div 
+                            key={idx}
+                            className="group relative bg-purple-900/20 hover:bg-purple-900/40 border border-purple-600/40 rounded-lg p-3 transition-all"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="text-purple-400 font-semibold text-sm flex-1">{country}</div>
+                              <button
+                                onClick={() => handleRemoveWishlistCountry(country)}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300"
+                                title="Remove from wishlist"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <div className="text-xs text-gray-400">Wishlist</div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 bg-purple-900/10 rounded-lg border border-purple-600/20">
+                        <svg className="w-12 h-12 text-purple-400/50 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-purple-400 font-medium mb-1">Your wishlist is empty</p>
+                        <p className="text-gray-400 text-sm">Add countries you dream of visiting!</p>
+                        <button
+                          onClick={() => setShowAddWishlistCountry(true)}
+                          className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Your First Country
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  
                   <div className="mt-6 p-4 bg-gradient-to-r from-amber-900/20 to-blue-900/20 rounded-lg border border-gray-700">
                     <div className="text-sm text-gray-300 flex items-center gap-2">
                       <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      <strong className="text-white">Pro Tip:</strong> The more countries you visit, the more epic your journey becomes. Keep painting that map, Operator! 🌍
+                      <strong className="text-white">Pro Tip:</strong> Use the wishlist for quick dreaming, then create full trips when you're ready to plan! 🌍
                     </div>
                   </div>
                 </div>
@@ -8378,6 +8495,83 @@ const TravelTab = ({ data, setData, userId }) => {
            </Card>
          </div>
        )}
+
+      {/* Add Wishlist Country Modal */}
+      {showAddWishlistCountry && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-purple-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                Add Country to Wishlist
+              </h3>
+              <button
+                onClick={() => {
+                  setShowAddWishlistCountry(false);
+                  setWishlistCountryInput('');
+                }}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
+                <p className="text-sm text-purple-200 mb-2">
+                  ✨ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
+                </p>
+                <p className="text-xs text-gray-400">
+                  No need to create a full trip. Just type the country name and we'll add it to your wishlist.
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">
+                  Country Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., Thailand, Japan, Italy"
+                  value={wishlistCountryInput}
+                  onChange={(e) => setWishlistCountryInput(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddWishlistCountry();
+                    }
+                  }}
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                  autoFocus
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  💡 First letter will be automatically capitalized
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowAddWishlistCountry(false);
+                  setWishlistCountryInput('');
+                }}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddWishlistCountry}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Add to Wishlist
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
 
              {/* Travel Runway Settings Modal */}
       {showRunwayModal && (
