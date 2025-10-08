@@ -84,6 +84,37 @@ const categorizeExpense = (description) => {
   };
 };
 
+// 💰 Auto-categorize INCOME transactions
+const categorizeIncome = (description) => {
+  const desc = description.toLowerCase();
+  
+  // Income categorization keywords
+  const incomeKeywords = {
+    'salary': ['salary', 'paycheck', 'pay', 'wage', 'employment', 'employer', 'work income', 'paystub', 'payroll'],
+    'bonus': ['bonus', 'commission', 'incentive', 'reward', 'performance pay'],
+    'investment': ['dividend', 'interest', 'capital gain', 'stock', 'crypto', 'roi', 'investment return', 'portfolio'],
+    'consulting': ['consulting', 'freelance', 'contract', 'gig', 'side hustle', 'client', 'project'],
+    'trading': ['trading', 'resale', 'flip', 'sell', 'sold'],
+    'services': ['service', 'labor', 'hourly', 'job'],
+    'products': ['product', 'goods', 'merchandise', 'sale'],
+  };
+  
+  for (const [category, keywords] of Object.entries(incomeKeywords)) {
+    if (keywords.some(keyword => desc.includes(keyword))) {
+      return {
+        category: 'personal', // Default to personal, can be changed manually
+        subcategory: category
+      };
+    }
+  }
+  
+  // Default categorization for income
+  return {
+    category: 'personal',
+    subcategory: 'salary' // Default income to salary instead of 'other'
+  };
+};
+
 // 📅 Recurring Expense Utilities
 const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, lastProcessed) => {
   const lastDate = new Date(lastProcessed);
@@ -5672,7 +5703,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
 
   const subcategoryOptions = {
     personal: {
-      income: ['salary', 'bonus', 'investment', 'other'],
+      income: ['salary', 'bonus', 'investment', 'consulting', 'trading', 'services', 'products', 'other'],
       expense: ['housing', 'food', 'transport', 'entertainment', 'healthcare', 'utilities', 'other']
     },
     business: {
@@ -5687,7 +5718,10 @@ const TransactionsTab = ({ data, setData, userId }) => {
     // Auto-categorize if subcategory is empty
     let finalTransaction = { ...newTransaction };
     if (!finalTransaction.subcategory || finalTransaction.subcategory === '') {
-      const autoCategory = categorizeExpense(finalTransaction.description);
+      // 🔧 BUG FIX: Use correct categorization function based on transaction type
+      const autoCategory = finalTransaction.type === 'income' 
+        ? categorizeIncome(finalTransaction.description)
+        : categorizeExpense(finalTransaction.description);
       finalTransaction.category = autoCategory.category;
       finalTransaction.subcategory = autoCategory.subcategory;
     }
@@ -6444,7 +6478,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
             <div>
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <Repeat className="w-6 h-6 text-purple-400" />
-                Recurring {data.recurringExpenses.filter(r => r.type === 'expense').length > 0 ? 'Expenses' : 'Income'} 
+                Recurring Income/Expenses
                 ({data.recurringExpenses.filter(r => r.isActive).length} active)
               </h3>
               <p className="text-gray-400">Automatically processed transactions</p>
