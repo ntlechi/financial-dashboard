@@ -4576,6 +4576,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
   const spendingChartRef = useRef(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
+  const [editingRecurring, setEditingRecurring] = useState(null); // For editing recurring expenses
   const [filterType, setFilterType] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [sortBy, setSortBy] = useState('date');
@@ -6217,26 +6218,6 @@ const TravelTab = ({ data, setData, userId }) => {
      setData(updatedData);
    } catch (error) {
      console.error('Error deleting trip:', error);
-   }
- };
-
- // ✏️ EDIT RECURRING EXPENSE HANDLER
- const handleEditRecurringExpense = async () => {
-   if (!editingRecurring) return;
-
-   const updatedRecurring = data.recurringExpenses.map(r =>
-     r.id === editingRecurring.id ? editingRecurring : r
-   );
-   const updatedData = { ...data, recurringExpenses: updatedRecurring };
-
-   try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
-     setEditingRecurring(null);
-     showNotification('Recurring expense updated successfully!', 'success');
-   } catch (error) {
-     console.error('Error updating recurring expense:', error);
-     showNotification('Error updating recurring expense', 'error');
    }
  };
 
@@ -10586,6 +10567,42 @@ function App() {
             </div>
             
             <div className="pt-3 border-t border-gray-700 space-y-2">
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Active Plan:</span>
+                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Real Subscription:</span>
+                  <span className="text-blue-400">{userPlan}</span>
+                </div>
+                {devOverridePlan && (
+                  <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
+                    ⚠️ Dev Override Active
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="pt-2 text-xs text-gray-500 text-center border-t border-gray-700">
+              Press <kbd className="px-1 py-0.5 bg-gray-800 rounded text-amber-400">Ctrl+Shift+Alt+D</kbd> to toggle
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Wrap the entire app with error boundary for maximum protection
+const AppWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;
+00 space-y-2">
               <div className="text-xs space-y-1">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Active Plan:</span>
