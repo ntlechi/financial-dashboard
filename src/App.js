@@ -11573,6 +11573,159 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* 💬 FEEDBACK BUTTON - Floating (Bottom Right) */}
+      {!showAuth && user && (
+        <button
+          onClick={() => {
+            setShowFeedbackModal(true);
+            setFeedbackData({
+              ...feedbackData,
+              email: user?.email || '',
+              page: activeTab
+            });
+            trackEvent('feedback_button_clicked', { from_page: activeTab });
+          }}
+          className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 z-50 group"
+          title="Send Feedback"
+        >
+          <MessageCircle className="w-6 h-6" />
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            ✨
+          </span>
+        </button>
+      )}
+
+      {/* 💬 FEEDBACK MODAL */}
+      {showFeedbackModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
+          <Card className="w-full max-w-lg border-blue-500/30 animate-fade-in">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                <MessageCircle className="w-6 h-6 text-blue-400" />
+                Send Feedback
+              </h3>
+              <button
+                onClick={() => setShowFeedbackModal(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Type Selector */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setFeedbackType('bug');
+                    setFeedbackData({...feedbackData, type: 'bug'});
+                  }}
+                  className={`flex-1 py-3 px-4 rounded-lg transition-all font-semibold flex items-center justify-center gap-2 ${
+                    feedbackType === 'bug' 
+                      ? 'bg-red-600 text-white shadow-lg scale-105' 
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  <Bug className="w-5 h-5" />
+                  Report Bug
+                </button>
+                <button
+                  onClick={() => {
+                    setFeedbackType('feature');
+                    setFeedbackData({...feedbackData, type: 'feature'});
+                  }}
+                  className={`flex-1 py-3 px-4 rounded-lg transition-all font-semibold flex items-center justify-center gap-2 ${
+                    feedbackType === 'feature' 
+                      ? 'bg-amber-600 text-white shadow-lg scale-105' 
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  <Lightbulb className="w-5 h-5" />
+                  Request Feature
+                </button>
+              </div>
+
+              {/* Info Box */}
+              <div className={`rounded-lg p-4 border ${
+                feedbackType === 'bug' 
+                  ? 'bg-red-900/20 border-red-500/30' 
+                  : 'bg-amber-900/20 border-amber-500/30'
+              }`}>
+                <p className={`text-sm ${
+                  feedbackType === 'bug' ? 'text-red-300' : 'text-amber-300'
+                }`}>
+                  {feedbackType === 'bug' 
+                    ? '🐛 Found a bug? Let us know! We\'ll fix it ASAP.' 
+                    : '💡 Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
+                </p>
+              </div>
+
+              {/* Message Input */}
+              <div>
+                <label className="block text-white font-semibold mb-2">
+                  {feedbackType === 'bug' ? 'Describe the bug:' : 'Describe your feature idea:'}
+                </label>
+                <textarea
+                  value={feedbackData.message}
+                  onChange={(e) => setFeedbackData({...feedbackData, message: e.target.value})}
+                  placeholder={feedbackType === 'bug' 
+                    ? 'What happened? What did you expect to happen?' 
+                    : 'What feature would you like to see? How would it help you?'}
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[120px] resize-none"
+                  rows="5"
+                />
+              </div>
+
+              {/* Email Input */}
+              <div>
+                <label className="block text-white font-semibold mb-2">
+                  Your Email (for follow-up):
+                </label>
+                <input
+                  type="email"
+                  value={feedbackData.email}
+                  onChange={(e) => setFeedbackData({...feedbackData, email: e.target.value})}
+                  placeholder="your@email.com"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                />
+              </div>
+
+              {/* Current Page Info */}
+              <div className="bg-gray-800/50 rounded-lg p-3 text-xs text-gray-400">
+                <div className="flex justify-between">
+                  <span>Current Page:</span>
+                  <span className="text-blue-400 font-semibold">{activeTab}</span>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span>Your Plan:</span>
+                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowFeedbackModal(false)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitFeedback}
+                className={`px-6 py-3 rounded-lg transition-all font-semibold flex items-center gap-2 ${
+                  feedbackType === 'bug'
+                    ? 'bg-red-600 hover:bg-red-700 text-white'
+                    : 'bg-amber-600 hover:bg-amber-700 text-white'
+                } hover:scale-105 shadow-lg`}
+              >
+                <Send className="w-4 h-4" />
+                Send {feedbackType === 'bug' ? 'Bug Report' : 'Feature Request'}
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
