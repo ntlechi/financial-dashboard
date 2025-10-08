@@ -8,7 +8,7 @@ const TermsOfService = ({ onClose }) => {
         <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-white flex items-center">
             <FileText className="w-6 h-6 mr-3 text-blue-400" />
-            Terms of Service
+            Survive Backpacking: Universal Terms of Service
           </h2>
           <button
             onClick={onClose}
@@ -20,157 +20,104 @@ const TermsOfService = ({ onClose }) => {
         
         <div className="p-6 text-gray-300 space-y-6">
           <div className="text-sm text-gray-400">
-            <strong>Effective Date:</strong> {new Date().toLocaleDateString()}
+            <strong>Effective Date:</strong> October 7, 2025
           </div>
           
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Agreement to Terms</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">1. Mission Agreement (Agreement to Terms)</h3>
             <p>
-              By accessing and using The Freedom Compass App ("the Service"), you agree to be bound by these Terms of Service ("Terms"). 
-              If you do not agree to these Terms, please do not use our Service.
-            </p>
-          </section>
-
-          <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Description of Service</h3>
-            <p>
-              The Freedom Compass App is a personal financial management tool that helps users track income, expenses, 
-              investments, debts, and financial goals. We provide calculators, analytics, and planning tools to support 
-              your journey to financial freedom.
+              Welcome to the Survive Backpacking ecosystem. These Universal Terms of Service ("Terms") govern your access to and use of our entire operation, including the website (survivebackpacking.com), our flagship web application (The Freedom Compass App), and all related content and services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, you may not access the Service.
             </p>
           </section>
 
           <section>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
-              Financial Disclaimer
+              2. Financial Disclaimer (The Operator's Responsibility)
             </h3>
             <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 space-y-2">
-              <p><strong>Not Financial Advice:</strong> The Freedom Compass App provides tools and calculations for informational purposes only. This is not professional financial, investment, or tax advice.</p>
-              <p><strong>Consult Professionals:</strong> Always consult qualified financial advisors, accountants, or other professionals before making financial decisions.</p>
-              <p><strong>Your Responsibility:</strong> You are solely responsible for your financial decisions and their outcomes.</p>
-              <p><strong>No Guarantees:</strong> We make no guarantees about investment returns, financial outcomes, or the accuracy of projections.</p>
+              <p className="mb-3">
+                The Freedom Compass App and all content provided by Survive Backpacking are for informational and educational purposes only.
+              </p>
+              <p><strong>Not Financial Advice:</strong> Our Service provides tools and intelligence, not professional financial, investment, or tax advice.</p>
+              <p><strong>Your Responsibility:</strong> You are the sole commander of your financial decisions and are fully responsible for their outcomes.</p>
+              <p><strong>Consult Professionals:</strong> Always consult qualified financial advisors and accountants before making significant financial decisions. We make no guarantees about financial outcomes.</p>
             </div>
           </section>
 
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">User Responsibilities</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">3. User Accounts & Conduct</h3>
             <ul className="space-y-2 list-disc list-inside">
-              <li><strong>Accurate Information:</strong> Provide accurate financial data for reliable calculations</li>
-              <li><strong>Account Security:</strong> Protect your account credentials and notify us of unauthorized access</li>
-              <li><strong>Lawful Use:</strong> Use the Service only for lawful purposes</li>
-              <li><strong>Personal Use:</strong> Use the Service for personal financial management only</li>
-              <li><strong>Compliance:</strong> Comply with all applicable laws and regulations</li>
-            </ul>
-          </section>
-
-          <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Prohibited Uses</h3>
-            <p>You may not use The Freedom Compass App to:</p>
-            <ul className="space-y-2 list-disc list-inside mt-2">
-              <li>Violate any laws or regulations</li>
-              <li>Infringe on intellectual property rights</li>
-              <li>Upload malicious code or attempt to hack the Service</li>
-              <li>Share your account with others</li>
-              <li>Use the Service for commercial purposes without permission</li>
-              <li>Attempt to reverse engineer or copy our software</li>
+              <li><strong>Accurate Intel:</strong> You must provide accurate and complete information when creating your account.</li>
+              <li><strong>Fortress Security:</strong> You are responsible for safeguarding your account credentials.</li>
+              <li><strong>Lawful Use:</strong> You agree to use the Service only for lawful, personal (non-commercial) purposes and to not engage in any prohibited uses, such as attempting to hack the service, infringing on intellectual property, or uploading malicious code.</li>
             </ul>
           </section>
 
           <section>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <CreditCard className="w-5 h-5 mr-2 text-green-400" />
-              Subscription & Payment Terms
+              4. Subscriptions & Payment (The Freedom Compass App)
             </h3>
             <div className="space-y-3">
-              <p><strong>Founder's Circle:</strong> Limited-time offer for first 100 members at $7.49 USD /month</p>
-              <p><strong>Billing:</strong> Subscriptions are billed monthly in advance</p>
-              <p><strong>Auto-Renewal:</strong> Subscriptions automatically renew unless cancelled</p>
-              <p><strong>Cancellation:</strong> Cancel anytime - access continues until end of billing period</p>
-              <p><strong>Refunds:</strong> No refunds for partial months, but you keep access until period ends</p>
-              <p><strong>Price Changes:</strong> We'll notify you 30 days before any price changes</p>
+              <p><strong>Billing:</strong> Subscriptions are billed in advance on a recurring monthly or annual basis in USD.</p>
+              <p><strong>The Founder's Circle:</strong> The limited-time launch offer grants access to The Operator Plan for $7.49 USD/month. This price is locked for life, as long as the subscription remains active.</p>
+              <p><strong>Auto-Renewal:</strong> Your subscription will automatically renew unless you cancel it prior to the end of the current billing period.</p>
+              <p><strong>Cancellation:</strong> You may cancel your subscription at any time. Your access will continue until the end of your paid term. No refunds are provided for partial subscription periods.</p>
             </div>
           </section>
 
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Data Accuracy</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">5. Intellectual Property (The Armory)</h3>
             <p>
-              While we strive for accuracy in our calculations and tools, we cannot guarantee that all information 
-              is error-free. You should verify important calculations independently and consult professionals for 
-              significant financial decisions.
+              The Service and its original content, features, code, and functionality are and will remain the exclusive property of Survive Backpacking. You may not copy, modify, distribute, or reverse engineer our software without our explicit permission.
             </p>
           </section>
 
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Intellectual Property</h3>
-            <p>
-              The Freedom Compass App, including its design, features, algorithms, and content, is owned by us and 
-              protected by copyright and other intellectual property laws. You may not copy, modify, or distribute 
-              our software without permission.
-            </p>
-          </section>
-
-          <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Service Availability</h3>
-            <p>
-              We strive to provide reliable service but cannot guarantee 100% uptime. We may temporarily suspend 
-              the Service for maintenance, updates, or other operational reasons. We are not liable for any losses 
-              due to service interruptions.
-            </p>
-          </section>
-
-          <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Limitation of Liability</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">6. Limitation of Liability</h3>
             <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
               <p>
-                <strong>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</strong> We are not liable for any indirect, 
-                incidental, special, or consequential damages arising from your use of the Service, including 
-                but not limited to financial losses, lost profits, or data loss.
+                To the maximum extent permitted by law, Survive Backpacking shall not be liable for any indirect, incidental, special, or consequential damages, including financial losses or data loss, resulting from your use of the Service.
               </p>
             </div>
           </section>
 
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Account Termination</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">7. Account Termination</h3>
             <p>
-              We may suspend or terminate your account if you violate these Terms. You may delete your account 
-              at any time. Upon termination, your access to the Service will cease, and we will delete your 
-              data according to our Privacy Policy.
+              We reserve the right to suspend or terminate your account if you violate these Terms. You may delete your account at any time. Upon termination, your data will be handled according to our Privacy Policy.
             </p>
           </section>
 
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Changes to Terms</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">8. Governing Law</h3>
             <p>
-              We may update these Terms periodically. We will notify users of significant changes via email or 
-              app notification. Continued use after changes constitutes acceptance of the new Terms.
+              These Terms shall be governed by the laws of Quebec, Canada. Any disputes will be resolved in the courts of Quebec, Canada.
             </p>
           </section>
 
           <section>
-            <h3 className="text-xl font-semibold text-white mb-3">Governing Law</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">9. Changes to Terms</h3>
             <p>
-              These Terms are governed by the laws of Canada. Any disputes will be resolved in the courts of 
-              Quebec, Canada.
+              We may update these Terms periodically. We will notify you of significant changes. Continued use of the Service after changes are posted constitutes your acceptance of the new Terms.
             </p>
           </section>
 
           <section>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <Shield className="w-5 h-5 mr-2 text-green-400" />
-              Contact Information
+              10. Contact HQ
             </h3>
-            <p>Questions about these Terms? Contact us at:</p>
+            <p>Questions about these Terms? You have a direct line.</p>
             <div className="mt-2 p-3 bg-gray-700 rounded">
               <p><strong>Email:</strong> legal@survivebackpacking.com</p>
-              <p><strong>Website:</strong> app.survivebackpacking.com</p>
             </div>
           </section>
 
           <div className="border-t border-gray-700 pt-4 text-sm text-gray-400">
             <p>
-              By using The Freedom Compass App, you acknowledge that you have read, understood, and agree to be 
-              bound by these Terms of Service.
+              By using the Survive Backpacking ecosystem, you acknowledge that you have read, understood, and agree to be bound by these Universal Terms of Service.
             </p>
           </div>
         </div>
