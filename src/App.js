@@ -9208,6 +9208,43 @@ function App() {
     };
   }, []);
 
+  // 🔧 MOBILE KEYBOARD FIX - Reset viewport when keyboard dismisses
+  useEffect(() => {
+    const handleInputBlur = () => {
+      // Small delay to let keyboard fully dismiss
+      setTimeout(() => {
+        // Reset scroll position
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        
+        // Force viewport recalculation
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        
+        // Reset any body positioning
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+      }, 100);
+    };
+
+    // Listen for all input/textarea blur events
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+      input.addEventListener('blur', handleInputBlur);
+    });
+
+    // Also handle on focusout for the document
+    document.addEventListener('focusout', handleInputBlur);
+
+    return () => {
+      inputs.forEach(input => {
+        input.removeEventListener('blur', handleInputBlur);
+      });
+      document.removeEventListener('focusout', handleInputBlur);
+    };
+  }, []);
+
 
   // Firebase Data Loading - DISABLED FOR DEVELOPMENT
   useEffect(() => {
@@ -10036,6 +10073,15 @@ function App() {
                 </button>
               )}
               
+              {/* Quick Expense Button */}
+              <button
+                onClick={openQuickExpense}
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
+                title="Quick Expense"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+              
               {/* Help FAQ Button */}
               <button
                 onClick={() => setShowHelpFAQ(true)}
@@ -10461,17 +10507,9 @@ function App() {
       </div>
       )}
 
-      {/* Floating Quick Expense Button - Only show when authenticated */}
+      {/* Quick Expense Button - Moved to header (cleaner UX) */}
       {user && !authLoading && (
         <>
-          <button
-            onClick={openQuickExpense}
-            className="floating-quick-btn bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
-            title="Quick Expense Log"
-          >
-            <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
-          </button>
-
           {/* Quick Expense Modal */}
           {showQuickExpense && (
         <div 
