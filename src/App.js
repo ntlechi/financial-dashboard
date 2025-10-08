@@ -1437,27 +1437,75 @@ const DebtCard = ({ data, onEdit }) => {
   );
 };
 
-// Cash on Hand Card
-const CashOnHandCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK - Fixed: checking for 'total' not 'amount'
+// Cash on Hand Card - PREMIUM UPGRADE: Survival Runway Calculator 🎯
+const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
           <Wallet className="w-6 h-6 mr-3 text-teal-400" />
-          Cash on Hand
+          Survival Runway
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
     );
   }
 
+  // 📊 CALCULATE AVERAGE MONTHLY EXPENSES (Last 3 Months)
+  const calculateAvgMonthlyExpenses = () => {
+    if (!transactions || transactions.length === 0) return 2000; // Fallback
+    
+    const now = new Date();
+    const monthsData = [];
+    
+    // Calculate expenses for last 3 months
+    for (let i = 0; i < 3; i++) {
+      const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const targetMonth = targetDate.getMonth();
+      const targetYear = targetDate.getFullYear();
+      
+      const monthExpenses = transactions
+        .filter(t => {
+          const tDate = new Date(t.date);
+          return t.amount < 0 && tDate.getMonth() === targetMonth && tDate.getFullYear() === targetYear;
+        })
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      
+      monthsData.push(monthExpenses);
+    }
+    
+    // Calculate average (handle 0 case)
+    const total = monthsData.reduce((sum, val) => sum + val, 0);
+    const average = monthsData.length > 0 ? total / monthsData.length : 2000;
+    
+    return average > 0 ? average : 2000; // Minimum fallback
+  };
+
+  // 🎯 SURVIVAL RUNWAY CALCULATION
+  const avgMonthlyExpenses = calculateAvgMonthlyExpenses();
+  const runwayMonths = avgMonthlyExpenses > 0 ? data.total / avgMonthlyExpenses : 0;
+  
+  // 🚨 STATUS INDICATOR LOGIC
+  const getRunwayStatus = (months) => {
+    if (months >= 6) return { label: 'Secure', color: '#14B8A6', bgColor: 'bg-teal-500', textColor: 'text-teal-400' };
+    if (months >= 3) return { label: 'Good', color: '#38BDF8', bgColor: 'bg-sky-500', textColor: 'text-sky-400' };
+    if (months >= 1) return { label: 'Fair', color: '#F59E0B', bgColor: 'bg-amber-500', textColor: 'text-amber-400' };
+    return { label: 'Critical', color: '#F43F5E', bgColor: 'bg-rose-500', textColor: 'text-rose-400' };
+  };
+  
+  const status = getRunwayStatus(runwayMonths);
+  
+  // 📊 PROGRESS BAR CALCULATION (against Rainy Day Fund goal)
+  const goalMonths = rainyDayGoal || 6; // Default to 6 months if no goal
+  const progressPercent = Math.min((runwayMonths / goalMonths) * 100, 100);
+
   return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
-    <div className="flex justify-between items-start mb-2">
-      <h2 className="text-xl font-bold text-white flex items-center">
-        <Wallet className="w-6 h-6 mr-3 text-teal-400" />
-        Cash on Hand
+    <div className="flex justify-between items-start mb-3">
+      <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
+        <Wallet className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-teal-400" />
+        Survival Runway
       </h2>
       <button
         onClick={() => onEdit('cashOnHand', data)}
@@ -1466,22 +1514,61 @@ const CashOnHandCard = ({ data, onEdit }) => {
         <Edit className="w-4 h-4" />
       </button>
     </div>
-    <div className="text-3xl font-bold text-teal-400 mb-4">
-      ${data.total.toLocaleString()}
+    
+    {/* 🎯 HERO METRIC: Runway Time */}
+    <div className="mb-2">
+      <p className={`text-4xl sm:text-5xl font-extrabold ${status.textColor} mb-1`}>
+        {runwayMonths.toFixed(1)} <span className="text-2xl sm:text-3xl">months</span>
+      </p>
+      <p className="text-sm font-semibold" style={{ color: status.color }}>
+        {status.label}
+      </p>
     </div>
-    <div className="space-y-2 mb-4">
-      {data.accounts.map(account => (
-        <div key={account.id} className="flex justify-between items-center text-sm">
-          <div>
-            <span className="text-white font-medium">{account.name}</span>
-            <span className="text-gray-400 ml-2">({account.type})</span>
-          </div>
-          <span className="text-teal-300">${account.balance.toLocaleString()}</span>
+    
+    {/* 💰 Cash Amount (Secondary) */}
+    <p className="text-lg text-gray-300 mb-4">
+      ${data.total.toLocaleString()} cash on hand
+    </p>
+    
+    {/* 📊 RUNWAY PROGRESS BAR */}
+    <div className="mb-4">
+      <div className="flex justify-between items-center mb-2 text-xs sm:text-sm">
+        <span className="text-gray-400">Runway Progress</span>
+        <span className="text-white font-semibold">{progressPercent.toFixed(0)}% of {goalMonths}-month goal</span>
+      </div>
+      <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+        <div 
+          className={`h-3 rounded-full transition-all duration-500 ${status.bgColor}`}
+          style={{ width: `${progressPercent}%` }}
+        >
+          <div className="h-full w-full animate-pulse opacity-20 bg-white"></div>
         </div>
-      ))}
+      </div>
+      <div className="flex justify-between items-center mt-1 text-xs text-gray-500">
+        <span>0 months</span>
+        <span>{goalMonths} months (goal)</span>
+      </div>
     </div>
-    <div className="text-xs text-gray-400">
-      {data.accounts.length} accounts • Last updated {new Date().toLocaleDateString()}
+    
+    {/* 📋 ACCOUNT BREAKDOWN */}
+    <div className="border-t border-teal-800/50 pt-4">
+      <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide mb-3">Account Breakdown</h3>
+      <div className="space-y-2 mb-3">
+        {data.accounts.map(account => (
+          <div key={account.id} className="flex justify-between items-center text-xs sm:text-sm">
+            <div>
+              <span className="text-white font-medium">{account.name}</span>
+              <span className="text-gray-400 ml-2 text-[10px] sm:text-xs">({account.type})</span>
+            </div>
+            <span className="text-teal-300 font-semibold">${account.balance.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+      <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
+        <span>{data.accounts.length} accounts</span>
+        <span>•</span>
+        <span>Avg expenses: ${avgMonthlyExpenses.toLocaleString()}/mo</span>
+      </div>
     </div>
   </Card>
   );
@@ -11024,7 +11111,12 @@ function App() {
               {/* Cash on Hand - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                 <FinancialErrorBoundary componentName="Cash Management">
-                  <CashOnHandCard data={displayData?.cashOnHand} onEdit={openCardEditor} />
+                  <CashOnHandCard 
+                    data={displayData?.cashOnHand} 
+                    rainyDayGoal={6}
+                    transactions={data?.transactions || []}
+                    onEdit={openCardEditor} 
+                  />
                 </FinancialErrorBoundary>
               ) : (
                 <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
