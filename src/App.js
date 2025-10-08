@@ -1699,9 +1699,154 @@ const ExpensesCard = ({ data, viewMode }) => {
   );
 };
 
-// Cash Flow Card (TEAL - Positive Growth)
-const CashFlowCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
+// Cash Flow Card (TEAL - Positive Growth) - PREMIUM UPGRADE 🎯
+const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
+  const chartRef = useRef(null);
+  const [hoveredBar, setHoveredBar] = useState(null);
+
+  // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
+  const calculate3MonthTrend = () => {
+    if (!transactions || transactions.length === 0) return [];
+    const now = new Date();
+    const monthsData = [];
+    
+    for (let i = 2; i >= 0; i--) {
+      const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const targetMonth = targetDate.getMonth();
+      const targetYear = targetDate.getFullYear();
+      
+      // Filter transactions for this month
+      const monthTransactions = transactions.filter(t => {
+        const tDate = new Date(t.date);
+        return tDate.getMonth() === targetMonth && tDate.getFullYear() === targetYear;
+      });
+      
+      // Calculate income and expenses for this month
+      const monthIncome = monthTransactions
+        .filter(t => t.amount > 0)
+        .reduce((sum, t) => sum + t.amount, 0);
+      
+      const monthExpenses = Math.abs(monthTransactions
+        .filter(t => t.amount < 0)
+        .reduce((sum, t) => sum + t.amount, 0));
+      
+      const cashFlow = monthIncome - monthExpenses;
+      
+      monthsData.push({
+        month: targetDate.toLocaleDateString('en-US', { month: 'short' }),
+        year: targetYear,
+        cashFlow: cashFlow,
+        income: monthIncome,
+        expenses: monthExpenses,
+        isCurrent: i === 0
+      });
+    }
+    
+    return monthsData;
+  };
+  
+  const trendData = calculate3MonthTrend();
+
+  // 🎨 D3.js Mini Bar Chart
+  useEffect(() => {
+    if (!chartRef.current || trendData.length === 0) return;
+
+    const container = chartRef.current;
+    const containerWidth = container.clientWidth;
+    const containerHeight = 120;
+    const margin = { top: 10, right: 10, bottom: 25, left: 40 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
+
+    // Clear previous chart
+    d3.select(container).selectAll("*").remove();
+
+    const svg = d3.select(container)
+      .append("svg")
+      .attr("width", containerWidth)
+      .attr("height", containerHeight);
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Scales
+    const x = d3.scaleBand()
+      .domain(trendData.map(d => d.month))
+      .range([0, width])
+      .padding(0.3);
+
+    const maxAbsValue = d3.max(trendData, d => Math.abs(d.cashFlow)) || 1000;
+    const y = d3.scaleLinear()
+      .domain([-maxAbsValue * 1.1, maxAbsValue * 1.1])
+      .range([height, 0]);
+
+    // Add zero line
+    g.append("line")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("y1", y(0))
+      .attr("y2", y(0))
+      .attr("stroke", "#6B7280")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
+    // Bars
+    g.selectAll(".bar")
+      .data(trendData)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", d => x(d.month))
+      .attr("y", d => d.cashFlow >= 0 ? y(d.cashFlow) : y(0))
+      .attr("width", x.bandwidth())
+      .attr("height", d => Math.abs(y(d.cashFlow) - y(0)))
+      .attr("fill", d => d.isCurrent ? "#FBBF24" : "#14B8A6") // Amber for current, Teal for past
+      .attr("rx", 4)
+      .style("cursor", "pointer")
+      .on("mouseover", function(event, d) {
+        setHoveredBar(d);
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("opacity", 0.8);
+      })
+      .on("mouseout", function() {
+        setHoveredBar(null);
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("opacity", 1);
+      });
+
+    // X Axis
+    g.append("g")
+      .attr("transform", `translate(0,${y(0)})`)
+      .call(d3.axisBottom(x).tickSize(0))
+      .selectAll("text")
+      .style("fill", "#9CA3AF")
+      .style("font-size", "11px");
+
+    // Remove axis line
+    g.select(".domain").remove();
+
+    // Y Axis with $ formatting
+    const yAxis = d3.axisLeft(y)
+      .ticks(4)
+      .tickFormat(d => `$${(d/1000).toFixed(0)}k`);
+    
+    g.append("g")
+      .call(yAxis)
+      .selectAll("text")
+      .style("fill", "#9CA3AF")
+      .style("font-size", "11px");
+
+    g.selectAll(".tick line")
+      .style("stroke", "#374151")
+      .style("stroke-dasharray", "2,2");
+
+  }, [trendData]);
+
+  // 🛡️ NULL SAFETY CHECK - After hooks
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -1715,6 +1860,9 @@ const CashFlowCard = ({ data, onEdit }) => {
   }
 
   const isPositive = data.total >= 0;
+  const monthlyIncome = income?.total || 0;
+  const monthlyExpenses = expenses?.total || 0;
+
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
       <div className="flex justify-between items-start mb-2">
@@ -1722,12 +1870,51 @@ const CashFlowCard = ({ data, onEdit }) => {
           <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
           Cash Flow
         </h2>
-        {/* Cash Flow is calculated - no edit needed */}
       </div>
-      <p className="text-5xl font-extrabold text-white">
+      
+      {/* Main Cash Flow Number */}
+      <p className="text-5xl font-extrabold text-white mb-3">
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
-      <p className="text-gray-400 mt-2">Monthly income minus expenses</p>
+      
+      {/* 💰 COMPONENT BREAKDOWN - Strategic Intelligence */}
+      <div className="flex items-center justify-start gap-6 mb-4 text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-green-400"></div>
+          <span className="text-gray-300">Income:</span>
+          <span className="text-white font-semibold">${monthlyIncome.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-400"></div>
+          <span className="text-gray-300">Expenses:</span>
+          <span className="text-white font-semibold">${monthlyExpenses.toLocaleString()}</span>
+        </div>
+      </div>
+      
+      {/* 📈 3-MONTH TREND CHART */}
+      <div className="mt-4 border-t border-teal-800/50 pt-4">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
+          {hoveredBar && (
+            <div className="text-xs text-white bg-gray-800 px-3 py-1 rounded-lg border border-teal-500/50">
+              <span className="text-teal-300">{hoveredBar.month}:</span> {hoveredBar.cashFlow >= 0 ? '+' : ''}${hoveredBar.cashFlow.toLocaleString()}
+            </div>
+          )}
+        </div>
+        <div ref={chartRef} className="w-full" style={{ minHeight: '120px' }}></div>
+        
+        {/* Legend */}
+        <div className="flex items-center justify-center gap-4 mt-2 text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-amber-400"></div>
+            <span className="text-gray-400">Current Month</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-teal-400"></div>
+            <span className="text-gray-400">Previous Months</span>
+          </div>
+        </div>
+      </div>
     </Card>
   );
 };
@@ -10780,7 +10967,13 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Cash Flow - FREE+ (Left) */}
-              <CashFlowCard data={displayData?.cashflow} onEdit={openCardEditor} />
+              <CashFlowCard 
+                data={displayData?.cashflow} 
+                income={displayData?.income}
+                expenses={displayData?.expenses}
+                transactions={data?.transactions || []}
+                onEdit={openCardEditor} 
+              />
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
