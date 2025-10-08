@@ -4849,6 +4849,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
     subcategory: '',
     date: new Date().toISOString().split('T')[0],
     isRecurring: false,
+    isPassive: false, // 🏔️ Freedom Ratio: Passive income flag
     frequency: 'monthly',
     dayOfMonth: 1,
     dayOfWeek: 1,
@@ -4931,6 +4932,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
         subcategory: '',
         date: new Date().toISOString().split('T')[0],
         isRecurring: false,
+        isPassive: false, // 🏔️ Freedom Ratio: Reset passive income flag
         frequency: 'monthly',
         dayOfMonth: 1,
         dayOfWeek: 1,
