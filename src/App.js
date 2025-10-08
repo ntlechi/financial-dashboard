@@ -1154,6 +1154,28 @@ const NetWorthCard = ({ data, onEdit }) => {
     }
   }, [totalAssets, totalLiabilities]);
 
+  // Null safety check
+  if (!data || data.total === undefined) {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-sky-900/40 to-blue-900/40">
+        <div className="flex justify-between items-start mb-2">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <DollarSign className="w-6 h-6 mr-3 text-sky-400" />
+            Net Worth
+          </h2>
+          <button
+            onClick={() => onEdit('netWorth', data || {})}
+            className="text-gray-400 hover:text-sky-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </div>
+        <p className="text-5xl font-extrabold text-white">$0</p>
+        <p className="text-gray-400 text-sm mt-2">Click edit to add your assets and liabilities</p>
+      </Card>
+    );
+  }
+
   return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-sky-900/40 to-blue-900/40">
     <div className="flex justify-between items-start mb-2">
@@ -9020,13 +9042,22 @@ function App() {
     
     if (resetToSample) {
       // Reset to sample data with new start date
+      // 🔧 FIX: Spread transactions across the month (not all on same date!)
+      const startDate = new Date(resetStartDate);
       resetData = {
         ...initialData,
-        // Update all dates to start from the selected date
-        transactions: initialData.transactions.map(t => ({
-          ...t,
-          date: resetStartDate
-        })),
+        // Update all dates to spread across the month
+        transactions: initialData.transactions.map((t, index) => {
+          // Spread transactions across the month (days 1, 3, 5, 8, 10, 12, 15, etc.)
+          const daysToAdd = index * 2; // 0, 2, 4, 6, 8, 10, 12, 14...
+          const transactionDate = new Date(startDate);
+          transactionDate.setDate(startDate.getDate() + daysToAdd);
+          
+          return {
+            ...t,
+            date: transactionDate.toISOString().split('T')[0]
+          };
+        }),
         recurringExpenses: initialData.recurringExpenses.map(r => ({
           ...r,
           nextDueDate: calculateNextDueDate(
@@ -9296,12 +9327,23 @@ function App() {
       transactions = [];
     }
 
-    // Calculate total income and expenses from transactions
-    const totalTransactionIncome = transactions
+    // 🔧 FIX: Calculate from CURRENT MONTH only (not all transactions ever!)
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Filter transactions to current month only
+    const currentMonthTransactions = transactions.filter(t => {
+      const tDate = new Date(t.date);
+      return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+    });
+
+    // Calculate total income and expenses from CURRENT MONTH transactions
+    const totalTransactionIncome = currentMonthTransactions
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
-    const totalTransactionExpenses = transactions
+    const totalTransactionExpenses = currentMonthTransactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
@@ -9319,9 +9361,9 @@ function App() {
     // 🔧 FIX: Combine transaction and business expenses
     const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
 
-    // Group income by subcategory (from transactions)
+    // Group income by subcategory (from CURRENT MONTH transactions only)
     const incomeByCategory = {};
-    transactions
+    currentMonthTransactions
       .filter(t => t.type === 'income')
       .forEach(t => {
         const category = t.subcategory || 'Other';
@@ -9339,9 +9381,9 @@ function App() {
       }
     });
 
-    // Group expenses by subcategory
+    // Group expenses by subcategory (from CURRENT MONTH transactions only)
     const expensesByCategory = {};
-    transactions
+    currentMonthTransactions
       .filter(t => t.type === 'expense')
       .forEach(t => {
         const category = t.subcategory || 'Other';
