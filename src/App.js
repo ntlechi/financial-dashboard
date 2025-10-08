@@ -8744,6 +8744,7 @@ function App() {
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
+  const [showUserMenu, setShowUserMenu] = useState(false);
   
   // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -10023,27 +10024,8 @@ function App() {
               <p className="text-amber-200 text-lg">Welcome back, {user?.displayName?.split(' ')[0] || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
             </div>
             
-            {/* User Profile Section */}
+            {/* User Profile Section - Modern Dropdown Menu */}
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-white font-medium">{user?.displayName?.split(' ')[0] || 'User'}</p>
-                <p className="text-gray-400 text-sm flex items-center gap-1">
-                  {user?.email}
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
-                    userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
-                    userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
-                    'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
-                  }`}>
-                    {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon' : 
-                     userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber' : 
-                     userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator' :
-                     userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder' : 
-                     'Free'}
-                  </span>
-                </p>
-              </div>
-              
               {userPlan === SUBSCRIPTION_TIERS.FREE && (
                 <button
                   onClick={() => setShowPricingModal(true)}
@@ -10063,15 +10045,138 @@ function App() {
                 <HelpCircle className="w-4 h-4" />
               </button>
               
-              <button
-                onClick={handleSignOut}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Sign Out
-              </button>
+              {/* Modern User Menu Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
+                  title="Account Menu"
+                >
+                  {/* User Avatar with Plan Badge */}
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
+                      {(user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
+                    </div>
+                    {/* Plan Badge on Avatar */}
+                    <div className={`absolute -bottom-1 -right-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                      userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
+                      userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
+                      userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
+                      'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
+                    }`}>
+                      {userPlan === SUBSCRIPTION_TIERS.FREE ? 'R' : 
+                       userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'C' : 
+                       userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'O' :
+                       userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'F' : 
+                       'F'}
+                    </div>
+                  </div>
+                  <svg className={`w-4 h-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {/* Dropdown Menu */}
+                {showUserMenu && (
+                  <>
+                    {/* Backdrop to close menu when clicking outside */}
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setShowUserMenu(false)}
+                    />
+                    
+                    {/* Menu Content */}
+                    <div className="absolute right-0 mt-2 w-72 bg-gray-800 rounded-lg shadow-2xl border border-gray-700 z-50 overflow-hidden">
+                      {/* User Info Header */}
+                      <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-4 border-b border-gray-700">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-xl">
+                            {(user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-white font-semibold">{user?.displayName?.split(' ')[0] || 'User'}</p>
+                            <p className="text-gray-400 text-sm truncate">{user?.email}</p>
+                          </div>
+                        </div>
+                        <div className="mt-3">
+                          <span className={`inline-block text-xs px-3 py-1 rounded-full font-semibold ${
+                            userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
+                            userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
+                            userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
+                            'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
+                          }`}>
+                            {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon Kit' : 
+                             userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber Plan' : 
+                             userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator Plan' :
+                             userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder\'s Circle' : 
+                             'Free Plan'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* Menu Items */}
+                      <div className="py-2">
+                        {/* Bug Report */}
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            setFeedbackType('bug');
+                            setFeedbackData({...feedbackData, type: 'bug', email: user?.email || ''});
+                            setShowFeedbackModal(true);
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-white"
+                        >
+                          <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Report a Bug</p>
+                            <p className="text-xs text-gray-500">Help us improve</p>
+                          </div>
+                        </button>
+                        
+                        {/* Feature Request */}
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            setFeedbackType('feature');
+                            setFeedbackData({...feedbackData, type: 'feature', email: user?.email || ''});
+                            setShowFeedbackModal(true);
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-white"
+                        >
+                          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Request Feature</p>
+                            <p className="text-xs text-gray-500">Share your ideas</p>
+                          </div>
+                        </button>
+                        
+                        <div className="border-t border-gray-700 my-2"></div>
+                        
+                        {/* Sign Out */}
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            handleSignOut();
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-red-400"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Sign Out</p>
+                            <p className="text-xs text-gray-500">See you next time!</p>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             
             {/* View Controls - Only show on dashboard tab */}
@@ -11709,27 +11814,7 @@ function App() {
         </div>
       )}
 
-      {/* 💬 FEEDBACK BUTTON - Floating (Bottom Right) */}
-      {!showAuth && user && (
-        <button
-          onClick={() => {
-            setShowFeedbackModal(true);
-            setFeedbackData({
-              ...feedbackData,
-              email: user?.email || '',
-              page: activeTab
-            });
-            trackEvent('feedback_button_clicked', { from_page: activeTab });
-          }}
-          className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 z-50 group"
-          title="Send Feedback"
-        >
-          <MessageCircle className="w-6 h-6" />
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            ✨
-          </span>
-        </button>
-      )}
+      {/* 💬 FEEDBACK BUTTON - Moved to User Menu Dropdown (cleaner UX) */}
 
       {/* 💬 FEEDBACK MODAL */}
       {showFeedbackModal && (
