@@ -5783,7 +5783,8 @@ const TravelTab = ({ data, setData, userId }) => {
     startDate: '',
     endDate: '',
     estimatedDailySpend: '',
-    countries: []
+    countries: [],
+    countryInput: ''
   });
 
   const [newExpense, setNewExpense] = useState({
@@ -6002,41 +6003,86 @@ const TravelTab = ({ data, setData, userId }) => {
      }
    };
 
-   const handleAddTrip = async () => {
-    if (!newTrip.name || !newTrip.targetBudget) return;
+  const handleAddTrip = async () => {
+   if (!newTrip.name || !newTrip.targetBudget) return;
 
-    const trip = {
-      id: Date.now(),
-      ...newTrip,
-      targetBudget: Number(newTrip.targetBudget),
-      estimatedDailySpend: Number(newTrip.estimatedDailySpend),
-      currentSavings: 0,
-      status: 'saving',
-      expenses: [],
-      countries: newTrip.countries.filter(c => c.trim())
-    };
+   const trip = {
+     id: Date.now(),
+     ...newTrip,
+     targetBudget: Number(newTrip.targetBudget),
+     estimatedDailySpend: Number(newTrip.estimatedDailySpend),
+     currentSavings: 0,
+     status: 'saving',
+     expenses: [],
+     countries: newTrip.countries.filter(c => c.trim())
+   };
 
-    const updatedTrips = [...(data.travel?.trips || []), trip];
-    const updatedTravel = { ...data.travel, trips: updatedTrips };
-    const updatedData = { ...data, travel: updatedTravel };
+   const updatedTrips = [...(data.travel?.trips || []), trip];
+   const updatedTravel = { ...data.travel, trips: updatedTrips };
+   const updatedData = { ...data, travel: updatedTravel };
 
-    try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
-      setShowAddTrip(false);
-      
-      // Force viewport cleanup after modal close
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-      }, 100);
-    } catch (error) {
-      console.error('Error adding trip:', error);
-    }
-  };
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+     setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [], countryInput: '' });
+     setShowAddTrip(false);
+     
+     // Force viewport cleanup after modal close
+     setTimeout(() => {
+       window.scrollTo(0, 0);
+       document.body.style.overflow = '';
+       document.body.style.position = '';
+       document.body.style.height = '';
+     }, 100);
+   } catch (error) {
+     console.error('Error adding trip:', error);
+   }
+ };
+
+ // 🗑️ DELETE TRIP HANDLER
+ const handleDeleteTrip = async (tripId) => {
+   if (!window.confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
+     return;
+   }
+
+   const updatedTrips = (data.travel?.trips || []).filter(trip => trip.id !== tripId);
+   const updatedTravel = { ...data.travel, trips: updatedTrips };
+   const updatedData = { ...data, travel: updatedTravel };
+
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+   } catch (error) {
+     console.error('Error deleting trip:', error);
+   }
+ };
+
+ // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
+ const handleDeleteExpense = async (tripId, expenseId) => {
+   if (!window.confirm('Delete this expense?')) {
+     return;
+   }
+
+   const updatedTrips = (data.travel?.trips || []).map(trip => {
+     if (trip.id === tripId) {
+       return {
+         ...trip,
+         expenses: trip.expenses.filter(exp => exp.id !== expenseId)
+       };
+     }
+     return trip;
+   });
+
+   const updatedTravel = { ...data.travel, trips: updatedTrips };
+   const updatedData = { ...data, travel: updatedTravel };
+
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+   } catch (error) {
+     console.error('Error deleting expense:', error);
+   }
+ };
 
   const runway = calculateRunway();
 
@@ -6126,6 +6172,51 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* 🗺️ OPERATOR'S WORLD MAP - Epic Interactive Visualization */}
       {(() => {
+        // 🌍 COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
+        const normalizeCountryName = (userInput) => {
+          const input = userInput.trim().toLowerCase();
+          
+          // Common aliases and mappings to official GeoJSON names
+          const countryAliases = {
+            'usa': 'united states of america',
+            'us': 'united states of america',
+            'united states': 'united states of america',
+            'america': 'united states of america',
+            'uk': 'united kingdom',
+            'england': 'united kingdom',
+            'britain': 'united kingdom',
+            'great britain': 'united kingdom',
+            'uae': 'united arab emirates',
+            'emirates': 'united arab emirates',
+            'south korea': 'republic of korea',
+            'korea': 'republic of korea',
+            'north korea': "democratic people's republic of korea",
+            'vietnam': 'viet nam',
+            'laos': "lao people's democratic republic",
+            'czech republic': 'czechia',
+            'holland': 'netherlands',
+            'burma': 'myanmar',
+            'ivory coast': "côte d'ivoire",
+            'cape verde': 'cabo verde',
+            'east timor': 'timor-leste',
+            'congo': 'republic of the congo',
+            'drc': 'democratic republic of the congo',
+            'dr congo': 'democratic republic of the congo',
+            'macedonia': 'north macedonia',
+            'swaziland': 'eswatini',
+            'russia': 'russian federation',
+            'syria': 'syrian arab republic',
+            'iran': 'islamic republic of iran',
+            'venezuela': 'bolivarian republic of venezuela',
+            'bolivia': 'plurinational state of bolivia',
+            'tanzania': 'united republic of tanzania',
+            'moldova': 'republic of moldova',
+            'palestine': 'palestinian territory'
+          };
+          
+          return countryAliases[input] || input;
+        };
+        
         // Calculate visited countries from trips
         const calculateCountryData = () => {
           const trips = data.travel?.trips || [];
@@ -6139,7 +6230,7 @@ const TravelTab = ({ data, setData, userId }) => {
             const countries = trip.countries || [];
             
             countries.forEach(country => {
-              const normalizedCountry = country.trim().toLowerCase();
+              const normalizedCountry = normalizeCountryName(country);
               if (isPast) {
                 if (!visitedCountries.has(normalizedCountry)) {
                   visitedCountries.set(normalizedCountry, []);
@@ -6538,8 +6629,16 @@ const TravelTab = ({ data, setData, userId }) => {
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
                     className="text-blue-400 hover:text-blue-300 p-1"
+                    title="Edit Trip"
                   >
                     <Edit className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteTrip(trip.id)}
+                    className="text-red-400 hover:text-red-300 p-1"
+                    title="Delete Trip"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -6584,8 +6683,8 @@ const TravelTab = ({ data, setData, userId }) => {
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.expenses.slice(0, 3).map(expense => (
-                        <div key={expense.id} className="flex justify-between text-xs">
-                          <div className="flex flex-col">
+                        <div key={expense.id} className="flex justify-between items-start text-xs group">
+                          <div className="flex flex-col flex-1">
                             <span className="text-gray-400">{expense.description}</span>
                             {expense.date && (
                               <span className="text-gray-500 text-xs mt-0.5">
@@ -6597,14 +6696,23 @@ const TravelTab = ({ data, setData, userId }) => {
                               </span>
                             )}
                           </div>
-                          <span className="text-white flex-shrink-0 ml-3">
-                            {expense.amount} {expense.currency}
-                            {expense.currency !== 'CAD' && (
-                              <span className="text-gray-500 ml-1">
-                                (${convertCurrency(expense.amount, expense.currency, 'CAD').toFixed(0)} CAD)
-                              </span>
-                            )}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-white flex-shrink-0">
+                              {expense.amount} {expense.currency}
+                              {expense.currency !== 'CAD' && (
+                                <span className="text-gray-500 ml-1">
+                                  (${convertCurrency(expense.amount, expense.currency, 'CAD').toFixed(0)} CAD)
+                                </span>
+                              )}
+                            </span>
+                            <button
+                              onClick={() => handleDeleteExpense(trip.id, expense.id)}
+                              className="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                              title="Delete expense"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -6716,22 +6824,46 @@ const TravelTab = ({ data, setData, userId }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g., Thailand, Vietnam, Cambodia"
-                  value={Array.isArray(newTrip.countries) ? newTrip.countries.join(', ') : (newTrip.countries || '')}
+                  placeholder="Type country name and press comma or Enter"
+                  value={newTrip.countryInput || ''}
                   onChange={(e) => {
-                    const inputValue = e.target.value;
-                    const countries = inputValue.split(',').map(c => c.trim()).filter(c => c.length > 0);
-                    setNewTrip({...newTrip, countries: countries});
+                    setNewTrip({...newTrip, countryInput: e.target.value});
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === ',' || e.key === 'Enter') {
+                      e.preventDefault();
+                      const trimmed = (newTrip.countryInput || '').trim();
+                      if (trimmed && !newTrip.countries.includes(trimmed)) {
+                        setNewTrip({
+                          ...newTrip,
+                          countries: [...newTrip.countries, trimmed],
+                          countryInput: ''
+                        });
+                      } else {
+                        setNewTrip({...newTrip, countryInput: ''});
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    // Also add on blur if there's text
+                    const trimmed = (newTrip.countryInput || '').trim();
+                    if (trimmed && !newTrip.countries.includes(trimmed)) {
+                      setNewTrip({
+                        ...newTrip,
+                        countries: [...newTrip.countries, trimmed],
+                        countryInput: ''
+                      });
+                    }
                   }}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Separate multiple countries with commas. These will appear on your Operator's World Map!
+                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
                 </p>
                 {Array.isArray(newTrip.countries) && newTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {newTrip.countries.map((country, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-amber-600/30 text-amber-200 text-xs rounded-full border border-amber-500/50 flex items-center gap-1">
+                      <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
                         🌍 {country}
                         <button
                           type="button"
@@ -6739,7 +6871,7 @@ const TravelTab = ({ data, setData, userId }) => {
                             const updatedCountries = newTrip.countries.filter((_, i) => i !== idx);
                             setNewTrip({...newTrip, countries: updatedCountries});
                           }}
-                          className="hover:text-red-400 transition-colors"
+                          className="hover:text-red-400 transition-colors font-bold text-base"
                         >
                           ×
                         </button>
