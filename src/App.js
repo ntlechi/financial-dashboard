@@ -2734,13 +2734,122 @@ const SideHustleTab = ({ data, setData, userId }) => {
   const [newItem, setNewItem] = useState({
     description: '',
     amount: '',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    isPassive: false // 🏔️ NEW: Passive income flag
   });
 
   // 🔧 EDGE CASE FIX: Null safety for empty businesses array
   const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
   const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
+
+  // 🏔️ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
+  const calculateFreedomMetrics = () => {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+    
+    // Calculate Total Passive Income (Last 30 Days)
+    let totalPassiveIncome = 0;
+    (data.businesses || []).forEach(business => {
+      (business.incomeItems || []).forEach(item => {
+        const itemDate = new Date(item.date);
+        if (item.isPassive && itemDate >= thirtyDaysAgo && itemDate <= now) {
+          totalPassiveIncome += item.amount;
+        }
+      });
+    });
+    
+    // Also check transactions for passive income
+    (data.transactions || []).forEach(transaction => {
+      if (transaction.amount > 0 && transaction.isPassive) {
+        const transactionDate = new Date(transaction.date);
+        if (transactionDate >= thirtyDaysAgo && transactionDate <= now) {
+          totalPassiveIncome += transaction.amount;
+        }
+      }
+    });
+    
+    // Calculate Total Monthly Expenses (Last 30 Days)
+    let totalMonthlyExpenses = 0;
+    
+    // From businesses
+    (data.businesses || []).forEach(business => {
+      (business.expenseItems || []).forEach(item => {
+        const itemDate = new Date(item.date);
+        if (itemDate >= thirtyDaysAgo && itemDate <= now) {
+          totalMonthlyExpenses += item.amount;
+        }
+      });
+    });
+    
+    // From transactions
+    (data.transactions || []).forEach(transaction => {
+      if (transaction.amount < 0) {
+        const transactionDate = new Date(transaction.date);
+        if (transactionDate >= thirtyDaysAgo && transactionDate <= now) {
+          totalMonthlyExpenses += Math.abs(transaction.amount);
+        }
+      }
+    });
+    
+    // Calculate Side Hustle Income/Expenses (This Month)
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    let sideHustleIncomeThisMonth = 0;
+    let sideHustleExpensesThisMonth = 0;
+    
+    (data.businesses || []).forEach(business => {
+      (business.incomeItems || []).forEach(item => {
+        const itemDate = new Date(item.date);
+        if (itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear) {
+          sideHustleIncomeThisMonth += item.amount;
+        }
+      });
+      (business.expenseItems || []).forEach(item => {
+        const itemDate = new Date(item.date);
+        if (itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear) {
+          sideHustleExpensesThisMonth += item.amount;
+        }
+      });
+    });
+    
+    // Calculate Freedom Ratio
+    const freedomRatio = totalMonthlyExpenses > 0 
+      ? (totalPassiveIncome / totalMonthlyExpenses) * 100 
+      : 0;
+    
+    // Determine progress level and color
+    let progressLevel = '';
+    let progressColor = '';
+    
+    if (freedomRatio >= 75) {
+      progressLevel = 'Financially Independent';
+      progressColor = '#14B8A6'; // Teal
+    } else if (freedomRatio >= 50) {
+      progressLevel = 'Nearing Freedom';
+      progressColor = '#38BDF8'; // Sky Blue
+    } else if (freedomRatio >= 25) {
+      progressLevel = 'Building Momentum';
+      progressColor = '#F59E0B'; // Amber
+    } else {
+      progressLevel = 'Survival Mode';
+      progressColor = '#F43F5E'; // Rose
+    }
+    
+    return {
+      totalPassiveIncome,
+      totalMonthlyExpenses,
+      freedomRatio: Math.min(freedomRatio, 110), // Cap at 110% for display
+      actualRatio: freedomRatio, // Keep actual for calculations
+      progressLevel,
+      progressColor,
+      sideHustleIncomeThisMonth,
+      sideHustleExpensesThisMonth
+    };
+  };
+  
+  const freedomMetrics = calculateFreedomMetrics();
 
   const handleAddBusiness = async () => {
     if (!newBusiness.name) return;
@@ -2775,7 +2884,8 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const item = {
       id: Date.now(),
       ...newItem,
-      amount
+      amount,
+      isPassive: itemType === 'income' ? newItem.isPassive : false // Only income can be passive
     };
     
     const updatedBusinesses = data.businesses.map(business => {
@@ -2801,7 +2911,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
-      setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0] });
+      setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0], isPassive: false });
       setShowAddItem(false);
     } catch (error) {
       console.error('Error adding item:', error);
@@ -2867,39 +2977,161 @@ const SideHustleTab = ({ data, setData, userId }) => {
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* Business Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
-            Total Business Income
+      {/* 🏔️ FREEDOM COMMAND CENTER - 4-Card Dashboard Header */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-teal-900/40 to-emerald-900/40 border-teal-500/30">
+          <h3 className="text-sm font-semibold text-teal-200 mb-2 flex items-center">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Side Hustle Income
           </h3>
-          <p className="text-3xl font-bold text-green-400">${totalBusinessIncome.toLocaleString()}</p>
-          <p className="text-sm text-gray-300 mt-2">From {data.businesses.length} businesses</p>
+          <p className="text-2xl md:text-3xl font-bold text-white">${freedomMetrics.sideHustleIncomeThisMonth.toLocaleString()}</p>
+          <p className="text-xs text-teal-300 mt-1">This Month</p>
         </Card>
         
-        <Card className="bg-gradient-to-br from-red-900/40 to-rose-900/40">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
-            Total Business Expenses
+        <Card className="bg-gradient-to-br from-rose-900/40 to-red-900/40 border-rose-500/30">
+          <h3 className="text-sm font-semibold text-rose-200 mb-2 flex items-center">
+            <ArrowDown className="w-4 h-4 mr-2" />
+            Side Hustle Expenses
           </h3>
-          <p className="text-3xl font-bold text-red-400">${totalBusinessExpenses.toLocaleString()}</p>
-          <p className="text-sm text-gray-300 mt-2">Operating costs</p>
+          <p className="text-2xl md:text-3xl font-bold text-white">${freedomMetrics.sideHustleExpensesThisMonth.toLocaleString()}</p>
+          <p className="text-xs text-rose-300 mt-1">This Month</p>
         </Card>
         
-        <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
-            Total Net Profit
+        <Card className="bg-gradient-to-br from-amber-900/40 to-yellow-900/40 border-amber-500/30">
+          <h3 className="text-sm font-semibold text-amber-200 mb-2 flex items-center">
+            <DollarSign className="w-4 h-4 mr-2" />
+            Passive Income
           </h3>
-          <p className={`text-3xl font-bold ${totalNetProfit >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-            ${totalNetProfit.toLocaleString()}
-          </p>
-          <p className="text-sm text-gray-300 mt-2">
-            {totalNetProfit >= 0 ? 'Profitable' : 'Loss'}
-          </p>
+          <p className="text-2xl md:text-3xl font-bold text-white">${freedomMetrics.totalPassiveIncome.toLocaleString()}</p>
+          <p className="text-xs text-amber-300 mt-1">Last 30 Days</p>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-violet-900/40 to-purple-900/40 border-violet-500/30">
+          <h3 className="text-sm font-semibold text-violet-200 mb-2 flex items-center">
+            <Target className="w-4 h-4 mr-2" />
+            Freedom Ratio
+          </h3>
+          <p className="text-2xl md:text-3xl font-bold text-white">{freedomMetrics.freedomRatio.toFixed(1)}%</p>
+          <p className="text-xs text-violet-300 mt-1">{freedomMetrics.progressLevel}</p>
         </Card>
       </div>
+
+      {/* 🏔️ FREEDOM RATIO CENTERPIECE CARD */}
+      <Card className="bg-gradient-to-br from-slate-900 to-gray-900 border-2" style={{ borderColor: freedomMetrics.progressColor }}>
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+            🏔️ Freedom Ratio
+          </h2>
+          <p className="text-gray-400">Your passive income vs. monthly expenses</p>
+        </div>
+
+        {/* Progress Circle */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative w-64 h-64">
+            {/* Background Circle */}
+            <svg className="w-full h-full transform -rotate-90">
+              <circle
+                cx="128"
+                cy="128"
+                r="120"
+                stroke="#1f2937"
+                strokeWidth="16"
+                fill="none"
+              />
+              {/* Progress Circle */}
+              <circle
+                cx="128"
+                cy="128"
+                r="120"
+                stroke={freedomMetrics.progressColor}
+                strokeWidth="16"
+                fill="none"
+                strokeDasharray={`${(freedomMetrics.freedomRatio / 100) * 754} 754`}
+                strokeLinecap="round"
+                className="transition-all duration-1000 ease-out"
+                style={{
+                  filter: `drop-shadow(0 0 8px ${freedomMetrics.progressColor})`
+                }}
+              />
+            </svg>
+            
+            {/* Center Text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-6xl font-bold" style={{ color: freedomMetrics.progressColor }}>
+                {freedomMetrics.actualRatio.toFixed(1)}%
+              </div>
+              <div className="text-sm font-semibold mt-2" style={{ color: freedomMetrics.progressColor }}>
+                {freedomMetrics.progressLevel}
+              </div>
+            </div>
+          </div>
+
+          {/* Data Display */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+            <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
+              <div className="text-sm text-amber-300 mb-1">Passive Income (30 days)</div>
+              <div className="text-2xl font-bold text-amber-400">${freedomMetrics.totalPassiveIncome.toLocaleString()}</div>
+            </div>
+            <div className="bg-rose-900/20 rounded-lg p-4 border border-rose-500/30">
+              <div className="text-sm text-rose-300 mb-1">Monthly Expenses (30 days)</div>
+              <div className="text-2xl font-bold text-rose-400">${freedomMetrics.totalMonthlyExpenses.toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Motivational Quote */}
+        <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 text-center">
+          <p className="text-gray-300 italic">
+            {freedomMetrics.actualRatio >= 100 
+              ? "🎉 Congratulations! You've reached the summit. Your passive income covers your lifestyle!"
+              : freedomMetrics.actualRatio >= 75
+              ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. You're almost there! Keep climbing.`
+              : freedomMetrics.actualRatio >= 50
+              ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. The summit is in sight. Keep pushing!`
+              : freedomMetrics.actualRatio >= 25
+              ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. You're building momentum. Stay consistent!`
+              : `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. Every journey starts with a single step. Keep hustling!`
+            }
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            At 100%, you earn your time back. That's the summit.
+          </p>
+        </div>
+
+        {/* 🔮 Freedom Forecast */}
+        {freedomMetrics.actualRatio < 100 && freedomMetrics.totalPassiveIncome > 0 && (
+          <div className="mt-6 bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+            <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
+              🔮 Freedom Forecast
+            </h3>
+            <p className="text-gray-300 text-sm">
+              {(() => {
+                // Simple projection: If we assume 10% monthly growth in passive income
+                const monthlyGrowthRate = 0.10;
+                const currentPassive = freedomMetrics.totalPassiveIncome;
+                const targetPassive = freedomMetrics.totalMonthlyExpenses;
+                
+                if (currentPassive >= targetPassive) return "You've already achieved financial freedom!";
+                if (currentPassive === 0) return "Start building passive income streams to see your forecast!";
+                
+                // Calculate months to freedom
+                let months = 0;
+                let projected = currentPassive;
+                while (projected < targetPassive && months < 120) { // Cap at 10 years
+                  projected *= (1 + monthlyGrowthRate);
+                  months++;
+                }
+                
+                const years = (months / 12).toFixed(1);
+                
+                return months >= 120 
+                  ? "Focus on increasing your passive income growth rate to reach freedom faster!"
+                  : `At your current pace (10% monthly growth), you'll reach 100% freedom in approximately ${years} years.`;
+              })()}
+            </p>
+          </div>
+        )}
+      </Card>
 
       {/* Header and Add Business */}
       <Card>
@@ -3130,6 +3362,26 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 onChange={(e) => setNewItem({...newItem, date: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
               />
+              
+              {/* 🏔️ PASSIVE INCOME CHECKBOX - Freedom Ratio Feature! */}
+              {itemType === 'income' && (
+                <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={newItem.isPassive || false}
+                      onChange={(e) => setNewItem({...newItem, isPassive: e.target.checked})}
+                      className="w-5 h-5 rounded border-amber-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-gray-800"
+                    />
+                    <div>
+                      <span className="text-white font-semibold">Passive Income</span>
+                      <p className="text-xs text-amber-300 mt-1">
+                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              )}
             </div>
             
             <div className="mt-6 flex justify-end gap-2">
