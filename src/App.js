@@ -2747,6 +2747,9 @@ const SideHustleTab = ({ data, setData, userId }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
   
+  // ✏️ EDIT ITEM - New Feature!
+  const [editingItem, setEditingItem] = useState(null);
+  
   // 🔄 RECURRING ITEMS - New Feature!
   const [showAddRecurring, setShowAddRecurring] = useState(false);
   const [recurringType, setRecurringType] = useState('income');
@@ -3007,6 +3010,59 @@ const SideHustleTab = ({ data, setData, userId }) => {
       setData(updatedData);
     } catch (error) {
       console.error('Error deleting item:', error);
+    }
+  };
+
+  // ✏️ EDIT ITEM HANDLER
+  const handleEditItem = async () => {
+    if (!editingItem) return;
+
+    const { businessId, itemId, type, oldAmount } = editingItem;
+    const newAmount = parseFloat(editingItem.amount);
+
+    const updatedBusinesses = data.businesses.map(business => {
+      if (business.id === businessId) {
+        const updatedBusiness = { ...business };
+        
+        if (type === 'income') {
+          updatedBusiness.incomeItems = business.incomeItems.map(item => 
+            item.id === itemId ? {
+              ...item,
+              description: editingItem.description,
+              amount: newAmount,
+              date: editingItem.date,
+              isPassive: editingItem.isPassive
+            } : item
+          );
+          // Recalculate total income
+          updatedBusiness.totalIncome = business.totalIncome - oldAmount + newAmount;
+        } else {
+          updatedBusiness.expenseItems = business.expenseItems.map(item => 
+            item.id === itemId ? {
+              ...item,
+              description: editingItem.description,
+              amount: newAmount,
+              date: editingItem.date
+            } : item
+          );
+          // Recalculate total expenses
+          updatedBusiness.totalExpenses = business.totalExpenses - oldAmount + newAmount;
+        }
+        
+        updatedBusiness.netProfit = updatedBusiness.totalIncome - updatedBusiness.totalExpenses;
+        return updatedBusiness;
+      }
+      return business;
+    });
+    
+    const updatedData = { ...data, businesses: updatedBusinesses };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setEditingItem(null);
+    } catch (error) {
+      console.error('Error editing item:', error);
     }
   };
 
@@ -3519,6 +3575,21 @@ const SideHustleTab = ({ data, setData, userId }) => {
                             {isIncome ? '+' : '-'}${item.amount.toLocaleString()}
                           </span>
                           <button
+                            onClick={() => setEditingItem({
+                              businessId: business.id,
+                              itemId: item.id,
+                              type: isIncome ? 'income' : 'expense',
+                              description: item.description,
+                              amount: item.amount,
+                              oldAmount: item.amount,
+                              date: item.date,
+                              isPassive: item.isPassive || false
+                            })}
+                            className="text-gray-400 hover:text-blue-400 p-1"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </button>
+                          <button
                             onClick={() => handleDeleteItem(business.id, item.id, isIncome ? 'income' : 'expense')}
                             className="text-gray-400 hover:text-red-400 p-1"
                           >
@@ -3690,6 +3761,91 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Add {itemType === 'income' ? 'Income' : 'Expense'}
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* ✏️ Edit Item Modal */}
+      {editingItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-blue-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">
+                Edit {editingItem.type === 'income' ? 'Income' : 'Expense'} Item
+              </h3>
+              <button
+                onClick={() => setEditingItem(null)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-gray-700/30 rounded-lg p-3 text-center">
+                <span className={`text-sm font-semibold ${editingItem.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
+                  {editingItem.type === 'income' ? '📈 Income Item' : '📉 Expense Item'}
+                </span>
+              </div>
+              
+              <input
+                type="text"
+                placeholder="Description"
+                value={editingItem.description}
+                onChange={(e) => setEditingItem({...editingItem, description: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <input
+                type="number"
+                placeholder="Amount"
+                value={editingItem.amount || ''}
+                onChange={(e) => setEditingItem({...editingItem, amount: e.target.value === '' ? '' : e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <input
+                type="date"
+                value={editingItem.date}
+                onChange={(e) => setEditingItem({...editingItem, date: e.target.value})}
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              {/* 🏔️ PASSIVE INCOME CHECKBOX - Only for Income Items */}
+              {editingItem.type === 'income' && (
+                <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editingItem.isPassive || false}
+                      onChange={(e) => setEditingItem({...editingItem, isPassive: e.target.checked})}
+                      className="w-5 h-5 rounded border-amber-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-gray-800"
+                    />
+                    <div>
+                      <span className="text-white font-semibold">Passive Income</span>
+                      <p className="text-xs text-amber-300 mt-1">
+                        💡 Passive income counts toward your Freedom Ratio
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setEditingItem(null)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditItem}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Save Changes
               </button>
             </div>
           </Card>
