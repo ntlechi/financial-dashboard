@@ -1703,6 +1703,7 @@ const ExpensesCard = ({ data, viewMode }) => {
 const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const chartRef = useRef(null);
   const [hoveredBar, setHoveredBar] = useState(null);
+  const [chartKey, setChartKey] = useState(0); // For forcing re-render on resize
 
   // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
   const calculate3MonthTrend = () => {
@@ -1747,15 +1748,25 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   
   const trendData = calculate3MonthTrend();
 
-  // 🎨 D3.js Mini Bar Chart
+  // 📱 Handle window resize for mobile responsiveness
+  useEffect(() => {
+    const handleResize = () => {
+      setChartKey(prev => prev + 1); // Force chart re-render
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 🎨 D3.js Mini Bar Chart - Mobile Responsive
   useEffect(() => {
     if (!chartRef.current || trendData.length === 0) return;
 
     const container = chartRef.current;
-    const containerWidth = container.clientWidth;
+    const containerWidth = container.clientWidth || 300; // Fallback width
     const containerHeight = 120;
-    const margin = { top: 10, right: 10, bottom: 25, left: 40 };
-    const width = containerWidth - margin.left - margin.right;
+    const margin = { top: 10, right: 5, bottom: 25, left: 35 }; // Reduced margins for mobile
+    const width = Math.max(containerWidth - margin.left - margin.right, 100); // Ensure minimum width
     const height = containerHeight - margin.top - margin.bottom;
 
     // Clear previous chart
@@ -1763,8 +1774,13 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
 
     const svg = d3.select(container)
       .append("svg")
-      .attr("width", containerWidth)
-      .attr("height", containerHeight);
+      .attr("width", "100%")
+      .attr("height", containerHeight)
+      .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
+      .attr("preserveAspectRatio", "xMinYMid meet")
+      .style("max-width", "100%")
+      .style("overflow", "visible")
+      .style("display", "block");
 
     const g = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -1824,27 +1840,27 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       .call(d3.axisBottom(x).tickSize(0))
       .selectAll("text")
       .style("fill", "#9CA3AF")
-      .style("font-size", "11px");
+      .style("font-size", containerWidth < 400 ? "9px" : "11px"); // Smaller on mobile
 
     // Remove axis line
     g.select(".domain").remove();
 
-    // Y Axis with $ formatting
+    // Y Axis with $ formatting - adaptive for mobile
     const yAxis = d3.axisLeft(y)
-      .ticks(4)
-      .tickFormat(d => `$${(d/1000).toFixed(0)}k`);
+      .ticks(containerWidth < 400 ? 3 : 4) // Fewer ticks on mobile
+      .tickFormat(d => containerWidth < 400 ? `$${(d/1000).toFixed(0)}k` : `$${(d/1000).toFixed(1)}k`);
     
     g.append("g")
       .call(yAxis)
       .selectAll("text")
       .style("fill", "#9CA3AF")
-      .style("font-size", "11px");
+      .style("font-size", containerWidth < 400 ? "9px" : "11px"); // Smaller on mobile
 
     g.selectAll(".tick line")
       .style("stroke", "#374151")
       .style("stroke-dasharray", "2,2");
 
-  }, [trendData]);
+  }, [trendData, chartKey]); // Re-render on data change OR window resize
 
   // 🛡️ NULL SAFETY CHECK - After hooks
   if (!data || typeof data.total === 'undefined') {
@@ -1873,14 +1889,14 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       </div>
       
       {/* Main Cash Flow Number - Dynamic Color for Instant Status Recognition */}
-      <p className={`text-5xl font-extrabold mb-3 ${isPositive ? 'text-lime-500' : 'text-rose-500'}`} style={{
+      <p className={`text-4xl sm:text-5xl font-extrabold mb-3 ${isPositive ? 'text-lime-500' : 'text-rose-500'}`} style={{
         color: isPositive ? '#84CC16' : '#F43F5E'
       }}>
         {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
       </p>
       
       {/* 💰 COMPONENT BREAKDOWN - Strategic Intelligence */}
-      <div className="flex items-center justify-start gap-6 mb-4 text-sm">
+      <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-6 mb-4 text-xs sm:text-sm">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
           <span className="text-gray-300">Income:</span>
@@ -1895,25 +1911,27 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       
       {/* 📈 3-MONTH TREND CHART */}
       <div className="mt-4 border-t border-teal-800/50 pt-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
           {hoveredBar && (
-            <div className="text-xs text-white bg-gray-800 px-3 py-1 rounded-lg border border-teal-500/50">
-              <span className="text-teal-300">{hoveredBar.month}:</span> {hoveredBar.cashFlow >= 0 ? '+' : ''}${hoveredBar.cashFlow.toLocaleString()}
+            <div className="text-xs text-white bg-gray-800 px-2 sm:px-3 py-1 rounded-lg border border-teal-500/50">
+              <span className="text-teal-300">{hoveredBar.month}:</span> <span className="whitespace-nowrap">{hoveredBar.cashFlow >= 0 ? '+' : ''}${hoveredBar.cashFlow.toLocaleString()}</span>
             </div>
           )}
         </div>
-        <div ref={chartRef} className="w-full" style={{ minHeight: '120px' }}></div>
+        <div className="w-full overflow-hidden">
+          <div ref={chartRef} className="w-full" style={{ minHeight: '120px', maxWidth: '100%' }}></div>
+        </div>
         
         {/* Legend */}
-        <div className="flex items-center justify-center gap-4 mt-2 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-amber-400"></div>
-            <span className="text-gray-400">Current Month</span>
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-2 text-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-amber-400"></div>
+            <span className="text-gray-400 text-[10px] sm:text-xs">Current Month</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-teal-400"></div>
-            <span className="text-gray-400">Previous Months</span>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-teal-400"></div>
+            <span className="text-gray-400 text-[10px] sm:text-xs">Previous Months</span>
           </div>
         </div>
       </div>
