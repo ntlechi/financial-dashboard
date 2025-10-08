@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -8609,6 +8609,16 @@ function App() {
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
+  
+  // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackType, setFeedbackType] = useState('bug'); // 'bug' or 'feature'
+  const [feedbackData, setFeedbackData] = useState({
+    type: 'bug',
+    message: '',
+    email: '',
+    page: ''
+  });
   // Removed unused loading state - using authLoading instead
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
@@ -8650,6 +8660,63 @@ function App() {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
   }, []);
+
+  // 📊 GOOGLE ANALYTICS - Track Events
+  const trackEvent = useCallback((eventName, eventParams = {}) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', eventName, eventParams);
+      console.log('📊 Analytics Event:', eventName, eventParams);
+    }
+  }, []);
+
+  // 📧 FEEDBACK SUBMISSION HANDLER
+  const handleSubmitFeedback = async () => {
+    if (!feedbackData.message.trim()) {
+      showNotification('Please enter a message', 'error');
+      return;
+    }
+
+    try {
+      const feedbackDoc = {
+        type: feedbackData.type,
+        message: feedbackData.message,
+        email: feedbackData.email || user?.email || 'anonymous',
+        userPlan: currentUserPlan,
+        page: activeTab,
+        url: window.location.href,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent
+      };
+
+      // Save to Firebase
+      await setDoc(doc(db, 'feedback', `${Date.now()}_${user?.uid || 'anonymous'}`), feedbackDoc);
+      
+      // Track in Analytics
+      trackEvent('feedback_submitted', {
+        feedback_type: feedbackData.type,
+        from_page: activeTab
+      });
+
+      showNotification(
+        feedbackData.type === 'bug' 
+          ? '🐛 Bug report submitted! Thank you!' 
+          : '💡 Feature request submitted! Thank you!',
+        'success'
+      );
+
+      // Reset form
+      setFeedbackData({
+        type: 'bug',
+        message: '',
+        email: '',
+        page: ''
+      });
+      setShowFeedbackModal(false);
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      showNotification('Failed to submit feedback. Please try again.', 'error');
+    }
+  };
 
   // Feature gating and upgrade functions
   const checkFeatureAccess = useCallback((feature) => {
@@ -8718,12 +8785,26 @@ function App() {
         'side-hustle': 'Side Hustle Management',
         'travel-mode': 'Travel Mode'
       };
+      
+      // 📊 Track locked feature access attempt
+      trackEvent('locked_feature_clicked', {
+        feature_name: featureNames[requiredFeature] || tab,
+        tab: tab,
+        user_plan: currentUserPlan
+      });
+      
       showUpgradePromptForFeature(featureNames[requiredFeature] || tab, requiredFeature);
       return;
     }
     
+    // 📊 Track page view
+    trackEvent('page_view', {
+      page_title: tab,
+      user_plan: currentUserPlan
+    });
+    
     setActiveTab(tab);
-  }, [checkFeatureAccess, showUpgradePromptForFeature]);
+  }, [checkFeatureAccess, showUpgradePromptForFeature, trackEvent, currentUserPlan]);
 
   // 🔄 Process Recurring Expenses Function
   const processRecurringExpenses = useCallback(async (userData, currentUserId) => {

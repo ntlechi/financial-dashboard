@@ -7,11 +7,35 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Personal financial dashboard with budget tracking"
+      content="The Freedom Compass - Your personal financial command center. Track income, expenses, investments, and build your path to financial freedom."
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>Financial Dashboard</title>
+    <title>The Freedom Compass - Financial Dashboard</title>
+    
+    <!-- 📊 GOOGLE ANALYTICS 4 - Mission-Critical Tracking -->
+    <!-- SETUP INSTRUCTIONS:
+         1. Go to https://analytics.google.com/
+         2. Create new GA4 property for "The Freedom Compass"
+         3. Get your Measurement ID (format: G-XXXXXXXXXX)
+         4. Replace "G-XXXXXXXXXX" below with your actual ID
+    -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      // 🎯 Initialize GA4 with enhanced tracking
+      gtag('config', 'G-XXXXXXXXXX', {
+        'send_page_view': true,
+        'anonymize_ip': true, // Privacy compliance
+        'cookie_flags': 'SameSite=None;Secure'
+      });
+      
+      // 🔧 Make gtag globally accessible for event tracking
+      window.gtag = gtag;
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
