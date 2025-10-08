@@ -7224,40 +7224,61 @@ const TravelTab = ({ data, setData, userId }) => {
           
           // Common aliases and mappings to official GeoJSON names
           const countryAliases = {
+            // Americas
             'usa': 'united states of america',
             'us': 'united states of america',
             'united states': 'united states of america',
             'america': 'united states of america',
+            
+            // Europe
             'uk': 'united kingdom',
             'england': 'united kingdom',
             'britain': 'united kingdom',
             'great britain': 'united kingdom',
+            'czech republic': 'czechia',
+            'holland': 'netherlands',
+            'macedonia': 'north macedonia',
+            'russia': 'russian federation',
+            
+            // Middle East
             'uae': 'united arab emirates',
             'emirates': 'united arab emirates',
+            'syria': 'syrian arab republic',
+            'iran': 'islamic republic of iran',
+            'palestine': 'palestinian territory',
+            
+            // Asia
             'south korea': 'republic of korea',
             'korea': 'republic of korea',
             'north korea': "democratic people's republic of korea",
             'vietnam': 'viet nam',
             'laos': "lao people's democratic republic",
-            'czech republic': 'czechia',
-            'holland': 'netherlands',
             'burma': 'myanmar',
+            
+            // Africa
             'ivory coast': "côte d'ivoire",
             'cape verde': 'cabo verde',
-            'east timor': 'timor-leste',
             'congo': 'republic of the congo',
             'drc': 'democratic republic of the congo',
             'dr congo': 'democratic republic of the congo',
-            'macedonia': 'north macedonia',
             'swaziland': 'eswatini',
-            'russia': 'russian federation',
-            'syria': 'syrian arab republic',
-            'iran': 'islamic republic of iran',
+            
+            // South America
             'venezuela': 'bolivarian republic of venezuela',
             'bolivia': 'plurinational state of bolivia',
+            
+            // East Africa
             'tanzania': 'united republic of tanzania',
+            
+            // Eastern Europe
             'moldova': 'republic of moldova',
-            'palestine': 'palestinian territory'
+            
+            // Pacific
+            'east timor': 'timor-leste',
+            
+            // Additional common variations
+            'china': "people's republic of china",
+            'prc': "people's republic of china"
           };
           
           return countryAliases[input] || input;
@@ -8205,17 +8226,86 @@ const TravelTab = ({ data, setData, userId }) => {
                  </div>
                </div>
 
-               <div>
-                 <label className="block text-sm text-gray-300 mb-1">Current Savings (CAD)</label>
-                 <input
-                   type="number"
-                   placeholder="0"
-                   value={editingTrip.currentSavings || ''}
-                   onChange={(e) => setEditingTrip({...editingTrip, currentSavings: e.target.value === '' ? '' : Number(e.target.value)})}
-                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                 />
-               </div>
-             </div>
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">Current Savings (CAD)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={editingTrip.currentSavings || ''}
+                  onChange={(e) => setEditingTrip({...editingTrip, currentSavings: e.target.value === '' ? '' : Number(e.target.value)})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                />
+              </div>
+
+              {/* 🗺️ Countries Selector - For World Map */}
+              <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
+                <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Countries (Edit Your Map!)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Type country name and press comma or Enter"
+                  value={editingTrip.countryInput || ''}
+                  onChange={(e) => {
+                    setEditingTrip({...editingTrip, countryInput: e.target.value});
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === ',' || e.key === 'Enter') {
+                      e.preventDefault();
+                      const trimmed = (editingTrip.countryInput || '').trim();
+                      const currentCountries = editingTrip.countries || [];
+                      if (trimmed && !currentCountries.includes(trimmed)) {
+                        setEditingTrip({
+                          ...editingTrip,
+                          countries: [...currentCountries, trimmed],
+                          countryInput: ''
+                        });
+                      } else {
+                        setEditingTrip({...editingTrip, countryInput: ''});
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    // Also add on blur if there's text
+                    const trimmed = (editingTrip.countryInput || '').trim();
+                    const currentCountries = editingTrip.countries || [];
+                    if (trimmed && !currentCountries.includes(trimmed)) {
+                      setEditingTrip({
+                        ...editingTrip,
+                        countries: [...currentCountries, trimmed],
+                        countryInput: ''
+                      });
+                    }
+                  }}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                </p>
+                {Array.isArray(editingTrip.countries) && editingTrip.countries.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {editingTrip.countries.map((country, idx) => (
+                      <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
+                        🌍 {country}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updatedCountries = editingTrip.countries.filter((_, i) => i !== idx);
+                            setEditingTrip({...editingTrip, countries: updatedCountries});
+                          }}
+                          className="hover:text-red-400 transition-colors font-bold text-base"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
              
              <div className="mt-6 flex justify-end gap-3">
                <button
@@ -8973,7 +9063,7 @@ function App() {
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
-      showNotification(`Welcome ${authForm.name}! Your account has been created.`, 'success');
+      showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
     } catch (error) {
       console.error('Signup error:', error);
@@ -9812,13 +9902,13 @@ function App() {
 
               <div className="space-y-4">
                 {authMode === 'signup' && (
-                  <input
-                    type="text"
-                    placeholder="Full Name"
-                    value={authForm.name}
-                    onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                    className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-                  />
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={authForm.name}
+                  onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                />
                 )}
                 
                 <input
@@ -9885,13 +9975,13 @@ function App() {
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
-              <p className="text-amber-200 text-lg">Welcome back, {user?.displayName || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
+              <p className="text-amber-200 text-lg">Welcome back, {user?.displayName?.split(' ')[0] || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
             </div>
             
             {/* User Profile Section */}
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-white font-medium">{user?.displayName || 'User'}</p>
+                <p className="text-white font-medium">{user?.displayName?.split(' ')[0] || 'User'}</p>
                 <p className="text-gray-400 text-sm flex items-center gap-1">
                   {user?.email}
                   <span className={`text-xs px-2 py-1 rounded-full ${
@@ -11455,7 +11545,7 @@ function App() {
                 Terms of Service
               </button>
               <span className="text-gray-500">
-                © {new Date().getFullYear()} The Freedom Compass. All rights reserved.
+                © {new Date().getFullYear()} Survive Backpacking. All rights reserved.
               </span>
             </div>
           </div>
