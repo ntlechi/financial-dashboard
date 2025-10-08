@@ -6596,7 +6596,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
             <div className="flex justify-between items-center p-4 border-b border-gray-700">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <Edit className="w-5 h-5 text-purple-400" />
-                Edit Recurring Expense
+                Edit Recurring {editingRecurring.type === 'income' ? 'Income' : 'Expense'}
               </h3>
               <button
                 onClick={() => setEditingRecurring(null)}
@@ -6674,24 +6674,30 @@ const TransactionsTab = ({ data, setData, userId }) => {
                   </label>
                   <select
                     value={editingRecurring.category || 'personal'}
-                    onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value})}
+                    onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value, subcategory: ''})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="personal">Personal</option>
-                    <option value="business">Business</option>
+                    <option value="personal">👤 Personal</option>
+                    <option value="business">🏢 Business</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
                     Subcategory
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g., entertainment"
+                  <select
                     value={editingRecurring.subcategory || ''}
                     onChange={(e) => setEditingRecurring({...editingRecurring, subcategory: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-                  />
+                  >
+                    <option value="">🤖 Auto-categorize</option>
+                    {subcategoryOptions[editingRecurring.category || 'personal']?.[editingRecurring.type || 'expense']?.map(sub => (
+                      <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">
+                    💡 Categorize for better tracking
+                  </p>
                 </div>
               </div>
 
