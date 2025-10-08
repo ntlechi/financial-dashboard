@@ -4690,6 +4690,24 @@ const TransactionsTab = ({ data, setData, userId }) => {
     }
   };
 
+  // ✏️ EDIT RECURRING EXPENSE HANDLER
+  const handleEditRecurringExpense = async () => {
+    if (!editingRecurring) return;
+
+    const updatedRecurring = data.recurringExpenses.map(r =>
+      r.id === editingRecurring.id ? editingRecurring : r
+    );
+    const updatedData = { ...data, recurringExpenses: updatedRecurring };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setEditingRecurring(null);
+    } catch (error) {
+      console.error('Error updating recurring expense:', error);
+    }
+  };
+
   const handleEditTransaction = async (transaction) => {
     const updatedTransactions = data.transactions.map(t => 
       t.id === transaction.id ? {
