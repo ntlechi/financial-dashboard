@@ -3654,30 +3654,30 @@ const SideHustleTab = ({ data, setData, userId }) => {
 
         {/* Progress Circle */}
         <div className="flex flex-col items-center mb-6">
-          <div className="relative w-64 h-64">
+          <div className="relative w-72 h-72 p-4">
             {/* Background Circle */}
-            <svg className="w-full h-full transform -rotate-90">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 256 256">
               <circle
                 cx="128"
                 cy="128"
-                r="120"
+                r="110"
                 stroke="#1f2937"
-                strokeWidth="16"
+                strokeWidth="18"
                 fill="none"
               />
-              {/* Progress Circle */}
+              {/* Progress Circle with Neon Glow */}
               <circle
                 cx="128"
                 cy="128"
-                r="120"
+                r="110"
                 stroke={freedomMetrics.progressColor}
-                strokeWidth="16"
+                strokeWidth="18"
                 fill="none"
-                strokeDasharray={`${(freedomMetrics.freedomRatio / 100) * 754} 754`}
+                strokeDasharray={`${(freedomMetrics.freedomRatio / 100) * 691} 691`}
                 strokeLinecap="round"
                 className="transition-all duration-1000 ease-out"
                 style={{
-                  filter: `drop-shadow(0 0 8px ${freedomMetrics.progressColor})`
+                  filter: `drop-shadow(0 0 12px ${freedomMetrics.progressColor}) drop-shadow(0 0 24px ${freedomMetrics.progressColor})`
                 }}
               />
             </svg>
