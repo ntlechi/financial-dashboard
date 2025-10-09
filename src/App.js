@@ -706,7 +706,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
 };
 
 // Rainy Day Fund Card
-const RainyDayFundCard = ({ data, onEdit }) => {
+const RainyDayFundCard = ({ data, transactions = [], onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
@@ -720,8 +720,37 @@ const RainyDayFundCard = ({ data, onEdit }) => {
     );
   }
 
+  // 📊 CALCULATE AVERAGE MONTHLY EXPENSES (Last 3 Months) - Same logic as Survival Runway
+  const calculateAvgMonthlyExpenses = () => {
+    if (!transactions || transactions.length === 0) return 2000; // Fallback
+    
+    const now = new Date();
+    const monthsData = [];
+    
+    for (let i = 0; i < 3; i++) {
+      const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const targetMonth = targetDate.getMonth();
+      const targetYear = targetDate.getFullYear();
+      
+      const monthExpenses = transactions
+        .filter(t => {
+          const tDate = new Date(t.date);
+          return t.amount < 0 && tDate.getMonth() === targetMonth && tDate.getFullYear() === targetYear;
+        })
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      
+      monthsData.push(monthExpenses);
+    }
+    
+    const total = monthsData.reduce((sum, val) => sum + val, 0);
+    const average = monthsData.length > 0 ? total / monthsData.length : 2000;
+    
+    return average > 0 ? average : 2000;
+  };
+
+  const avgMonthlyExpenses = calculateAvgMonthlyExpenses();
   const progressPercentage = (data.total / data.goal) * 100;
-  const monthsOfExpenses = data.total / 6500; // Assuming monthly expenses
+  const monthsOfExpenses = avgMonthlyExpenses > 0 ? data.total / avgMonthlyExpenses : 0; // 🔧 BUG FIX: Use real avg expenses
   
   const getFundStatus = (months) => {
     if (months >= 6) return { status: 'Excellent', color: 'text-emerald-400' };
@@ -1789,8 +1818,7 @@ const ExpensesCard = ({ data, viewMode }) => {
 // Cash Flow Card (TEAL - Positive Growth) - PREMIUM UPGRADE 🎯
 const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const chartRef = useRef(null);
-  const [hoveredBar, setHoveredBar] = useState(null);
-  const hoveredBarRef = useRef(null); // Use ref to avoid re-renders
+  const tooltipRef = useRef(null); // DOM ref for tooltip (no React state!)
   const [chartKey, setChartKey] = useState(0); // For forcing re-render on resize
 
   // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
@@ -1920,16 +1948,19 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       .attr("rx", 4)
       .style("cursor", "pointer")
       .on("mouseover", function(event, d) {
-        hoveredBarRef.current = d;
-        setHoveredBar(d); // Update state for tooltip display
-        d3.select(this)
-          .attr("opacity", 0.8);
+        // Update tooltip via DOM (no React re-render!)
+        if (tooltipRef.current) {
+          tooltipRef.current.textContent = `${d.month}: ${d.cashFlow >= 0 ? '+' : ''}$${d.cashFlow.toLocaleString()}`;
+          tooltipRef.current.style.display = 'block';
+        }
+        d3.select(this).attr("opacity", 0.8);
       })
       .on("mouseout", function() {
-        hoveredBarRef.current = null;
-        setHoveredBar(null);
-        d3.select(this)
-          .attr("opacity", 1);
+        // Hide tooltip via DOM
+        if (tooltipRef.current) {
+          tooltipRef.current.style.display = 'none';
+        }
+        d3.select(this).attr("opacity", 1);
       });
 
     // X Axis
@@ -2011,11 +2042,14 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       <div className="mt-4 border-t border-teal-800/50 pt-4">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
-          {hoveredBar && (
-            <div className="text-xs text-white bg-gray-800 px-2 sm:px-3 py-1 rounded-lg border border-teal-500/50">
-              <span className="text-teal-300">{hoveredBar.month}:</span> <span className="whitespace-nowrap">{hoveredBar.cashFlow >= 0 ? '+' : ''}${hoveredBar.cashFlow.toLocaleString()}</span>
-            </div>
-          )}
+          {/* Tooltip - Always present, controlled via DOM (no re-renders!) */}
+          <div 
+            ref={tooltipRef}
+            className="text-xs text-teal-300 bg-gray-800 px-2 sm:px-3 py-1 rounded-lg border border-teal-500/50"
+            style={{ display: 'none' }}
+          >
+            Hover to view
+          </div>
         </div>
         <div className="w-full overflow-hidden">
           <div ref={chartRef} className="w-full" style={{ minHeight: '120px', maxWidth: '100%' }}></div>
@@ -11096,7 +11130,7 @@ function App() {
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData?.rainyDayFund} onEdit={openCardEditor} />
+                <RainyDayFundCard data={displayData?.rainyDayFund} transactions={data?.transactions || []} onEdit={openCardEditor} />
               ) : (
                 <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
