@@ -8124,19 +8124,32 @@ const TravelTab = ({ data, setData, userId }) => {
                                 onMouseLeave={() => {
                                   setHoveredCountry(null);
                                 }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
+                                onTouchStart={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                onTouchEnd={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
                                 style={{
                                   default: { 
                                     outline: 'none',
-                                    transition: 'all 0.3s ease'
+                                    transition: 'all 0.3s ease',
+                                    touchAction: 'none'
                                   },
                                   hover: { 
                                     fill: isVisited ? "#FCD34D" : isPlanned ? "#7DD3FC" : "#3d4552",
                                     stroke: isVisited ? "#F59E0B" : isPlanned ? "#0EA5E9" : "#5a6678",
                                     strokeWidth: 1,
                                     outline: 'none',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    touchAction: 'none'
                                   },
-                                  pressed: { outline: 'none' }
+                                  pressed: { outline: 'none', touchAction: 'none' }
                                 }}
                               />
                             );
