@@ -803,7 +803,10 @@ const RainyDayFundCard = ({ data, transactions = [], onEdit }) => {
         
         <div className="bg-purple-900/30 rounded-lg p-3 text-center">
           <div className="text-sm text-gray-300">
-            Target: 6 months of expenses (${(6500 * 6).toLocaleString()})
+            Goal: ${data.goal.toLocaleString()} ({(data.goal / avgMonthlyExpenses).toFixed(1)} months of expenses)
+          </div>
+          <div className="text-xs text-gray-400 mt-1">
+            Based on ${avgMonthlyExpenses.toLocaleString()}/month avg
           </div>
         </div>
       </div>
