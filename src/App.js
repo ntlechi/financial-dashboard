@@ -8533,21 +8533,13 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* Add Trip Modal */}
       {showAddTrip && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl border-blue-500/30">
-            <div className="flex justify-between items-center mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="w-full max-w-2xl my-auto">
+            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
               <h3 className="text-xl font-bold text-white">Plan New Trip</h3>
               <button
-                onClick={() => {
-                  setShowAddTrip(false);
-                  // Force viewport cleanup after modal close
-                  setTimeout(() => {
-                    window.scrollTo(0, 0);
-                    document.body.style.overflow = '';
-                    document.body.style.position = '';
-                    document.body.style.height = '';
-                  }, 100);
-                }}
+                onClick={() => setShowAddTrip(false)}
                 className="text-gray-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
@@ -8690,16 +8682,7 @@ const TravelTab = ({ data, setData, userId }) => {
             
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => {
-                  setShowAddTrip(false);
-                  // Force viewport cleanup after modal close
-                  setTimeout(() => {
-                    window.scrollTo(0, 0);
-                    document.body.style.overflow = '';
-                    document.body.style.position = '';
-                    document.body.style.height = '';
-                  }, 100);
-                }}
+                onClick={() => setShowAddTrip(false)}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Cancel
@@ -8712,6 +8695,7 @@ const TravelTab = ({ data, setData, userId }) => {
               </button>
             </div>
           </Card>
+          </div>
         </div>
       )}
 
@@ -8859,21 +8843,13 @@ const TravelTab = ({ data, setData, userId }) => {
 
        {/* Edit Trip Modal */}
        {editingTrip && (
-         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-           <Card className="w-full max-w-2xl border-blue-500/30">
-             <div className="flex justify-between items-center mb-4">
+         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+           <div className="w-full max-w-2xl my-auto">
+           <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
+             <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
                <h3 className="text-xl font-bold text-white">Edit Trip</h3>
                <button
-                 onClick={() => {
-                   setEditingTrip(null);
-                   // Force viewport cleanup after modal close
-                   setTimeout(() => {
-                     window.scrollTo(0, 0);
-                     document.body.style.overflow = '';
-                     document.body.style.position = '';
-                     document.body.style.height = '';
-                   }, 100);
-                 }}
+                 onClick={() => setEditingTrip(null)}
                  className="text-gray-400 hover:text-white"
                >
                  <X className="w-5 h-5" />
@@ -9029,16 +9005,7 @@ const TravelTab = ({ data, setData, userId }) => {
              
              <div className="mt-6 flex justify-end gap-3">
                <button
-                 onClick={() => {
-                   setEditingTrip(null);
-                   // Force viewport cleanup after modal close
-                   setTimeout(() => {
-                     window.scrollTo(0, 0);
-                     document.body.style.overflow = '';
-                     document.body.style.position = '';
-                     document.body.style.height = '';
-                   }, 100);
-                 }}
+                 onClick={() => setEditingTrip(null)}
                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
                  Cancel
@@ -9051,6 +9018,7 @@ const TravelTab = ({ data, setData, userId }) => {
                </button>
              </div>
            </Card>
+           </div>
          </div>
        )}
 
