@@ -706,7 +706,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
 };
 
 // Rainy Day Fund Card
-const RainyDayFundCard = ({ data, transactions = [], onEdit }) => {
+const RainyDayFundCard = ({ data, expenses, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
@@ -720,37 +720,10 @@ const RainyDayFundCard = ({ data, transactions = [], onEdit }) => {
     );
   }
 
-  // 📊 CALCULATE AVERAGE MONTHLY EXPENSES (Last 3 Months) - Same logic as Survival Runway
-  const calculateAvgMonthlyExpenses = () => {
-    if (!transactions || transactions.length === 0) return 2000; // Fallback
-    
-    const now = new Date();
-    const monthsData = [];
-    
-    for (let i = 0; i < 3; i++) {
-      const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const targetMonth = targetDate.getMonth();
-      const targetYear = targetDate.getFullYear();
-      
-      const monthExpenses = transactions
-        .filter(t => {
-          const tDate = new Date(t.date);
-          return t.amount < 0 && tDate.getMonth() === targetMonth && tDate.getFullYear() === targetYear;
-        })
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-      
-      monthsData.push(monthExpenses);
-    }
-    
-    const total = monthsData.reduce((sum, val) => sum + val, 0);
-    const average = monthsData.length > 0 ? total / monthsData.length : 2000;
-    
-    return average > 0 ? average : 2000;
-  };
-
-  const avgMonthlyExpenses = calculateAvgMonthlyExpenses();
+  // 🔧 USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
+  const monthlyExpenses = expenses?.total || 2000; // Use the SAME value from Monthly Expenses card
   const progressPercentage = (data.total / data.goal) * 100;
-  const monthsOfExpenses = avgMonthlyExpenses > 0 ? data.total / avgMonthlyExpenses : 0; // 🔧 BUG FIX: Use real avg expenses
+  const monthsOfExpenses = monthlyExpenses > 0 ? data.total / monthlyExpenses : 0;
   
   const getFundStatus = (months) => {
     if (months >= 6) return { status: 'Excellent', color: 'text-emerald-400' };
@@ -803,10 +776,10 @@ const RainyDayFundCard = ({ data, transactions = [], onEdit }) => {
         
         <div className="bg-purple-900/30 rounded-lg p-3 text-center">
           <div className="text-sm text-gray-300">
-            Goal: ${data.goal.toLocaleString()} ({(data.goal / avgMonthlyExpenses).toFixed(1)} months of expenses)
+            Goal: ${data.goal.toLocaleString()} ({(data.goal / monthlyExpenses).toFixed(1)} months of expenses)
           </div>
           <div className="text-xs text-gray-400 mt-1">
-            Based on ${avgMonthlyExpenses.toLocaleString()}/month avg
+            Based on ${monthlyExpenses.toFixed(2)}/month avg
           </div>
         </div>
       </div>
@@ -11135,7 +11108,7 @@ function App() {
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData?.rainyDayFund} transactions={data?.transactions || []} onEdit={openCardEditor} />
+                <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} onEdit={openCardEditor} />
               ) : (
                 <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
