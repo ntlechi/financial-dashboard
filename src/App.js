@@ -3677,7 +3677,9 @@ const SideHustleTab = ({ data, setData, userId }) => {
                 strokeLinecap="round"
                 className="transition-all duration-1000 ease-out"
                 style={{
-                  filter: `drop-shadow(0 0 12px ${freedomMetrics.progressColor}) drop-shadow(0 0 24px ${freedomMetrics.progressColor})`
+                  filter: `drop-shadow(0 0 12px ${freedomMetrics.progressColor}) drop-shadow(0 0 24px ${freedomMetrics.progressColor})`,
+                  WebkitFilter: `drop-shadow(0 0 12px ${freedomMetrics.progressColor}) drop-shadow(0 0 24px ${freedomMetrics.progressColor})`,
+                  willChange: 'filter'
                 }}
               />
             </svg>
@@ -8087,6 +8089,11 @@ const TravelTab = ({ data, setData, userId }) => {
                   </div>
                   
                   {/* The Map */}
+                  <div 
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchMove={(e) => e.stopPropagation()}
+                    onTouchEnd={(e) => e.stopPropagation()}
+                  >
                   <ComposableMap
                     projection="geoMercator"
                     projectionConfig={{
@@ -8097,7 +8104,8 @@ const TravelTab = ({ data, setData, userId }) => {
                       width: '100%',
                       height: 'auto',
                       minHeight: '400px',
-                      background: 'linear-gradient(to bottom, #1e3a5f, #0f1f3d)'
+                      background: 'linear-gradient(to bottom, #1e3a5f, #0f1f3d)',
+                      touchAction: 'pan-y pinch-zoom'
                     }}
                   >
                     <ZoomableGroup>
@@ -8171,6 +8179,7 @@ const TravelTab = ({ data, setData, userId }) => {
                       </Geographies>
                     </ZoomableGroup>
                   </ComposableMap>
+                  </div>
                   
                   {/* 🌍 Country Tooltip - Appears on Hover */}
                   {hoveredCountry && (
