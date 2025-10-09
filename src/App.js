@@ -9468,6 +9468,7 @@ function App() {
   // 🛠️ SECURE DEVELOPER PANEL (only for admins)
   const [showDevPanel, setShowDevPanel] = useState(false);
   const [devOverridePlan, setDevOverridePlan] = useState(null);
+  const [devDemoMode, setDevDemoMode] = useState(false); // 🎭 Demo mode - hides real name
   
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
@@ -10789,7 +10790,7 @@ function App() {
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
-              <p className="text-amber-200 text-lg">Welcome back, {user?.displayName?.split(' ')[0] || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
+              <p className="text-amber-200 text-lg">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Navigate your {viewMode} financial journey.</p>
             </div>
             
             {/* User Profile Section - Modern Dropdown Menu */}
@@ -10832,7 +10833,7 @@ function App() {
                   {/* User Avatar with Plan Badge */}
                   <div className="relative">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
-                      {(user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
+                      {devDemoMode ? 'D' : (user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
                     </div>
                     {/* Plan Badge on Avatar */}
                     <div className={`absolute -bottom-1 -right-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
@@ -10868,11 +10869,11 @@ function App() {
                       <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-4 border-b border-gray-700">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-xl">
-                            {(user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
+                            {devDemoMode ? 'D' : (user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
                           </div>
                           <div className="flex-1">
-                            <p className="text-white font-semibold">{user?.displayName?.split(' ')[0] || 'User'}</p>
-                            <p className="text-gray-400 text-sm truncate">{user?.email}</p>
+                            <p className="text-white font-semibold">{devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'User')}</p>
+                            <p className="text-gray-400 text-sm truncate">{devDemoMode ? 'demo@example.com' : user?.email}</p>
                           </div>
                         </div>
                         <div className="mt-3">
@@ -12541,7 +12542,7 @@ function App() {
           <div className="space-y-3">
             <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
               <span className="text-green-400">●</span>
-              Admin: {user?.email}
+              Admin: {devDemoMode ? 'demo@example.com' : user?.email}
             </div>
             
             <div>
@@ -12567,6 +12568,27 @@ function App() {
                 <option value={SUBSCRIPTION_TIERS.OPERATOR}>⚙️ OPERATOR ($14.99/mo)</option>
                 <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
               </select>
+            </div>
+            
+            {/* 🎭 DEMO MODE TOGGLE */}
+            <div className="pt-3 border-t border-gray-700">
+              <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-all">
+                <input
+                  type="checkbox"
+                  checked={devDemoMode}
+                  onChange={(e) => setDevDemoMode(e.target.checked)}
+                  className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-800"
+                />
+                <div className="flex-1">
+                  <span className="text-white font-semibold text-sm block">🎭 Demo Mode</span>
+                  <span className="text-gray-400 text-xs">Hide real name & email</span>
+                </div>
+              </label>
+              {devDemoMode && (
+                <div className="mt-2 text-xs text-purple-400 bg-purple-500/10 rounded px-3 py-2">
+                  ✨ Demo Mode ON: Shows "Demo User" & "demo@example.com"
+                </div>
+              )}
             </div>
             
             <div className="pt-3 border-t border-gray-700 space-y-2">
