@@ -3654,9 +3654,9 @@ const SideHustleTab = ({ data, setData, userId }) => {
 
         {/* Progress Circle */}
         <div className="flex flex-col items-center mb-6">
-          <div className="relative w-72 h-72 p-4">
+          <div className="relative w-80 h-80 p-8">
             {/* Background Circle */}
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 256 256">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 256 256" style={{ overflow: 'visible' }}>
               <circle
                 cx="128"
                 cy="128"
