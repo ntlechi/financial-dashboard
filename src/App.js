@@ -1790,6 +1790,7 @@ const ExpensesCard = ({ data, viewMode }) => {
 const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const chartRef = useRef(null);
   const [hoveredBar, setHoveredBar] = useState(null);
+  const hoveredBarRef = useRef(null); // Use ref to avoid re-renders
   const [chartKey, setChartKey] = useState(0); // For forcing re-render on resize
 
   // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
@@ -1837,13 +1838,25 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
 
   // 📱 Handle window resize for mobile responsiveness
   useEffect(() => {
+    let resizeTimer;
     const handleResize = () => {
-      setChartKey(prev => prev + 1); // Force chart re-render
+      // Debounce resize to prevent excessive re-renders
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (chartRef.current && trendData.length > 0) {
+          // Force re-render by clearing and letting useEffect run again
+          d3.select(chartRef.current).selectAll("*").remove();
+          setChartKey(prev => prev + 1);
+        }
+      }, 250); // Wait 250ms after resize stops
     };
     
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [trendData]);
 
   // 🎨 D3.js Mini Bar Chart - Mobile Responsive
   useEffect(() => {
@@ -1907,17 +1920,15 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       .attr("rx", 4)
       .style("cursor", "pointer")
       .on("mouseover", function(event, d) {
-        setHoveredBar(d);
+        hoveredBarRef.current = d;
+        setHoveredBar(d); // Update state for tooltip display
         d3.select(this)
-          .transition()
-          .duration(200)
           .attr("opacity", 0.8);
       })
       .on("mouseout", function() {
+        hoveredBarRef.current = null;
         setHoveredBar(null);
         d3.select(this)
-          .transition()
-          .duration(200)
           .attr("opacity", 1);
       });
 
@@ -1947,7 +1958,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       .style("stroke", "#374151")
       .style("stroke-dasharray", "2,2");
 
-  }, [trendData, chartKey]); // Re-render on data change OR window resize
+  }, [trendData, chartKey]); // Re-render on data change or manual resize trigger
 
   // 🛡️ NULL SAFETY CHECK - After hooks
   if (!data || typeof data.total === 'undefined') {
