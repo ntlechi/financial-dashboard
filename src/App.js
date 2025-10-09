@@ -10054,6 +10054,13 @@ function App() {
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
+    // 🔧 CRITICAL FIX: Prevent scroll and lock scroll position
+    const scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    
     setEditingCard(cardType);
     
     // Provide safe defaults for different card types
@@ -10069,44 +10076,39 @@ function App() {
   };
 
   const resetMobileViewport = () => {
-    // Force viewport reset on mobile
+    // Force viewport reset on mobile (NO SCROLLING!)
     if (window.innerWidth <= 768) {
       // Remove any zoom/scale
       document.body.style.zoom = "1";
       document.body.style.transform = "scale(1)";
       document.body.style.webkitTransform = "scale(1)";
       
-      // Force viewport meta tag reset
-      let viewport = document.querySelector('meta[name="viewport"]');
-      if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-        // Trigger reflow
-        setTimeout(() => {
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-        }, 100);
-      }
-      
-      // DON'T scroll to top - let the modal close function handle scroll restoration
-      // window.scrollTo(0, 0); // REMOVED
-      
       // Blur any focused elements
       if (document.activeElement) {
         document.activeElement.blur();
       }
+      
+      // NOTE: Removed viewport meta manipulation as it can cause issues
+      // Scroll position is now handled by openCardEditor/closeCardEditor
     }
   };
 
   const closeCardEditor = () => {
+    // 🔧 CRITICAL FIX: Restore scroll position (don't scroll to top!)
+    const scrollY = document.body.style.top;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+    
+    // Restore the scroll position we saved when opening
+    if (scrollY) {
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+    
     setEditingCard(null);
     setTempCardData({});
-    
-    // Ensure page scroll is reset and viewport is clean
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.height = '';
-    }, 100);
   };
 
   const saveCardData = async () => {
@@ -11408,10 +11410,16 @@ function App() {
       {/* Card Editing Modals */}
       {editingCard && (
         <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+          onClick={(e) => {
+            // Close if clicking backdrop
+            if (e.target === e.currentTarget) {
+              closeCardEditor();
+            }
+          }}
         >
-          <Card className="w-full max-w-2xl border-blue-500/30 max-h-[85vh] overflow-y-auto">
+          <div className="w-full max-w-2xl my-auto">
+            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">
                 Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
@@ -12376,6 +12384,7 @@ function App() {
               </button>
             </div>
           </Card>
+          </div>
         </div>
       )}
 
