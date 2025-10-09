@@ -10817,7 +10817,7 @@ function App() {
             </div>
             
             {/* User Profile Section - Modern Dropdown Menu - FIXED: Now stays right on mobile */}
-            <div className="flex items-center gap-4 order-last w-full sm:w-auto justify-end">
+            <div className="flex items-center gap-4 order-last w-full sm:w-auto justify-end sm:ml-auto">
               {userPlan === SUBSCRIPTION_TIERS.FREE && (
                 <button
                   onClick={() => setShowPricingModal(true)}
