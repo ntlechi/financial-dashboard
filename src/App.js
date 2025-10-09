@@ -7317,22 +7317,35 @@ const TransactionsTab = ({ data, setData, userId }) => {
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
-              <select
-                value={editingTransaction.type}
-                onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value})}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-              >
-                <option value="income">Income</option>
-                <option value="expense">Expense</option>
-              </select>
+              <div className="grid grid-cols-2 gap-4">
+                <select
+                  value={editingTransaction.type}
+                  onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value, subcategory: ''})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+                >
+                  <option value="expense">💸 Expense</option>
+                  <option value="income">💰 Income</option>
+                </select>
+                
+                <select
+                  value={editingTransaction.category}
+                  onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value, subcategory: ''})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+                >
+                  <option value="personal">👤 Personal</option>
+                  <option value="business">🏢 Business</option>
+                </select>
+              </div>
               
               <select
-                value={editingTransaction.category}
-                onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value})}
+                value={editingTransaction.subcategory || ''}
+                onChange={(e) => setEditingTransaction({...editingTransaction, subcategory: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="personal">Personal</option>
-                <option value="business">Business</option>
+                <option value="">🤖 Auto-categorize</option>
+                {subcategoryOptions[editingTransaction.category]?.[editingTransaction.type]?.map(sub => (
+                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                ))}
               </select>
               
               <input
