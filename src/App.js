@@ -3353,7 +3353,18 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      await awardXpWithRankUp(50, 'new business');
+      // Award XP (+50) for creating a new business and trigger rank-up UI if applicable
+      try {
+        const result = await awardXp(db, userId, 50);
+        if (result?.rankUp && result.newRank) {
+          const prev = getRankFromXp((result.totalXp || 0) - 50);
+          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 50, action: 'new business' });
+          setShowRankUpModal(true);
+          if (window.gtag) {
+            window.gtag('event', 'rank_up', { new_rank: result.newRank.name, new_level: result.newRank.level, xp_gained: 50, action: 'new business' });
+          }
+        }
+      } catch (e) { console.warn('XP award failed (new business)', e); }
       setData(updatedData);
       setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
       setShowAddBusiness(false);
@@ -3395,7 +3406,19 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      await awardXpWithRankUp(itemType === 'income' ? 5 : 1, 'business item');
+      // Award XP for business item (income: +5, expense: +1)
+      try {
+        const amountXp = itemType === 'income' ? 5 : 1;
+        const result = await awardXp(db, userId, amountXp);
+        if (result?.rankUp && result.newRank) {
+          const prev = getRankFromXp((result.totalXp || 0) - amountXp);
+          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: amountXp, action: 'business item' });
+          setShowRankUpModal(true);
+          if (window.gtag) {
+            window.gtag('event', 'rank_up', { new_rank: result.newRank.name, new_level: result.newRank.level, xp_gained: amountXp, action: 'business item' });
+          }
+        }
+      } catch (e) { console.warn('XP award failed (business item)', e); }
       setData(updatedData);
       setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0], isPassive: false });
       setShowAddItem(false);
@@ -5047,7 +5070,18 @@ const InvestmentTab = ({ data, setData, userId }) => {
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-        await awardXpWithRankUp(50, 'add holding');
+        // Award XP (+50) for adding a new investment holding
+        try {
+          const result = await awardXp(db, userId, 50);
+          if (result?.rankUp && result.newRank) {
+            const prev = getRankFromXp((result.totalXp || 0) - 50);
+            setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 50, action: 'add holding' });
+            setShowRankUpModal(true);
+            if (window.gtag) {
+              window.gtag('event', 'rank_up', { new_rank: result.newRank.name, new_level: result.newRank.level, xp_gained: 50, action: 'add holding' });
+            }
+          }
+        } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -6190,8 +6224,18 @@ const TransactionsTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      // Award XP for logging a transaction
-      await awardXpWithRankUp(1, 'transaction');
+      // Award XP (+1) for logging a transaction
+      try {
+        const result = await awardXp(db, userId, 1);
+        if (result?.rankUp && result.newRank) {
+          const prev = getRankFromXp((result.totalXp || 0) - 1);
+          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 1, action: 'transaction' });
+          setShowRankUpModal(true);
+          if (window.gtag) {
+            window.gtag('event', 'rank_up', { new_rank: result.newRank.name, new_level: result.newRank.level, xp_gained: 1, action: 'transaction' });
+          }
+        }
+      } catch (e) { console.warn('XP award failed (transaction)', e); }
       setData(updatedData);
       setNewTransaction({
         description: '',
@@ -10261,7 +10305,15 @@ function App() {
         let action = 'card save';
         if (editingCard === 'goals') { xpAmount = 25; action = 'create goal'; }
         else if (editingCard === 'budgets') { xpAmount = 25; action = 'create budget'; }
-        await awardXpWithRankUp(xpAmount, action);
+        const result = await awardXp(db, userId, xpAmount);
+        if (result?.rankUp && result.newRank) {
+          const prev = getRankFromXp((result.totalXp || 0) - xpAmount);
+          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: xpAmount, action });
+          setShowRankUpModal(true);
+          if (window.gtag) {
+            window.gtag('event', 'rank_up', { new_rank: result.newRank.name, new_level: result.newRank.level, xp_gained: xpAmount, action });
+          }
+        }
       } catch (e) {
         console.warn('XP award failed (card save)', e);
       }
