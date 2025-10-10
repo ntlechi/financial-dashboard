@@ -706,7 +706,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
 };
 
 // Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status 🎯
-const RainyDayFundCard = ({ data, expenses, onEdit }) => {
+const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   const [showStatusLegend, setShowStatusLegend] = useState(false);
 
   // 🛡️ NULL SAFETY CHECK
@@ -723,7 +723,9 @@ const RainyDayFundCard = ({ data, expenses, onEdit }) => {
   }
 
   // 🔧 USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
-  const monthlyExpenses = expenses?.total || 2000;
+  const expensesTotal = expenses?.total || 2000;
+  // If in annual mode, divide by 12 to get actual monthly average
+  const monthlyExpenses = viewMode === 'annual' ? expensesTotal / 12 : expensesTotal;
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = monthlyExpenses > 0 ? data.total / monthlyExpenses : 0;
   
@@ -869,7 +871,10 @@ const RainyDayFundCard = ({ data, expenses, onEdit }) => {
             Goal: ${data.goal.toLocaleString()} ({(data.goal / monthlyExpenses).toFixed(1)} months of expenses)
           </div>
           <div className="text-xs text-gray-400 mt-1 text-center">
-            Based on ${monthlyExpenses.toFixed(2)}/month avg
+            {viewMode === 'annual' 
+              ? `Based on ${(monthlyExpenses * 12).toFixed(2)}/year avg (${monthlyExpenses.toFixed(2)}/month)`
+              : `Based on ${monthlyExpenses.toFixed(2)}/month avg`
+            }
           </div>
         </div>
       </div>
@@ -11201,7 +11206,7 @@ function App() {
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
               {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} onEdit={openCardEditor} />
+                <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
               ) : (
                 <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
               )}
