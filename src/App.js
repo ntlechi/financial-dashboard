@@ -8694,13 +8694,14 @@ const handleDeleteExpense = async (tripId, expenseId) => {
                   >
                     Add Expense
                   </button>
-                  <button
+                  {/* TODO: Fix journal button scope issue */}
+                  {/* <button
                     onClick={() => handleOpenJournal(trip)}
                     className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
                     title="Add Journal Entry"
                   >
                     📓 Journal
-                  </button>
+                  </button> */}
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
                     className="text-blue-400 hover:text-blue-300 p-1"
