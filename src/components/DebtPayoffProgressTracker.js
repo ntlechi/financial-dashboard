@@ -151,16 +151,9 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => onEdit('debt', data)}
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
-        >
-          <Edit className="w-4 h-4" />
-          Manage Debts
-        </button>
-        {(!data?.accounts || data.accounts.length === 0) && (
+      {/* Quick Actions - Only show Add First Debt if no accounts exist */}
+      {(!data?.accounts || data.accounts.length === 0) && (
+        <div className="flex justify-center">
           <button
             onClick={() => onEdit('debt', data)}
             className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
@@ -168,8 +161,8 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
             <Plus className="w-4 h-4" />
             Add First Debt
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
