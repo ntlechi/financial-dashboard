@@ -13,6 +13,7 @@ import PricingModal from './components/PricingModal';
 import { ensureUserProfileInitialized, awardXp, getRankFromXp } from './utils/xp';
 import MissionStatusBanner from './components/MissionStatusBanner';
 import RankUpModal from './components/RankUpModal';
+import RankMedalsPage from './components/RankMedalsPage';
 import UpgradePrompt from './components/UpgradePrompt';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
@@ -11196,6 +11197,10 @@ function App() {
                     <Briefcase className="w-4 h-4 mr-2"/>Investment
                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
+                  <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <Award className="w-4 h-4 mr-2"/>Rank & Medals
+                    {userPlan === SUBSCRIPTION_TIERS.FREE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                  </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
@@ -11392,6 +11397,16 @@ function App() {
             <FinancialErrorBoundary componentName="Side Hustle Management">
               <SideHustleTab data={data} setData={setData} userId={userId} />
             </FinancialErrorBoundary>
+          )}
+          
+          {activeTab === 'rank-medals' && (
+            <div className="col-span-1 md:col-span-6 lg:col-span-6">
+              <RankMedalsPage 
+                userId={userId} 
+                userPlan={userPlan} 
+                onUpgrade={() => setShowPricingModal(true)} 
+              />
+            </div>
           )}
           
           {activeTab === 'investment' && (
