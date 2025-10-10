@@ -1,0 +1,143 @@
+[1mdiff --git a/src/App.js b/src/App.js[m
+[1mindex 8dd53229..22d7bad2 100644[m
+[1m--- a/src/App.js[m
+[1m+++ b/src/App.js[m
+[36m@@ -13,6 +13,7 @@[m [mimport PricingModal from './components/PricingModal';[m
+ import { ensureUserProfileInitialized, awardXp, getRankFromXp } from './utils/xp';[m
+ import MissionStatusBanner from './components/MissionStatusBanner';[m
+ import RankUpModal from './components/RankUpModal';[m
+[32m+[m[32mimport RankMedalsPage from './components/RankMedalsPage';[m
+ import UpgradePrompt from './components/UpgradePrompt';[m
+ import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';[m
+ [m
+[36m@@ -11196,6 +11197,10 @@[m [mfunction App() {[m
+                     <Briefcase className="w-4 h-4 mr-2"/>Investment[m
+                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}[m
+                   </button>[m
+[32m+[m[32m                  <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>[m
+[32m+[m[32m                    <Award className="w-4 h-4 mr-2"/>Rank & Medals[m
+[32m+[m[32m                    {userPlan === SUBSCRIPTION_TIERS.FREE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}[m
+[32m+[m[32m                  </button>[m
+                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>[m
+                     🌍 Travel[m
+                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}[m
+[36m@@ -11394,6 +11399,16 @@[m [mfunction App() {[m
+             </FinancialErrorBoundary>[m
+           )}[m
+           [m
+[32m+[m[32m          {activeTab === 'rank-medals' && ([m
+[32m+[m[32m            <div className="col-span-1 md:col-span-6 lg:col-span-6">[m
+[32m+[m[32m              <RankMedalsPage[m[41m [m
+[32m+[m[32m                userId={userId}[m[41m [m
+[32m+[m[32m                userPlan={userPlan}[m[41m [m
+[32m+[m[32m                onUpgrade={() => setShowPricingModal(true)}[m[41m [m
+[32m+[m[32m              />[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m          )}[m
+[32m+[m[41m          [m
+           {activeTab === 'investment' && ([m
+             <FinancialErrorBoundary componentName="Investment Portfolio">[m
+               <InvestmentTab data={data} setData={setData} userId={userId} />[m
+[1mdiff --git a/src/components/RankMedalsPage.js b/src/components/RankMedalsPage.js[m
+[1mnew file mode 100644[m
+[1mindex 00000000..a8c91f01[m
+[1m--- /dev/null[m
+[1m+++ b/src/components/RankMedalsPage.js[m
+[36m@@ -0,0 +1,271 @@[m
+[32m+[m[32mimport React, { useEffect, useState } from 'react';[m
+[32m+[m[32mimport { doc, getDoc } from 'firebase/firestore';[m
+[32m+[m[32mimport { db } from '../firebase';[m
+[32m+[m[32mimport { getRankFromXp, RANKS } from '../utils/xp';[m
+[32m+[m[32mimport { Crown, Lock, Star, Award, Zap, Target, Shield, Trophy } from 'lucide-react';[m
+[32m+[m
+[32m+[m[32mconst RANK_INSIGNIA = {[m
+[32m+[m[32m  'Recruit': {[m
+[32m+[m[32m    icon: '^',[m
+[32m+[m[32m    material: 'bronze',[m
+[32m+[m[32m    color: '#CD7F32',[m
+[32m+[m[32m    description: 'The first stripe. A symbol of starting the climb.',[m
+[32m+[m[32m    requirements: 'Start your financial journey'[m
+[32m+[m[32m  },[m
+[32m+[m[32m  'Climber': {[m
+[32m+[m[32m    icon: '⛏️',[m
+[32m+[m[32m    material: 'bronze',[m[41m [m
+[32m+[m[32m    color: '#CD7F32',[m
+[32m+[m[32m    description: 'Signifies the user now has the tools to make a serious ascent.',[m
+[32m+[m[32m    requirements: '1,000 XP • Log transactions, create budgets'[m
+[32m+[m[32m  },[m
+[32m+[m[32m  'Operator': {[m
+[32m+[m[32m    icon: '🧭',[m
+[32m+[m[32m    material: 'silver',[m
+[32m+[m[32m    color: '#C0C0C0',[m[41m [m
+[32m+[m[32m    description: 'The user is now a navigator, an operator in control of their own mission.',[m
+[32m+[m[32m    requirements: '5,000 XP • Manage side hustles, track investments'[m
+[32m+[m[32m  },[m
+[32m+[m[32m  'Pathfinder': {[m
+[32m+[m[32m    icon: '🗺️',[m
+[32m+[m[32m    material: 'silver',[m
+[32m+[m[32m    color: '#C0C0C0',[m
+[32m+[m[32m    description: 'The user is not just navigating; they are charting new territory.',[m
+[32m+[m[32m    requirements: '15,000 XP • Advanced financial operations'[m
+[32m+[m[32m  },[m
+[32m+[m[32m  'Vanguard': {[m
+[32m+[m[32m    icon: '🦅',[m
+[32m+[m[32m    material: 'gold',[m
+[32m+[m[32m    color: '#FFD700',[m
+[32m+[m[32m    description: 'Represents leadership and being at the forefront of the movement.',[m
+[32m+[m[32m    requirements: '30,000 XP • Master-level financial control'[m
+[32m+[m[32m  },[m
+[32m+[m[32m  'Free Agent': {[m
+[32m+[m[32m    icon: '🕊️',[m
+[32m+[m[32m    material: 'gold',[m
+[32m+[m[32m    color: '#FFD700',[m
+[32m+[m[32m    description: 'The ultimate symbol of freedom and having earned one\'s time back.',[m
+[32m+[m[32m    requirements: '60,000 XP • Financial independence achieved'[m
+[32m+[m[32m  }[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mexport default function RankMedalsPage({ userId, userPlan, onUpgrade }) {[m
+[32m+[m[32m  const [profile, setProfile] = useState(null);[m
+[32m+[m[32m  const [loading, setLoading] = useState(true);[m
+[32m+[m
+[32m+[m[32m  useEffect(() => {[m
+[32m+[m[32m    async function loadProfile() {[m
+[32m+[m[32m      if (!userId) return;[m
+[32m+[m[32m      try {[m
+[32m+[m[32m        const snap = await getDoc(doc(db, `users/${userId}/profile`));[m
+[32m+[m[32m        setProfile(snap.exists() ? snap.data() : { xpPoints: 0, rank: 'Recruit', rankLevel: 1 });[m
+[32m+[m[32m      } catch (e) {[m
+[32m+[m[32m        setProfile({ xpPoints: 0, rank: 'Recruit', rankLevel: 1 });[m
+[32m+[m[32m      } finally {[m
+[32m+[m[32m        setLoading(false);[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+[32m+[m[32m    loadProfile();[m
+[32m+[m[32m  }, [userId]);[m
+[32m+[m
+[32m+[m[32m  if (loading) {[m
+[32m+[m[32m    return ([m
+[32m+[m[32m      <div className="flex items-center justify-center py-12">[m
+[32m+[m[32m        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-amber-500"></div>[m
+[32m+[m[32m      </div>[m
+[32m+[m[32m    );[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  if (!profile) return null;[m
+[32m+[m
+[32m+[m[32m  const { current, next, progress } = getRankFromXp(profile.xpPoints || 0);[m
+[32m+[m[32m  const canViewFullLadder = userPlan === 'OPERATOR' || userPlan === 'FOUNDERS_CIRCLE';[m
+[32m+[m[32m  const visibleRanks = canViewFullLadder ? RANKS : RANKS.slice(0, 3); // Show only first 3 for free users[m
+[32m+[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <div className="space-y-8">[m
+[32m+[m[32m      {/* Current Status Header */}[m
+[32m+[m[32m      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 border border-amber-500/30">[m
+[32m+[m[32m        <div className="flex items-center justify-between mb-4">[m
+[32m+[m[32m          <div>[m
+[32m+[m[32m            <h1 className="text-3xl font-bold text-white mb-2">Rank & Medals</h1>[m
+[32m+[m[32m            <p className="text-gray-400">Your progression through The Freedom Compass ranks</p>[m
+[32m+[m[32m          </div>[m
+[32m+[m[32m          <div className="text-right">[m
+[32m+[m[32m            <div className="text-2xl font-bold text-amber-400">{current.name}</div>[m
+[32m+[m[32m            <div className="text-sm text-gray-400">Level {current.level}</div>[m
+[32m+[m[32m     
