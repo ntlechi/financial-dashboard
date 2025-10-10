@@ -802,7 +802,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
                   <div className="flex items-center gap-2 p-2 bg-teal-900/20 rounded border border-teal-500/30">
                     <div className="w-3 h-3 rounded-full bg-teal-500"></div>
                     <div className="flex-1">
-                      <div className="text-teal-400 font-semibold">Secure (>90%)</div>
+                      <div className="text-teal-400 font-semibold">Secure (&gt;90%)</div>
                       <div className="text-gray-400">Outstanding resilience!</div>
                     </div>
                   </div>
@@ -10436,9 +10436,14 @@ function App() {
     setEditingCard(cardType);
     
     // Provide safe defaults for different card types
-    if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
+    if (cardType === 'debt' && (!currentData || !currentData.accounts || currentData.accounts.length === 0)) {
+      // Provide default debt accounts if none exist
+      const defaultAccounts = [
+        { id: 1, name: 'Credit Card', balance: 0, interestRate: 0, minPayment: 0 },
+        { id: 2, name: 'Personal Loan', balance: 0, interestRate: 0, minPayment: 0 }
+      ];
       setTempCardData({
-        accounts: currentData?.accounts || [],
+        accounts: currentData?.accounts || defaultAccounts,
         total: currentData?.total || 0,
         history: currentData?.history || []
       });
@@ -10476,7 +10481,8 @@ function App() {
     
     // Restore the scroll position we saved when opening
     if (scrollY) {
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      const scrollValue = parseInt(scrollY.replace('px', '').replace('-', '')) || 0;
+      window.scrollTo(0, scrollValue);
     }
     
     setEditingCard(null);
@@ -10690,7 +10696,10 @@ function App() {
         },
         debt: {
           total: 0,
-          accounts: [],
+          accounts: [
+            { id: 1, name: 'Credit Card', balance: 0, interestRate: 0, minPayment: 0 },
+            { id: 2, name: 'Personal Loan', balance: 0, interestRate: 0, minPayment: 0 }
+          ],
           history: [{ date: resetStartDate, total: 0 }]
         },
         registeredAccounts: {
