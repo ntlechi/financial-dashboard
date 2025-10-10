@@ -12,6 +12,7 @@ import HelpFAQ from './components/HelpFAQ';
 import PricingModal from './components/PricingModal';
 import { ensureUserProfileInitialized, awardXp, getRankFromXp } from './utils/xp';
 import MissionStatusBanner from './components/MissionStatusBanner';
+import RankUpModal from './components/RankUpModal';
 import UpgradePrompt from './components/UpgradePrompt';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
@@ -3351,7 +3352,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      try { await awardXp(db, userId, 50); } catch (e) { console.warn('XP award failed (new business)', e); }
+      await awardXpWithRankUp(50, 'new business');
       setData(updatedData);
       setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
       setShowAddBusiness(false);
@@ -3393,7 +3394,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      try { await awardXp(db, userId, itemType === 'income' ? 5 : 1); } catch (e) { console.warn('XP award failed (business item)', e); }
+      await awardXpWithRankUp(itemType === 'income' ? 5 : 1, 'business item');
       setData(updatedData);
       setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0], isPassive: false });
       setShowAddItem(false);
@@ -5045,7 +5046,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-        try { await awardXp(db, userId, 50); } catch (e) { console.warn('XP award failed (add holding)', e); }
+        await awardXpWithRankUp(50, 'add holding');
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -6188,6 +6189,8 @@ const TransactionsTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // Award XP for logging a transaction
+      await awardXpWithRankUp(1, 'transaction');
       setData(updatedData);
       setNewTransaction({
         description: '',
@@ -9601,6 +9604,45 @@ function App() {
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showRankUpModal, setShowRankUpModal] = useState(false);
+  const [rankUpData, setRankUpData] = useState(null);
+  
+  // 🎖️ XP AWARD HELPER WITH RANK-UP DETECTION
+  const awardXpWithRankUp = async (amount, action = 'action') => {
+    if (!userId || !db) return;
+    
+    try {
+      const result = await awardXp(db, userId, amount);
+      
+      if (result.rankUp && result.newRank) {
+        // Get current rank for comparison
+        const currentRank = getRankFromXp(result.totalXp - amount);
+        
+        setRankUpData({
+          newRank: result.newRank,
+          oldRank: currentRank.current,
+          xpGained: amount,
+          action: action
+        });
+        setShowRankUpModal(true);
+        
+        // Track rank-up event in analytics
+        if (window.gtag) {
+          window.gtag('event', 'rank_up', {
+            new_rank: result.newRank.name,
+            new_level: result.newRank.level,
+            xp_gained: amount,
+            action: action
+          });
+        }
+      }
+      
+      return result;
+    } catch (e) {
+      console.warn(`XP award failed (${action})`, e);
+      return null;
+    }
+  };
   
   // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -10215,9 +10257,10 @@ function App() {
       // Award XP based on card type
       try {
         let xpAmount = 1; // Default for transactions
-        if (editingCard === 'goals') xpAmount = 25; // Create goal
-        else if (editingCard === 'budgets') xpAmount = 25; // Create budget
-        await awardXp(db, userId, xpAmount);
+        let action = 'card save';
+        if (editingCard === 'goals') { xpAmount = 25; action = 'create goal'; }
+        else if (editingCard === 'budgets') { xpAmount = 25; action = 'create budget'; }
+        await awardXpWithRankUp(xpAmount, action);
       } catch (e) {
         console.warn('XP award failed (card save)', e);
       }
@@ -12897,6 +12940,15 @@ function App() {
           </Card>
         </div>
       )}
+
+      {/* 🎖️ RANK-UP CELEBRATION MODAL */}
+      <RankUpModal
+        isOpen={showRankUpModal}
+        onClose={() => setShowRankUpModal(false)}
+        newRank={rankUpData?.newRank}
+        oldRank={rankUpData?.oldRank}
+        xpGained={rankUpData?.xpGained}
+      />
     </div>
   );
 }
