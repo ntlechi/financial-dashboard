@@ -10,11 +10,12 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import HelpFAQ from './components/HelpFAQ';
 import PricingModal from './components/PricingModal';
-import { ensureUserProfileInitialized, awardXp, getRankFromXp } from './utils/xp';
+import { ensureUserProfileInitialized, awardXp, getRankFromXp, checkMilestoneUnlocks } from './utils/xp';
 import MissionStatusBanner from './components/MissionStatusBanner';
 import RankUpModal from './components/RankUpModal';
 import RankMedalsPage from './components/RankMedalsPage';
 import DebtPayoffProgressTracker from './components/DebtPayoffProgressTracker';
+import FreedomMilestones from './components/FreedomMilestones';
 import UpgradePrompt from './components/UpgradePrompt';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
@@ -3335,6 +3336,56 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   };
   
   const freedomMetrics = calculateFreedomMetrics();
+  
+  // 🏆 FREEDOM MILESTONES STATE
+  const [unlockedMilestones, setUnlockedMilestones] = useState([]);
+  const [showMilestoneCelebration, setShowMilestoneCelebration] = useState(false);
+  const [celebratingMilestone, setCelebratingMilestone] = useState(null);
+
+  // Check for milestone unlocks when freedom ratio changes
+  useEffect(() => {
+    const checkMilestones = async () => {
+      if (userId && db && freedomMetrics.freedomRatio >= 0) {
+        try {
+          const { newMilestones, updatedMilestones } = await checkMilestoneUnlocks(
+            db, 
+            userId, 
+            freedomMetrics.freedomRatio, 
+            unlockedMilestones
+          );
+          
+          if (newMilestones.length > 0) {
+            setUnlockedMilestones(updatedMilestones);
+            
+            // Trigger celebration for the highest unlocked milestone
+            const latestMilestone = newMilestones[newMilestones.length - 1];
+            setCelebratingMilestone(latestMilestone);
+            setShowMilestoneCelebration(true);
+            
+            // Track milestone unlock in analytics
+            if (window.gtag) {
+              window.gtag('event', 'milestone_unlocked', {
+                milestone_id: latestMilestone.id,
+                milestone_title: latestMilestone.title,
+                freedom_ratio: freedomMetrics.freedomRatio,
+                threshold: latestMilestone.threshold
+              });
+            }
+            
+            // Hide celebration after 4 seconds
+            setTimeout(() => {
+              setShowMilestoneCelebration(false);
+              setCelebratingMilestone(null);
+            }, 4000);
+          }
+        } catch (error) {
+          console.warn('Milestone check failed:', error);
+        }
+      }
+    };
+
+    checkMilestones();
+  }, [freedomMetrics.freedomRatio, userId, db, unlockedMilestones]);
 
   const handleAddBusiness = async () => {
     if (!newBusiness.name) return;
@@ -3886,6 +3937,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           </div>
         )}
       </Card>
+
+      {/* 🏆 FREEDOM MILESTONES */}
+      <FreedomMilestones 
+        freedomRatio={freedomMetrics.freedomRatio}
+        unlockedMilestones={unlockedMilestones}
+        onMilestoneUnlock={(newMilestones) => {
+          // This will be handled by the useEffect above
+        }}
+      />
 
       {/* Header and Add Business */}
       <Card>
@@ -4561,6 +4621,20 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </button>
             </div>
           </Card>
+        </div>
+      )}
+
+      {/* 🎉 MILESTONE CELEBRATION OVERLAY */}
+      {showMilestoneCelebration && celebratingMilestone && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 pointer-events-none">
+          <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-8 shadow-2xl transform animate-bounce">
+            <div className="text-center">
+              <div className="text-6xl mb-4">{celebratingMilestone.icon}</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Milestone Unlocked!</h3>
+              <p className="text-xl text-amber-100">{celebratingMilestone.title}</p>
+              <p className="text-sm text-amber-200 mt-2">{celebratingMilestone.description}</p>
+            </div>
+          </div>
         </div>
       )}
     </div>
