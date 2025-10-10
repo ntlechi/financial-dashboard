@@ -12077,7 +12077,10 @@ function App() {
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
                                     const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    const currentBalance = e.target.value === '' ? 0 : Number(e.target.value);
+                                    const initialDebt = account.initialDebt || 0;
+                                    const amountPaid = Math.max(0, initialDebt - currentBalance);
+                                    updatedAccounts[index] = {...account, balance: currentBalance, amountPaid};
                                     setTempCardData({...currentData, accounts: updatedAccounts});
                                   }}
                                   className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -12113,7 +12116,7 @@ function App() {
                               </div>
                             </div>
                             
-                            {/* Second Row: Initial Debt and Amount Paid */}
+                            {/* Second Row: Initial Debt and Min Payment */}
                             <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-4">
                                 <label className="block text-xs text-gray-400 mb-1">Initial Debt Amount</label>
@@ -12124,26 +12127,21 @@ function App() {
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
                                     const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, initialDebt: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    const initialDebt = e.target.value === '' ? 0 : Number(e.target.value);
+                                    const currentBalance = account.balance || 0;
+                                    const amountPaid = Math.max(0, initialDebt - currentBalance);
+                                    updatedAccounts[index] = {...account, initialDebt, amountPaid};
                                     setTempCardData({...currentData, accounts: updatedAccounts});
                                   }}
                                   className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                                 />
                               </div>
                               <div className="col-span-4">
-                                <label className="block text-xs text-gray-400 mb-1">Amount Paid So Far</label>
-                                <input
-                                  type="number"
-                                  placeholder="5000"
-                                  value={account.amountPaid || ''}
-                                  onChange={(e) => {
-                                    const currentData = tempCardData || {};
-                                    const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, amountPaid: e.target.value === '' ? 0 : Number(e.target.value)};
-                                    setTempCardData({...currentData, accounts: updatedAccounts});
-                                  }}
-                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-green-500 focus:outline-none"
-                                />
+                                <label className="block text-xs text-gray-400 mb-1">Amount Paid (Auto-calculated)</label>
+                                <div className="w-full bg-gray-700 text-green-400 px-2 py-1 rounded text-sm border border-gray-500 flex items-center justify-between">
+                                  <span>${((account.initialDebt || 0) - (account.balance || 0)).toLocaleString()}</span>
+                                  <span className="text-xs text-gray-400">Auto</span>
+                                </div>
                               </div>
                               <div className="col-span-3">
                                 <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
@@ -12210,27 +12208,6 @@ function App() {
                         </div>
                       </div>
                       
-                      {/* Overall Progress Bar */}
-                      {(() => {
-                        const totalInitialDebt = ((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.initialDebt || 0), 0);
-                        const totalPaid = ((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.amountPaid || 0), 0);
-                        const progressPercentage = totalInitialDebt > 0 ? (totalPaid / totalInitialDebt) * 100 : 0;
-                        
-                        return totalInitialDebt > 0 ? (
-                          <div>
-                            <div className="flex justify-between text-xs text-gray-400 mb-1">
-                              <span>Overall Progress: ${totalPaid.toLocaleString()} paid of ${totalInitialDebt.toLocaleString()}</span>
-                              <span>{Math.round(progressPercentage)}%</span>
-                            </div>
-                            <div className="w-full bg-gray-700 rounded-full h-3">
-                              <div 
-                                className="bg-gradient-to-r from-green-500 to-green-400 h-3 rounded-full transition-all duration-500"
-                                style={{ width: `${Math.min(100, progressPercentage)}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ) : null;
-                      })()}
                     </div>
                   </div>
                 </>
