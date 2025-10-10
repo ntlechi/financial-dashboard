@@ -10,6 +10,8 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import HelpFAQ from './components/HelpFAQ';
 import PricingModal from './components/PricingModal';
+import { ensureUserProfileInitialized, awardXp, getRankFromXp } from './utils/xp';
+import MissionStatusBanner from './components/MissionStatusBanner';
 import UpgradePrompt from './components/UpgradePrompt';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
@@ -9848,6 +9850,11 @@ function App() {
         setUser(firebaseUser);
         setUserId(firebaseUser.uid);
         setShowAuth(false);
+        try {
+          await ensureUserProfileInitialized(db, firebaseUser.uid);
+        } catch (e) {
+          console.error('Profile init failed', e);
+        }
         
         // Load user's financial data from Firestore
         try {
@@ -10202,6 +10209,12 @@ function App() {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // Award XP for logging a transaction
+      try {
+        await awardXp(db, userId, 1);
+      } catch (e) {
+        console.warn('XP award failed (transaction)', e);
+      }
       setData(updatedData);
       closeCardEditor();
     } catch (error) {
@@ -10908,6 +10921,8 @@ function App() {
       {user && !authLoading && (
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
+          {/* Mission Status Banner */}
+          <MissionStatusBanner userId={userId} />
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
