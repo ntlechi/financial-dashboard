@@ -87,24 +87,34 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
       </div>
 
       {/* Progress Bar */}
-      {totalInitialDebt > 0 && (
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-300 mb-2">
-            <span>Debt Payoff Progress</span>
-            <span>{Math.round(progressPercentage)}%</span>
+      <div className="mb-4">
+        {totalInitialDebt > 0 ? (
+          <>
+            <div className="flex justify-between text-sm text-gray-300 mb-2">
+              <span>Debt Payoff Progress</span>
+              <span>{Math.round(progressPercentage)}%</span>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-3">
+              <div 
+                className="bg-gradient-to-r from-rose-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, progressPercentage)}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between text-xs text-gray-400 mt-1">
+              <span>${totalPaid.toLocaleString()} paid</span>
+              <span>${totalInitialDebt.toLocaleString()} total</span>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-2">
+            <div className="text-sm text-gray-400 mb-1">Debt Payoff Progress</div>
+            <div className="w-full bg-gray-700 rounded-full h-3">
+              <div className="bg-gray-600 h-3 rounded-full"></div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">Add initial debt amounts to track progress</div>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-3">
-            <div 
-              className="bg-gradient-to-r from-rose-500 to-pink-500 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, progressPercentage)}%` }}
-            ></div>
-          </div>
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>${totalPaid.toLocaleString()} paid</span>
-            <span>${totalInitialDebt.toLocaleString()} total</span>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Current Debt Accounts */}
       {data?.accounts && data.accounts.length > 0 && (
