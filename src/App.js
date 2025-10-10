@@ -9637,6 +9637,10 @@ function App() {
   const [showSubscription, setShowSubscription] = useState(false);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
   
+  // 🎖️ RANK-UP MODAL STATE (moved to top for scope access)
+  const [showRankUpModal, setShowRankUpModal] = useState(false);
+  const [rankUpData, setRankUpData] = useState(null);
+  
   // 🛠️ SECURE DEVELOPER PANEL (only for admins)
   const [showDevPanel, setShowDevPanel] = useState(false);
   const [devOverridePlan, setDevOverridePlan] = useState(null);
@@ -9649,8 +9653,6 @@ function App() {
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showRankUpModal, setShowRankUpModal] = useState(false);
-  const [rankUpData, setRankUpData] = useState(null);
   
   
   // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
