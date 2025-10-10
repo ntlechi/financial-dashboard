@@ -14,6 +14,7 @@ import { ensureUserProfileInitialized, awardXp, getRankFromXp } from './utils/xp
 import MissionStatusBanner from './components/MissionStatusBanner';
 import RankUpModal from './components/RankUpModal';
 import RankMedalsPage from './components/RankMedalsPage';
+import DebtPayoffProgressTracker from './components/DebtPayoffProgressTracker';
 import UpgradePrompt from './components/UpgradePrompt';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
@@ -11353,16 +11354,15 @@ function App() {
               {/* FULL-WIDTH CARDS: Detailed Intelligence */}
               {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* Total Debt - CLIMBER+ (Full Width) */}
-              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <DebtCard data={displayData?.debt} onEdit={openCardEditor} />
-                </div>
-              ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <LockedCard cardName="Total Debt & Payoff Plan" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-                </div>
-              )}
+              {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
+              <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <DebtPayoffProgressTracker 
+                  data={displayData?.debt} 
+                  onEdit={openCardEditor}
+                  userPlan={userPlan}
+                  onUpgrade={() => setShowPricingModal(true)}
+                />
+              </div>
               
               {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (
