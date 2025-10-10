@@ -10431,6 +10431,27 @@ function App() {
     }
   }, [data]);
 
+  // Close calendar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.calendar-container')) {
+        // Close all open calendars
+        if (tempCardData && tempCardData.accounts) {
+          const updatedAccounts = tempCardData.accounts.map(account => ({
+            ...account,
+            showCalendar: false
+          }));
+          setTempCardData({...tempCardData, accounts: updatedAccounts});
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [tempCardData]);
+
   // Function to check for debt payment notifications
   const checkDebtPaymentNotifications = () => {
     const today = new Date();
@@ -12207,26 +12228,159 @@ function App() {
                               </div>
                               <div className="col-span-3">
                                 <label className="block text-xs text-gray-400 mb-1">Due Date</label>
-                                <input
-                                  type="date"
-                                  value={(() => {
-                                    // Convert day of month to a proper date for the current month
-                                    const today = new Date();
-                                    const currentYear = today.getFullYear();
-                                    const currentMonth = today.getMonth();
-                                    const dueDay = account.dueDate || 1;
-                                    return `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dueDay).padStart(2, '0')}`;
-                                  })()}
-                                  onChange={(e) => {
-                                    const currentData = tempCardData || {};
-                                    const updatedAccounts = [...(currentData.accounts || [])];
-                                    const selectedDate = new Date(e.target.value);
-                                    const dayOfMonth = selectedDate.getDate();
-                                    updatedAccounts[index] = {...account, dueDate: dayOfMonth};
-                                    setTempCardData({...currentData, accounts: updatedAccounts});
-                                  }}
-                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                                />
+                                <div className="relative calendar-container">
+                                  <input
+                                    type="text"
+                                    readOnly
+                                    value={(() => {
+                                      const dueDay = account.dueDate || 1;
+                                      const today = new Date();
+                                      const currentYear = today.getFullYear();
+                                      const currentMonth = today.getMonth();
+                                      const date = new Date(currentYear, currentMonth, dueDay);
+                                      return date.toLocaleDateString('en-US', { 
+                                        month: 'short', 
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                      });
+                                    })()}
+                                    onClick={() => {
+                                      // Toggle calendar visibility for this account
+                                      const currentData = tempCardData || {};
+                                      const updatedAccounts = [...(currentData.accounts || [])];
+                                      updatedAccounts[index] = {...account, showCalendar: !account.showCalendar};
+                                      setTempCardData({...currentData, accounts: updatedAccounts});
+                                    }}
+                                    className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none cursor-pointer"
+                                    placeholder="Select due date"
+                                  />
+                                  
+                                  {/* Custom Calendar */}
+                                  {account.showCalendar && (
+                                    <div className="absolute top-full left-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 p-4 min-w-[320px]">
+                                      <div className="flex justify-between items-center mb-3">
+                                        <button
+                                          onClick={() => {
+                                            const currentData = tempCardData || {};
+                                            const updatedAccounts = [...(currentData.accounts || [])];
+                                            const currentDate = new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth()) - 1);
+                                            updatedAccounts[index] = {...account, calendarYear: currentDate.getFullYear(), calendarMonth: currentDate.getMonth()};
+                                            setTempCardData({...currentData, accounts: updatedAccounts});
+                                          }}
+                                          className="text-gray-400 hover:text-white p-1"
+                                        >
+                                          ←
+                                        </button>
+                                        <span className="text-white font-semibold">
+                                          {new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth())).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                        </span>
+                                        <button
+                                          onClick={() => {
+                                            const currentData = tempCardData || {};
+                                            const updatedAccounts = [...(currentData.accounts || [])];
+                                            const currentDate = new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth()) + 1);
+                                            updatedAccounts[index] = {...account, calendarYear: currentDate.getFullYear(), calendarMonth: currentDate.getMonth()};
+                                            setTempCardData({...currentData, accounts: updatedAccounts});
+                                          }}
+                                          className="text-gray-400 hover:text-white p-1"
+                                        >
+                                          →
+                                        </button>
+                                      </div>
+                                      
+                                      {/* Calendar Grid */}
+                                      <div className="grid grid-cols-7 gap-1 text-xs">
+                                        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+                                          <div key={day} className="text-gray-400 text-center p-2 font-semibold">{day}</div>
+                                        ))}
+                                        
+                                        {(() => {
+                                          const year = account.calendarYear || new Date().getFullYear();
+                                          const month = account.calendarMonth || new Date().getMonth();
+                                          const firstDay = new Date(year, month, 1);
+                                          const lastDay = new Date(year, month + 1, 0);
+                                          const daysInMonth = lastDay.getDate();
+                                          const startingDayOfWeek = firstDay.getDay();
+                                          
+                                          const days = [];
+                                          
+                                          // Empty cells for days before the first day of the month
+                                          for (let i = 0; i < startingDayOfWeek; i++) {
+                                            days.push(<div key={`empty-${i}`} className="p-2"></div>);
+                                          }
+                                          
+                                          // Days of the month
+                                          for (let day = 1; day <= daysInMonth; day++) {
+                                            const isSelected = day === account.dueDate;
+                                            const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+                                            
+                                            days.push(
+                                              <button
+                                                key={day}
+                                                onClick={() => {
+                                                  const currentData = tempCardData || {};
+                                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                                  updatedAccounts[index] = {...account, dueDate: day, showCalendar: false};
+                                                  setTempCardData({...currentData, accounts: updatedAccounts});
+                                                }}
+                                                className={`p-2 rounded text-sm transition-colors ${
+                                                  isSelected 
+                                                    ? 'bg-red-600 text-white' 
+                                                    : isToday 
+                                                      ? 'bg-gray-600 text-white' 
+                                                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                                                }`}
+                                              >
+                                                {day}
+                                              </button>
+                                            );
+                                          }
+                                          
+                                          return days;
+                                        })()}
+                                      </div>
+                                      
+                                      {/* Quick Actions */}
+                                      <div className="mt-3 pt-3 border-t border-gray-600">
+                                        <div className="flex gap-2">
+                                          <button
+                                            onClick={() => {
+                                              const currentData = tempCardData || {};
+                                              const updatedAccounts = [...(currentData.accounts || [])];
+                                              updatedAccounts[index] = {...account, dueDate: 1, showCalendar: false};
+                                              setTempCardData({...currentData, accounts: updatedAccounts});
+                                            }}
+                                            className="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded"
+                                          >
+                                            1st
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              const currentData = tempCardData || {};
+                                              const updatedAccounts = [...(currentData.accounts || [])];
+                                              updatedAccounts[index] = {...account, dueDate: 15, showCalendar: false};
+                                              setTempCardData({...currentData, accounts: updatedAccounts});
+                                            }}
+                                            className="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded"
+                                          >
+                                            15th
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              const currentData = tempCardData || {};
+                                              const updatedAccounts = [...(currentData.accounts || [])];
+                                              updatedAccounts[index] = {...account, dueDate: 30, showCalendar: false};
+                                              setTempCardData({...currentData, accounts: updatedAccounts});
+                                            }}
+                                            className="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded"
+                                          >
+                                            30th
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                             
