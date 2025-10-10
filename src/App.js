@@ -12257,7 +12257,7 @@ function App() {
                                   
                                   {/* Custom Calendar */}
                                   {account.showCalendar && (
-                                    <div className="absolute top-full left-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 p-4 min-w-[320px]">
+                                    <div className="absolute top-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 p-4 w-[280px] xs:w-[320px] transform -translate-x-1/2 left-1/2 sm:left-auto sm:right-0 sm:transform-none sm:w-[320px]">
                                       <div className="flex justify-between items-center mb-3">
                                         <button
                                           onClick={() => {
