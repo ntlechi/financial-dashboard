@@ -238,7 +238,7 @@ const initialData = {
   debt: {
     total: 2800,  // Small credit card debt
     accounts: [
-        { id: 1, name: 'Credit Card', balance: 2800, initialDebt: 5000, amountPaid: 2200, interestRate: 19.99, minPayment: 75 },
+        { id: 1, name: 'Credit Card', balance: 2800, initialDebt: 5000, amountPaid: 2200, interestRate: 19.99, minPayment: 75, dueDate: 15, notificationsEnabled: true, notificationDays: 3 },
     ],
     history: [
         { date: '2025-06-30', total: 3200 },
@@ -10424,6 +10424,50 @@ function App() {
     }
   }, [data]);
 
+  // 🔔 DEBT PAYMENT NOTIFICATIONS - Check for upcoming payments
+  useEffect(() => {
+    if (data && data.debt && data.debt.accounts) {
+      checkDebtPaymentNotifications();
+    }
+  }, [data]);
+
+  // Function to check for debt payment notifications
+  const checkDebtPaymentNotifications = () => {
+    const today = new Date();
+    const currentDay = today.getDate();
+    
+    data.debt.accounts.forEach(account => {
+      if (account.notificationsEnabled && account.dueDate && account.minPayment > 0) {
+        const dueDate = account.dueDate;
+        const notificationDays = account.notificationDays || 3;
+        
+        // Calculate days until due date
+        const daysUntilDue = dueDate >= currentDay ? dueDate - currentDay : (30 - currentDay) + dueDate;
+        
+        // Check if we should show notification
+        if (daysUntilDue === notificationDays) {
+          showNotification(
+            `Payment Reminder: ${account.name}`,
+            `Your ${account.name} payment of $${account.minPayment.toLocaleString()} is due in ${daysUntilDue} days (${dueDate}th of the month).`,
+            'info'
+          );
+        } else if (daysUntilDue === 0) {
+          showNotification(
+            `Payment Due Today: ${account.name}`,
+            `Your ${account.name} payment of $${account.minPayment.toLocaleString()} is due today!`,
+            'warning'
+          );
+        } else if (daysUntilDue < 0) {
+          showNotification(
+            `Payment Overdue: ${account.name}`,
+            `Your ${account.name} payment of $${account.minPayment.toLocaleString()} is ${Math.abs(daysUntilDue)} days overdue!`,
+            'error'
+          );
+        }
+      }
+    });
+  };
+
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
     // 🔧 CRITICAL FIX: Prevent scroll and lock scroll position
@@ -10439,8 +10483,8 @@ function App() {
     if (cardType === 'debt' && (!currentData || !currentData.accounts || currentData.accounts.length === 0)) {
       // Provide default debt accounts if none exist
       const defaultAccounts = [
-        { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 },
-        { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 }
+        { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0, dueDate: 15, notificationsEnabled: true, notificationDays: 3 },
+        { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0, dueDate: 1, notificationsEnabled: true, notificationDays: 3 }
       ];
       setTempCardData({
         accounts: currentData?.accounts || defaultAccounts,
@@ -10697,8 +10741,8 @@ function App() {
         debt: {
           total: 0,
           accounts: [
-            { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 },
-            { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 }
+            { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0, dueDate: 15, notificationsEnabled: true, notificationDays: 3 },
+            { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0, dueDate: 1, notificationsEnabled: true, notificationDays: 3 }
           ],
           history: [{ date: resetStartDate, total: 0 }]
         },
@@ -12031,7 +12075,10 @@ function App() {
                             initialDebt: 0,
                             amountPaid: 0,
                             interestRate: 0,
-                            minPayment: 0
+                            minPayment: 0,
+                            dueDate: new Date().getDate(), // Default to current day of month
+                            notificationsEnabled: true,
+                            notificationDays: 3 // Default to 3 days before
                           };
                           // Ensure tempCardData has the right structure
                           const currentData = tempCardData || {};
@@ -12118,7 +12165,7 @@ function App() {
                             
                             {/* Second Row: Initial Debt and Min Payment */}
                             <div className="grid grid-cols-12 gap-2 items-end">
-                              <div className="col-span-4">
+                              <div className="col-span-3">
                                 <label className="block text-xs text-gray-400 mb-1">Initial Debt Amount</label>
                                 <input
                                   type="number"
@@ -12136,7 +12183,7 @@ function App() {
                                   className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                                 />
                               </div>
-                              <div className="col-span-4">
+                              <div className="col-span-3">
                                 <label className="block text-xs text-gray-400 mb-1">Amount Paid (Auto-calculated)</label>
                                 <div className="w-full bg-gray-700 text-green-400 px-2 py-1 rounded text-sm border border-gray-500 flex items-center justify-between">
                                   <span>${((account.initialDebt || 0) - (account.balance || 0)).toLocaleString()}</span>
@@ -12158,8 +12205,63 @@ function App() {
                                   className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
                                 />
                               </div>
-                              <div className="col-span-1">
-                                {/* Empty space for alignment */}
+                              <div className="col-span-3">
+                                <label className="block text-xs text-gray-400 mb-1">Due Date (Day of Month)</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="31"
+                                  placeholder="15"
+                                  value={account.dueDate || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, dueDate: e.target.value === '' ? 1 : Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                            
+                            {/* Third Row: Notification Settings */}
+                            <div className="grid grid-cols-12 gap-2 items-end">
+                              <div className="col-span-6">
+                                <label className="block text-xs text-gray-400 mb-1">Payment Reminders</label>
+                                <div className="flex items-center gap-3">
+                                  <label className="flex items-center gap-2 text-sm text-gray-300">
+                                    <input
+                                      type="checkbox"
+                                      checked={account.notificationsEnabled !== false}
+                                      onChange={(e) => {
+                                        const currentData = tempCardData || {};
+                                        const updatedAccounts = [...(currentData.accounts || [])];
+                                        updatedAccounts[index] = {...account, notificationsEnabled: e.target.checked};
+                                        setTempCardData({...currentData, accounts: updatedAccounts});
+                                      }}
+                                      className="w-4 h-4 text-red-600 bg-gray-600 border-gray-500 rounded focus:ring-red-500 focus:ring-2"
+                                    />
+                                    Enable notifications
+                                  </label>
+                                </div>
+                              </div>
+                              <div className="col-span-6">
+                                <label className="block text-xs text-gray-400 mb-1">Remind me</label>
+                                <select
+                                  value={account.notificationDays || 3}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, notificationDays: Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  disabled={account.notificationsEnabled === false}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  <option value={1}>1 day before</option>
+                                  <option value={3}>3 days before</option>
+                                  <option value={7}>1 week before</option>
+                                </select>
                               </div>
                             </div>
                             

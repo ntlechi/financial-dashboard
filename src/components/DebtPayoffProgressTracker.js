@@ -113,6 +113,31 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
           <div className="space-y-2">
             {data.accounts.slice(0, 3).map((account, index) => {
               const accountProgress = (account.initialDebt || 0) > 0 ? ((account.amountPaid || 0) / (account.initialDebt || 1)) * 100 : 0;
+              
+              // Calculate payment status
+              const today = new Date();
+              const currentDay = today.getDate();
+              const dueDate = account.dueDate || 1;
+              const daysUntilDue = dueDate >= currentDay ? dueDate - currentDay : (30 - currentDay) + dueDate;
+              
+              let paymentStatus = 'upcoming';
+              let statusColor = 'text-blue-400';
+              let statusText = `Due in ${daysUntilDue} days`;
+              
+              if (daysUntilDue === 0) {
+                paymentStatus = 'due-today';
+                statusColor = 'text-orange-400';
+                statusText = 'Due today!';
+              } else if (daysUntilDue < 0) {
+                paymentStatus = 'overdue';
+                statusColor = 'text-red-400';
+                statusText = `${Math.abs(daysUntilDue)} days overdue`;
+              } else if (daysUntilDue <= 3) {
+                paymentStatus = 'urgent';
+                statusColor = 'text-yellow-400';
+                statusText = `Due in ${daysUntilDue} days`;
+              }
+              
               return (
                 <div key={account.id || index} className="bg-gray-800/50 rounded-lg p-2 border border-gray-600">
                   <div className="flex justify-between items-center mb-1">
@@ -120,6 +145,9 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
                       <div className="text-white text-sm font-medium">{account.name || `Debt ${index + 1}`}</div>
                       <div className="text-xs text-gray-400">
                         {(account.interestRate || 0).toFixed(1)}% • Min: ${(account.minPayment || 0).toLocaleString()}
+                      </div>
+                      <div className={`text-xs ${statusColor} font-medium`}>
+                        Due: {dueDate}th • {statusText}
                       </div>
                     </div>
                     <div className="text-right">
