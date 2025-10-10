@@ -238,7 +238,7 @@ const initialData = {
   debt: {
     total: 2800,  // Small credit card debt
     accounts: [
-        { id: 1, name: 'Credit Card', balance: 2800, interestRate: 19.99, minPayment: 75 },
+        { id: 1, name: 'Credit Card', balance: 2800, initialDebt: 5000, amountPaid: 2200, interestRate: 19.99, minPayment: 75 },
     ],
     history: [
         { date: '2025-06-30', total: 3200 },
@@ -10439,8 +10439,8 @@ function App() {
     if (cardType === 'debt' && (!currentData || !currentData.accounts || currentData.accounts.length === 0)) {
       // Provide default debt accounts if none exist
       const defaultAccounts = [
-        { id: 1, name: 'Credit Card', balance: 0, interestRate: 0, minPayment: 0 },
-        { id: 2, name: 'Personal Loan', balance: 0, interestRate: 0, minPayment: 0 }
+        { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 },
+        { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 }
       ];
       setTempCardData({
         accounts: currentData?.accounts || defaultAccounts,
@@ -10697,8 +10697,8 @@ function App() {
         debt: {
           total: 0,
           accounts: [
-            { id: 1, name: 'Credit Card', balance: 0, interestRate: 0, minPayment: 0 },
-            { id: 2, name: 'Personal Loan', balance: 0, interestRate: 0, minPayment: 0 }
+            { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 },
+            { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0 }
           ],
           history: [{ date: resetStartDate, total: 0 }]
         },
@@ -12028,6 +12028,8 @@ function App() {
                             id: Date.now(),
                             name: '',
                             balance: 0,
+                            initialDebt: 0,
+                            amountPaid: 0,
                             interestRate: 0,
                             minPayment: 0
                           };
@@ -12048,90 +12050,151 @@ function App() {
                     <div className="space-y-3">
                       {((tempCardData && tempCardData.accounts) || []).map((account, index) => (
                         <div key={account.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
-                          <div className="grid grid-cols-12 gap-2 items-end">
-                            <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">Account Name</label>
-                              <input
-                                type="text"
-                                placeholder="Credit Card"
-                                value={account.name || ''}
-                                onChange={(e) => {
-                                  const currentData = tempCardData || {};
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, name: e.target.value};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-                                }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                              />
+                          <div className="space-y-3">
+                            {/* First Row: Name and Balance */}
+                            <div className="grid grid-cols-12 gap-2 items-end">
+                              <div className="col-span-4">
+                                <label className="block text-xs text-gray-400 mb-1">Account Name</label>
+                                <input
+                                  type="text"
+                                  placeholder="Credit Card"
+                                  value={account.name || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, name: e.target.value};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                />
+                              </div>
+                              <div className="col-span-4">
+                                <label className="block text-xs text-gray-400 mb-1">Current Balance</label>
+                                <input
+                                  type="number"
+                                  placeholder="10000"
+                                  value={account.balance || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                />
+                              </div>
+                              <div className="col-span-3">
+                                <label className="block text-xs text-gray-400 mb-1">APR %</label>
+                                <input
+                                  type="number"
+                                  step="0.1"
+                                  placeholder="19.9"
+                                  value={account.interestRate || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                />
+                              </div>
+                              <div className="col-span-1">
+                                <button
+                                  onClick={() => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = (currentData.accounts || []).filter((_, i) => i !== index);
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="text-red-400 hover:text-red-300 p-1"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
                             </div>
-                            <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">Balance</label>
-                              <input
-                                type="number"
-                                placeholder="10000"
-                                value={account.balance || ''}
-                                onChange={(e) => {
-                                  const currentData = tempCardData || {};
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-                                }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                              />
+                            
+                            {/* Second Row: Initial Debt and Amount Paid */}
+                            <div className="grid grid-cols-12 gap-2 items-end">
+                              <div className="col-span-4">
+                                <label className="block text-xs text-gray-400 mb-1">Initial Debt Amount</label>
+                                <input
+                                  type="number"
+                                  placeholder="15000"
+                                  value={account.initialDebt || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, initialDebt: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                />
+                              </div>
+                              <div className="col-span-4">
+                                <label className="block text-xs text-gray-400 mb-1">Amount Paid So Far</label>
+                                <input
+                                  type="number"
+                                  placeholder="5000"
+                                  value={account.amountPaid || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, amountPaid: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-green-500 focus:outline-none"
+                                />
+                              </div>
+                              <div className="col-span-3">
+                                <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
+                                <input
+                                  type="number"
+                                  placeholder="200"
+                                  value={account.minPayment || ''}
+                                  onChange={(e) => {
+                                    const currentData = tempCardData || {};
+                                    const updatedAccounts = [...(currentData.accounts || [])];
+                                    updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
+                                    setTempCardData({...currentData, accounts: updatedAccounts});
+                                  }}
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                />
+                              </div>
+                              <div className="col-span-1">
+                                {/* Empty space for alignment */}
+                              </div>
                             </div>
-                            <div className="col-span-2">
-                              <label className="block text-xs text-gray-400 mb-1">APR %</label>
-                              <input
-                                type="number"
-                                step="0.1"
-                                placeholder="19.9"
-                                value={account.interestRate || ''}
-                                onChange={(e) => {
-                                  const currentData = tempCardData || {};
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-                                }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                              />
-                            </div>
-                            <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
-                              <input
-                                type="number"
-                                placeholder="200"
-                                value={account.minPayment || ''}
-                                onChange={(e) => {
-                                  const currentData = tempCardData || {};
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-                                }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                              />
-                            </div>
-                            <div className="col-span-1">
-                              <button
-                                onClick={() => {
-                                  const currentData = tempCardData || {};
-                                  const updatedAccounts = (currentData.accounts || []).filter((_, i) => i !== index);
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-                                }}
-                                className="text-red-400 hover:text-red-300 p-1"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
+                            
+                            {/* Progress Bar for this debt */}
+                            {(account.initialDebt || 0) > 0 && (
+                              <div className="mt-2">
+                                <div className="flex justify-between text-xs text-gray-400 mb-1">
+                                  <span>Progress: ${(account.amountPaid || 0).toLocaleString()} paid of ${(account.initialDebt || 0).toLocaleString()}</span>
+                                  <span>{Math.round(((account.amountPaid || 0) / (account.initialDebt || 1)) * 100)}%</span>
+                                </div>
+                                <div className="w-full bg-gray-700 rounded-full h-2">
+                                  <div 
+                                    className="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${Math.min(100, ((account.amountPaid || 0) / (account.initialDebt || 1)) * 100)}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
                     </div>
                     
                     <div className="mt-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-                      <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div className="grid grid-cols-2 gap-4 text-sm mb-3">
                         <div>
                           <div className="text-red-400 font-semibold">
-                            Total Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.balance || 0), 0).toLocaleString()}
+                            Current Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.balance || 0), 0).toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-green-400 font-semibold">
+                            Total Paid: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.amountPaid || 0), 0).toLocaleString()}
                           </div>
                         </div>
                         <div>
@@ -12146,6 +12209,28 @@ function App() {
                           </div>
                         </div>
                       </div>
+                      
+                      {/* Overall Progress Bar */}
+                      {(() => {
+                        const totalInitialDebt = ((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.initialDebt || 0), 0);
+                        const totalPaid = ((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.amountPaid || 0), 0);
+                        const progressPercentage = totalInitialDebt > 0 ? (totalPaid / totalInitialDebt) * 100 : 0;
+                        
+                        return totalInitialDebt > 0 ? (
+                          <div>
+                            <div className="flex justify-between text-xs text-gray-400 mb-1">
+                              <span>Overall Progress: ${totalPaid.toLocaleString()} paid of ${totalInitialDebt.toLocaleString()}</span>
+                              <span>{Math.round(progressPercentage)}%</span>
+                            </div>
+                            <div className="w-full bg-gray-700 rounded-full h-3">
+                              <div 
+                                className="bg-gradient-to-r from-green-500 to-green-400 h-3 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.min(100, progressPercentage)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ) : null;
+                      })()}
                     </div>
                   </div>
                 </>
