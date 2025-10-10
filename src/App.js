@@ -7989,101 +7989,6 @@ const handleDeleteExpense = async (tripId, expenseId) => {
   }
 };
 
-// 📓 FREEDOM JOURNAL HANDLERS
-const handleSaveJournalEntry = async (entry) => {
-  if (!selectedTripForJournal) return;
-
-  const updatedTrips = (data.travel?.trips || []).map(trip => {
-    if (trip.id === selectedTripForJournal.id) {
-      return {
-        ...trip,
-        journalEntries: [...(trip.journalEntries || []), entry]
-      };
-    }
-    return trip;
-  });
-
-  const updatedTravel = { ...data.travel, trips: updatedTrips };
-  const updatedData = { ...data, travel: updatedTravel };
-
-  try {
-    await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-    setData(updatedData);
-    showNotification('Journal entry saved! 📓', 'success');
-    
-    // Award XP for journaling
-    if (userId) {
-      const xpResult = await awardXp(db, userId, 10); // 10 XP for journal entry
-      if (xpResult.rankUp) {
-        setRankUpData(xpResult);
-        setShowRankUpModal(true);
-      }
-    }
-  } catch (error) {
-    console.error('Error saving journal entry:', error);
-    showNotification('Error saving journal entry', 'error');
-  }
-};
-
-const handleOpenJournal = (trip) => {
-  setSelectedTripForJournal(trip);
-  setShowJournalModal(true);
-};
-
-const handleCloseJournal = () => {
-  setShowJournalModal(false);
-  setSelectedTripForJournal(null);
-};
-
-// 🎯 MISSION COMPLETE AUTOMATION
-const checkForCompletedTrips = () => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  const trips = data?.travel?.trips || [];
-  const completedTrips = trips.filter(trip => {
-    if (!trip.endDate) return false;
-    const endDate = new Date(trip.endDate);
-    endDate.setHours(0, 0, 0, 0);
-    return endDate <= today && trip.status !== 'completed';
-  });
-
-  if (completedTrips.length > 0) {
-    // Show mission complete modal for the first completed trip
-    setCompletedTrip(completedTrips[0]);
-    setShowMissionCompleteModal(true);
-    
-    // Mark trip as completed
-    const updatedTrips = trips.map(trip => {
-      if (trip.id === completedTrips[0].id) {
-        return { ...trip, status: 'completed' };
-      }
-      return trip;
-    });
-    
-    const updatedTravel = { ...data.travel, trips: updatedTrips };
-    const updatedData = { ...data, travel: updatedTravel };
-    setData(updatedData);
-    
-    // Save to Firebase
-    setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-  }
-};
-
-// 📄 PDF EXPORT HANDLER
-const handleExportPDF = async () => {
-  if (currentUserPlan !== 'OPERATOR' && currentUserPlan !== 'FOUNDER\'S_CIRCLE') {
-    setUpgradePromptData({
-      featureName: 'Export Freedom Story as PDF',
-      requiredPlan: 'Operator'
-    });
-    setShowUpgradePrompt(true);
-    return;
-  }
-
-  // TODO: Implement PDF generation
-  showNotification('PDF export feature coming soon! 🚀', 'success');
-};
 
   const runway = calculateRunway();
 
@@ -10412,6 +10317,102 @@ function App() {
     // });
     // return () => unsubscribeSnapshot();
   }, [userId]);
+
+  // 📓 FREEDOM JOURNAL HANDLERS
+  const handleSaveJournalEntry = async (entry) => {
+    if (!selectedTripForJournal) return;
+
+    const updatedTrips = (data.travel?.trips || []).map(trip => {
+      if (trip.id === selectedTripForJournal.id) {
+        return {
+          ...trip,
+          journalEntries: [...(trip.journalEntries || []), entry]
+        };
+      }
+      return trip;
+    });
+
+    const updatedTravel = { ...data.travel, trips: updatedTrips };
+    const updatedData = { ...data, travel: updatedTravel };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      showNotification('Journal entry saved! 📓', 'success');
+      
+      // Award XP for journaling
+      if (userId) {
+        const xpResult = await awardXp(db, userId, 10); // 10 XP for journal entry
+        if (xpResult.rankUp) {
+          setRankUpData(xpResult);
+          setShowRankUpModal(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving journal entry:', error);
+      showNotification('Error saving journal entry', 'error');
+    }
+  };
+
+  const handleOpenJournal = (trip) => {
+    setSelectedTripForJournal(trip);
+    setShowJournalModal(true);
+  };
+
+  const handleCloseJournal = () => {
+    setShowJournalModal(false);
+    setSelectedTripForJournal(null);
+  };
+
+  // 🎯 MISSION COMPLETE AUTOMATION
+  const checkForCompletedTrips = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const trips = data?.travel?.trips || [];
+    const completedTrips = trips.filter(trip => {
+      if (!trip.endDate) return false;
+      const endDate = new Date(trip.endDate);
+      endDate.setHours(0, 0, 0, 0);
+      return endDate <= today && trip.status !== 'completed';
+    });
+
+    if (completedTrips.length > 0) {
+      // Show mission complete modal for the first completed trip
+      setCompletedTrip(completedTrips[0]);
+      setShowMissionCompleteModal(true);
+      
+      // Mark trip as completed
+      const updatedTrips = trips.map(trip => {
+        if (trip.id === completedTrips[0].id) {
+          return { ...trip, status: 'completed' };
+        }
+        return trip;
+      });
+      
+      const updatedTravel = { ...data.travel, trips: updatedTrips };
+      const updatedData = { ...data, travel: updatedTravel };
+      setData(updatedData);
+      
+      // Save to Firebase
+      setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+    }
+  };
+
+  // 📄 PDF EXPORT HANDLER
+  const handleExportPDF = async () => {
+    if (currentUserPlan !== 'OPERATOR' && currentUserPlan !== 'FOUNDER\'S_CIRCLE') {
+      setUpgradePromptData({
+        featureName: 'Export Freedom Story as PDF',
+        requiredPlan: 'Operator'
+      });
+      setShowUpgradePrompt(true);
+      return;
+    }
+
+    // TODO: Implement PDF generation
+    showNotification('PDF export feature coming soon! 🚀', 'success');
+  };
 
   // 🎯 MISSION COMPLETE AUTOMATION - Check for completed trips
   useEffect(() => {
