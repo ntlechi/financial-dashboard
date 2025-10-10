@@ -3185,7 +3185,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
 };
 
 // Side Hustle Management Component
-const SideHustleTab = ({ data, setData, userId }) => {
+const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
   const [showAddBusiness, setShowAddBusiness] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [showAddItem, setShowAddItem] = useState(false);
@@ -4567,7 +4567,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
 };
 
 // Investment Portfolio Component with Charts
-const InvestmentTab = ({ data, setData, userId }) => {
+const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
   const pieChartRef = useRef(null);
   const lineChartRef = useRef(null);
   const [showAddHolding, setShowAddHolding] = useState(false);
@@ -6122,7 +6122,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
   };
 
 // Transaction Management Component
-const TransactionsTab = ({ data, setData, userId }) => {
+const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
   const spendingChartRef = useRef(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -11413,7 +11413,7 @@ function App() {
           
           {activeTab === 'side-hustle' && (
             <FinancialErrorBoundary componentName="Side Hustle Management">
-              <SideHustleTab data={data} setData={setData} userId={userId} />
+              <SideHustleTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
             </FinancialErrorBoundary>
           )}
           
@@ -11429,13 +11429,13 @@ function App() {
           
           {activeTab === 'investment' && (
             <FinancialErrorBoundary componentName="Investment Portfolio">
-              <InvestmentTab data={data} setData={setData} userId={userId} />
+              <InvestmentTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
             </FinancialErrorBoundary>
           )}
           
           {activeTab === 'transactions' && (
             <FinancialErrorBoundary componentName="Transaction Management">
-              <TransactionsTab data={data} setData={setData} userId={userId} />
+              <TransactionsTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
             </FinancialErrorBoundary>
           )}
           
