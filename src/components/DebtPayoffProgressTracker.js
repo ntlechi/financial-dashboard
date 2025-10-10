@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { TrendingDown, Calendar, DollarSign, Target, Zap, Calculator, ArrowRight, Clock } from 'lucide-react';
+import { TrendingDown, Calendar, DollarSign, Target, Zap, Calculator, ArrowRight, Clock, Edit } from 'lucide-react';
 
 // Debt payoff calculation engine
 const calculateDebtPayoff = (debts, strategy, extraPayment = 0) => {
@@ -153,7 +153,10 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
 
   // Premium tier - full interactive tracker
   return (
-    <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-red-500/30">
+    <div 
+      className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-red-500/30"
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -166,8 +169,9 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
           </div>
         </div>
         <button
-          onClick={onEdit}
-          className="text-gray-400 hover:text-white transition-colors"
+          onClick={() => onEdit('debt', data)}
+          className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-700/50"
+          title="Edit Debt Accounts"
         >
           <Calculator className="w-5 h-5" />
         </button>
@@ -213,6 +217,46 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
             Across {data?.accounts?.length || 0} accounts
           </div>
         </div>
+      </div>
+
+      {/* Current Debt Accounts */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-lg font-semibold text-white">Current Debt Accounts</h4>
+          <span className="text-sm text-gray-400">{data?.accounts?.length || 0} accounts</span>
+        </div>
+        
+        {data?.accounts && data.accounts.length > 0 ? (
+          <div className="space-y-2">
+            {data.accounts.map((account, index) => (
+              <div key={account.id || index} className="bg-gray-800/50 rounded-lg p-3 border border-gray-600">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="text-white font-medium">{account.name || `Debt ${index + 1}`}</div>
+                    <div className="text-sm text-gray-400">
+                      Balance: ${(account.balance || 0).toLocaleString()} • 
+                      Rate: {(account.interestRate || 0).toFixed(1)}% • 
+                      Min: ${(account.minPayment || 0).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-red-400 font-bold">${(account.balance || 0).toLocaleString()}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-600 text-center">
+            <div className="text-gray-400 mb-2">No debt accounts found</div>
+            <button
+              onClick={() => onEdit('debt', data)}
+              className="text-blue-400 hover:text-blue-300 text-sm font-semibold"
+            >
+              Add your first debt account →
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Strategy Toggle */}
@@ -331,7 +375,14 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
       </div>
 
       {/* Quick Actions */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => onEdit('debt', data)}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+        >
+          <Edit className="w-4 h-4" />
+          Manage Debt Accounts
+        </button>
         <button
           onClick={() => setExtraPayment(100)}
           className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded text-sm transition-colors"
