@@ -9652,42 +9652,6 @@ function App() {
   const [showRankUpModal, setShowRankUpModal] = useState(false);
   const [rankUpData, setRankUpData] = useState(null);
   
-  // 🎖️ XP AWARD HELPER WITH RANK-UP DETECTION
-  const awardXpWithRankUp = async (amount, action = 'action') => {
-    if (!userId || !db) return;
-    
-    try {
-      const result = await awardXp(db, userId, amount);
-      
-      if (result.rankUp && result.newRank) {
-        // Get current rank for comparison
-        const currentRank = getRankFromXp(result.totalXp - amount);
-        
-        setRankUpData({
-          newRank: result.newRank,
-          oldRank: currentRank.current,
-          xpGained: amount,
-          action: action
-        });
-        setShowRankUpModal(true);
-        
-        // Track rank-up event in analytics
-        if (window.gtag) {
-          window.gtag('event', 'rank_up', {
-            new_rank: result.newRank.name,
-            new_level: result.newRank.level,
-            xp_gained: amount,
-            action: action
-          });
-        }
-      }
-      
-      return result;
-    } catch (e) {
-      console.warn(`XP award failed (${action})`, e);
-      return null;
-    }
-  };
   
   // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
