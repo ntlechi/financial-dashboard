@@ -705,8 +705,10 @@ const SavingsRateCard = ({ data, onEdit }) => {
   );
 };
 
-// Rainy Day Fund Card
+// Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status 🎯
 const RainyDayFundCard = ({ data, expenses, onEdit }) => {
+  const [showStatusLegend, setShowStatusLegend] = useState(false);
+
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
@@ -721,27 +723,108 @@ const RainyDayFundCard = ({ data, expenses, onEdit }) => {
   }
 
   // 🔧 USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
-  const monthlyExpenses = expenses?.total || 2000; // Use the SAME value from Monthly Expenses card
+  const monthlyExpenses = expenses?.total || 2000;
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = monthlyExpenses > 0 ? data.total / monthlyExpenses : 0;
   
-  const getFundStatus = (months) => {
-    if (months >= 6) return { status: 'Excellent', color: 'text-emerald-400' };
-    if (months >= 3) return { status: 'Good', color: 'text-yellow-400' };
-    return { status: 'Build More', color: 'text-red-400' };
+  // 🎮 GAMIFIED RESILIENCE STATUS LOGIC (Color-coded by completion %)
+  const getResilienceStatus = (percentage) => {
+    if (percentage > 90) return { 
+      status: 'Secure', 
+      color: '#14B8A6',        // Vibrant Teal
+      textColor: 'text-teal-400',
+      bgColor: 'bg-teal-500',
+      borderColor: 'border-teal-500/50'
+    };
+    if (percentage >= 50) return { 
+      status: 'Good Progress', 
+      color: '#38BDF8',        // Sky Blue
+      textColor: 'text-sky-400',
+      bgColor: 'bg-sky-500',
+      borderColor: 'border-sky-500/50'
+    };
+    if (percentage >= 25) return { 
+      status: 'Building', 
+      color: '#F59E0B',        // Energetic Amber
+      textColor: 'text-amber-400',
+      bgColor: 'bg-amber-500',
+      borderColor: 'border-amber-500/50'
+    };
+    return { 
+      status: 'Needs Work', 
+      color: '#F43F5E',        // Urgent Rose
+      textColor: 'text-rose-400',
+      bgColor: 'bg-rose-500',
+      borderColor: 'border-rose-500/50'
+    };
   };
 
-  const { status, color } = getFundStatus(monthsOfExpenses);
+  const resilience = getResilienceStatus(progressPercentage);
 
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <Umbrella className="w-6 h-6 mr-3 text-amber-400" />
-          Rainy Day Fund
-        </h2>
         <div className="flex items-center gap-2">
-          <span className="text-amber-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+          <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
+            <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-amber-400" />
+            Rainy Day Fund
+          </h2>
+          {/* ℹ️ Status Legend Tooltip */}
+          <div className="relative">
+            <button
+              onMouseEnter={() => setShowStatusLegend(true)}
+              onMouseLeave={() => setShowStatusLegend(false)}
+              onClick={() => setShowStatusLegend(!showStatusLegend)}
+              className="text-gray-400 hover:text-blue-400 transition-colors"
+              title="Status Legend"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {/* Status Legend Tooltip */}
+            {showStatusLegend && (
+              <div className="absolute top-full left-0 mt-2 w-64 sm:w-72 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 z-50 p-4">
+                <h4 className="text-white font-semibold mb-3 text-sm">Resilience Status Levels</h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2 p-2 bg-teal-900/20 rounded border border-teal-500/30">
+                    <div className="w-3 h-3 rounded-full bg-teal-500"></div>
+                    <div className="flex-1">
+                      <div className="text-teal-400 font-semibold">Secure (>90%)</div>
+                      <div className="text-gray-400">Outstanding resilience!</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-sky-900/20 rounded border border-sky-500/30">
+                    <div className="w-3 h-3 rounded-full bg-sky-500"></div>
+                    <div className="flex-1">
+                      <div className="text-sky-400 font-semibold">Good Progress (50-90%)</div>
+                      <div className="text-gray-400">Keep building!</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-amber-900/20 rounded border border-amber-500/30">
+                    <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                    <div className="flex-1">
+                      <div className="text-amber-400 font-semibold">Building (25-50%)</div>
+                      <div className="text-gray-400">Getting there!</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-rose-900/20 rounded border border-rose-500/30">
+                    <div className="w-3 h-3 rounded-full bg-rose-500"></div>
+                    <div className="flex-1">
+                      <div className="text-rose-400 font-semibold">Needs Work (&lt;25%)</div>
+                      <div className="text-gray-400">Time to hustle!</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`font-semibold text-sm sm:text-base ${resilience.textColor}`}>
+            {progressPercentage.toFixed(1)}%
+          </span>
           <button
             onClick={() => onEdit('rainyDayFund', data)}
             className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
@@ -753,32 +836,39 @@ const RainyDayFundCard = ({ data, expenses, onEdit }) => {
       
       <div className="space-y-4">
         <div className="text-center">
-          <div className="text-3xl font-extrabold text-white mb-1">
+          <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
             ${data.total.toLocaleString()}
           </div>
-          <div className={`text-sm font-semibold ${color}`}>
-            {monthsOfExpenses.toFixed(1)} months • {status}
+          {/* 🎯 DYNAMIC STATUS INDICATOR */}
+          <div className={`text-base sm:text-lg font-bold ${resilience.textColor} mb-1`} style={{ color: resilience.color }}>
+            {resilience.status}
+          </div>
+          <div className="text-xs sm:text-sm text-gray-400">
+            {monthsOfExpenses.toFixed(1)} months of expenses covered
           </div>
         </div>
         
         <div>
-          <div className="flex justify-between text-sm text-gray-300 mb-2">
+          <div className="flex justify-between text-xs sm:text-sm text-gray-300 mb-2">
             <span>Current: ${data.total.toLocaleString()}</span>
             <span>Goal: ${data.goal.toLocaleString()}</span>
           </div>
-          <ProgressBar 
-            value={data.total} 
-            maxValue={data.goal} 
-            color="bg-purple-500"
-            height="h-3"
-          />
+          {/* 🎨 DYNAMIC COLOR PROGRESS BAR */}
+          <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+            <div 
+              className={`h-3 rounded-full transition-all duration-500 ${resilience.bgColor}`}
+              style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+            >
+              <div className="h-full w-full animate-pulse opacity-20 bg-white"></div>
+            </div>
+          </div>
         </div>
         
-        <div className="bg-purple-900/30 rounded-lg p-3 text-center">
-          <div className="text-sm text-gray-300">
+        <div className={`bg-gray-800/50 rounded-lg p-3 border ${resilience.borderColor}`}>
+          <div className="text-xs sm:text-sm text-gray-300 text-center">
             Goal: ${data.goal.toLocaleString()} ({(data.goal / monthlyExpenses).toFixed(1)} months of expenses)
           </div>
-          <div className="text-xs text-gray-400 mt-1">
+          <div className="text-xs text-gray-400 mt-1 text-center">
             Based on ${monthlyExpenses.toFixed(2)}/month avg
           </div>
         </div>
