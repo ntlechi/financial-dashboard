@@ -207,3 +207,4 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
     </div>
   );
 }
+

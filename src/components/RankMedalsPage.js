@@ -269,3 +269,4 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
     </div>
   );
 }
+

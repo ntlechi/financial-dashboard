@@ -17,6 +17,9 @@ import RankMedalsPage from './components/RankMedalsPage';
 import DebtPayoffProgressTracker from './components/DebtPayoffProgressTracker';
 import FreedomMilestones from './components/FreedomMilestones';
 import UpgradePrompt from './components/UpgradePrompt';
+import FreedomJournal from './components/FreedomJournal';
+import ReflectionsPage from './components/ReflectionsPage';
+import MissionCompleteModal from './components/MissionCompleteModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
 // Firebase Imports
@@ -7959,32 +7962,128 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
- const handleDeleteExpense = async (tripId, expenseId) => {
-   if (!window.confirm('Delete this expense?')) {
-     return;
-   }
+// 🗑️ DELETE EXPENSE FROM TRIP HANDLER
+const handleDeleteExpense = async (tripId, expenseId) => {
+  if (!window.confirm('Delete this expense?')) {
+    return;
+  }
 
-   const updatedTrips = (data.travel?.trips || []).map(trip => {
-     if (trip.id === tripId) {
-       return {
-         ...trip,
-         expenses: trip.expenses.filter(exp => exp.id !== expenseId)
-       };
-     }
-     return trip;
-   });
+  const updatedTrips = (data.travel?.trips || []).map(trip => {
+    if (trip.id === tripId) {
+      return {
+        ...trip,
+        expenses: trip.expenses.filter(exp => exp.id !== expenseId)
+      };
+    }
+    return trip;
+  });
 
-   const updatedTravel = { ...data.travel, trips: updatedTrips };
-   const updatedData = { ...data, travel: updatedTravel };
+  const updatedTravel = { ...data.travel, trips: updatedTrips };
+  const updatedData = { ...data, travel: updatedTravel };
 
-   try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
-   } catch (error) {
-     console.error('Error deleting expense:', error);
-   }
- };
+  try {
+    await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+    setData(updatedData);
+  } catch (error) {
+    console.error('Error deleting expense:', error);
+  }
+};
+
+// 📓 FREEDOM JOURNAL HANDLERS
+const handleSaveJournalEntry = async (entry) => {
+  if (!selectedTripForJournal) return;
+
+  const updatedTrips = (data.travel?.trips || []).map(trip => {
+    if (trip.id === selectedTripForJournal.id) {
+      return {
+        ...trip,
+        journalEntries: [...(trip.journalEntries || []), entry]
+      };
+    }
+    return trip;
+  });
+
+  const updatedTravel = { ...data.travel, trips: updatedTrips };
+  const updatedData = { ...data, travel: updatedTravel };
+
+  try {
+    await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+    setData(updatedData);
+    showNotification('Journal entry saved! 📓', 'success');
+    
+    // Award XP for journaling
+    if (userId) {
+      const xpResult = await awardXp(db, userId, 10); // 10 XP for journal entry
+      if (xpResult.rankUp) {
+        setRankUpData(xpResult);
+        setShowRankUpModal(true);
+      }
+    }
+  } catch (error) {
+    console.error('Error saving journal entry:', error);
+    showNotification('Error saving journal entry', 'error');
+  }
+};
+
+const handleOpenJournal = (trip) => {
+  setSelectedTripForJournal(trip);
+  setShowJournalModal(true);
+};
+
+const handleCloseJournal = () => {
+  setShowJournalModal(false);
+  setSelectedTripForJournal(null);
+};
+
+// 🎯 MISSION COMPLETE AUTOMATION
+const checkForCompletedTrips = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const trips = data?.travel?.trips || [];
+  const completedTrips = trips.filter(trip => {
+    if (!trip.endDate) return false;
+    const endDate = new Date(trip.endDate);
+    endDate.setHours(0, 0, 0, 0);
+    return endDate <= today && trip.status !== 'completed';
+  });
+
+  if (completedTrips.length > 0) {
+    // Show mission complete modal for the first completed trip
+    setCompletedTrip(completedTrips[0]);
+    setShowMissionCompleteModal(true);
+    
+    // Mark trip as completed
+    const updatedTrips = trips.map(trip => {
+      if (trip.id === completedTrips[0].id) {
+        return { ...trip, status: 'completed' };
+      }
+      return trip;
+    });
+    
+    const updatedTravel = { ...data.travel, trips: updatedTrips };
+    const updatedData = { ...data, travel: updatedTravel };
+    setData(updatedData);
+    
+    // Save to Firebase
+    setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+  }
+};
+
+// 📄 PDF EXPORT HANDLER
+const handleExportPDF = async () => {
+  if (currentUserPlan !== 'OPERATOR' && currentUserPlan !== 'FOUNDER\'S_CIRCLE') {
+    setUpgradePromptData({
+      featureName: 'Export Freedom Story as PDF',
+      requiredPlan: 'Operator'
+    });
+    setShowUpgradePrompt(true);
+    return;
+  }
+
+  // TODO: Implement PDF generation
+  showNotification('PDF export feature coming soon! 🚀', 'success');
+};
 
   const runway = calculateRunway();
 
@@ -8690,6 +8789,13 @@ const TravelTab = ({ data, setData, userId }) => {
                   >
                     Add Expense
                   </button>
+                  <button
+                    onClick={() => handleOpenJournal(trip)}
+                    className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
+                    title="Add Journal Entry"
+                  >
+                    📓 Journal
+                  </button>
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
                     className="text-blue-400 hover:text-blue-300 p-1"
@@ -8779,6 +8885,46 @@ const TravelTab = ({ data, setData, userId }) => {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 📓 Freedom Journal Entries */}
+                {trip.journalEntries && trip.journalEntries.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-amber-300 mb-2 flex items-center gap-1">
+                      📓 Journal Entries ({trip.journalEntries.length})
+                    </h4>
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {trip.journalEntries.slice(0, 2).map(entry => (
+                        <div key={entry.entryID} className="bg-amber-900/20 rounded-lg p-3 border border-amber-600/30">
+                          <div className="text-xs text-amber-200 mb-1">
+                            {new Date(entry.timestamp).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
+                          <p className="text-amber-100 text-xs leading-relaxed">
+                            {entry.text.length > 100 ? entry.text.substring(0, 100) + '...' : entry.text}
+                          </p>
+                          {entry.photoURL && (
+                            <div className="mt-2">
+                              <img
+                                src={entry.photoURL}
+                                alt="Journal photo"
+                                className="w-16 h-12 object-cover rounded border border-amber-500/30"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {trip.journalEntries.length > 2 && (
+                        <div className="text-xs text-amber-400 text-center">
+                          +{trip.journalEntries.length - 2} more entries
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -9772,6 +9918,12 @@ function App() {
     date: new Date().toISOString().split('T')[0]
   });
 
+  // 📓 FREEDOM JOURNAL SYSTEM
+  const [showJournalModal, setShowJournalModal] = useState(false);
+  const [selectedTripForJournal, setSelectedTripForJournal] = useState(null);
+  const [showMissionCompleteModal, setShowMissionCompleteModal] = useState(false);
+  const [completedTrip, setCompletedTrip] = useState(null);
+
   // User feedback system
   // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
   const [notification, setNotification] = useState(null);
@@ -10260,6 +10412,13 @@ function App() {
     // });
     // return () => unsubscribeSnapshot();
   }, [userId]);
+
+  // 🎯 MISSION COMPLETE AUTOMATION - Check for completed trips
+  useEffect(() => {
+    if (data && data.travel && data.travel.trips) {
+      checkForCompletedTrips();
+    }
+  }, [data]);
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
@@ -11298,6 +11457,10 @@ function App() {
                     🌍 Travel
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
+                  <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    📓 Reflections
+                    {currentUserPlan !== 'OPERATOR' && currentUserPlan !== 'FOUNDER\'S_CIRCLE' && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                  </button>
                 </div>
               </div>
             </div>
@@ -11516,6 +11679,16 @@ function App() {
           {activeTab === 'travel' && (
             <FinancialErrorBoundary componentName="Travel Planning">
               <TravelTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
+
+          {activeTab === 'reflections' && (
+            <FinancialErrorBoundary componentName="Reflections Archive">
+              <ReflectionsPage 
+                data={data} 
+                userPlan={currentUserPlan} 
+                onExportPDF={handleExportPDF}
+              />
             </FinancialErrorBoundary>
           )}
         </main>
@@ -13056,6 +13229,40 @@ function App() {
         oldRank={rankUpData?.oldRank}
         xpGained={rankUpData?.xpGained}
       />
+
+      {/* 📓 FREEDOM JOURNAL MODAL */}
+      {showJournalModal && selectedTripForJournal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl my-auto">
+            <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
+                <h3 className="text-xl font-bold text-white">📓 Freedom Journal - {selectedTripForJournal.name}</h3>
+                <button
+                  onClick={handleCloseJournal}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <FreedomJournal
+                trip={selectedTripForJournal}
+                onSaveEntry={handleSaveJournalEntry}
+                onClose={handleCloseJournal}
+              />
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* 🎯 MISSION COMPLETE MODAL */}
+      {showMissionCompleteModal && completedTrip && (
+        <MissionCompleteModal
+          trip={completedTrip}
+          onClose={() => setShowMissionCompleteModal(false)}
+          onOpenJournal={() => handleOpenJournal(completedTrip)}
+        />
+      )}
     </div>
   );
 }
