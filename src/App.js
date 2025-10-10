@@ -12206,17 +12206,23 @@ function App() {
                                 />
                               </div>
                               <div className="col-span-3">
-                                <label className="block text-xs text-gray-400 mb-1">Due Date (Day of Month)</label>
+                                <label className="block text-xs text-gray-400 mb-1">Due Date</label>
                                 <input
-                                  type="number"
-                                  min="1"
-                                  max="31"
-                                  placeholder="15"
-                                  value={account.dueDate || ''}
+                                  type="date"
+                                  value={(() => {
+                                    // Convert day of month to a proper date for the current month
+                                    const today = new Date();
+                                    const currentYear = today.getFullYear();
+                                    const currentMonth = today.getMonth();
+                                    const dueDay = account.dueDate || 1;
+                                    return `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dueDay).padStart(2, '0')}`;
+                                  })()}
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
                                     const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, dueDate: e.target.value === '' ? 1 : Number(e.target.value)};
+                                    const selectedDate = new Date(e.target.value);
+                                    const dayOfMonth = selectedDate.getDate();
+                                    updatedAccounts[index] = {...account, dueDate: dayOfMonth};
                                     setTempCardData({...currentData, accounts: updatedAccounts});
                                   }}
                                   className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
