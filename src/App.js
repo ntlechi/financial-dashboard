@@ -3351,6 +3351,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      try { await awardXp(db, userId, 50); } catch (e) { console.warn('XP award failed (new business)', e); }
       setData(updatedData);
       setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
       setShowAddBusiness(false);
@@ -3392,6 +3393,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      try { await awardXp(db, userId, itemType === 'income' ? 5 : 1); } catch (e) { console.warn('XP award failed (business item)', e); }
       setData(updatedData);
       setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0], isPassive: false });
       setShowAddItem(false);
@@ -5043,6 +5045,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        try { await awardXp(db, userId, 50); } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -10209,11 +10212,14 @@ function App() {
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      // Award XP for logging a transaction
+      // Award XP based on card type
       try {
-        await awardXp(db, userId, 1);
+        let xpAmount = 1; // Default for transactions
+        if (editingCard === 'goals') xpAmount = 25; // Create goal
+        else if (editingCard === 'budgets') xpAmount = 25; // Create budget
+        await awardXp(db, userId, xpAmount);
       } catch (e) {
-        console.warn('XP award failed (transaction)', e);
+        console.warn('XP award failed (card save)', e);
       }
       setData(updatedData);
       closeCardEditor();
