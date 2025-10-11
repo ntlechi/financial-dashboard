@@ -8,9 +8,9 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(null);
 
-  // Launch date: October 5, 2025, 9:00 AM EDT (UPDATED FOR TESTING)
-  const launchDate = new Date('2025-10-05T13:00:00.000Z'); // 9 AM EDT = 1 PM UTC
-  const launchEndDate = new Date(launchDate.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days later
+  // Launch date: October 19, 2025, 9:00 AM EDT
+  const launchDate = new Date('2025-10-19T13:00:00.000Z'); // 9 AM EDT = 1 PM UTC
+  const launchEndDate = new Date(launchDate.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days later (Oct 26, 2025)
 
   // Load Founder's Circle subscriber count from Firebase
   useEffect(() => {
