@@ -16,6 +16,33 @@ export const PRICING_PHASES = {
 export const pricingPlans = {
   // Phase 1: Founder's Circle (Oct 19-26, 2025)
   [PRICING_PHASES.FOUNDERS]: {
+    foundersCircle: {
+      id: 'founders-circle',
+      name: "The Founder's Circle",
+      price: 7.49,
+      interval: 'month',
+      description: 'Get lifetime access to The Operator Plan for less than the Climber plan.',
+      features: [
+        'Everything in The Operator Plan',
+        'Side Hustle Management',
+        'Investment Portfolio',
+        'Travel Mode',
+        'Freedom Journal',
+        'Export Freedom Story',
+        'A permanent price lock',
+        'Exclusive Founder badge',
+        'Private Discord community',
+        'Monthly billing only - less friction!'
+      ],
+      cta: 'Claim Your Founder\'s Spot',
+      popular: true,
+      badge: 'Limited Time',
+      tier: SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+      limited: true,
+      spotsLeft: 100,
+      monthlyOnly: true // Flag to hide yearly option
+    },
+    
     recon: {
       id: 'recon',
       name: 'Recon Kit',
@@ -53,33 +80,6 @@ export const pricingPlans = {
       tier: SUBSCRIPTION_TIERS.CLIMBER
     },
     
-    foundersCircle: {
-      id: 'founders-circle',
-      name: "The Founder's Circle",
-      price: 7.49,
-      interval: 'month',
-      description: 'Get lifetime access to The Operator Plan for less than the Climber plan.',
-      features: [
-        'Everything in The Operator Plan',
-        'Side Hustle Management',
-        'Investment Portfolio',
-        'Travel Mode',
-        'Freedom Journal',
-        'Export Freedom Story',
-        'A permanent price lock',
-        'Exclusive Founder badge',
-        'Private Discord community',
-        'Monthly billing only - less friction!'
-      ],
-      cta: 'Claim Your Founder\'s Spot',
-      popular: true,
-      badge: 'Limited Time',
-      tier: SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
-      limited: true,
-      spotsLeft: 100,
-      monthlyOnly: true // Flag to hide yearly option
-    },
-    
     operator: {
       id: 'operator',
       name: 'Operator Plan',
@@ -105,6 +105,33 @@ export const pricingPlans = {
 
   // Phase 2: Early Adopter (Oct 27, 2025 - Jan 1, 2026)
   [PRICING_PHASES.EARLY_ADOPTER]: {
+    earlyAdopter: {
+      id: 'early-adopter',
+      name: 'Early Adopter Plan',
+      price: 8.49,
+      interval: 'month',
+      description: 'You missed the Founder\'s Circle, but you can still join the expedition at the Early Adopter rate.',
+      features: [
+        'Everything in The Operator Plan',
+        'Side Hustle Management',
+        'Investment Portfolio',
+        'Travel Mode',
+        'Freedom Journal',
+        'Export Freedom Story',
+        'Early Adopter badge',
+        '43% off regular price',
+        'Monthly billing only - less friction!'
+      ],
+      cta: 'Join Early Adopters',
+      popular: true,
+      badge: 'Early Adopter',
+      tier: SUBSCRIPTION_TIERS.EARLY_ADOPTER,
+      limited: true,
+      spotsLeft: 500,
+      savings: 'Save $6.50/month vs regular price',
+      monthlyOnly: true // Flag to hide yearly option
+    },
+    
     recon: {
       id: 'recon',
       name: 'Recon Kit',
@@ -142,31 +169,26 @@ export const pricingPlans = {
       tier: SUBSCRIPTION_TIERS.CLIMBER
     },
     
-    earlyAdopter: {
-      id: 'early-adopter',
-      name: 'Early Adopter Plan',
-      price: 8.49,
+    operator: {
+      id: 'operator',
+      name: 'Operator Plan',
+      price: 14.99,
       interval: 'month',
-      description: 'You missed the Founder\'s Circle, but you can still join the expedition at the Early Adopter rate.',
+      yearlyPrice: 149,
+      description: 'The full arsenal for building your empire.',
       features: [
-        'Everything in The Operator Plan',
+        'Everything in Climber',
         'Side Hustle Management',
         'Investment Portfolio',
         'Travel Mode',
         'Freedom Journal',
         'Export Freedom Story',
-        'Early Adopter badge',
-        '43% off regular price',
-        'Monthly billing only - less friction!'
+        'Advanced Analytics',
+        'Priority Support'
       ],
-      cta: 'Join Early Adopters',
-      popular: true,
-      badge: 'Early Adopter',
-      tier: SUBSCRIPTION_TIERS.EARLY_ADOPTER,
-      limited: true,
-      spotsLeft: 500,
-      savings: 'Save $6.50/month vs regular price',
-      monthlyOnly: true // Flag to hide yearly option
+      cta: 'Become an Operator',
+      popular: false,
+      tier: SUBSCRIPTION_TIERS.OPERATOR
     }
   },
 
