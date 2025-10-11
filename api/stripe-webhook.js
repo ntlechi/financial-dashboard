@@ -59,6 +59,33 @@ const PLAN_MAPPING = {
   'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
 };
 
+// Helper function to add FREE users to ConvertKit
+async function addFreeUserToConvertKit(userId, userEmail, userName) {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://app.survivebackpacking.com'}/api/send-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        trigger: 'free_user_signup',
+        additionalData: {
+          subscriptionTier: 'recon'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Email API error: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error adding free user to ConvertKit:', error);
+  }
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

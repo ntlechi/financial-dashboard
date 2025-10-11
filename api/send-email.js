@@ -74,6 +74,33 @@ async function sendEmailByTrigger(emailData) {
 
   // Email templates (you can customize these)
   const emailTemplates = {
+    'free_user_signup': {
+      subject: `Welcome to The Freedom Compass! 🧭`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1 style="color: #f59e0b;">Welcome to The Freedom Compass!</h1>
+          <p>Hi ${name},</p>
+          <p>Welcome to The Freedom Compass! You've just taken the first step toward financial freedom.</p>
+          <p>You now have access to:</p>
+          <ul>
+            <li>Basic dashboard (Cash Flow, Income, Expenses, Net Worth)</li>
+            <li>Transaction management</li>
+            <li>Basic budget calculator</li>
+            <li>Data export</li>
+          </ul>
+          <p>🎯 Your Next Steps:</p>
+          <ol>
+            <li>Add your first transaction</li>
+            <li>Set up your basic budget</li>
+            <li>Track your net worth</li>
+          </ol>
+          <p>💡 Pro Tip: The more you use the app, the more insights you'll gain about your financial habits.</p>
+          <p>Ready to start your journey? Log in and explore your dashboard!</p>
+          <p>Best regards,<br>The Freedom Compass Team</p>
+          <p><small>P.S. Want to unlock advanced features? Check out our Climber Plan for goal tracking, debt management, and more!</small></p>
+        </div>
+      `
+    },
     'subscription_created': {
       subject: `Welcome to The Freedom Compass ${subscriptionTier} Plan! 🎉`,
       html: `
@@ -163,6 +190,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier) {
 
   // Form ID mapping based on subscription tier
   const formMapping = {
+    'recon': process.env.CONVERTKIT_RECON_FORM_ID,
     'climber': process.env.CONVERTKIT_CLIMBER_FORM_ID,
     'operator': process.env.CONVERTKIT_OPERATOR_FORM_ID,
     'founders-circle': process.env.CONVERTKIT_FOUNDERS_FORM_ID,
@@ -191,6 +219,8 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier) {
     payload.tags = [`${subscriptionTier}-subscriber`, 'active-subscriber'];
   } else if (trigger === 'subscription_cancelled') {
     payload.tags = ['cancelled-subscriber'];
+  } else if (trigger === 'free_user_signup') {
+    payload.tags = ['recon-user', 'free-user'];
   }
 
   try {
