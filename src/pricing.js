@@ -78,6 +78,28 @@ export const pricingPlans = {
       limited: true,
       spotsLeft: 100,
       monthlyOnly: true // Flag to hide yearly option
+    },
+    
+    operator: {
+      id: 'operator',
+      name: 'Operator Plan',
+      price: 14.99,
+      interval: 'month',
+      yearlyPrice: 149,
+      description: 'The full arsenal for building your empire.',
+      features: [
+        'Everything in Climber',
+        'Side Hustle Management',
+        'Investment Portfolio',
+        'Travel Mode',
+        'Freedom Journal',
+        'Export Freedom Story',
+        'Advanced Analytics',
+        'Priority Support'
+      ],
+      cta: 'Become an Operator',
+      popular: false,
+      tier: SUBSCRIPTION_TIERS.OPERATOR
     }
   },
 
