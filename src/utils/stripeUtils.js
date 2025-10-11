@@ -8,23 +8,13 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 // Map plan IDs to Stripe Price IDs
 export const STRIPE_PRICE_IDS = {
-  // Launch pricing (October 19-26, 2025)
-  'climber-launch-monthly': process.env.REACT_APP_STRIPE_CLIMBER_LAUNCH_MONTHLY,
-  'climber-launch-annual': process.env.REACT_APP_STRIPE_CLIMBER_LAUNCH_ANNUAL,
-  'operator-launch-monthly': process.env.REACT_APP_STRIPE_OPERATOR_LAUNCH_MONTHLY,
-  'operator-launch-annual': process.env.REACT_APP_STRIPE_OPERATOR_LAUNCH_ANNUAL,
-  
-  // Regular pricing (After October 26, 2025)
-  'climber-regular-monthly': process.env.REACT_APP_STRIPE_CLIMBER_REGULAR_MONTHLY,
-  'climber-regular-annual': process.env.REACT_APP_STRIPE_CLIMBER_REGULAR_ANNUAL,
-  'operator-regular-monthly': process.env.REACT_APP_STRIPE_OPERATOR_REGULAR_MONTHLY,
-  'operator-regular-annual': process.env.REACT_APP_STRIPE_OPERATOR_REGULAR_ANNUAL,
-  
-  // Legacy mappings (for backward compatibility)
+  // Regular plans (same pricing for launch and regular periods)
   'climber-monthly': process.env.REACT_APP_STRIPE_CLIMBER_MONTHLY,
   'climber-annual': process.env.REACT_APP_STRIPE_CLIMBER_ANNUAL,
   'operator-monthly': process.env.REACT_APP_STRIPE_OPERATOR_MONTHLY,
   'operator-annual': process.env.REACT_APP_STRIPE_OPERATOR_ANNUAL,
+  
+  // Founder's Circle (limited time offer during launch)
   'founders-circle-monthly': process.env.REACT_APP_STRIPE_FOUNDERS_CIRCLE_MONTHLY,
 };
 

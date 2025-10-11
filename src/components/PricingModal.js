@@ -18,17 +18,16 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
     return now >= launchDate && now <= launchEndDate;
   };
   
-  // Dynamic price IDs based on launch period
+  // Price IDs - Climber and Operator use same prices for launch and regular
   const getPriceIds = () => {
-    const isLaunch = isLaunchPeriod();
     return {
       climber: {
-        monthly: isLaunch ? 'price_climber_launch_monthly' : 'price_climber_regular_monthly',
-        annual: isLaunch ? 'price_climber_launch_annual' : 'price_climber_regular_annual'
+        monthly: 'price_climber_monthly', // Same price for launch and regular
+        annual: 'price_climber_annual'    // Same price for launch and regular
       },
       operator: {
-        monthly: isLaunch ? 'price_operator_launch_monthly' : 'price_operator_regular_monthly',
-        annual: isLaunch ? 'price_operator_launch_annual' : 'price_operator_regular_annual'
+        monthly: 'price_operator_monthly', // Same price for launch and regular
+        annual: 'price_operator_annual'    // Same price for launch and regular
       }
     };
   };
@@ -113,9 +112,9 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
     'climber': {
       name: 'Climber Plan',
       identity: 'The Climber',
-      monthlyPrice: isLaunchPeriod() ? 7.99 : 9.99, // Launch: $7.99, Regular: $9.99
-      annualPrice: isLaunchPeriod() ? 79.00 : 99.00, // Launch: $79, Regular: $99
-      savings: isLaunchPeriod() ? 17 : 20, // Launch: 17%, Regular: 20%
+      monthlyPrice: 7.99, // Always $7.99 (same for launch and regular)
+      annualPrice: 79.00, // Always $79 (same for launch and regular)
+      savings: 17, // Always 17% savings
       description: 'Advanced analytics and full dashboard access',
       icon: Zap,
       color: 'from-blue-600 to-blue-700',
@@ -139,9 +138,9 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
     'operator': {
       name: 'Operator Plan',
       identity: 'The Operator',
-      monthlyPrice: isLaunchPeriod() ? 14.99 : 19.99, // Launch: $14.99, Regular: $19.99
-      annualPrice: isLaunchPeriod() ? 149.00 : 199.00, // Launch: $149, Regular: $199
-      savings: isLaunchPeriod() ? 17 : 17, // Launch: 17%, Regular: 17%
+      monthlyPrice: 14.99, // Always $14.99 (same for launch and regular)
+      annualPrice: 149.00, // Always $149 (same for launch and regular)
+      savings: 17, // Always 17% savings
       description: 'Complete financial freedom toolkit',
       icon: Rocket,
       color: 'from-purple-600 to-purple-700',
@@ -248,17 +247,17 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         
         {/* Launch Period Banner */}
         {isLaunchPeriod() && (
-          <div className="p-4 sm:p-6 border-b border-green-500/30 bg-gradient-to-r from-green-900/20 to-emerald-900/20">
+          <div className="p-4 sm:p-6 border-b border-amber-500/30 bg-gradient-to-r from-amber-900/20 to-yellow-900/20">
             <div className="text-center">
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-2">
-                <Rocket className="w-4 h-4" />
-                🚀 LAUNCH PRICING ACTIVE
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-yellow-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-2">
+                <Crown className="w-4 h-4" />
+                👑 FOUNDER'S CIRCLE AVAILABLE
               </div>
-              <p className="text-green-300 text-sm">
-                Special launch prices available until October 26th, 2025
+              <p className="text-amber-300 text-sm">
+                Limited-time Founder's Circle at $7.49/month - Full Operator features at 50% off!
               </p>
               {timeRemaining && (
-                <p className="text-green-200 text-xs mt-1">
+                <p className="text-amber-200 text-xs mt-1">
                   {timeRemaining.days}d {timeRemaining.hours}h {timeRemaining.minutes}m remaining
                 </p>
               )}
@@ -271,7 +270,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
           <div className="p-4 sm:p-6 border-b border-gray-700 bg-gray-800/50">
             <div className="text-center">
               <p className="text-gray-400 text-sm">
-                Regular pricing in effect. Launch pricing ended October 26th, 2025.
+                Founder's Circle offer ended October 26th, 2025. Regular plans available.
               </p>
             </div>
           </div>
