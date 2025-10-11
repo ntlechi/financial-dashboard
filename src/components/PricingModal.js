@@ -237,12 +237,36 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
           )}
         </div>
 
-        {/* Spots Left */}
+        {/* Spots Left with Progress Bar */}
         {plan.limited && plan.spotsLeft !== undefined && (
           <div className="mb-6 p-3 bg-white/10 rounded-lg">
-            <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
-              <Users className="w-4 h-4" />
-              <span>{plan.spotsLeft - (plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount)} spots left</span>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-white/80 text-sm">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  <span>{plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount} of {plan.spotsLeft} spots taken</span>
+                </div>
+                <span className="text-white/60 text-xs">
+                  {plan.spotsLeft - (plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount)} left
+                </span>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-500"
+                  style={{ 
+                    width: `${Math.min(100, ((plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount) / plan.spotsLeft) * 100)}%` 
+                  }}
+                ></div>
+              </div>
+              
+              {/* Urgency Message */}
+              {(plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount) > plan.spotsLeft * 0.8 && (
+                <div className="text-amber-300 text-xs text-center font-medium">
+                  🔥 Almost full! Don't miss out!
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -376,8 +400,8 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               <p className="text-green-200">
                 Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, 
                 you get your money back. No hassle. No questions.
-              </p>
-            </div>
+          </p>
+        </div>
           </div>
         </div>
       </div>
