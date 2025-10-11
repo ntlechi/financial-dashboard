@@ -9979,7 +9979,7 @@ function App() {
 
   // 📄 PDF EXPORT HANDLER
   const handleExportPDF = async () => {
-    if (currentUserPlan !== 'OPERATOR' && currentUserPlan !== 'FOUNDER\'S_CIRCLE') {
+    if (currentUserPlan !== SUBSCRIPTION_TIERS.OPERATOR && currentUserPlan !== SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE) {
       setUpgradePromptData({
         featureName: 'Export Freedom Story as PDF',
         requiredPlan: 'Operator'
@@ -11537,7 +11537,7 @@ function App() {
                   </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     📓 Reflections
-                    {currentUserPlan !== 'OPERATOR' && currentUserPlan !== 'FOUNDER\'S_CIRCLE' && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                    {currentUserPlan !== SUBSCRIPTION_TIERS.OPERATOR && currentUserPlan !== SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
               </div>
@@ -11670,14 +11670,20 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
-              <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                <DebtPayoffProgressTracker 
-                  data={displayData?.debt} 
-                  onEdit={openCardEditor}
-                  userPlan={userPlan}
-                  onUpgrade={() => setShowPricingModal(true)}
-                />
-              </div>
+              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <DebtPayoffProgressTracker 
+                    data={displayData?.debt} 
+                    onEdit={openCardEditor}
+                    userPlan={userPlan}
+                    onUpgrade={() => setShowPricingModal(true)}
+                  />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Debt Payoff Calculator" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
               
               {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (

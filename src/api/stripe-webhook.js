@@ -1,69 +1,13 @@
-// Vercel API Route for Stripe Webhooks
+// Stripe Webhook Handler for Automated Subscription Management
 // This file handles all Stripe events and updates Firebase automatically
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const admin = require('firebase-admin');
+import { doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { SUBSCRIPTION_TIERS } from '../utils/subscriptionUtils';
+import { sendEmail, EMAIL_TRIGGERS } from '../utils/emailAutomation';
 
-// Initialize Firebase Admin (if not already initialized)
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-    // Or use service account key
-    // credential: admin.credential.cert(require('./path/to/serviceAccountKey.json')),
-  });
-}
-
-const db = admin.firestore();
-
-// Helper function to send emails
-async function sendEmail(userId, trigger, additionalData = {}) {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://app.survivebackpacking.com'}/api/send-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        trigger,
-        additionalData
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Email API error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error sending email:', error);
-    // Don't throw - email failures shouldn't break the webhook
-  }
-}
-
-// Subscription tier mapping
-const SUBSCRIPTION_TIERS = {
-  FREE: 'recon',
-  CLIMBER: 'climber', 
-  OPERATOR: 'operator',
-  FOUNDERS_CIRCLE: 'founders-circle'
-};
-
-// Plan ID to tier mapping
-const PLAN_MAPPING = {
-  'price_climber_monthly': SUBSCRIPTION_TIERS.CLIMBER,
-  'price_climber_annual': SUBSCRIPTION_TIERS.CLIMBER,
-  'price_operator_monthly': SUBSCRIPTION_TIERS.OPERATOR,
-  'price_operator_annual': SUBSCRIPTION_TIERS.OPERATOR,
-  'price_founders_monthly': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
-  'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
-};
-
-module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+// Stripe webhook endpoint handler
+export const handleStripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -118,21 +62,27 @@ module.exports = async (req, res) => {
 // Handle successful checkout completion
 async function handleCheckoutCompleted(session) {
   const userId = session.metadata?.userId;
-  const planName = session.metadata?.planName;
-  const billingCycle = session.metadata?.billingCycle;
+  const planId = session.metadata?.planId;
   
-  if (!userId) {
-    console.error('Missing userId in checkout session');
+  if (!userId || !planId) {
+    console.error('Missing userId or planId in checkout session');
     return;
   }
 
-  // Get subscription details to determine tier
-  const subscription = await stripe.subscriptions.retrieve(session.subscription);
-  const priceId = subscription.items.data[0]?.price.id;
-  const subscriptionTier = PLAN_MAPPING[priceId];
+  // Map Stripe price IDs to our subscription tiers
+  const planMapping = {
+    'price_climber_monthly': SUBSCRIPTION_TIERS.CLIMBER,
+    'price_climber_annual': SUBSCRIPTION_TIERS.CLIMBER,
+    'price_operator_monthly': SUBSCRIPTION_TIERS.OPERATOR,
+    'price_operator_annual': SUBSCRIPTION_TIERS.OPERATOR,
+    'price_founders_monthly': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+    'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+  };
+
+  const subscriptionTier = planMapping[planId];
   
   if (!subscriptionTier) {
-    console.error('Unknown price ID:', priceId);
+    console.error('Unknown plan ID:', planId);
     return;
   }
 
@@ -142,8 +92,8 @@ async function handleCheckoutCompleted(session) {
     stripeCustomerId: session.customer,
     stripeSubscriptionId: session.subscription,
     status: 'active',
-    planName: planName,
-    billingCycle: billingCycle,
+    planId: planId,
+    billingCycle: planId.includes('annual') ? 'annual' : 'monthly',
     startDate: new Date().toISOString(),
     lastUpdated: new Date().toISOString()
   });
@@ -151,9 +101,9 @@ async function handleCheckoutCompleted(session) {
   console.log(`✅ User ${userId} upgraded to ${subscriptionTier}`);
   
   // Send welcome email
-  await sendEmail(userId, 'subscription_created', {
+  await sendEmail(userId, EMAIL_TRIGGERS.SUBSCRIPTION_CREATED, {
     subscriptionTier,
-    planName
+    planId
   });
 }
 
@@ -188,8 +138,17 @@ async function handleSubscriptionUpdated(subscription) {
   }
 
   // Map Stripe price ID to subscription tier
+  const planMapping = {
+    'price_climber_monthly': SUBSCRIPTION_TIERS.CLIMBER,
+    'price_climber_annual': SUBSCRIPTION_TIERS.CLIMBER,
+    'price_operator_monthly': SUBSCRIPTION_TIERS.OPERATOR,
+    'price_operator_annual': SUBSCRIPTION_TIERS.OPERATOR,
+    'price_founders_monthly': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+    'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+  };
+
   const priceId = subscription.items.data[0]?.price.id;
-  const subscriptionTier = PLAN_MAPPING[priceId];
+  const subscriptionTier = planMapping[priceId];
 
   await updateUserSubscription(userId, {
     tier: subscriptionTier,
@@ -222,7 +181,7 @@ async function handleSubscriptionCancelled(subscription) {
   console.log(`✅ User ${userId} subscription cancelled, downgraded to FREE`);
   
   // Send cancellation email
-  await sendEmail(userId, 'subscription_cancelled');
+  await sendEmail(userId, EMAIL_TRIGGERS.SUBSCRIPTION_CANCELLED);
 }
 
 // Handle successful payment
@@ -247,7 +206,7 @@ async function handlePaymentSucceeded(invoice) {
   console.log(`✅ Payment succeeded for user ${userId}`);
   
   // Send payment success email
-  await sendEmail(userId, 'payment_succeeded');
+  await sendEmail(userId, EMAIL_TRIGGERS.PAYMENT_SUCCEEDED);
 }
 
 // Handle failed payment
@@ -273,22 +232,22 @@ async function handlePaymentFailed(invoice) {
   console.log(`❌ Payment failed for user ${userId}`);
   
   // Send payment failure email
-  await sendEmail(userId, 'payment_failed');
+  await sendEmail(userId, EMAIL_TRIGGERS.PAYMENT_FAILED);
 }
 
 // Helper function to update user subscription in Firebase
 async function updateUserSubscription(userId, subscriptionData) {
   try {
-    const userRef = db.collection('users').doc(userId);
-    const userDoc = await userRef.get();
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
     
-    if (userDoc.exists) {
-      await userRef.update({
+    if (userDoc.exists()) {
+      await updateDoc(userRef, {
         subscription: subscriptionData
       });
     } else {
       // Create user document if it doesn't exist
-      await userRef.set({
+      await setDoc(userRef, {
         subscription: subscriptionData,
         createdAt: new Date().toISOString()
       });
@@ -298,3 +257,5 @@ async function updateUserSubscription(userId, subscriptionData) {
     throw error;
   }
 }
+
+export default handleStripeWebhook;
