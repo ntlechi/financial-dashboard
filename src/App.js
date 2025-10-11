@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3 } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
