@@ -1,71 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, Crown, Zap, Target, Rocket } from 'lucide-react';
+import { X, Check, Crown, Zap, Target, Rocket, Clock, Users } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from '../pricing';
+import { isFoundersCircleAvailable, isEarlyAdopterAvailable } from '../utils/subscriptionUtils';
 
 const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan = null }) => {
   const [billingCycle, setBillingCycle] = useState('monthly');
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
+  const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(null);
 
-  // Launch date: October 19, 2025, 9:00 AM EDT
-  const launchDate = new Date('2025-10-19T13:00:00.000Z'); // 9 AM EDT = 1 PM UTC
-  const launchEndDate = new Date(launchDate.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days later (Oct 26, 2025)
-  
-  // Check if we're in launch period
-  const isLaunchPeriod = () => {
-    const now = new Date();
-    return now >= launchDate && now <= launchEndDate;
-  };
-  
-  // Price IDs - Climber and Operator use same prices for launch and regular
-  const getPriceIds = () => {
-    return {
-      climber: {
-        monthly: 'price_climber_monthly', // Same price for launch and regular
-        annual: 'price_climber_annual'    // Same price for launch and regular
-      },
-      operator: {
-        monthly: 'price_operator_monthly', // Same price for launch and regular
-        annual: 'price_operator_annual'    // Same price for launch and regular
-      }
-    };
-  };
+  // Get current pricing phase and plans
+  const pricingPhaseInfo = getPricingPhaseInfo(foundersCircleCount, earlyAdopterCount);
+  const currentPlans = getCurrentPricingPlans(foundersCircleCount, earlyAdopterCount);
 
-  // Load Founder's Circle subscriber count from Firebase
+  // Load subscriber counts from Firebase
   useEffect(() => {
-    const loadFoundersCount = async () => {
+    const loadSubscriberCounts = async () => {
       try {
-        const countDocRef = doc(db, 'app-config', 'founders-circle');
-        const countDoc = await getDoc(countDocRef);
+        // Load Founder's Circle count
+        const foundersDocRef = doc(db, 'app-config', 'founders-circle');
+        const foundersDoc = await getDoc(foundersDocRef);
         
-        if (countDoc.exists()) {
-          const count = countDoc.data().subscriberCount || 0;
+        if (foundersDoc.exists()) {
+          const count = foundersDoc.data().subscriberCount || 0;
           setFoundersCircleCount(count);
           console.log(`📊 Founder's Circle: ${count}/100 spots taken`);
         } else {
           setFoundersCircleCount(0);
         }
+
+        // Load Early Adopter count
+        const earlyAdopterDocRef = doc(db, 'app-config', 'early-adopter');
+        const earlyAdopterDoc = await getDoc(earlyAdopterDocRef);
+        
+        if (earlyAdopterDoc.exists()) {
+          const count = earlyAdopterDoc.data().subscriberCount || 0;
+          setEarlyAdopterCount(count);
+          console.log(`📊 Early Adopter: ${count}/500 spots taken`);
+        } else {
+          setEarlyAdopterCount(0);
+        }
       } catch (error) {
-        console.error('Error loading Founder\'s Circle count:', error);
+        console.error('Error loading subscriber counts:', error);
         setFoundersCircleCount(0);
+        setEarlyAdopterCount(0);
       }
     };
 
-    loadFoundersCount();
+    loadSubscriberCounts();
   }, []);
 
   useEffect(() => {
     const updateTimer = () => {
       const now = new Date();
-      const timeLeft = launchEndDate - now;
+      let timeLeft = 0;
       
+      // Set timer based on current phase
+      if (pricingPhaseInfo.isFoundersPhase) {
+        const launchEndDate = new Date('2025-10-26T23:59:59.999Z');
+        timeLeft = launchEndDate - now;
+      } else if (pricingPhaseInfo.isEarlyAdopterPhase) {
+        const earlyAdopterEndDate = new Date('2026-01-01T23:59:59.999Z');
+        timeLeft = earlyAdopterEndDate - now;
+      }
+
       if (timeLeft > 0) {
         const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        
+
         setTimeRemaining({ days, hours, minutes, seconds });
       } else {
         setTimeRemaining(null);
@@ -73,391 +79,270 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
     };
 
     updateTimer();
-    const timer = setInterval(updateTimer, 1000);
-    return () => clearInterval(timer);
-  }, [launchEndDate]);
+    const interval = setInterval(updateTimer, 1000);
 
-  // Check if Founder's Circle is available
-  const isFoundersCircleAvailable = () => {
-    const now = new Date();
-    return now >= launchDate && now <= launchEndDate && foundersCircleCount < 100;
-  };
-
-  const pricingTiers = {
-    'recon': {
-      name: 'Recon Kit',
-      identity: 'The Recruit',
-      monthlyPrice: 0,
-      annualPrice: 0,
-      savings: 0,
-      description: 'Perfect for getting started with financial tracking',
-      icon: Target,
-      color: 'from-gray-600 to-gray-700',
-      features: [
-        'Basic Dashboard (Net Worth, Cash Flow, Savings Rate)',
-        'Full Budget Calculator',
-        'Complete Transaction Management',
-        'Mobile Responsive Design',
-        'Data Export (CSV)',
-        'Community Support'
-      ],
-      limitations: [
-        'Advanced Dashboard Cards',
-        'Investment Portfolio Tracking',
-        'Side Hustle Management',
-        'Travel Mode',
-        'Advanced Analytics'
-      ]
-    },
-    'climber': {
-      name: 'Climber Plan',
-      identity: 'The Climber',
-      monthlyPrice: 7.99, // Always $7.99 (same for launch and regular)
-      annualPrice: 79.00, // Always $79 (same for launch and regular)
-      savings: 17, // Always 17% savings
-      description: 'Advanced analytics and full dashboard access',
-      icon: Zap,
-      color: 'from-blue-600 to-blue-700',
-      features: [
-        'Everything in Recon Kit',
-        'Full Advanced Dashboard & Analytics',
-        'All Financial Calculators',
-        'Debt Payoff Calculator',
-        'Emergency Fund Tracking',
-        'Retirement Planning Tools',
-        'Goal Tracking & Projections',
-        'Priority Email Support',
-        '30-Day Money-Back Guarantee'
-      ],
-      limitations: [
-        'Side Hustle Management (Operator only)',
-        'Investment Portfolio (Operator only)',
-        'Travel Mode (Operator only)'
-      ]
-    },
-    'operator': {
-      name: 'Operator Plan',
-      identity: 'The Operator',
-      monthlyPrice: 14.99, // Always $14.99 (same for launch and regular)
-      annualPrice: 149.00, // Always $149 (same for launch and regular)
-      savings: 17, // Always 17% savings
-      description: 'Complete financial freedom toolkit',
-      icon: Rocket,
-      color: 'from-purple-600 to-purple-700',
-      features: [
-        'Everything in Climber Plan',
-        'Side Hustle Management',
-        'Investment Portfolio Tracking',
-        'Travel Mode & Multi-Currency',
-        'Advanced Business Analytics',
-        'Tax Optimization Tools',
-        'Priority Support (24hr response)',
-        '30-Day Money-Back Guarantee'
-      ],
-      limitations: []
-    }
-  };
-
-  // Founder's Circle special offer
-  const foundersCircle = {
-    name: "Founder's Circle",
-    identity: 'The Founder',
-    monthlyPrice: 7.49,
-    annualPrice: null, // No annual option
-    savings: 0,
-    description: 'Limited-time exclusive offer for first 100 members',
-    icon: Crown,
-    color: 'from-amber-500 to-yellow-600',
-    features: [
-      'Full Operator Plan Access ($14.99 USD value)',
-      'Lifetime Price Lock ($7.49 USD/mo forever)',
-      'Exclusive Founder Badge',
-      'Early Access to New Features',
-      'Priority Support (12hr response)',
-      'Founder-Only Discord Channel',
-      'Direct Access to Development Team',
-      '30-Day Money-Back Guarantee'
-    ],
-    limitations: [],
-    isLimited: true,
-    spotsRemaining: 100 - foundersCircleCount
-  };
+    return () => clearInterval(interval);
+  }, [pricingPhaseInfo]);
 
   const handleUpgrade = (planId) => {
     if (onUpgrade) {
-      // Get the appropriate price ID based on launch period
-      const priceIds = getPriceIds();
-      let priceId = null;
-      
-      if (planId === 'climber') {
-        priceId = billingCycle === 'monthly' ? priceIds.climber.monthly : priceIds.climber.annual;
-      } else if (planId === 'operator') {
-        priceId = billingCycle === 'monthly' ? priceIds.operator.monthly : priceIds.operator.annual;
-      } else if (planId === 'founders-circle') {
-        priceId = 'price_founders_monthly'; // Founder's Circle is always monthly
-      }
-      
+      const priceId = getStripePriceId(planId, billingCycle, foundersCircleCount, earlyAdopterCount);
       onUpgrade(planId, billingCycle, priceId);
     }
   };
 
-  const formatPrice = (price) => {
-    if (price === 0) return 'Free';
-    return `$${price.toFixed(2)} USD`;
+  const getPlanIcon = (planId) => {
+    switch (planId) {
+      case 'recon': return Target;
+      case 'climber': return Zap;
+      case 'founders-circle': return Crown;
+      case 'early-adopter': return Rocket;
+      case 'operator': return Rocket;
+      default: return Target;
+    }
   };
 
-  const getButtonText = (planId) => {
-    if (currentPlan === planId) return 'Current Plan';
-    if (planId === 'recon') return 'Get Started Free';
-    return 'Upgrade Now';
+  const getPlanColor = (planId) => {
+    switch (planId) {
+      case 'recon': return 'from-gray-600 to-gray-700';
+      case 'climber': return 'from-blue-600 to-blue-700';
+      case 'founders-circle': return 'from-amber-600 to-orange-600';
+      case 'early-adopter': return 'from-purple-600 to-indigo-600';
+      case 'operator': return 'from-green-600 to-emerald-600';
+      default: return 'from-gray-600 to-gray-700';
+    }
   };
 
-  const getButtonStyle = (planId) => {
-    if (currentPlan === planId) {
-      return 'bg-gray-600 text-gray-300 cursor-not-allowed';
-    }
-    if (planId === 'founders-circle') {
-      return 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold';
-    }
-    if (planId === 'recon') {
-      return 'bg-gray-700 hover:bg-gray-600 text-white';
-    }
-    return 'bg-blue-600 hover:bg-blue-700 text-white';
+  const renderPlanCard = (plan) => {
+    const Icon = getPlanIcon(plan.id);
+    const colorClass = getPlanColor(plan.id);
+    const isHighlighted = highlightPlan === plan.id;
+    const isPopular = plan.popular;
+    const isCurrentPlan = currentPlan === plan.id;
+
+    return (
+      <div
+        key={plan.id}
+        className={`relative bg-gradient-to-br ${colorClass} rounded-2xl p-8 border-2 transition-all duration-300 ${
+          isHighlighted || isPopular 
+            ? 'border-white shadow-2xl scale-105' 
+            : 'border-gray-600 hover:border-gray-400'
+        } ${isCurrentPlan ? 'ring-2 ring-white ring-opacity-50' : ''}`}
+      >
+        {/* Badge */}
+        {plan.badge && (
+          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+              {plan.badge}
+            </span>
+          </div>
+        )}
+
+        {/* Current Plan Badge */}
+        {isCurrentPlan && (
+          <div className="absolute -top-3 right-4">
+            <span className="bg-white text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
+              Current Plan
+            </span>
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center">
+            <Icon className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+          <p className="text-white/80 text-sm">{plan.description}</p>
+        </div>
+
+        {/* Pricing */}
+        <div className="text-center mb-6">
+          {plan.price === 0 ? (
+            <div className="text-4xl font-bold text-white">FREE</div>
+          ) : (
+            <div>
+              <div className="text-4xl font-bold text-white">
+                ${plan.monthlyOnly ? plan.price : (billingCycle === 'yearly' && plan.yearlyPrice ? plan.yearlyPrice : plan.price)}
+                <span className="text-lg text-white/80">/{plan.monthlyOnly ? 'month' : (billingCycle === 'yearly' ? 'year' : 'month')}</span>
+              </div>
+              {!plan.monthlyOnly && billingCycle === 'yearly' && plan.yearlyPrice && (
+                <div className="text-sm text-white/60 mt-1">
+                  ${plan.price}/month billed annually
+                </div>
+              )}
+              {plan.savings && (
+                <div className="text-sm text-green-300 font-semibold mt-1">
+                  {plan.savings}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Features */}
+        <div className="space-y-3 mb-8">
+          {plan.features.map((feature, index) => (
+            <div key={index} className="flex items-start gap-3">
+              <Check className="w-5 h-5 text-white/80 mt-0.5 flex-shrink-0" />
+              <span className="text-white/90 text-sm">{feature}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Spots Left */}
+        {plan.limited && plan.spotsLeft !== undefined && (
+          <div className="mb-6 p-3 bg-white/10 rounded-lg">
+            <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
+              <Users className="w-4 h-4" />
+              <span>{plan.spotsLeft - (plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount)} spots left</span>
+            </div>
+          </div>
+        )}
+
+        {/* CTA Button */}
+        <button
+          onClick={() => handleUpgrade(plan.id)}
+          disabled={isCurrentPlan}
+          className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+            isCurrentPlan
+              ? 'bg-white/20 text-white/60 cursor-not-allowed'
+              : 'bg-white text-gray-900 hover:bg-white/90 transform hover:scale-105 shadow-lg'
+          }`}
+        >
+          {isCurrentPlan ? 'Current Plan' : plan.cta}
+        </button>
+      </div>
+    );
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
-      <div className="bg-gray-800 rounded-lg max-w-7xl w-full my-4 sm:my-8 max-h-[96vh] sm:max-h-[90vh] flex flex-col">
-        {/* Header - Sticky with close button always visible */}
-        <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 sm:p-6 flex justify-between items-center flex-shrink-0 z-10">
-          <div>
-            <h2 className="text-xl sm:text-3xl font-bold text-white">Choose Your Plan</h2>
-            <p className="text-gray-400 mt-1 text-xs sm:text-sm">Unlock your path to financial freedom</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700 flex-shrink-0"
-          >
-            <X className="w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
-        </div>
-
-        {/* Scrollable Content */}
-        <div className="overflow-y-auto flex-1">
-        
-        {/* Launch Period Banner */}
-        {isLaunchPeriod() && (
-          <div className="p-4 sm:p-6 border-b border-amber-500/30 bg-gradient-to-r from-amber-900/20 to-yellow-900/20">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-yellow-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-2">
-                <Crown className="w-4 h-4" />
-                👑 FOUNDER'S CIRCLE AVAILABLE
-              </div>
-              <p className="text-amber-300 text-sm">
-                Limited-time Founder's Circle at $7.49/month - Full Operator features at 50% off!
-              </p>
-              {timeRemaining && (
-                <p className="text-amber-200 text-xs mt-1">
-                  {timeRemaining.days}d {timeRemaining.hours}h {timeRemaining.minutes}m remaining
-                </p>
-              )}
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-gray-900 rounded-2xl border border-gray-700 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 rounded-t-2xl">
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-3xl font-bold text-white mb-2">Choose Your Plan</h2>
+              <p className="text-gray-300">{pricingPhaseInfo.message}</p>
             </div>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
-        )}
 
-        {/* Regular Pricing Notice */}
-        {!isLaunchPeriod() && (
-          <div className="p-4 sm:p-6 border-b border-gray-700 bg-gray-800/50">
-            <div className="text-center">
-              <p className="text-gray-400 text-sm">
-                Founder's Circle offer ended October 26th, 2025. Regular plans available.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Billing Toggle */}
-        <div className="p-4 sm:p-6 border-b border-gray-700">
-          <div className="flex justify-center">
-            <div className="bg-gray-700 rounded-lg p-1 flex">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
-                  billingCycle === 'monthly'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle('annual')}
-                className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
-                  billingCycle === 'annual'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Annual
-                <span className="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded">
-                  Save 17%
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Founder's Circle Banner (if available) */}
-        {isFoundersCircleAvailable() && (
-          <div className="bg-gradient-to-r from-amber-500/20 to-yellow-600/20 border border-amber-500/30 m-6 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Crown className="w-8 h-8 text-amber-400 mr-3" />
-                <div>
-                  <h3 className="text-xl font-bold text-amber-400">🔥 Limited Launch Offer</h3>
-                  <p className="text-amber-200">Full Operator features for $7.49/mo - Only {foundersCircle.spotsRemaining} spots left!</p>
-                </div>
-              </div>
-              {timeRemaining && (
-                <div className="text-right">
-                  <div className="text-amber-400 font-bold">
-                    {timeRemaining.days}d {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
-                  </div>
-                  <div className="text-amber-200 text-sm">Remaining</div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Pricing Cards */}
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Founder's Circle (if available) - DARK TEXT for readability */}
-            {isFoundersCircleAvailable() && (
-              <div className={`relative bg-gradient-to-br from-amber-400 to-yellow-500 rounded-lg p-6 border-2 border-amber-500 transform scale-105 shadow-xl`}>
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse flex items-center">
-                    <Crown className="w-3 h-3 mr-1" />
-                    LIMITED TIME
-                  </span>
-                </div>
-                
-                <div className="text-center mb-4">
-                  <Crown className="w-12 h-12 text-gray-900 mx-auto mb-2" />
-                  <h3 className="text-xl font-bold text-gray-900">{foundersCircle.name}</h3>
-                  <p className="text-gray-800 text-sm font-semibold">{foundersCircle.identity}</p>
-                </div>
-
-                <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-gray-900">
-                    {formatPrice(foundersCircle.monthlyPrice)}
-                    <span className="text-lg text-gray-800"> /month</span>
-                  </div>
-                  <div className="text-gray-800 text-sm font-semibold">Locked in for life</div>
-                  <div className="text-red-700 text-xs mt-1 font-bold">
-                    🔥 Only {foundersCircle.spotsRemaining} spots left!
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-6">
-                  {foundersCircle.features.slice(0, 4).map((feature, index) => (
-                    <div key={index} className="flex items-center text-sm text-gray-900">
-                      <Check className="w-4 h-4 text-green-700 mr-2 flex-shrink-0 font-bold" />
-                      <span className="font-medium">{feature}</span>
-                    </div>
-                  ))}
-                  <div className="text-gray-800 text-xs font-semibold">+ {foundersCircle.features.length - 4} more features</div>
-                </div>
-
-                <button
-                  onClick={() => handleUpgrade('founders-circle')}
-                  className="w-full py-3 px-4 rounded-lg font-bold transition-colors bg-gray-900 hover:bg-gray-800 text-amber-400 shadow-lg"
-                  disabled={currentPlan === 'founders-circle'}
-                >
-                  {currentPlan === 'founders-circle' ? 'Current Plan' : '👑 Claim Your Spot'}
-                </button>
+          {/* Phase Info */}
+          <div className="mt-4 flex items-center gap-4">
+            {pricingPhaseInfo.isFoundersPhase && (
+              <div className="flex items-center gap-2 text-amber-400">
+                <Crown className="w-5 h-5" />
+                <span className="font-semibold">Founder's Circle Phase</span>
               </div>
             )}
+            {pricingPhaseInfo.isEarlyAdopterPhase && (
+              <div className="flex items-center gap-2 text-purple-400">
+                <Rocket className="w-5 h-5" />
+                <span className="font-semibold">Early Adopter Phase</span>
+              </div>
+            )}
+            {pricingPhaseInfo.isRegularPhase && (
+              <div className="flex items-center gap-2 text-green-400">
+                <Target className="w-5 h-5" />
+                <span className="font-semibold">Regular Pricing</span>
+              </div>
+            )}
+          </div>
 
-            {/* Regular Plans - Ordered for Launch Funnel */}
-            {/* Order: Recon (Free) | Climber | Operator - creates contrast after Founder's Circle */}
-            {['recon', 'climber', 'operator'].map((planId) => {
-              const plan = pricingTiers[planId];
-              if (!plan) return null;
-              const price = billingCycle === 'annual' ? plan.annualPrice : plan.monthlyPrice;
-              // LAUNCH MODE: Disable "Most Popular" tag during Founder's Circle launch (Oct 5-12)
-              const isHighlighted = false; // Was: highlightPlan === planId || (planId === 'climber' && !highlightPlan);
-              
-              return (
-                <div
-                  key={planId}
-                  className={`relative bg-gray-700 rounded-lg p-6 ${
-                    isHighlighted ? 'border-2 border-blue-500 transform scale-105' : 'border border-gray-600'
+          {/* Timer */}
+          {timeRemaining && (
+            <div className="mt-4 p-4 bg-gradient-to-r from-red-900/30 to-orange-900/30 rounded-lg border border-red-500/30">
+              <div className="flex items-center justify-center gap-2 text-red-300 mb-2">
+                <Clock className="w-5 h-5" />
+                <span className="font-semibold">
+                  {pricingPhaseInfo.isFoundersPhase ? 'Founder\'s Circle' : 'Early Adopter'} Offer Ends In:
+                </span>
+              </div>
+              <div className="flex justify-center gap-4 text-white">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeRemaining.days}</div>
+                  <div className="text-xs text-gray-300">Days</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeRemaining.hours}</div>
+                  <div className="text-xs text-gray-300">Hours</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeRemaining.minutes}</div>
+                  <div className="text-xs text-gray-300">Minutes</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeRemaining.seconds}</div>
+                  <div className="text-xs text-gray-300">Seconds</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Billing Toggle - Hide for monthly-only plans */}
+          {!Object.values(currentPlans).some(plan => plan.monthlyOnly) && (
+            <div className="mt-4 flex justify-center">
+              <div className="bg-gray-800 rounded-lg p-1 flex">
+                <button
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    billingCycle === 'monthly'
+                      ? 'bg-white text-gray-900'
+                      : 'text-gray-300 hover:text-white'
                   }`}
                 >
-                  {isHighlighted && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-xs font-bold">
-                        MOST POPULAR
-                      </span>
-                    </div>
-                  )}
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBillingCycle('yearly')}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    billingCycle === 'yearly'
+                      ? 'bg-white text-gray-900'
+                      : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  Yearly
+                </button>
+              </div>
+            </div>
+          )}
 
-                  <div className="text-center mb-4">
-                    <plan.icon className="w-12 h-12 text-blue-400 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                    <p className="text-gray-400 text-sm">{plan.identity}</p>
-                  </div>
+          {/* Monthly-Only Notice */}
+          {Object.values(currentPlans).some(plan => plan.monthlyOnly) && (
+            <div className="mt-4 text-center">
+              <div className="bg-purple-900/30 rounded-lg p-3 border border-purple-500/30">
+                <p className="text-purple-200 text-sm">
+                  💡 <strong>Monthly billing only</strong> - Less friction, more freedom!
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
-                  <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-white">
-                      {formatPrice(price)}
-                      {price > 0 && <span className="text-lg text-gray-400"> /{billingCycle === 'annual' ? 'year' : 'month'}</span>}
-                    </div>
-                    {billingCycle === 'annual' && plan.savings > 0 && (
-                      <div className="text-green-400 text-sm">Save {plan.savings}% annually</div>
-                    )}
-                  </div>
+        {/* Plans Grid */}
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Object.values(currentPlans).map(renderPlanCard)}
+          </div>
 
-                  <div className="space-y-2 mb-6">
-                    {plan.features.slice(0, 4).map((feature, index) => (
-                      <div key={index} className="flex items-center text-sm text-gray-300">
-                        <Check className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                    {plan.features.length > 4 && (
-                      <div className="text-gray-400 text-xs">+ {plan.features.length - 4} more features</div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => handleUpgrade(planId)}
-                    className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${getButtonStyle(planId)}`}
-                    disabled={currentPlan === planId}
-                  >
-                    {getButtonText(planId)}
-                  </button>
-                </div>
-              );
-            })}
+          {/* Guarantee */}
+          <div className="mt-8 text-center">
+            <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-lg p-6 border border-green-500/30">
+              <h3 className="text-xl font-bold text-white mb-2">Mission Success Guarantee</h3>
+              <p className="text-green-200">
+                Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, 
+                you get your money back. No hassle. No questions.
+              </p>
+            </div>
           </div>
         </div>
-
-        {/* Guarantee */}
-        <div className="border-t border-gray-700 p-4 sm:p-6 text-center">
-          <div className="flex items-center justify-center mb-2">
-            <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 mr-2" />
-            <span className="text-white font-semibold text-sm sm:text-base">30-Day Money-Back Guarantee</span>
-          </div>
-          <p className="text-gray-400 text-xs sm:text-sm">
-            Try any paid plan risk-free. If you're not completely satisfied, get a full refund within 30 days.
-          </p>
-        </div>
-        
-        </div>
-        {/* End Scrollable Content */}
       </div>
     </div>
   );

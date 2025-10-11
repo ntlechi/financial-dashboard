@@ -4,46 +4,48 @@ export const SUBSCRIPTION_TIERS = {
   FREE: 'recon',
   CLIMBER: 'climber', 
   OPERATOR: 'operator',
-  FOUNDERS_CIRCLE: 'founders-circle'
+  FOUNDERS_CIRCLE: 'founders-circle',
+  EARLY_ADOPTER: 'early-adopter'
 };
 
 export const TIER_HIERARCHY = {
   [SUBSCRIPTION_TIERS.FREE]: 0,
   [SUBSCRIPTION_TIERS.CLIMBER]: 1,
   [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: 2, // Same level as Operator
-  [SUBSCRIPTION_TIERS.OPERATOR]: 2
+  [SUBSCRIPTION_TIERS.OPERATOR]: 2,
+  [SUBSCRIPTION_TIERS.EARLY_ADOPTER]: 2 // Same level as Operator
 };
 
 // Feature access definitions (v1.1 UPDATE)
 export const FEATURE_ACCESS = {
   // Dashboard Features
-  'basic-dashboard': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'advanced-dashboard': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'full-dashboard': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  'basic-dashboard': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'advanced-dashboard': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'full-dashboard': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   
   // Core Features (Recon Kit + All)
-  'budget-calculator': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'transaction-management': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'data-export': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  'budget-calculator': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'transaction-management': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'data-export': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   
   // Climber+ Features
-  'financial-calculators': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'advanced-analytics': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'goal-tracking': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'projections': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  'financial-calculators': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'advanced-analytics': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'goal-tracking': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'projections': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   
   // Side Hustle: Operator+ only (SIMPLIFIED - no limits to enforce)
-  'side-hustle': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
+  'side-hustle': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   
   // Operator+ Features  
-  'investment-portfolio': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'investment': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE], // Alias for tab
-  'travel-mode': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'travel': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE], // Alias for tab
-  'business-analytics': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'tax-optimization': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'multi-currency': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE],
-  'export-freedom-story': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]
+  'investment-portfolio': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'investment': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // Alias for tab
+  'travel-mode': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'travel': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // Alias for tab
+  'business-analytics': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'tax-optimization': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'multi-currency': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
+  'export-freedom-story': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER]
 };
 
 // Side hustle limits by tier
@@ -51,7 +53,8 @@ export const SIDE_HUSTLE_LIMITS = {
   [SUBSCRIPTION_TIERS.FREE]: 0,
   [SUBSCRIPTION_TIERS.CLIMBER]: 0,
   [SUBSCRIPTION_TIERS.OPERATOR]: Infinity,
-  [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: Infinity
+  [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: Infinity,
+  [SUBSCRIPTION_TIERS.EARLY_ADOPTER]: Infinity
 };
 
 // Dashboard card access control
@@ -147,7 +150,8 @@ export const getTierDisplayName = (tier) => {
     [SUBSCRIPTION_TIERS.FREE]: 'Recon Kit',
     [SUBSCRIPTION_TIERS.CLIMBER]: 'Climber Plan',
     [SUBSCRIPTION_TIERS.OPERATOR]: 'Operator Plan',
-    [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: "Founder's Circle"
+    [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: "Founder's Circle",
+    [SUBSCRIPTION_TIERS.EARLY_ADOPTER]: 'Early Adopter Plan'
   };
   return names[tier] || 'Unknown Plan';
 };
@@ -158,11 +162,54 @@ export const getTierDisplayName = (tier) => {
  * @param {Date} launchDate - Launch date
  * @returns {boolean} - Whether offer is available
  */
-export const isFoundersCircleAvailable = (foundersCount = 0, launchDate = new Date('2025-10-05T13:00:00.000Z')) => {
+export const isFoundersCircleAvailable = (foundersCount = 0, launchDate = new Date('2025-10-19T13:00:00.000Z')) => {
   const now = new Date();
   const launchEndDate = new Date(launchDate.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days later
   
   return now >= launchDate && now <= launchEndDate && foundersCount < 100;
+};
+
+/**
+ * Check if Early Adopter offer is currently available
+ * @param {number} earlyAdopterCount - Current number of early adopters
+ * @returns {boolean} - Whether offer is available
+ */
+export const isEarlyAdopterAvailable = (earlyAdopterCount = 0) => {
+  const now = new Date();
+  const phase2Start = new Date('2025-10-27T00:00:00.000Z');
+  const phase2End = new Date('2026-01-01T23:59:59.999Z');
+  
+  return now >= phase2Start && now <= phase2End && earlyAdopterCount < 500;
+};
+
+/**
+ * Get current pricing phase
+ * @param {number} foundersCount - Current number of founders
+ * @param {number} earlyAdopterCount - Current number of early adopters
+ * @returns {string} - Current phase: 'founders', 'early-adopter', or 'regular'
+ */
+export const getCurrentPricingPhase = (foundersCount = 0, earlyAdopterCount = 0) => {
+  if (isFoundersCircleAvailable(foundersCount)) {
+    return 'founders';
+  } else if (isEarlyAdopterAvailable(earlyAdopterCount)) {
+    return 'early-adopter';
+  } else {
+    return 'regular';
+  }
+};
+
+/**
+ * Get pricing phase message
+ * @param {string} phase - Current pricing phase
+ * @returns {string} - Phase-specific message
+ */
+export const getPricingPhaseMessage = (phase) => {
+  const messages = {
+    'founders': "Limited time: Join the Founder's Circle for lifetime access!",
+    'early-adopter': "You missed the Founder's Circle, but you can still join the expedition at the Early Adopter rate.",
+    'regular': "Choose your plan and start your financial journey today."
+  };
+  return messages[phase] || messages.regular;
 };
 
 /**
@@ -211,6 +258,9 @@ export default {
   getRequiredTier,
   getTierDisplayName,
   isFoundersCircleAvailable,
+  isEarlyAdopterAvailable,
+  getCurrentPricingPhase,
+  getPricingPhaseMessage,
   getUpgradeSuggestions,
   getSideHustleLimit,
   canAddSideHustle

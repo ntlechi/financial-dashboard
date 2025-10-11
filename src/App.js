@@ -21,6 +21,7 @@ import FreedomJournal from './components/FreedomJournal';
 import ReflectionsPage from './components/ReflectionsPage';
 import MissionCompleteModal from './components/MissionCompleteModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
+import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -7985,32 +7986,32 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
-// 🗑️ DELETE EXPENSE FROM TRIP HANDLER
-const handleDeleteExpense = async (tripId, expenseId) => {
-  if (!window.confirm('Delete this expense?')) {
-    return;
-  }
+ // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
+ const handleDeleteExpense = async (tripId, expenseId) => {
+   if (!window.confirm('Delete this expense?')) {
+     return;
+   }
 
-  const updatedTrips = (data.travel?.trips || []).map(trip => {
-    if (trip.id === tripId) {
-      return {
-        ...trip,
-        expenses: trip.expenses.filter(exp => exp.id !== expenseId)
-      };
-    }
-    return trip;
-  });
+   const updatedTrips = (data.travel?.trips || []).map(trip => {
+     if (trip.id === tripId) {
+       return {
+         ...trip,
+         expenses: trip.expenses.filter(exp => exp.id !== expenseId)
+       };
+     }
+     return trip;
+   });
 
-  const updatedTravel = { ...data.travel, trips: updatedTrips };
-  const updatedData = { ...data, travel: updatedTravel };
+   const updatedTravel = { ...data.travel, trips: updatedTrips };
+   const updatedData = { ...data, travel: updatedTravel };
 
-  try {
-    await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-    setData(updatedData);
-  } catch (error) {
-    console.error('Error deleting expense:', error);
-  }
-};
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+   } catch (error) {
+     console.error('Error deleting expense:', error);
+   }
+ };
 
 
   const runway = calculateRunway();
@@ -9857,6 +9858,10 @@ function App() {
   const [showMissionCompleteModal, setShowMissionCompleteModal] = useState(false);
   const [completedTrip, setCompletedTrip] = useState(null);
 
+  // 🎯 PRICING PHASE STATE
+  const [foundersCircleCount, setFoundersCircleCount] = useState(0);
+  const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
+
   // User feedback system
   // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
   const [notification, setNotification] = useState(null);
@@ -10457,6 +10462,37 @@ function App() {
       checkDebtPaymentNotifications();
     }
   }, [data]);
+
+  // 🎯 LOAD PRICING PHASE DATA
+  useEffect(() => {
+    const loadPricingPhaseData = async () => {
+      try {
+        // Load Founder's Circle count
+        const foundersDocRef = doc(db, 'app-config', 'founders-circle');
+        const foundersDoc = await getDoc(foundersDocRef);
+        
+        if (foundersDoc.exists()) {
+          const count = foundersDoc.data().subscriberCount || 0;
+          setFoundersCircleCount(count);
+          console.log(`📊 Founder's Circle: ${count}/100 spots taken`);
+        }
+
+        // Load Early Adopter count
+        const earlyAdopterDocRef = doc(db, 'app-config', 'early-adopter');
+        const earlyAdopterDoc = await getDoc(earlyAdopterDocRef);
+        
+        if (earlyAdopterDoc.exists()) {
+          const count = earlyAdopterDoc.data().subscriberCount || 0;
+          setEarlyAdopterCount(count);
+          console.log(`📊 Early Adopter: ${count}/500 spots taken`);
+        }
+      } catch (error) {
+        console.error('Error loading pricing phase data:', error);
+      }
+    };
+
+    loadPricingPhaseData();
+  }, []);
 
   // Close calendar when clicking outside
   useEffect(() => {
@@ -11266,6 +11302,44 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* 🎯 PRICING PHASE BANNER */}
+      {(() => {
+        const pricingPhaseInfo = getPricingPhaseInfo(foundersCircleCount, earlyAdopterCount);
+        
+        if (pricingPhaseInfo.isFoundersPhase || pricingPhaseInfo.isEarlyAdopterPhase) {
+          return (
+            <div className={`fixed top-4 left-4 right-4 z-40 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+              pricingPhaseInfo.isFoundersPhase 
+                ? 'bg-gradient-to-r from-amber-600 to-orange-600 border border-amber-500' 
+                : 'bg-gradient-to-r from-purple-600 to-indigo-600 border border-purple-500'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {pricingPhaseInfo.isFoundersPhase ? (
+                    <Crown className="w-6 h-6 text-white" />
+                  ) : (
+                    <Rocket className="w-6 h-6 text-white" />
+                  )}
+                  <div>
+                    <h3 className="font-bold text-white">
+                      {pricingPhaseInfo.isFoundersPhase ? "Founder's Circle" : "Early Adopter"} Phase
+                    </h3>
+                    <p className="text-white/90 text-sm">{pricingPhaseInfo.message}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowPricingModal(true)}
+                  className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  View Plans
+                </button>
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })()}
       
       {/* Show loading screen while checking authentication */}
       {authLoading && (
@@ -11383,7 +11457,7 @@ function App() {
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
-              <p className="text-amber-200 text-lg">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Navigate your {viewMode} financial journey.</p>
+              <p className="text-amber-300 text-lg font-semibold">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Take command of your financial mission.</p>
             </div>
             
             {/* User Profile Section - Modern Dropdown Menu - FIXED: Now stays right on mobile */}
@@ -11757,14 +11831,14 @@ function App() {
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <DebtPayoffProgressTracker 
-                    data={displayData?.debt} 
-                    onEdit={openCardEditor}
-                    userPlan={userPlan}
-                    onUpgrade={() => setShowPricingModal(true)}
-                  />
-                </div>
+              <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <DebtPayoffProgressTracker 
+                  data={displayData?.debt} 
+                  onEdit={openCardEditor}
+                  userPlan={userPlan}
+                  onUpgrade={() => setShowPricingModal(true)}
+                />
+              </div>
               ) : (
                 <div className="col-span-1 md:col-span-6 lg:col-span-6">
                   <LockedCard cardName="Debt Payoff Calculator" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
@@ -12062,10 +12136,10 @@ function App() {
                   >
                     <Edit3 className="w-4 h-4" />
                     Save Note
-                  </button>
-                </div>
-              </Card>
+              </button>
             </div>
+          </Card>
+        </div>
           )}
         </>
       )}
@@ -12290,56 +12364,56 @@ function App() {
                         <div key={account.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
                           <div className="space-y-3">
                             {/* First Row: Name and Balance */}
-                            <div className="grid grid-cols-12 gap-2 items-end">
+                          <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-4">
-                                <label className="block text-xs text-gray-400 mb-1">Account Name</label>
-                                <input
-                                  type="text"
-                                  placeholder="Credit Card"
-                                  value={account.name || ''}
-                                  onChange={(e) => {
-                                    const currentData = tempCardData || {};
-                                    const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, name: e.target.value};
-                                    setTempCardData({...currentData, accounts: updatedAccounts});
-                                  }}
-                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                                />
-                              </div>
+                              <label className="block text-xs text-gray-400 mb-1">Account Name</label>
+                              <input
+                                type="text"
+                                placeholder="Credit Card"
+                                value={account.name || ''}
+                                onChange={(e) => {
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                  updatedAccounts[index] = {...account, name: e.target.value};
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
                               <div className="col-span-4">
                                 <label className="block text-xs text-gray-400 mb-1">Current Balance</label>
-                                <input
-                                  type="number"
-                                  placeholder="10000"
-                                  value={account.balance || ''}
-                                  onChange={(e) => {
-                                    const currentData = tempCardData || {};
-                                    const updatedAccounts = [...(currentData.accounts || [])];
+                              <input
+                                type="number"
+                                placeholder="10000"
+                                value={account.balance || ''}
+                                onChange={(e) => {
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
                                     const currentBalance = e.target.value === '' ? 0 : Number(e.target.value);
                                     const initialDebt = account.initialDebt || 0;
                                     const amountPaid = Math.max(0, initialDebt - currentBalance);
                                     updatedAccounts[index] = {...account, balance: currentBalance, amountPaid};
-                                    setTempCardData({...currentData, accounts: updatedAccounts});
-                                  }}
-                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                                />
-                              </div>
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
                               <div className="col-span-3">
-                                <label className="block text-xs text-gray-400 mb-1">APR %</label>
-                                <input
-                                  type="number"
-                                  step="0.1"
-                                  placeholder="19.9"
-                                  value={account.interestRate || ''}
-                                  onChange={(e) => {
-                                    const currentData = tempCardData || {};
-                                    const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
-                                    setTempCardData({...currentData, accounts: updatedAccounts});
-                                  }}
-                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                                />
-                              </div>
+                              <label className="block text-xs text-gray-400 mb-1">APR %</label>
+                              <input
+                                type="number"
+                                step="0.1"
+                                placeholder="19.9"
+                                value={account.interestRate || ''}
+                                onChange={(e) => {
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                  updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
                               <div className="col-span-1">
                                 <button
                                   onClick={() => {
@@ -12381,21 +12455,21 @@ function App() {
                                   <span className="text-xs text-gray-400">Auto</span>
                                 </div>
                               </div>
-                              <div className="col-span-3">
-                                <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
-                                <input
-                                  type="number"
-                                  placeholder="200"
-                                  value={account.minPayment || ''}
-                                  onChange={(e) => {
-                                    const currentData = tempCardData || {};
-                                    const updatedAccounts = [...(currentData.accounts || [])];
-                                    updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
-                                    setTempCardData({...currentData, accounts: updatedAccounts});
-                                  }}
-                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                                />
-                              </div>
+                            <div className="col-span-3">
+                              <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
+                              <input
+                                type="number"
+                                placeholder="200"
+                                value={account.minPayment || ''}
+                                onChange={(e) => {
+                                  const currentData = tempCardData || {};
+                                  const updatedAccounts = [...(currentData.accounts || [])];
+                                  updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
+                                }}
+                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                              />
+                            </div>
                               <div className="col-span-3">
                                 <label className="block text-xs text-gray-400 mb-1">Due Date</label>
                                 <div className="relative calendar-container">
@@ -12429,14 +12503,14 @@ function App() {
                                   {account.showCalendar && (
                                     <div className="absolute top-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 p-4 w-[280px] xs:w-[320px] transform -translate-x-1/2 left-1/2 sm:left-auto sm:right-0 sm:transform-none sm:w-[320px]">
                                       <div className="flex justify-between items-center mb-3">
-                                        <button
-                                          onClick={() => {
-                                            const currentData = tempCardData || {};
+                              <button
+                                onClick={() => {
+                                  const currentData = tempCardData || {};
                                             const updatedAccounts = [...(currentData.accounts || [])];
                                             const currentDate = new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth()) - 1);
                                             updatedAccounts[index] = {...account, calendarYear: currentDate.getFullYear(), calendarMonth: currentDate.getMonth()};
-                                            setTempCardData({...currentData, accounts: updatedAccounts});
-                                          }}
+                                  setTempCardData({...currentData, accounts: updatedAccounts});
+                                }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
                                           ←
@@ -12455,8 +12529,8 @@ function App() {
                                           className="text-gray-400 hover:text-white p-1"
                                         >
                                           →
-                                        </button>
-                                      </div>
+                              </button>
+                            </div>
                                       
                                       {/* Calendar Grid */}
                                       <div className="grid grid-cols-7 gap-1 text-xs">
@@ -13437,7 +13511,11 @@ function App() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-center md:text-left">
-              <h3 className="text-lg font-semibold text-white mb-1">The Freedom Compass</h3>
+              <h3 className="text-lg font-semibold text-white mb-1">
+                <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-amber-400 transition-colors">
+                  Survive Backpacking
+                </a>
+              </h3>
               <p className="text-gray-400 text-sm">Navigate to your financial freedom</p>
             </div>
             
@@ -13455,7 +13533,7 @@ function App() {
                 Terms of Service
               </button>
               <span className="text-gray-500">
-                © {new Date().getFullYear()} Survive Backpacking. All rights reserved.
+                © {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. All rights reserved.
               </span>
             </div>
           </div>
