@@ -10013,7 +10013,7 @@ function App() {
   const handleExportPDF = async () => {
     if (currentUserPlan !== SUBSCRIPTION_TIERS.OPERATOR && currentUserPlan !== SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE) {
       setUpgradePromptData({
-        featureName: 'Export Freedom Story as PDF',
+        featureName: 'Export Field Notes as PDF',
         requiredPlan: 'Operator'
       });
       setShowUpgradePrompt(true);
@@ -11445,14 +11445,25 @@ function App() {
                 <Plus className="w-5 h-5" />
               </button>
               
-              {/* Quick Journal Button */}
-              <button
-                onClick={() => setShowQuickJournal(true)}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-                title="Quick Journal"
-              >
-                <Edit3 className="w-5 h-5" />
-              </button>
+              {/* Quick Journal Button - Operator+ Only */}
+              {currentUserPlan === SUBSCRIPTION_TIERS.OPERATOR || currentUserPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? (
+                <button
+                  onClick={() => setShowQuickJournal(true)}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
+                  title="Quick Journal"
+                >
+                  <Edit3 className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowPricingModal(true)}
+                  className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2 relative"
+                  title="Quick Journal - Operator+ Feature"
+                >
+                  <Edit3 className="w-5 h-5" />
+                  <Crown className="w-3 h-3 absolute -top-1 -right-1 text-amber-400" />
+                </button>
+              )}
               
               {/* Help FAQ Button */}
               <button
@@ -11660,7 +11671,7 @@ function App() {
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    📓 Reflections
+                    📓 Field Notes
                     {currentUserPlan !== SUBSCRIPTION_TIERS.OPERATOR && currentUserPlan !== SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
@@ -11891,7 +11902,7 @@ function App() {
           )}
 
           {activeTab === 'reflections' && (
-            <FinancialErrorBoundary componentName="Reflections Archive">
+            <FinancialErrorBoundary componentName="Field Notes Archive">
               <ReflectionsPage 
                 data={data} 
                 userPlan={currentUserPlan} 
@@ -12081,7 +12092,7 @@ function App() {
 
                   <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
                     <div className="text-xs text-blue-200">
-                      💡 <strong>Quick Tip:</strong> Your notes will appear in the Reflections archive where you can edit or delete them later.
+                      💡 <strong>Quick Tip:</strong> Your notes will appear in the Field Notes archive where you can edit or delete them later.
                     </div>
                   </div>
                 </div>

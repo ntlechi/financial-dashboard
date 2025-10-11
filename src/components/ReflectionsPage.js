@@ -174,10 +174,10 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
           <div>
             <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
               <BookOpen className="w-8 h-8 text-amber-400" />
-              📓 Reflections Archive
+              📓 Field Notes Archive
             </h1>
             <p className="text-slate-300">
-              Your collection of memories and lessons from the trail
+              Your collection of expedition memories and financial insights
             </p>
           </div>
           
@@ -194,12 +194,12 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
               {hasOperatorAccess ? (
                 <>
                   <Download className="w-5 h-5" />
-                  Export as PDF
+                  Export Field Notes
                 </>
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
-                  Export as PDF
+                  Export Field Notes
                 </>
               )}
             </button>
@@ -387,9 +387,9 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
       {allJournalEntries.length === 0 ? (
         <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-8 border border-slate-500/40 text-center">
           <BookOpen className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-slate-300 mb-2">No Reflections Yet</h3>
+          <h3 className="text-xl font-semibold text-slate-300 mb-2">No Field Notes Yet</h3>
           <p className="text-slate-400 mb-4">
-            Start documenting your adventures by adding journal entries to your trips.
+            Start documenting your expedition memories and financial insights!
           </p>
           <p className="text-sm text-slate-500">
             Go to the Travel page and add your first Freedom Journal entry!
