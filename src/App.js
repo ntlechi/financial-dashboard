@@ -11303,43 +11303,7 @@ function App() {
         </div>
       )}
 
-      {/* 🎯 PRICING PHASE BANNER */}
-      {(() => {
-        const pricingPhaseInfo = getPricingPhaseInfo(foundersCircleCount, earlyAdopterCount);
-        
-        if (pricingPhaseInfo.isFoundersPhase || pricingPhaseInfo.isEarlyAdopterPhase) {
-          return (
-            <div className={`fixed top-4 left-4 right-4 z-40 p-4 rounded-lg shadow-lg transition-all duration-300 ${
-              pricingPhaseInfo.isFoundersPhase 
-                ? 'bg-gradient-to-r from-amber-600 to-orange-600 border border-amber-500' 
-                : 'bg-gradient-to-r from-purple-600 to-indigo-600 border border-purple-500'
-            }`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {pricingPhaseInfo.isFoundersPhase ? (
-                    <Crown className="w-6 h-6 text-white" />
-                  ) : (
-                    <Rocket className="w-6 h-6 text-white" />
-                  )}
-                  <div>
-                    <h3 className="font-bold text-white">
-                      {pricingPhaseInfo.isFoundersPhase ? "Founder's Circle" : "Early Adopter"} Phase
-                    </h3>
-                    <p className="text-white/90 text-sm">{pricingPhaseInfo.message}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowPricingModal(true)}
-                  className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-                >
-                  View Plans
-                </button>
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })()}
+      {/* 🎯 PRICING PHASE BANNER - REMOVED FOR CLEAN UI */}
       
       {/* Show loading screen while checking authentication */}
       {authLoading && (
