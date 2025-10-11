@@ -163,18 +163,19 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
             <div className="text-4xl font-bold text-white">FREE</div>
           ) : (
             <div>
-              <div className="text-4xl font-bold text-white whitespace-nowrap">
-                ${plan.monthlyOnly ? plan.price : (billingCycle === 'yearly' && plan.yearlyPrice ? plan.yearlyPrice : plan.price)} USD<span className="text-lg text-white/80">/{plan.monthlyOnly ? 'month' : (billingCycle === 'yearly' ? 'year' : 'month')}</span>
+              <div className="text-4xl font-bold text-white">
+                ${plan.monthlyOnly ? plan.price : (billingCycle === 'yearly' && plan.yearlyPrice ? plan.yearlyPrice : plan.price)}
+                <span className="text-lg text-white/80">/{plan.monthlyOnly ? 'month' : (billingCycle === 'yearly' ? 'year' : 'month')}</span>
               </div>
               {!plan.monthlyOnly && billingCycle === 'yearly' && plan.yearlyPrice && (
                 <div className="text-sm text-white/60 mt-1">
-                  ${plan.price} USD/month billed annually
+                  ${plan.price}/month billed annually
                 </div>
               )}
               {/* Strike-through regular price for Founder's Circle */}
               {plan.id === 'founders-circle' && (
                 <div className="text-lg text-white/60 mt-1 line-through">
-                  ${billingCycle === 'yearly' ? '179.88' : '14.99'} USD/month
+                  ${billingCycle === 'yearly' ? '179.88' : '14.99'}/month
                 </div>
               )}
               {plan.savings && (
