@@ -275,10 +275,10 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         <button
           onClick={() => handleUpgrade(plan.id)}
           disabled={isCurrentPlan}
-          className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+          className={`w-full py-4 px-6 rounded-lg font-bold text-lg transition-all duration-200 ${
             isCurrentPlan
               ? 'bg-white/20 text-white/60 cursor-not-allowed'
-              : 'bg-white text-gray-900 hover:bg-white/90 transform hover:scale-105 shadow-lg'
+              : 'bg-white text-gray-900 hover:bg-white/90 transform hover:scale-105 shadow-xl hover:shadow-2xl'
           }`}
         >
           {isCurrentPlan ? 'Current Plan' : plan.cta}
