@@ -8,6 +8,19 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 // Map plan IDs to Stripe Price IDs
 export const STRIPE_PRICE_IDS = {
+  // Launch pricing (October 19-26, 2025)
+  'climber-launch-monthly': process.env.REACT_APP_STRIPE_CLIMBER_LAUNCH_MONTHLY,
+  'climber-launch-annual': process.env.REACT_APP_STRIPE_CLIMBER_LAUNCH_ANNUAL,
+  'operator-launch-monthly': process.env.REACT_APP_STRIPE_OPERATOR_LAUNCH_MONTHLY,
+  'operator-launch-annual': process.env.REACT_APP_STRIPE_OPERATOR_LAUNCH_ANNUAL,
+  
+  // Regular pricing (After October 26, 2025)
+  'climber-regular-monthly': process.env.REACT_APP_STRIPE_CLIMBER_REGULAR_MONTHLY,
+  'climber-regular-annual': process.env.REACT_APP_STRIPE_CLIMBER_REGULAR_ANNUAL,
+  'operator-regular-monthly': process.env.REACT_APP_STRIPE_OPERATOR_REGULAR_MONTHLY,
+  'operator-regular-annual': process.env.REACT_APP_STRIPE_OPERATOR_REGULAR_ANNUAL,
+  
+  // Legacy mappings (for backward compatibility)
   'climber-monthly': process.env.REACT_APP_STRIPE_CLIMBER_MONTHLY,
   'climber-annual': process.env.REACT_APP_STRIPE_CLIMBER_ANNUAL,
   'operator-monthly': process.env.REACT_APP_STRIPE_OPERATOR_MONTHLY,
@@ -20,26 +33,32 @@ export const STRIPE_PRICE_IDS = {
  * @param {string} planId - Plan identifier (e.g., 'climber', 'operator', 'founders-circle')
  * @param {string} billingCycle - 'monthly' or 'annual'
  * @param {object} user - Firebase user object
+ * @param {string} priceId - Optional specific price ID (for launch vs regular pricing)
  * @returns {Promise<void>}
  */
-export async function createCheckoutSession(planId, billingCycle, user) {
+export async function createCheckoutSession(planId, billingCycle, user, priceId = null) {
   try {
-    console.log('🛒 Creating checkout session:', { planId, billingCycle });
+    console.log('🛒 Creating checkout session:', { planId, billingCycle, priceId });
 
     // Validate inputs
     if (!user?.uid || !user?.email) {
       throw new Error('User must be authenticated');
     }
 
-    // Get the correct price ID
-    const priceKey = `${planId}-${billingCycle}`;
-    const priceId = STRIPE_PRICE_IDS[priceKey];
-
-    if (!priceId) {
-      throw new Error(`No price ID found for ${priceKey}`);
+    // Use provided priceId or fall back to environment variable mapping
+    let finalPriceId = priceId;
+    
+    if (!finalPriceId) {
+      // Get the correct price ID from environment variables
+      const priceKey = `${planId}-${billingCycle}`;
+      finalPriceId = STRIPE_PRICE_IDS[priceKey];
+      
+      if (!finalPriceId) {
+        throw new Error(`No price ID found for ${priceKey}`);
+      }
     }
 
-    console.log('📝 Using price ID:', priceId);
+    console.log('📝 Using price ID:', finalPriceId);
 
     // Call our backend API to create the checkout session
     const response = await fetch('/api/create-checkout-session', {
@@ -48,7 +67,7 @@ export async function createCheckoutSession(planId, billingCycle, user) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        priceId: priceId,
+        priceId: finalPriceId,
         userId: user.uid,
         userEmail: user.email || 'no-email@provided.com',
         planName: planId,

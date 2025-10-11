@@ -10030,7 +10030,7 @@ function App() {
     setShowUpgradePrompt(true);
   }, []);
 
-  const handleUpgrade = useCallback(async (planId, billingCycle = 'monthly') => {
+  const handleUpgrade = useCallback(async (planId, billingCycle = 'monthly', priceId = null) => {
     if (planId === 'view-all') {
       setShowUpgradePrompt(false);
       setShowPricingModal(true);
@@ -10044,7 +10044,7 @@ function App() {
     }
 
     try {
-      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing`);
+      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing${priceId ? ` (Price ID: ${priceId})` : ''}`);
       
       // Import Stripe utilities dynamically
       const { createCheckoutSession } = await import('./utils/stripeUtils');
@@ -10053,7 +10053,7 @@ function App() {
       showNotification('Redirecting to secure checkout...', 'info');
       
       // Create Stripe checkout session and redirect
-      await createCheckoutSession(planId, billingCycle, user);
+      await createCheckoutSession(planId, billingCycle, user, priceId);
       
       // Note: User will be redirected to Stripe, so code after this may not execute
       // Subscription update happens via webhook after successful payment
