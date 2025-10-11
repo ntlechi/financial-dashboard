@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getRankFromXp, RANKS } from '../utils/xp';
+import { SUBSCRIPTION_TIERS } from '../utils/subscriptionUtils';
 import { Crown, Lock, Star, Award, Zap, Target, Shield, Trophy } from 'lucide-react';
 
 const RANK_INSIGNIA = {
@@ -79,7 +80,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
   if (!profile) return null;
 
   const { current, next, progress } = getRankFromXp(profile.xpPoints || 0);
-  const canViewFullLadder = userPlan === 'OPERATOR' || userPlan === 'FOUNDERS_CIRCLE';
+  const canViewFullLadder = userPlan === SUBSCRIPTION_TIERS.OPERATOR || userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE;
   const visibleRanks = canViewFullLadder ? RANKS : RANKS.slice(0, 3); // Show only first 3 for free users
 
   return (

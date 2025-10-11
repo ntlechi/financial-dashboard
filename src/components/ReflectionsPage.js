@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Download, Lock, Calendar, MapPin, Eye, EyeOff } from 'lucide-react';
+import { BookOpen, Download, Lock, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X } from 'lucide-react';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
-export default function ReflectionsPage({ data, userPlan, onExportPDF }) {
+export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId }) {
   const [expandedEntries, setExpandedEntries] = useState(new Set());
   const [allJournalEntries, setAllJournalEntries] = useState([]);
+  
+  // Quick Notes State
+  const [quickNotes, setQuickNotes] = useState([]);
+  const [showAddNote, setShowAddNote] = useState(false);
+  const [newNote, setNewNote] = useState('');
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [editingText, setEditingText] = useState('');
 
-  // Collect all journal entries from all trips
+  // Collect all journal entries from all trips and quick notes
   useEffect(() => {
     const entries = [];
     const trips = data?.travel?.trips || [];
     
+    // Add trip journal entries
     trips.forEach(trip => {
       if (trip.journalEntries && trip.journalEntries.length > 0) {
         trip.journalEntries.forEach(entry => {
@@ -17,11 +27,25 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF }) {
             ...entry,
             tripName: trip.name,
             tripId: trip.id,
-            tripCountries: trip.countries || []
+            tripCountries: trip.countries || [],
+            entryType: 'trip-journal'
           });
         });
       }
     });
+
+    // Add quick journal entries
+    if (data?.quickJournalEntries && data.quickJournalEntries.length > 0) {
+      data.quickJournalEntries.forEach(entry => {
+        entries.push({
+          ...entry,
+          tripName: 'Quick Notes',
+          tripId: 'quick-notes',
+          tripCountries: [],
+          entryType: 'quick-note'
+        });
+      });
+    }
 
     // Sort by timestamp (newest first)
     entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -54,6 +78,89 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF }) {
   const getExcerpt = (text, maxLength = 150) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
+  };
+
+  // Quick Notes Handlers
+  const addQuickNote = () => {
+    if (!newNote.trim()) return;
+    
+    const note = {
+      id: Date.now(),
+      text: newNote.trim(),
+      timestamp: new Date().toISOString(),
+      createdAt: new Date().toLocaleString()
+    };
+    
+    setQuickNotes(prev => [note, ...prev]);
+    setNewNote('');
+    setShowAddNote(false);
+  };
+
+  const startEditingNote = (note) => {
+    setEditingNoteId(note.id);
+    setEditingText(note.text);
+  };
+
+  const saveEditedNote = () => {
+    if (!editingText.trim()) return;
+    
+    setQuickNotes(prev => 
+      prev.map(note => 
+        note.id === editingNoteId 
+          ? { ...note, text: editingText.trim(), lastEdited: new Date().toLocaleString() }
+          : note
+      )
+    );
+    setEditingNoteId(null);
+    setEditingText('');
+  };
+
+  const cancelEditing = () => {
+    setEditingNoteId(null);
+    setEditingText('');
+  };
+
+  const deleteNote = (noteId) => {
+    setQuickNotes(prev => prev.filter(note => note.id !== noteId));
+  };
+
+  // Quick Journal Entry Handlers (for editing/deleting in Reflections)
+  const handleEditQuickNote = async (noteId, newText) => {
+    if (!newText.trim() || !userId) return;
+    
+    const updatedData = {
+      ...data,
+      quickJournalEntries: data.quickJournalEntries.map(entry => 
+        entry.id === noteId 
+          ? { ...entry, text: newText.trim(), lastEdited: new Date().toLocaleString() }
+          : entry
+      )
+    };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      onUpdateData(updatedData);
+      console.log('Quick note edited successfully');
+    } catch (error) {
+      console.error('Error editing quick note:', error);
+    }
+  };
+
+  const handleDeleteQuickNote = async (noteId) => {
+    if (!userId) return;
+    
+    const updatedData = {
+      ...data,
+      quickJournalEntries: data.quickJournalEntries.filter(entry => entry.id !== noteId)
+    };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      onUpdateData(updatedData);
+      console.log('Quick note deleted successfully');
+    } catch (error) {
+      console.error('Error deleting quick note:', error);
+    }
   };
 
   // Check if user has Operator access
@@ -104,6 +211,177 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF }) {
           </div>
         </div>
       </div>
+
+      {/* Quick Notes Section */}
+      <div className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-lg p-6 border border-blue-500/40">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+              <Edit3 className="w-5 h-5 text-blue-400" />
+              Quick Notes & Ideas
+            </h2>
+            <p className="text-blue-300 text-sm">Jot down thoughts, ideas, and reflections</p>
+          </div>
+          <button
+            onClick={() => setShowAddNote(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Note
+          </button>
+        </div>
+
+        {/* Add Note Form */}
+        {showAddNote && (
+          <div className="mb-4 p-4 bg-blue-800/20 rounded-lg border border-blue-600/30">
+            <textarea
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              placeholder="What's on your mind? Ideas, reflections, goals..."
+              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px] resize-none"
+              rows="3"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2 mt-3">
+              <button
+                onClick={() => {
+                  setShowAddNote(false);
+                  setNewNote('');
+                }}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Cancel
+              </button>
+              <button
+                onClick={addQuickNote}
+                disabled={!newNote.trim()}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                Save Note
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Notes List */}
+        {quickNotes.length === 0 ? (
+          <div className="text-center py-8 text-blue-300">
+            <Edit3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <p className="text-sm">No notes yet. Click "Add Note" to get started!</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {quickNotes.map((note) => (
+              <div
+                key={note.id}
+                className="bg-gray-800/50 rounded-lg p-4 border border-gray-600/30"
+              >
+                {editingNoteId === note.id ? (
+                  // Editing Mode
+                  <div>
+                    <textarea
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none min-h-[80px] resize-none"
+                      rows="3"
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2 mt-3">
+                      <button
+                        onClick={cancelEditing}
+                        className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition-colors flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" />
+                        Cancel
+                      </button>
+                      <button
+                        onClick={saveEditedNote}
+                        disabled={!editingText.trim()}
+                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-3 py-1 rounded text-sm transition-colors flex items-center gap-1"
+                      >
+                        <Save className="w-3 h-3" />
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // View Mode
+                  <div>
+                    <p className="text-gray-200 leading-relaxed mb-3">{note.text}</p>
+                    <div className="flex justify-between items-center">
+                      <div className="text-xs text-gray-400">
+                        {note.lastEdited ? `Edited ${note.lastEdited}` : `Created ${note.createdAt}`}
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => startEditingNote(note)}
+                          className="text-blue-400 hover:text-blue-300 p-1 hover:bg-blue-900/20 rounded transition-colors"
+                          title="Edit note"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteNote(note.id)}
+                          className="text-red-400 hover:text-red-300 p-1 hover:bg-red-900/20 rounded transition-colors"
+                          title="Delete note"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Quick Note Editing Modal */}
+      {editingNoteId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md border border-blue-500/30">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-white">Edit Quick Note</h3>
+              <button
+                onClick={cancelEditing}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <textarea
+              value={editingText}
+              onChange={(e) => setEditingText(e.target.value)}
+              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none min-h-[120px] resize-none"
+              rows="4"
+              autoFocus
+            />
+            
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={cancelEditing}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleEditQuickNote(editingNoteId, editingText);
+                  cancelEditing();
+                }}
+                disabled={!editingText.trim()}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Journal Entries */}
       {allJournalEntries.length === 0 ? (
@@ -188,6 +466,29 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF }) {
                         alt="Journal entry photo"
                         className="w-full max-w-md h-48 object-cover rounded-lg border border-slate-600/30"
                       />
+                    </div>
+                  )}
+
+                  {/* Edit/Delete buttons for quick notes */}
+                  {entry.entryType === 'quick-note' && (
+                    <div className="mt-4 flex justify-end gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingNoteId(entry.id);
+                          setEditingText(entry.text);
+                        }}
+                        className="text-blue-400 hover:text-blue-300 p-1 hover:bg-blue-900/20 rounded transition-colors"
+                        title="Edit note"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteQuickNote(entry.id)}
+                        className="text-red-400 hover:text-red-300 p-1 hover:bg-red-900/20 rounded transition-colors"
+                        title="Delete note"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   )}
                 </div>

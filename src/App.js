@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3 } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -3845,6 +3845,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 fill="none"
               />
               {/* Progress Circle with Neon Glow */}
+              {/* Mobile-friendly neon effect using multiple circles */}
+              <circle
+                cx="128"
+                cy="128"
+                r="110"
+                stroke={freedomMetrics.progressColor}
+                strokeWidth="24"
+                fill="none"
+                strokeDasharray={`${(freedomMetrics.freedomRatio / 100) * 691} 691`}
+                strokeLinecap="round"
+                className="transition-all duration-1000 ease-out opacity-30"
+              />
               <circle
                 cx="128"
                 cy="128"
@@ -3854,10 +3866,21 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 fill="none"
                 strokeDasharray={`${(freedomMetrics.freedomRatio / 100) * 691} 691`}
                 strokeLinecap="round"
+                className="transition-all duration-1000 ease-out opacity-60"
+              />
+              <circle
+                cx="128"
+                cy="128"
+                r="110"
+                stroke={freedomMetrics.progressColor}
+                strokeWidth="12"
+                fill="none"
+                strokeDasharray={`${(freedomMetrics.freedomRatio / 100) * 691} 691`}
+                strokeLinecap="round"
                 className="transition-all duration-1000 ease-out"
                 style={{
-                  filter: `drop-shadow(0 0 12px ${freedomMetrics.progressColor}) drop-shadow(0 0 24px ${freedomMetrics.progressColor})`,
-                  WebkitFilter: `drop-shadow(0 0 12px ${freedomMetrics.progressColor}) drop-shadow(0 0 24px ${freedomMetrics.progressColor})`,
+                  filter: `drop-shadow(0 0 8px ${freedomMetrics.progressColor})`,
+                  WebkitFilter: `drop-shadow(0 0 8px ${freedomMetrics.progressColor})`,
                   willChange: 'filter'
                 }}
               />
@@ -9824,6 +9847,10 @@ function App() {
     date: new Date().toISOString().split('T')[0]
   });
 
+  // 📝 QUICK JOURNAL SYSTEM
+  const [showQuickJournal, setShowQuickJournal] = useState(false);
+  const [quickJournalNote, setQuickJournalNote] = useState('');
+
   // 📓 FREEDOM JOURNAL SYSTEM
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [selectedTripForJournal, setSelectedTripForJournal] = useState(null);
@@ -10939,6 +10966,56 @@ function App() {
     setTimeout(resetMobileViewport, 100);
   };
 
+  // 📝 QUICK JOURNAL HANDLERS
+  const openQuickJournal = () => {
+    setShowQuickJournal(true);
+  };
+
+  const closeQuickJournal = () => {
+    setShowQuickJournal(false);
+    setQuickJournalNote('');
+  };
+
+  const saveQuickJournal = async () => {
+    if (!quickJournalNote.trim()) return;
+    
+    const journalEntry = {
+      id: Date.now(),
+      text: quickJournalNote.trim(),
+      timestamp: new Date().toISOString(),
+      createdAt: new Date().toLocaleString(),
+      type: 'quick-note'
+    };
+    
+    // Add to data structure
+    const updatedData = {
+      ...data,
+      quickJournalEntries: [...(data.quickJournalEntries || []), journalEntry]
+    };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      closeQuickJournal();
+      showNotification('📝 Quick note saved!', 'success');
+      
+      // Award XP for journaling
+      try {
+        const result = await awardXp(db, userId, 10);
+        if (result?.rankUp && result.newRank) {
+          const prev = getRankFromXp((result.totalXp || 0) - 10);
+          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 10, action: 'quick journal' });
+          setShowRankUpModal(true);
+        }
+      } catch (e) {
+        console.warn('XP award failed (quick journal)', e);
+      }
+    } catch (error) {
+      console.error('Error saving quick journal:', error);
+      showNotification('Error saving note', 'error');
+    }
+  };
+
   const confirmQuickExpense = async () => {
     if (!quickExpense.description || !quickExpense.amount || !userId) return;
 
@@ -11330,6 +11407,15 @@ function App() {
                 <Plus className="w-5 h-5" />
               </button>
               
+              {/* Quick Journal Button */}
+              <button
+                onClick={() => setShowQuickJournal(true)}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
+                title="Quick Journal"
+              >
+                <Edit3 className="w-5 h-5" />
+              </button>
+              
               {/* Help FAQ Button */}
               <button
                 onClick={() => setShowHelpFAQ(true)}
@@ -11519,6 +11605,10 @@ function App() {
                   <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
+                  <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <Award className="w-4 h-4 mr-2"/>Rank & Medals
+                    {userPlan === SUBSCRIPTION_TIERS.FREE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                  </button>
                   <button onClick={() => handleTabClick('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Building className="w-4 h-4 mr-2"/>Side Hustle
                     {!checkFeatureAccess('side-hustle') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
@@ -11526,10 +11616,6 @@ function App() {
                   <button onClick={() => handleTabClick('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Briefcase className="w-4 h-4 mr-2"/>Investment
                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
-                  </button>
-                  <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <Award className="w-4 h-4 mr-2"/>Rank & Medals
-                    {userPlan === SUBSCRIPTION_TIERS.FREE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
@@ -11772,6 +11858,8 @@ function App() {
                 data={data} 
                 userPlan={currentUserPlan} 
                 onExportPDF={handleExportPDF}
+                onUpdateData={setData}
+                userId={userId}
               />
             </FinancialErrorBoundary>
           )}
@@ -11902,6 +11990,82 @@ function App() {
             </div>
           </Card>
         </div>
+          )}
+
+          {/* Quick Journal Modal */}
+          {showQuickJournal && (
+            <div 
+              className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 'calc(var(--vh, 1vh) * 100)',
+                zIndex: 9999,
+                padding: '1rem'
+              }}
+              onTouchMove={(e) => e.preventDefault()}
+              onWheel={(e) => e.preventDefault()}
+            >
+              <Card 
+                className="w-full max-w-md border-blue-500/30"
+                style={{
+                  margin: 0
+                }}
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-white">📝 Quick Journal</h3>
+                    <p className="text-xs text-gray-400">Capture your thoughts and ideas!</p>
+                  </div>
+                  <button
+                    onClick={closeQuickJournal}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">What's on your mind?</label>
+                    <textarea
+                      placeholder="Ideas, reflections, goals, insights..."
+                      value={quickJournalNote}
+                      onChange={(e) => setQuickJournalNote(e.target.value)}
+                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none placeholder-gray-400 min-h-[120px] resize-none"
+                      rows="4"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
+                    <div className="text-xs text-blue-200">
+                      💡 <strong>Quick Tip:</strong> Your notes will appear in the Reflections archive where you can edit or delete them later.
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    onClick={closeQuickJournal}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={saveQuickJournal}
+                    disabled={!quickJournalNote.trim()}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    Save Note
+                  </button>
+                </div>
+              </Card>
+            </div>
           )}
         </>
       )}
