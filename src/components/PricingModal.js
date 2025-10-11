@@ -171,6 +171,12 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                   ${plan.price}/month billed annually
                 </div>
               )}
+              {/* Strike-through regular price for Founder's Circle */}
+              {plan.id === 'founders-circle' && (
+                <div className="text-lg text-white/60 mt-1 line-through">
+                  ${billingCycle === 'yearly' ? '179.88' : '14.99'}/month
+                </div>
+              )}
               {plan.savings && (
                 <div className="text-sm text-green-300 font-semibold mt-1">
                   {plan.savings}
@@ -286,49 +292,39 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
             </div>
           )}
 
-          {/* Billing Toggle - Hide for monthly-only plans */}
-          {!Object.values(currentPlans).some(plan => plan.monthlyOnly) && (
-            <div className="mt-4 flex justify-center">
-              <div className="bg-gray-800 rounded-lg p-1 flex">
-                <button
-                  onClick={() => setBillingCycle('monthly')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    billingCycle === 'monthly'
-                      ? 'bg-white text-gray-900'
-                      : 'text-gray-300 hover:text-white'
-                  }`}
-                >
-                  Monthly
-                </button>
-                <button
-                  onClick={() => setBillingCycle('yearly')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    billingCycle === 'yearly'
-                      ? 'bg-white text-gray-900'
-                      : 'text-gray-300 hover:text-white'
-                  }`}
-                >
-                  Yearly
-                </button>
-              </div>
+          {/* Billing Toggle - Always show for better UX */}
+          <div className="mt-4 flex justify-center">
+            <div className="bg-gray-800 rounded-lg p-1 flex">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  billingCycle === 'monthly'
+                    ? 'bg-white text-gray-900'
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle('yearly')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors relative ${
+                  billingCycle === 'yearly'
+                    ? 'bg-white text-gray-900'
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Annual
+                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                  Save 17%
+                </span>
+              </button>
             </div>
-          )}
-
-          {/* Monthly-Only Notice */}
-          {Object.values(currentPlans).some(plan => plan.monthlyOnly) && (
-            <div className="mt-4 text-center">
-              <div className="bg-purple-900/30 rounded-lg p-3 border border-purple-500/30">
-                <p className="text-purple-200 text-sm">
-                  💡 <strong>Monthly billing only</strong> - Less friction, more freedom!
-                </p>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Plans Grid */}
         <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {Object.values(currentPlans).map(renderPlanCard)}
           </div>
 
