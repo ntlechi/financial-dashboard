@@ -23,7 +23,10 @@ import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
 import TransactionModal from './components/TransactionModal';
-import FixedModal from './components/FixedModal';
+import FixedModal from
+import MomentsModal from
+import MomentsFeed from
+import InstallPrompt from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
@@ -3414,6 +3417,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             }, 4000);
           }
         } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
           console.warn('Milestone check failed:', error);
         }
       }
@@ -3456,6 +3468,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
       setShowAddBusiness(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error adding business:', error);
     }
   };
@@ -3510,6 +3531,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0], isPassive: false });
       setShowAddItem(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error adding item:', error);
     }
   };
@@ -3536,6 +3566,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setBusinessToDelete(null);
       setShowDeleteConfirm(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error deleting business:', error);
     }
   };
@@ -3567,6 +3606,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error deleting item:', error);
     }
   };
@@ -3620,6 +3668,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setData(updatedData);
       setEditingItem(null);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error editing item:', error);
     }
   };
@@ -3666,6 +3723,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       });
       setShowAddRecurring(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error adding recurring item:', error);
     }
   };
@@ -3690,6 +3756,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error toggling recurring item:', error);
     }
   };
@@ -3714,6 +3789,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error deleting recurring item:', error);
     }
   };
@@ -5216,6 +5300,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
         console.error('Error saving to Firebase:', error);
       }
     }
@@ -5241,6 +5334,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
         console.error('Error saving to Firebase:', error);
       }
     }
@@ -5265,6 +5367,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
         console.error('Error saving to Firebase:', error);
       }
     }
@@ -5309,6 +5420,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
         console.error('Error saving to Firebase:', error);
       }
     }
@@ -6386,6 +6506,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       });
       setShowAddForm(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error adding transaction:', error);
     }
   };
@@ -6404,6 +6533,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setData(updatedData);
       setEditingRecurring(null);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error updating recurring expense:', error);
     }
   };
@@ -6422,6 +6560,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setData(updatedData);
       setEditingTransaction(null);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error updating transaction:', error);
     }
   };
@@ -6434,6 +6581,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error deleting transaction:', error);
     }
   };
@@ -7147,6 +7303,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
                         setData(updatedData);
                       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
                         console.error('Error updating recurring expense:', error);
                       }
                     }}
@@ -7168,6 +7333,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
                         setData(updatedData);
                       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
                         console.error('Error deleting recurring expense:', error);
                       }
                     }}
@@ -7727,6 +7901,15 @@ const TravelTab = ({ data, setData, userId }) => {
       setWishlistCountryInput('');
       setShowAddWishlistCountry(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error adding wishlist country:', error);
       alert('Failed to add country. Please try again.');
     }
@@ -7745,6 +7928,15 @@ const TravelTab = ({ data, setData, userId }) => {
       });
       setData({ ...data, travel: updatedTravel });
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error removing wishlist country:', error);
       alert('Failed to remove country. Please try again.');
     }
@@ -7844,6 +8036,15 @@ const TravelTab = ({ data, setData, userId }) => {
         document.body.style.height = '';
       }, 100);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error saving runway settings:', error);
     }
   };
@@ -7918,6 +8119,15 @@ const TravelTab = ({ data, setData, userId }) => {
          document.body.style.height = '';
        }, 100);
      } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
        console.error('Error adding expense:', error);
      }
    };
@@ -7954,6 +8164,15 @@ const TravelTab = ({ data, setData, userId }) => {
          document.body.style.height = '';
        }, 100);
      } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
        console.error('Error editing trip:', error);
      }
    };
@@ -8382,7 +8601,7 @@ const TravelTab = ({ data, setData, userId }) => {
                       height: 'auto',
                       minHeight: '400px',
                       background: 'linear-gradient(to bottom, #1e3a5f, #0f1f3d)',
-                      touchAction: 'pan-y pinch-zoom'
+                      touchAction: 'manipulation'
                     }}
                   >
                     <ZoomableGroup>
@@ -9960,6 +10179,15 @@ function App() {
       });
       setShowFeedbackModal(false);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error submitting feedback:', error);
       showNotification('Failed to submit feedback. Please try again.', 'error');
     }
@@ -9996,6 +10224,15 @@ function App() {
         }
       }
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error saving journal entry:', error);
       showNotification('Error saving journal entry', 'error');
     }
@@ -10101,6 +10338,15 @@ function App() {
       // Subscription update happens via webhook after successful payment
       
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('❌ Upgrade error:', error);
       showNotification(
         error.message || 'Failed to process upgrade. Please try again.',
@@ -10179,6 +10425,15 @@ function App() {
           showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
         }
       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
         console.error('Error processing recurring expenses:', error);
         showNotification('Error processing recurring transactions', 'error');
       }
@@ -10230,6 +10485,15 @@ function App() {
             showNotification('Welcome! Your financial dashboard is ready.', 'success');
           }
         } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
           console.error('Error loading user data:', error);
           showNotification('Error loading your data. Please try refreshing.', 'error');
           // Fallback to initial data
@@ -10257,6 +10521,15 @@ function App() {
             setUserPlan(SUBSCRIPTION_TIERS.FREE);
           }
         } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
           console.error('Error loading subscription:', error);
           setUserPlan(SUBSCRIPTION_TIERS.FREE);
         }
@@ -10324,6 +10597,15 @@ function App() {
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Signup error:', error);
       let errorMessage = 'Failed to create account';
       
@@ -10352,6 +10634,15 @@ function App() {
       showNotification('Welcome back!', 'success');
       setAuthForm({ email: '', password: '', name: '' });
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Signin error:', error);
       let errorMessage = 'Failed to sign in';
       
@@ -10375,6 +10666,15 @@ function App() {
       await signOut(auth);
       showNotification('Signed out successfully', 'success');
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Signout error:', error);
       showNotification('Error signing out', 'error');
     }
@@ -10387,6 +10687,15 @@ function App() {
       await signInWithPopup(auth, provider);
       showNotification('Welcome! Signed in with Google.', 'success');
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Google signin error:', error);
       let errorMessage = 'Failed to sign in with Google';
       
@@ -10524,6 +10833,15 @@ function App() {
           console.log(`📊 Early Adopter: ${count}/500 spots taken`);
         }
       } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
         console.error('Error loading pricing phase data:', error);
       }
     };
@@ -10695,6 +11013,15 @@ function App() {
       setData(updatedData);
       closeCardEditor();
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error saving card data:', error);
     }
   };
@@ -11002,6 +11329,15 @@ function App() {
       
       showNotification('✅ Data reset successfully!', 'success');
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('❌ Reset Data Error:', error);
       console.error('❌ Reset Data Error Details:', error.message, error.code);
       showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
@@ -11052,6 +11388,15 @@ function App() {
       setUserBackups(backups);
       setDataSafetySummary(summary);
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('🛡️ Failed to load data safety info:', error);
     }
   };
@@ -11093,6 +11438,15 @@ function App() {
         setShowDataImportModal(false);
       }
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('🛡️ Data import failed:', error);
       showNotification('Import failed', 'error');
     }
@@ -11112,6 +11466,15 @@ function App() {
         showNotification('Recovery failed', 'error');
       }
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('🛡️ Data recovery failed:', error);
       showNotification('Recovery failed', 'error');
     }
@@ -11172,6 +11535,15 @@ function App() {
         console.warn('XP award failed (quick expense)', e);
       }
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
@@ -11222,6 +11594,15 @@ function App() {
         console.warn('XP award failed (quick journal)', e);
       }
     } catch (error) {
+
+  //  MOMENTS HANDLERS
+  const handleEditMoment = (moment) => {
+    console.log(" Edit moment:\, moment);
+ };
+
+ const handleShareMoment = (moment) => {
+ console.log(\Share moment:\, moment);
+ };
       console.error('Error saving quick journal:', error);
       showNotification('Error saving note', 'error');
     }
@@ -11921,7 +12302,12 @@ function App() {
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
-                    {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                    {!checkFeatureAccess('Travel
+                    {!checkFeatureAccess(" travel-mode\) && <Crown className=\w-3 h-3 ml-1 text-amber-400\ />}
+ }
+ <button onClick={() => handleTabClick(\moments\)} className={px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap }>
+ Moments
+ </button>
                   </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     📓 Field Notes
