@@ -28,39 +28,45 @@ export const useModalFocus = (isOpen, modalRef) => {
 // 🚫 SCROLL PREVENTION - Mobile Keyboard Safe Version
 export const useScrollPrevention = (isOpen) => {
   useEffect(() => {
-    if (isOpen) {
-      // Store original scroll position
-      const scrollY = window.scrollY;
+    // Only run if modal is actually open and document is ready
+    if (!isOpen || !document.body) return;
+
+    // Store original scroll position
+    const scrollY = window.scrollY;
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    
+    // Mobile-specific fix: Use transform instead of position fixed
+    // This prevents the keyboard background issue
+    if (window.innerWidth <= 768) {
+      // Mobile: Use transform to prevent scroll without position fixed
+      document.body.style.position = 'relative';
+      document.body.style.transform = `translateY(-${scrollY}px)`;
+      document.body.style.top = '0';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.bottom = '0';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
       
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = 'hidden';
-      
-      // Mobile-specific fix: Use transform instead of position fixed
-      // This prevents the keyboard background issue
-      if (window.innerWidth <= 768) {
-        // Mobile: Use transform to prevent scroll without position fixed
-        document.body.style.position = 'relative';
-        document.body.style.transform = `translateY(-${scrollY}px)`;
-        document.body.style.top = '0';
-        document.body.style.left = '0';
-        document.body.style.right = '0';
-        document.body.style.bottom = '0';
-        document.body.style.width = '100%';
-        document.body.style.height = '100%';
-        
-        // Store scroll position for restoration
-        document.body.setAttribute('data-scroll-y', scrollY.toString());
-      } else {
-        // Desktop: Use position fixed (works fine on desktop)
-        document.body.style.position = 'fixed';
-        document.body.style.top = '0';
-        document.body.style.left = '0';
-        document.body.style.right = '0';
-        document.body.style.bottom = '0';
-        document.body.style.width = '100%';
-        document.body.style.height = '100%';
-      }
+      // Store scroll position for restoration
+      document.body.setAttribute('data-scroll-y', scrollY.toString());
     } else {
+      // Desktop: Use position fixed (works fine on desktop)
+      document.body.style.position = 'fixed';
+      document.body.style.top = '0';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.bottom = '0';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    }
+
+    // Cleanup function
+    return () => {
+      if (!document.body) return;
+      
       // Restore body scroll when modal is closed
       document.body.style.overflow = '';
       document.body.style.position = '';
@@ -80,20 +86,6 @@ export const useScrollPrevention = (isOpen) => {
           document.body.removeAttribute('data-scroll-y');
         }
       }
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.bottom = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.body.style.transform = '';
-      document.body.removeAttribute('data-scroll-y');
     };
   }, [isOpen]);
 };
@@ -291,7 +283,8 @@ export const useModalPerformance = (isOpen) => {
 // 🎯 MOBILE KEYBOARD HANDLING - Prevents keyboard background issues
 export const useMobileKeyboardFix = (isOpen) => {
   useEffect(() => {
-    if (!isOpen || window.innerWidth > 768) return;
+    // Only run if modal is open, on mobile, and document is ready
+    if (!isOpen || window.innerWidth > 768 || !document.documentElement) return;
 
     // Mobile-specific keyboard handling
     const handleResize = () => {
