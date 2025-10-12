@@ -237,4 +237,3 @@ export const FixedButton = ({
 };
 
 export default FixedModal;
-export { FixedInput, FixedTextarea, FixedSelect, FixedButton };
