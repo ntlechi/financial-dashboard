@@ -6411,7 +6411,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   };
 
   // 🔍 UPGRADE 2: Advanced Filtering Logic with Search
-  const filteredTransactions = data.transactions
+  const filteredTransactions = (data.recentTransactions || data.transactions || [])
     // Keyword search (description)
     .filter(t => {
       if (!searchKeyword) return true;
@@ -6454,7 +6454,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     const currentYear = now.getFullYear();
     
     // Filter expenses for current month only
-    const currentMonthExpenses = data.transactions.filter(t => {
+    const currentMonthExpenses = (data.recentTransactions || data.transactions || []).filter(t => {
       if (t.amount >= 0) return false; // Only expenses
       const tDate = new Date(t.date);
       return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
@@ -6490,27 +6490,27 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   
   const spendingByCategory = calculateSpendingByCategory();
 
-  const totalIncome = data.transactions
+  const totalIncome = (data.recentTransactions || data.transactions || [])
     .filter(t => t.amount > 0)
     .reduce((sum, t) => sum + t.amount, 0);
   
-  const totalExpenses = data.transactions
+  const totalExpenses = (data.recentTransactions || data.transactions || [])
     .filter(t => t.amount < 0)
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-  const personalIncome = data.transactions
+  const personalIncome = (data.recentTransactions || data.transactions || [])
     .filter(t => t.amount > 0 && t.category === 'personal')
     .reduce((sum, t) => sum + t.amount, 0);
   
-  const businessIncome = data.transactions
+  const businessIncome = (data.recentTransactions || data.transactions || [])
     .filter(t => t.amount > 0 && t.category === 'business')
     .reduce((sum, t) => sum + t.amount, 0);
   
-  const personalExpenses = data.transactions
+  const personalExpenses = (data.recentTransactions || data.transactions || [])
     .filter(t => t.amount < 0 && t.category === 'personal')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
   
-  const businessExpenses = data.transactions
+  const businessExpenses = (data.recentTransactions || data.transactions || [])
     .filter(t => t.amount < 0 && t.category === 'business')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
