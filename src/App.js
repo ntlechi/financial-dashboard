@@ -11228,64 +11228,6 @@ function App() {
     }
   };
 
-  const confirmQuickExpense = async (expense) => {
-    if (!expense.description || !expense.amount || !userId) return;
-
-    const amount = parseFloat(expense.amount);
-    if (isNaN(amount) || amount <= 0) return;
-
-    const transaction = {
-      id: Date.now(),
-      description: expense.description,
-      amount: -Math.abs(amount), // Always negative for expenses
-      type: 'expense',
-      category: 'personal',
-      subcategory: 'cash',
-      date: expense.date,
-      timestamp: new Date().toISOString(),
-      createdAt: new Date().toLocaleString(),
-      // Use timezone-aware date formatting
-      displayDate: formatDateForUser(expense.date)
-    };
-
-    // Add transaction and sort by timestamp (newest first)
-    const updatedTransactions = [transaction, ...(data.transactions || [])].sort((a, b) => 
-      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
-    );
-    const updatedExpenses = [transaction, ...(data.expenses || [])].sort((a, b) => 
-      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
-    );
-    const updatedRecentTransactions = [transaction, ...(data.recentTransactions || [])].sort((a, b) => 
-      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
-    );
-    const updatedData = { 
-      ...data, 
-      transactions: updatedTransactions, 
-      expenses: updatedExpenses,
-      recentTransactions: updatedRecentTransactions
-    };
-
-    try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      closeQuickExpense();
-      
-      // Award XP for logging expense
-      try {
-        const result = await awardXp(db, userId, 5);
-        if (result?.rankUp && result.newRank) {
-          const prev = getRankFromXp((result.totalXp || 0) - 5);
-          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 5, action: 'quick expense' });
-          setShowRankUpModal(true);
-        }
-      } catch (e) {
-        console.warn('XP award failed (quick expense)', e);
-      }
-    } catch (error) {
-      console.error('Error adding quick expense:', error);
-    }
-  };
-
   // Calculate income and expenses from transactions
   const calculateIncomeExpenses = (transactions, businesses = []) => {
     if (!transactions || transactions.length === 0) {
