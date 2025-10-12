@@ -4308,8 +4308,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <input
                 type="number"
                 placeholder="Amount"
-                value={newItem.amount || ''}
-                onChange={(e) => setNewItem({...newItem, amount: e.target.value === '' ? '' : e.target.value})}
+                value={newItem.amount === 0 ? '0' : (newItem.amount || '')}
+                onChange={(e) => setNewItem({...newItem, amount: e.target.value === '' ? 0 : e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
               />
               
@@ -4393,8 +4393,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <input
                 type="number"
                 placeholder="Amount"
-                value={editingItem.amount || ''}
-                onChange={(e) => setEditingItem({...editingItem, amount: e.target.value === '' ? '' : e.target.value})}
+                value={editingItem.amount === 0 ? '0' : (editingItem.amount || '')}
+                onChange={(e) => setEditingItem({...editingItem, amount: e.target.value === '' ? 0 : e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
@@ -4509,8 +4509,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <input
                     type="number"
                     placeholder="500"
-                    value={newRecurringItem.amount || ''}
-                    onChange={(e) => setNewRecurringItem({...newRecurringItem, amount: e.target.value === '' ? '' : e.target.value})}
+                    value={newRecurringItem.amount === 0 ? '0' : (newRecurringItem.amount || '')}
+                    onChange={(e) => setNewRecurringItem({...newRecurringItem, amount: e.target.value === '' ? 0 : e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
@@ -6840,8 +6840,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <input
                 type="number"
                 placeholder="Amount"
-                value={newTransaction.amount || ''}
-                onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? '' : e.target.value})}
+                value={newTransaction.amount === 0 ? '0' : (newTransaction.amount || '')}
+                onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? 0 : e.target.value})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
@@ -7223,7 +7223,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <input
                     type="number"
                     placeholder="50"
-                    value={editingRecurring.amount || ''}
+                    value={editingRecurring.amount === 0 ? '0' : (editingRecurring.amount || '')}
                     onChange={(e) => setEditingRecurring({...editingRecurring, amount: parseFloat(e.target.value) || 0})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   />
@@ -7590,8 +7590,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <input
                 type="number"
                 placeholder="Amount"
-                value={Math.abs(editingTransaction.amount) || ''}
-                onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value === '' ? '' : e.target.value})}
+                value={Math.abs(editingTransaction.amount) === 0 ? '0' : (Math.abs(editingTransaction.amount) || '')}
+                onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value === '' ? 0 : e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
