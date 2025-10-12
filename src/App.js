@@ -27,6 +27,20 @@ import FixedModal from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
+import { 
+  isOnline, 
+  getOfflineSummary, 
+  hasOfflineData, 
+  storeTransactionOffline, 
+  storeExpenseOffline, 
+  storeJournalOffline,
+  getOfflineTransactions,
+  getOfflineExpenses,
+  getOfflineJournal,
+  getPendingSync,
+  clearPendingSync,
+  markAsSynced
+} from './utils/offlineUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -9852,6 +9866,11 @@ function App() {
   const [showQuickJournal, setShowQuickJournal] = useState(false);
   const [quickJournalNote, setQuickJournalNote] = useState('');
 
+  // 🧳 OFFLINE SUPPORT FOR TRAVELERS
+  const [isOffline, setIsOffline] = useState(!isOnline());
+  const [offlineSummary, setOfflineSummary] = useState(getOfflineSummary());
+  const [showOfflineIndicator, setShowOfflineIndicator] = useState(false);
+
   // 📓 FREEDOM JOURNAL SYSTEM
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [selectedTripForJournal, setSelectedTripForJournal] = useState(null);
@@ -11302,6 +11321,39 @@ function App() {
 
   const displayData = getDisplayData();
 
+  // 🧳 OFFLINE EVENT LISTENERS - Perfect for travelers
+  React.useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      setShowOfflineIndicator(false);
+      setOfflineSummary(getOfflineSummary());
+      console.log('🧳 Back online! Syncing offline data...');
+      
+      // TODO: Implement sync of pending offline data
+      // syncPendingOfflineData();
+    };
+
+    const handleOffline = () => {
+      setIsOffline(true);
+      setShowOfflineIndicator(true);
+      setOfflineSummary(getOfflineSummary());
+      console.log('🧳 Gone offline! Storing data locally...');
+    };
+
+    // Add event listeners
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Initial check
+    setIsOffline(!isOnline());
+    setOfflineSummary(getOfflineSummary());
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
@@ -11319,6 +11371,26 @@ function App() {
               <span className="text-red-200">❌</span>
             )}
             <span className="font-medium">{notification.message}</span>
+          </div>
+        </div>
+      )}
+
+      {/* 🧳 OFFLINE INDICATOR - Perfect for travelers */}
+      {isOffline && (
+        <div className="fixed top-4 left-4 right-4 z-50 p-3 rounded-lg shadow-lg bg-orange-600 text-white border border-orange-500">
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-orange-200">🧳</span>
+            <span className="font-medium">Offline Mode</span>
+            <span className="text-orange-200">•</span>
+            <span className="text-sm">Data will sync when connected</span>
+            {offlineSummary.pendingSync > 0 && (
+              <>
+                <span className="text-orange-200">•</span>
+                <span className="text-sm bg-orange-700 px-2 py-1 rounded">
+                  {offlineSummary.pendingSync} pending
+                </span>
+              </>
+            )}
           </div>
         </div>
       )}
