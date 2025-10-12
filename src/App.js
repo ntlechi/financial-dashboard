@@ -8923,8 +8923,8 @@ const TravelTab = ({ data, setData, userId }) => {
                   <input
                     type="number"
                     placeholder="45000"
-                    value={newTrip.targetBudget || ''}
-                    onChange={(e) => setNewTrip({...newTrip, targetBudget: e.target.value === '' ? '' : e.target.value})}
+                    value={newTrip.targetBudget === 0 ? '0' : (newTrip.targetBudget || '')}
+                    onChange={(e) => setNewTrip({...newTrip, targetBudget: e.target.value === '' ? 0 : e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
                   />
                 </div>
@@ -8965,8 +8965,8 @@ const TravelTab = ({ data, setData, userId }) => {
                   <input
                     type="number"
                     placeholder="500"
-                    value={newTrip.estimatedDailySpend || ''}
-                    onChange={(e) => setNewTrip({...newTrip, estimatedDailySpend: e.target.value === '' ? '' : e.target.value})}
+                    value={newTrip.estimatedDailySpend === 0 ? '0' : (newTrip.estimatedDailySpend || '')}
+                    onChange={(e) => setNewTrip({...newTrip, estimatedDailySpend: e.target.value === '' ? 0 : e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
                   />
                 </div>
@@ -9106,8 +9106,8 @@ const TravelTab = ({ data, setData, userId }) => {
                     type="number"
                     placeholder="0.00"
                     step="0.01"
-                    value={newExpense.amount || ''}
-                    onChange={(e) => setNewExpense({...newExpense, amount: e.target.value === '' ? '' : e.target.value})}
+                    value={newExpense.amount === 0 ? '0' : (newExpense.amount || '')}
+                    onChange={(e) => setNewExpense({...newExpense, amount: e.target.value === '' ? 0 : e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
                   />
                 </div>
@@ -9233,8 +9233,8 @@ const TravelTab = ({ data, setData, userId }) => {
                    <input
                      type="number"
                      placeholder="45000"
-                     value={editingTrip.targetBudget || ''}
-                     onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value === '' ? '' : e.target.value})}
+                     value={editingTrip.targetBudget === 0 ? '0' : (editingTrip.targetBudget || '')}
+                     onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value === '' ? 0 : e.target.value})}
                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
                    />
                  </div>
@@ -9275,8 +9275,8 @@ const TravelTab = ({ data, setData, userId }) => {
                    <input
                      type="number"
                      placeholder="500"
-                     value={editingTrip.estimatedDailySpend || ''}
-                     onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value === '' ? '' : e.target.value})}
+                     value={editingTrip.estimatedDailySpend === 0 ? '0' : (editingTrip.estimatedDailySpend || '')}
+                     onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value === '' ? 0 : e.target.value})}
                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
                    />
                  </div>
@@ -9287,8 +9287,8 @@ const TravelTab = ({ data, setData, userId }) => {
                 <input
                   type="number"
                   placeholder="0"
-                  value={editingTrip.currentSavings || ''}
-                  onChange={(e) => setEditingTrip({...editingTrip, currentSavings: e.target.value === '' ? '' : Number(e.target.value)})}
+                  value={editingTrip.currentSavings === 0 ? '0' : (editingTrip.currentSavings || '')}
+                  onChange={(e) => setEditingTrip({...editingTrip, currentSavings: e.target.value === '' ? 0 : Number(e.target.value)})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
                 />
               </div>
@@ -9490,10 +9490,10 @@ const TravelTab = ({ data, setData, userId }) => {
                    <input
                      type="number"
                      placeholder="50000"
-                     value={runwaySettings.totalSavings || ''}
+                     value={runwaySettings.totalSavings === 0 ? '0' : (runwaySettings.totalSavings || '')}
                      onChange={(e) => setRunwaySettings({
                        ...runwaySettings, 
-                       totalSavings: e.target.value === '' ? '' : Number(e.target.value)
+                       totalSavings: e.target.value === '' ? 0 : Number(e.target.value)
                      })}
                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
                      style={{ fontSize: '16px' }}
@@ -9536,7 +9536,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      <input
                        type="number"
                        placeholder="90"
-                       value={runwaySettings.tripPlan.cheap || ''}
+                       value={runwaySettings.tripPlan.cheap === 0 ? '0' : (runwaySettings.tripPlan.cheap || '')}
                        onChange={(e) => setRunwaySettings({
                          ...runwaySettings,
                          tripPlan: {
@@ -9558,7 +9558,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      <input
                        type="number"
                        placeholder="30"
-                       value={runwaySettings.tripPlan.moderate || ''}
+                       value={runwaySettings.tripPlan.moderate === 0 ? '0' : (runwaySettings.tripPlan.moderate || '')}
                        onChange={(e) => setRunwaySettings({
                          ...runwaySettings,
                          tripPlan: {
@@ -9580,7 +9580,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      <input
                        type="number"
                        placeholder="15"
-                       value={runwaySettings.tripPlan.expensive || ''}
+                       value={runwaySettings.tripPlan.expensive === 0 ? '0' : (runwaySettings.tripPlan.expensive || '')}
                        onChange={(e) => setRunwaySettings({
                          ...runwaySettings,
                          tripPlan: {
