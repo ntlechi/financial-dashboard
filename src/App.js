@@ -11075,9 +11075,16 @@ function App() {
       displayDate: new Date(expense.date).toLocaleDateString()
     };
 
-    const updatedTransactions = [transaction, ...(data.transactions || [])];
-    const updatedExpenses = [transaction, ...(data.expenses || [])];
-    const updatedRecentTransactions = [transaction, ...(data.recentTransactions || [])];
+    // Add transaction and sort by timestamp (newest first)
+    const updatedTransactions = [transaction, ...(data.transactions || [])].sort((a, b) => 
+      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
+    );
+    const updatedExpenses = [transaction, ...(data.expenses || [])].sort((a, b) => 
+      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
+    );
+    const updatedRecentTransactions = [transaction, ...(data.recentTransactions || [])].sort((a, b) => 
+      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
+    );
     const updatedData = { 
       ...data, 
       transactions: updatedTransactions, 
