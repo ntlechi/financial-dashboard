@@ -11068,12 +11068,22 @@ function App() {
       type: 'expense',
       category: 'personal',
       subcategory: 'cash',
-      date: expense.date
+      date: expense.date,
+      timestamp: new Date().toISOString(),
+      createdAt: new Date().toLocaleString(),
+      // Ensure date is properly formatted for display
+      displayDate: new Date(expense.date).toLocaleDateString()
     };
 
     const updatedTransactions = [transaction, ...(data.transactions || [])];
     const updatedExpenses = [transaction, ...(data.expenses || [])];
-    const updatedData = { ...data, transactions: updatedTransactions, expenses: updatedExpenses };
+    const updatedRecentTransactions = [transaction, ...(data.recentTransactions || [])];
+    const updatedData = { 
+      ...data, 
+      transactions: updatedTransactions, 
+      expenses: updatedExpenses,
+      recentTransactions: updatedRecentTransactions
+    };
 
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
