@@ -11106,8 +11106,7 @@ function App() {
       if (success) {
         showNotification('🛡️ Data recovered successfully!', 'success');
         setShowDataRecoveryModal(false);
-        // Reload data
-        loadUserData();
+        // Reload data safety info
         loadDataSafetyInfo();
       } else {
         showNotification('Recovery failed', 'error');
