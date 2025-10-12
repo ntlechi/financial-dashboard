@@ -41,6 +41,18 @@ import {
   clearPendingSync,
   markAsSynced
 } from './utils/offlineUtils';
+import { 
+  createBackup, 
+  getUserBackups, 
+  restoreFromBackup, 
+  saveVersion, 
+  getVersionHistory, 
+  restoreFromVersion,
+  getDataSafetySummary,
+  exportUserData,
+  importUserData,
+  validateDataIntegrity
+} from './utils/dataSafetyUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -9871,6 +9883,12 @@ function App() {
   const [offlineSummary, setOfflineSummary] = useState(getOfflineSummary());
   const [showOfflineIndicator, setShowOfflineIndicator] = useState(false);
 
+  // 🛡️ DATA SAFETY - Protecting user data like it's sacred
+  const [showDataRecoveryModal, setShowDataRecoveryModal] = useState(false);
+  const [showDataImportModal, setShowDataImportModal] = useState(false);
+  const [userBackups, setUserBackups] = useState([]);
+  const [dataSafetySummary, setDataSafetySummary] = useState(null);
+
   // 📓 FREEDOM JOURNAL SYSTEM
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [selectedTripForJournal, setSelectedTripForJournal] = useState(null);
@@ -11006,7 +11024,7 @@ function App() {
     setQuickExpense({
       description: '',
       amount: '',
-      date: new Date().toISOString().split('T')[0]
+      date: getTodayInUserTimezone()
     });
     
     // Enhanced viewport cleanup
@@ -11019,6 +11037,85 @@ function App() {
     
     // Reset mobile viewport on modal close
     setTimeout(resetMobileViewport, 100);
+  };
+
+  // 🛡️ DATA SAFETY FUNCTIONS - Protecting user data like it's sacred
+  const loadDataSafetyInfo = async () => {
+    if (!userId) return;
+    
+    try {
+      const [backups, summary] = await Promise.all([
+        getUserBackups(userId),
+        getDataSafetySummary(userId)
+      ]);
+      
+      setUserBackups(backups);
+      setDataSafetySummary(summary);
+    } catch (error) {
+      console.error('🛡️ Failed to load data safety info:', error);
+    }
+  };
+
+  const handleDataExport = () => {
+    if (!data) {
+      showNotification('No data to export', 'error');
+      return;
+    }
+    
+    const success = exportUserData(data);
+    if (success) {
+      showNotification('📁 Data exported successfully!', 'success');
+    } else {
+      showNotification('Export failed', 'error');
+    }
+  };
+
+  const handleDataImport = async (file) => {
+    try {
+      const importedData = await importUserData(file);
+      const validation = validateDataIntegrity(importedData);
+      
+      if (!validation.valid) {
+        showNotification(`Import failed: ${validation.error}`, 'error');
+        return;
+      }
+      
+      // Create backup before importing
+      if (userId && data) {
+        await createBackup(userId, data, 'pre-import');
+      }
+      
+      // Import the data
+      if (userId) {
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), importedData);
+        setData(importedData);
+        showNotification('📁 Data imported successfully!', 'success');
+        setShowDataImportModal(false);
+      }
+    } catch (error) {
+      console.error('🛡️ Data import failed:', error);
+      showNotification('Import failed', 'error');
+    }
+  };
+
+  const handleDataRecovery = async (backupId) => {
+    if (!userId) return;
+    
+    try {
+      const success = await restoreFromBackup(userId, backupId);
+      if (success) {
+        showNotification('🛡️ Data recovered successfully!', 'success');
+        setShowDataRecoveryModal(false);
+        // Reload data
+        loadUserData();
+        loadDataSafetyInfo();
+      } else {
+        showNotification('Recovery failed', 'error');
+      }
+    } catch (error) {
+      console.error('🛡️ Data recovery failed:', error);
+      showNotification('Recovery failed', 'error');
+    }
   };
 
   // 📝 QUICK JOURNAL HANDLERS
@@ -11676,6 +11773,65 @@ function App() {
                           <div>
                             <p className="font-medium">Request Feature</p>
                             <p className="text-xs text-gray-500">Share your ideas</p>
+                          </div>
+                        </button>
+                        
+                        <div className="border-t border-gray-700 my-2"></div>
+                        
+                        {/* 🛡️ DATA SAFETY SECTION */}
+                        <div className="px-4 py-2">
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">🛡️ Data Safety</p>
+                        </div>
+                        
+                        {/* Export Data */}
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            handleDataExport();
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-green-400"
+                        >
+                          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Export Data</p>
+                            <p className="text-xs text-gray-500">Download your data</p>
+                          </div>
+                        </button>
+                        
+                        {/* Import Data */}
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            setShowDataImportModal(true);
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-blue-400"
+                        >
+                          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Import Data</p>
+                            <p className="text-xs text-gray-500">Restore from backup</p>
+                          </div>
+                        </button>
+                        
+                        {/* Recover Data */}
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            loadDataSafetyInfo();
+                            setShowDataRecoveryModal(true);
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-amber-400"
+                        >
+                          <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Recover Data</p>
+                            <p className="text-xs text-gray-500">Restore from backup</p>
                           </div>
                         </button>
                         
@@ -13806,6 +13962,129 @@ function App() {
           onClose={() => setShowMissionCompleteModal(false)}
           onOpenJournal={() => handleOpenJournal(completedTrip)}
         />
+      )}
+
+      {/* 🛡️ DATA RECOVERY MODAL */}
+      {showDataRecoveryModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl my-auto">
+            <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
+                <h3 className="text-xl font-bold text-white">🛡️ Data Recovery</h3>
+                <button
+                  onClick={() => setShowDataRecoveryModal(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-amber-400">⚠️</span>
+                    <span className="font-semibold text-amber-400">Recovery Warning</span>
+                  </div>
+                  <p className="text-sm text-amber-200">
+                    This will restore your data from a backup. Your current data will be replaced. 
+                    A backup of your current data will be created before restoration.
+                  </p>
+                </div>
+
+                {userBackups.length > 0 ? (
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-white">Available Backups:</h4>
+                    {userBackups.map((backup) => (
+                      <div key={backup.id} className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-medium text-white">
+                              {new Date(backup.backupDate).toLocaleString()}
+                            </p>
+                            <p className="text-sm text-gray-400">
+                              Type: {backup.backupType} • ID: {backup.id}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleDataRecovery(backup.id)}
+                            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                          >
+                            Restore
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-400">No backups available</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Backups are created automatically before data operations
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* 🛡️ DATA IMPORT MODAL */}
+      {showDataImportModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl my-auto">
+            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
+                <h3 className="text-xl font-bold text-white">🛡️ Import Data</h3>
+                <button
+                  onClick={() => setShowDataImportModal(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-blue-400">ℹ️</span>
+                    <span className="font-semibold text-blue-400">Import Information</span>
+                  </div>
+                  <p className="text-sm text-blue-200">
+                    Select a backup file to restore your data. Your current data will be backed up before import.
+                  </p>
+                </div>
+
+                <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        handleDataImport(file);
+                      }
+                    }}
+                    className="hidden"
+                    id="data-import-file"
+                  />
+                  <label
+                    htmlFor="data-import-file"
+                    className="cursor-pointer flex flex-col items-center gap-4"
+                  >
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                    </svg>
+                    <div>
+                      <p className="text-white font-medium">Click to select backup file</p>
+                      <p className="text-sm text-gray-400">JSON format only</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
       )}
     </div>
   );
