@@ -25,17 +25,41 @@ export const useModalFocus = (isOpen, modalRef) => {
   }, [isOpen, modalRef]);
 };
 
-// 🚫 SCROLL PREVENTION
+// 🚫 SCROLL PREVENTION - Mobile Keyboard Safe Version
 export const useScrollPrevention = (isOpen) => {
   useEffect(() => {
     if (isOpen) {
+      // Store original scroll position
+      const scrollY = window.scrollY;
+      
       // Prevent body scroll when modal is open
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = '0';
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.bottom = '0';
+      
+      // Mobile-specific fix: Use transform instead of position fixed
+      // This prevents the keyboard background issue
+      if (window.innerWidth <= 768) {
+        // Mobile: Use transform to prevent scroll without position fixed
+        document.body.style.position = 'relative';
+        document.body.style.transform = `translateY(-${scrollY}px)`;
+        document.body.style.top = '0';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.bottom = '0';
+        document.body.style.width = '100%';
+        document.body.style.height = '100%';
+        
+        // Store scroll position for restoration
+        document.body.setAttribute('data-scroll-y', scrollY.toString());
+      } else {
+        // Desktop: Use position fixed (works fine on desktop)
+        document.body.style.position = 'fixed';
+        document.body.style.top = '0';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.bottom = '0';
+        document.body.style.width = '100%';
+        document.body.style.height = '100%';
+      }
     } else {
       // Restore body scroll when modal is closed
       document.body.style.overflow = '';
@@ -44,6 +68,18 @@ export const useScrollPrevention = (isOpen) => {
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.bottom = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.body.style.transform = '';
+      
+      // Restore scroll position on mobile
+      if (window.innerWidth <= 768) {
+        const scrollY = document.body.getAttribute('data-scroll-y');
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY));
+          document.body.removeAttribute('data-scroll-y');
+        }
+      }
     }
 
     // Cleanup on unmount
@@ -54,6 +90,10 @@ export const useScrollPrevention = (isOpen) => {
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.bottom = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.body.style.transform = '';
+      document.body.removeAttribute('data-scroll-y');
     };
   }, [isOpen]);
 };
@@ -248,6 +288,41 @@ export const useModalPerformance = (isOpen) => {
   }, [isOpen]);
 };
 
+// 🎯 MOBILE KEYBOARD HANDLING - Prevents keyboard background issues
+export const useMobileKeyboardFix = (isOpen) => {
+  useEffect(() => {
+    if (!isOpen || window.innerWidth > 768) return;
+
+    // Mobile-specific keyboard handling
+    const handleResize = () => {
+      // When keyboard opens/closes, the viewport height changes
+      // We need to adjust the modal positioning
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    const handleOrientationChange = () => {
+      // Handle orientation changes on mobile
+      setTimeout(() => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }, 100);
+    };
+
+    // Add event listeners
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    // Initial setup
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+    };
+  }, [isOpen]);
+};
+
 // 🎯 MODAL UTILITY HOOK - Combines all modal utilities
 export const useModal = (isOpen, onClose) => {
   const modalRef = useRef(null);
@@ -258,6 +333,7 @@ export const useModal = (isOpen, onClose) => {
   useFocusTrap(isOpen, modalRef);
   useModalKeyboardShortcuts(isOpen, onClose);
   useModalPerformance(isOpen);
+  useMobileKeyboardFix(isOpen);
 
   return {
     modalRef,

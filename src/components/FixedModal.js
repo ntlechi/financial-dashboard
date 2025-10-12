@@ -38,7 +38,12 @@ const FixedModal = ({
     <div
       ref={modalRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={containerStyles}
+      style={{
+        ...containerStyles,
+        // Mobile-safe viewport height
+        height: 'calc(var(--vh, 1vh) * 100)',
+        minHeight: 'calc(var(--vh, 1vh) * 100)',
+      }}
       onClick={closeOnBackdropClick ? handleBackdropClick : undefined}
       onWheel={preventModalScroll}
       onTouchMove={preventModalScroll}
