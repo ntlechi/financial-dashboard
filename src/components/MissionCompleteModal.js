@@ -92,3 +92,4 @@ export default function MissionCompleteModal({ trip, onClose, onOpenJournal }) {
     </div>
   );
 }
+

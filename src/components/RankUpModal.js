@@ -146,3 +146,4 @@ export default function RankUpModal({ isOpen, onClose, newRank, oldRank, xpGaine
   );
 }
 
+

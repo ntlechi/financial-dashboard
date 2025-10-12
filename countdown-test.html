@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+        .countdown {
+            font-size: 2rem;
+            color: #f59e0b;
+            margin: 20px 0;
+        }
+        .status {
+            color: #10b981;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Countdown Timer Test</h1>
+    <div class="status" id="status">Initializing...</div>
+    <div class="countdown" id="countdown-timer">15d 10h 46m 23s</div>
+    <p>If this countdown updates every second, the timer is working correctly.</p>
+
+    <script>
+        console.log('🚀 Countdown test starting...');
+        
+        // Global variables for debugging
+        let countdownInterval = null;
+        let updateCount = 0;
+        
+        function initCountdown() {
+            console.log('🔧 Initializing countdown...');
+            
+            const countdownElement = document.getElementById('countdown-timer');
+            const statusElement = document.getElementById('status');
+            
+            if (!countdownElement) {
+                console.log('❌ Countdown element not found');
+                statusElement.textContent = '❌ Countdown element not found';
+                return;
+            }
+
+            console.log('✅ Countdown element found');
+            statusElement.textContent = '✅ Countdown element found, initializing...';
+
+            // Set end date (15 days from now at 11:59:59 PM)
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 15);
+            endDate.setHours(23, 59, 59, 999);
+            
+            console.log('📅 End date set to:', endDate);
+
+            function updateCountdown() {
+                updateCount++;
+                console.log(`🔄 Update #${updateCount} - Current time:`, new Date());
+                
+                const now = new Date();
+                const timeRemaining = endDate - now;
+
+                if (timeRemaining <= 0) {
+                    countdownElement.textContent = 'Offer Ended';
+                    statusElement.textContent = '✅ Countdown completed successfully';
+                    clearInterval(countdownInterval);
+                    return;
+                }
+
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                // Format with leading zeros
+                const formattedHours = hours.toString().padStart(2, '0');
+                const formattedMinutes = minutes.toString().padStart(2, '0');
+                const formattedSeconds = seconds.toString().padStart(2, '0');
+
+                const newTime = `${days}d ${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
+                countdownElement.textContent = newTime;
+                statusElement.textContent = `✅ Countdown running (Update #${updateCount})`;
+                
+                console.log(`⏰ Updated to: ${newTime}`);
+            }
+
+            // Clear any existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            // Start the countdown
+            console.log('🚀 Starting setInterval...');
+            countdownInterval = setInterval(updateCountdown, 1000);
+            
+            // Run immediately
+            console.log('🏃 Running first update...');
+            updateCountdown();
+            
+            console.log('✅ Countdown timer started successfully');
+        }
+
+        // Simple initialization - no complex checks
+        console.log('📋 Document ready state:', document.readyState);
+        
+        if (document.readyState === 'loading') {
+            console.log('⏳ Document still loading, waiting for DOMContentLoaded...');
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('🎯 DOMContentLoaded fired');
+                initCountdown();
+            });
+        } else {
+            console.log('🎯 Document already ready, initializing immediately...');
+            initCountdown();
+        }
+    </script>
+</body>
+</html>

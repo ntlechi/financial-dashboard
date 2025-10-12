@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survive Backpacking - Founder's Circle</title>
+<link rel="stylesheet" href="survive-backpacking-styles.css">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-black text-white mb-4">Choose Your Gear. Start Your Climb.</h1>
+        <p class="text-xl text-gray-400 mb-8">Start for free, and when you're ready, join the Founder's Circle to get lifetime access to our most powerful tools.</p>
+        
+        <!-- Billing Toggle -->
+        <div class="flex items-center justify-center gap-4 mb-8">
+            <span id="monthly-label" class="text-lg font-bold text-white">Monthly</span>
+            <div class="relative">
+                <input type="checkbox" id="billing-toggle" class="sr-only" onchange="updatePrices()">
+                <label for="billing-toggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                        <div class="w-14 h-8 bg-gray-600 rounded-full shadow-inner"></div>
+                        <div id="toggle-dot" class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow transform transition-transform duration-300 ease-in-out"></div>
+                    </div>
+                </label>
+            </div>
+            <span id="annual-label" class="text-lg font-bold text-gray-400">
+                Annual 
+                <span class="text-sm font-semibold bg-green-600 text-green-100 px-2 py-1 rounded-full ml-1">Save ~17%</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Pricing Grid -->
+    <div class="grid lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- Left Column - Standard Plans -->
+        <div class="space-y-6">
+            
+            <!-- Recon Kit -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative">
+                <div class="absolute top-6 right-6">
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE RECON KIT</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">"The Recruit"</h3>
+                <p class="text-gray-400 mb-6">Get your financial bearings. Free forever.</p>
+                <div class="text-5xl font-black text-white mb-6">$0</div>
+                <a href="https://app.survivebackpacking.com" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                    Start Your Recon
+                </a>
+            </div>
+
+            <!-- Climber Plan -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative">
+                <div class="absolute top-6 right-6">
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE CLIMBER PLAN</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">"The Climber"</h3>
+                <p class="text-gray-400 mb-6">The essential gear for the ascent.</p>
+                <div class="mb-6">
+                    <span class="text-5xl font-black text-white price-display" id="climber-price">$7.99</span>
+                    <span class="text-gray-400 billing-period" id="climber-period">USD / month</span>
+                </div>
+                <a href="https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05" id="climber-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                    Begin the Climb
+                </a>
+            </div>
+
+            <!-- Operator Plan -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative">
+                <div class="absolute top-6 right-6">
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE OPERATOR PLAN</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">"The Operator"</h3>
+                <p class="text-gray-400 mb-6">The full arsenal for building your empire.</p>
+                <div class="mb-6">
+                    <span class="text-5xl font-black text-white price-display" id="operator-price">$14.99</span>
+                    <span class="text-gray-400 billing-period" id="operator-period">USD / month</span>
+                </div>
+                <a href="https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03" id="operator-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                    Become an Operator
+                </a>
+            </div>
+            
+        </div>
+
+        <!-- Right Column - Founder's Circle Plan -->
+        <div class="bg-gradient-to-br from-amber-500/10 to-gray-800 rounded-2xl p-8 border-2 border-amber-500 relative">
+            <div class="absolute top-6 right-6">
+                <span class="bg-amber-500 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Limited Time</span>
+            </div>
+            
+            <h3 class="text-3xl font-black text-amber-500 mb-3">The Founder's Circle</h3>
+            <p class="text-gray-300 mb-6">Get a lifetime price lock on The Operator Plan. This is a no-brainer.</p>
+            
+            <div class="text-5xl font-black text-amber-500 mb-2">$7.49<span class="text-gray-400 text-xl">USD / month</span></div>
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-lg text-gray-500 line-through">$14.99</span>
+                <span class="bg-green-600 text-white text-sm font-semibold px-2 py-1 rounded">Save 50%</span>
+            </div>
+            
+            <!-- Countdown Timer -->
+            <div class="bg-gray-900 rounded-xl p-4 mb-6 border border-gray-700">
+                <div class="text-sm text-gray-400 uppercase tracking-wider font-semibold mb-1">Offer Ends In:</div>
+                <div id="countdown-timer" class="text-2xl font-bold text-amber-500 tracking-wider">15d 10h 46m 23s</div>
+            </div>
+            
+            <!-- Spots Counter -->
+            <div class="bg-gray-900 rounded-xl p-4 mb-6 border border-gray-700">
+                <div class="text-sm text-gray-300 mb-2 font-medium">
+                    <span id="spots-claimed">25</span> of 100 Founder's Circle spots claimed
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div id="progress-bar" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width: 25%"></div>
+                </div>
+            </div>
+            
+            <!-- Features -->
+            <ul class="space-y-3 mb-8">
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300"><strong>Everything in The Operator Plan</strong> (Side Hustle, Investments, Travel, Field Notes).</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300">A permanent price lock. You will <strong>never</strong> pay the full $14.99 USD / month.</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300">Exclusive access to the private "Founder's Circle" Discord community.</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300">A permanent "Founder" badge on your in-app profile.</span>
+                </li>
+            </ul>
+            
+            <a href="https://buy.stripe.com/fZueV7bT82kX3k22YL7bW02" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                Claim Your Founder's Spot
+            </a>
+        </div>
+    </div>
+    
+    <!-- Guarantee -->
+    <div class="text-center mt-12">
+        <p class="text-gray-400 max-w-4xl mx-auto">
+            All paid plans are backed by our <strong class="text-white">Mission Success Guarantee</strong>: Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions.
+        </p>
+    </div>
+</div>
+
+<!-- Pricing Toggle JavaScript (inline for WordPress) -->
+<script>
+// Global variables
+let isAnnual = false;
+
+// Pricing data
+const prices = {
+    climber: { monthly: 7.99, annual: 79 },
+    operator: { monthly: 14.99, annual: 149 }
+};
+
+const links = {
+    climber: { 
+        monthly: 'https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05', 
+        annual: 'https://buy.stripe.com/9B628l8GWaRtbQyard7bW06' 
+    },
+    operator: { 
+        monthly: 'https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03', 
+        annual: 'https://buy.stripe.com/4gM8wJ6yOcZBcUC0QD7bW04' 
+    }
+};
+
+// Update prices function
+function updatePrices() {
+    const toggle = document.getElementById('billing-toggle');
+    isAnnual = toggle.checked;
+    
+    const climberPrice = document.getElementById('climber-price');
+    const climberPeriod = document.getElementById('climber-period');
+    const climberLink = document.getElementById('climber-link');
+    
+    const operatorPrice = document.getElementById('operator-price');
+    const operatorPeriod = document.getElementById('operator-period');
+    const operatorLink = document.getElementById('operator-link');
+    
+    const monthlyLabel = document.getElementById('monthly-label');
+    const annualLabel = document.getElementById('annual-label');
+    const toggleDot = document.getElementById('toggle-dot');
+    
+    if (isAnnual) {
+        // Annual pricing
+        climberPrice.textContent = '$' + prices.climber.annual;
+        climberPeriod.textContent = 'USD / year';
+        climberLink.href = links.climber.annual;
+        
+        operatorPrice.textContent = '$' + prices.operator.annual;
+        operatorPeriod.textContent = 'USD / year';
+        operatorLink.href = links.operator.annual;
+        
+        // Update toggle appearance
+        monthlyLabel.classList.remove('text-white');
+        monthlyLabel.classList.add('text-gray-400');
+        annualLabel.classList.remove('text-gray-400');
+        annualLabel.classList.add('text-white');
+        toggleDot.style.transform = 'translateX(1.5rem)';
+    } else {
+        // Monthly pricing
+        climberPrice.textContent = '$' + prices.climber.monthly;
+        climberPeriod.textContent = 'USD / month';
+        climberLink.href = links.climber.monthly;
+        
+        operatorPrice.textContent = '$' + prices.operator.monthly;
+        operatorPeriod.textContent = 'USD / month';
+        operatorLink.href = links.operator.monthly;
+        
+        // Update toggle appearance
+        monthlyLabel.classList.remove('text-gray-400');
+        monthlyLabel.classList.add('text-white');
+        annualLabel.classList.remove('text-white');
+        annualLabel.classList.add('text-gray-400');
+        toggleDot.style.transform = 'translateX(0)';
+    }
+}
+
+// Initialize pricing on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updatePrices();
+});
+</script>
+
+</body>
+</html>

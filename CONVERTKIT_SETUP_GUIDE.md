@@ -116,3 +116,4 @@ The Freedom Compass Team
 ## Step 6: Integration with Your App
 
 Once you have your API key and form IDs, we'll integrate them with your Firebase webhook system.
+

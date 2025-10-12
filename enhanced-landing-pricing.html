@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survive Backpacking - Pricing</title>
+
+<!-- Google Fonts - Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<style>
+    /* This applies the font rule specifically to every text element within our component. */
+    #survive-pricing-component,
+    #survive-pricing-component h2,
+    #survive-pricing-component h3,
+    #survive-pricing-component p,
+    #survive-pricing-component span,
+    #survive-pricing-component a,
+    #survive-pricing-component li,
+    #survive-pricing-component div {
+        font-family: 'Inter', sans-serif !important;
+    }
+    .billing-toggle-dot {
+        transition: transform 0.3s ease-in-out;
+    }
+    input:checked + .relative > .billing-toggle-dot {
+        transform: translateX(1.5rem);
+    }
+    
+    /* Phase transition animations */
+    .phase-transition {
+        transition: all 0.5s ease-in-out;
+    }
+    
+    /* Hidden class for phase switching */
+    .hidden-phase {
+        display: none !important;
+    }
+</style>
+
+</head>
+<body class="bg-[#111827] text-[#E5E7EB] py-12">
+
+<!-- The entire component is wrapped in this div. -->
+<div id="survive-pricing-component" class="px-4">
+    <div class="max-w-7xl mx-auto">
+
+        <div class="text-center mb-12">
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-white mb-4">
+                Choose Your Gear. Start Your Climb.
+            </h2>
+            <p id="phase-message" class="text-lg text-gray-400 max-w-3xl mx-auto">
+                Start for free, and when you're ready, join the Founder's Circle to get lifetime access to our most powerful tools.
+            </p>
+             <div class="mt-8 flex justify-center items-center space-x-4">
+                <span id="monthly-label" class="font-bold text-white">Monthly</span>
+                <label for="billing-toggle" class="flex items-center cursor-pointer">
+                    <input type="checkbox" id="billing-toggle" class="sr-only">
+                    <div class="relative">
+                        <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                        <div class="billing-toggle-dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                    </div>
+                </label>
+                <span id="annual-label" class="font-bold text-gray-400">Annual <span class="text-xs font-semibold bg-green-500 text-green-900 px-2 py-0.5 rounded-full ml-1">Save ~17%</span></span>
+             </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+            <!-- Right Column Container - Dynamic based on phase -->
+            <div class="order-1 lg:order-2">
+                
+                <!-- PHASE 1: Founder's Circle (Oct 11-26, 2024 - Testing) -->
+                <div id="founders-phase" class="phase-transition">
+                    <div class="bg-[#1F2937] bg-amber-500/[.03] rounded-2xl p-8 border-2 border-[#FBBF24] relative h-full flex flex-col">
+                        <div class="absolute top-4 right-4 bg-[#FBBF24] text-[#111827] px-3 py-1 rounded-full text-xs font-bold uppercase">
+                            Limited Time
+                        </div>
+                        <div class="mb-6 mt-2">
+                            <h3 class="text-3xl font-extrabold text-[#FBBF24] mb-2">The Founder's Circle</h3>
+                            <p class="text-gray-300">Get a lifetime price lock on The Operator Plan. This is a no-brainer.</p>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex items-baseline gap-2 mb-1">
+                                <span class="text-5xl font-black text-[#FBBF24]">$7.49</span>
+                                <span class="text-gray-400">USD / month</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="line-through text-gray-500 text-lg">$14.99</span>
+                                <span class="bg-green-500 text-white text-sm font-semibold px-2 py-0.5 rounded">Save 50%</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#111827] rounded-xl p-4 mb-6 border border-gray-700">
+                            <div class="mb-4">
+                                <p id="countdown-text" class="text-sm text-gray-400 mb-1 uppercase font-semibold">Offer Ends In:</p>
+                                <div id="countdown-timer" class="text-2xl font-bold text-[#FBBF24] tracking-widest">Loading...</div>
+                            </div>
+                            <div>
+                                <p id="spots-text" class="text-sm text-gray-300 mb-2 font-medium">Loading spots...</p>
+                                <div class="bg-gray-700 rounded-full h-2 w-full overflow-hidden">
+                                    <div id="spots-progress-bar" class="bg-[#FBBF24] h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-gray-200">
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#FBBF24] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span><strong>Everything in The Operator Plan</strong> (Side Hustle, Investments, Travel, Field Notes).</span></li>
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#FBBF24] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>A permanent price lock. You will <strong>never</strong> pay the full $14.99 USD / month.</span></li>
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#FBBF24] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Exclusive access to the private "Founder's Circle" Discord community.</span></li>
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#FBBF24] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>A permanent "Founder" badge on your in-app profile.</span></li>
+                        </ul>
+                        <a href="https://buy.stripe.com/fZueV7bT82kX3k22YL7bW02" class="w-full mt-auto bg-[#FBBF24] text-[#111827] py-4 rounded-lg font-bold text-lg hover:bg-[#F59E0B] transition-all duration-300 transform hover:scale-105 text-center">Claim Your Founder's Spot</a>
+                    </div>
+                </div>
+
+                <!-- PHASE 2: Early Adopter (Oct 27, 2025 - Jan 1, 2026) -->
+                <div id="early-adopter-phase" class="phase-transition hidden-phase">
+                    <div class="bg-[#1F2937] bg-amber-500/[.03] rounded-2xl p-8 border-2 border-[#F59E0B] relative h-full flex flex-col">
+                        <div class="absolute top-4 right-4 bg-[#F59E0B] text-[#111827] px-3 py-1 rounded-full text-xs font-bold uppercase">
+                            Early Adopter
+                        </div>
+                        <div class="mb-6 mt-2">
+                            <h3 class="text-3xl font-extrabold text-[#F59E0B] mb-2">Early Adopter Plan</h3>
+                            <p class="text-gray-300">You missed the Founder's Circle, but you can still join the expedition at the Early Adopter rate.</p>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex items-baseline gap-2 mb-1">
+                                <span class="text-5xl font-black text-[#F59E0B]">$8.49</span>
+                                <span class="text-gray-400">USD / month</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="line-through text-gray-500 text-lg">$14.99</span>
+                                <span class="bg-green-500 text-white text-sm font-semibold px-2 py-0.5 rounded">Save 43%</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#111827] rounded-xl p-4 mb-6 border border-gray-700">
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-400 mb-1 uppercase font-semibold">Early Adopter Offer:</p>
+                                <div class="text-lg font-bold text-[#F59E0B]">Limited Time Discount</div>
+                            </div>
+                            <div>
+                                <p id="early-adopter-spots-text" class="text-sm text-gray-300 mb-2 font-medium">Loading spots...</p>
+                                <div class="bg-gray-700 rounded-full h-2 w-full overflow-hidden">
+                                    <div id="early-adopter-progress-bar" class="bg-[#F59E0B] h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-gray-200">
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#F59E0B] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span><strong>Everything in The Operator Plan</strong> (Side Hustle, Investments, Travel, Field Notes).</span></li>
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#F59E0B] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Discounted rate until January 1st, 2026. Price reverts to standard on cancellation.</span></li>
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#F59E0B] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Access to Early Adopter community features.</span></li>
+                            <li class="flex items-start"><svg class="w-5 h-5 text-[#F59E0B] mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Priority support and feature requests.</span></li>
+                        </ul>
+                        <a href="https://buy.stripe.com/1SH2rg82nQ0x7qb2wte7rkSV" class="w-full mt-auto bg-[#F59E0B] text-[#111827] py-4 rounded-lg font-bold text-lg hover:bg-[#D97706] transition-all duration-300 transform hover:scale-105 text-center">Join Early Adopters</a>
+                    </div>
+                </div>
+
+                <!-- PHASE 3: Regular Pricing (Jan 2, 2026+) -->
+                <div id="regular-phase" class="phase-transition hidden-phase">
+                    <div class="bg-[#1F2937] rounded-2xl p-8 border border-gray-700 h-full flex flex-col">
+                        <div class="mb-6 mt-2">
+                            <h3 class="text-3xl font-extrabold text-white mb-2">Choose Your Plan</h3>
+                            <p class="text-gray-300">Select the plan that best fits your financial journey.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-semibold text-white">Climber Plan</h4>
+                                        <p class="text-sm text-gray-400">Essential financial tools</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-xl font-bold text-white">$7.99</div>
+                                        <div class="text-sm text-gray-400">/month</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-semibold text-white">Operator Plan</h4>
+                                        <p class="text-sm text-gray-400">Full premium suite</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-xl font-bold text-white">$14.99</div>
+                                        <div class="text-sm text-gray-400">/month</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-6 text-center">
+                            All plans include our Mission Success Guarantee
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left Column (3 Standard Cards) -->
+            <div class="order-2 lg:order-1 space-y-8">
+
+                <div class="bg-[#1F2937] rounded-2xl p-8 border border-gray-700 h-full flex flex-col transition-all duration-300 hover:transform hover:-translate-y-2 hover:border-[#FBBF24]">
+                    <p class="text-xs font-bold text-[#FBBF24] uppercase tracking-widest mb-1">THE RECON KIT</p>
+                    <h3 class="text-2xl font-bold text-white">"The Recruit"</h3>
+                    <p class="text-gray-400 mt-1">Get your financial bearings. Free forever.</p>
+                    <p class="text-5xl font-black text-white my-6">$0</p>
+                    <a href="https://app.survivebackpacking.com" class="w-full mt-auto bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-center">Start Your Recon</a>
+                </div>
+
+                <div id="climber-card" class="bg-[#1F2937] rounded-2xl p-8 border border-gray-700 h-full flex flex-col transition-all duration-300 hover:transform hover:-translate-y-2 hover:border-[#FBBF24]">
+                    <p class="text-xs font-bold text-[#FBBF24] uppercase tracking-widest mb-1">THE CLIMBER PLAN</p>
+                    <h3 class="text-2xl font-bold text-white">"The Climber"</h3>
+                    <p class="text-gray-400 mt-1">The essential gear for the ascent.</p>
+                    <div class="my-6">
+                        <p class="flex items-baseline"><span class="text-5xl font-black text-white price-display">$7.99</span><span class="ml-2 text-gray-400 billing-period">USD / month</span></p>
+                    </div>
+                    <a href="#" class="cta-button w-full mt-auto bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-center">Begin the Climb</a>
+                </div>
+
+                <div id="operator-card" class="bg-[#1F2937] rounded-2xl p-8 border border-gray-700 h-full flex flex-col transition-all duration-300 hover:transform hover:-translate-y-2 hover:border-[#FBBF24]">
+                    <p class="text-xs font-bold text-[#FBBF24] uppercase tracking-widest mb-1">THE OPERATOR PLAN</p>
+                    <h3 class="text-2xl font-bold text-white">"The Operator"</h3>
+                    <p class="text-gray-400 mt-1">The full arsenal for building your empire.</p>
+                    <div class="my-6">
+                        <p class="flex items-baseline"><span class="text-5xl font-black text-white price-display">$14.99</span><span class="ml-2 text-gray-400 billing-period">USD / month</span></p>
+                    </div>
+                    <a href="#" class="cta-button w-full mt-auto bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-center">Become an Operator</a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mission Success Guarantee -->
+        <div class="text-center mt-12">
+            <p class="text-gray-400 max-w-4xl mx-auto">
+                All paid plans are backed by our <strong class="text-white">Mission Success Guarantee</strong>: Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12">
+            <h3 class="text-2xl font-bold text-white">The Complete Operator's Toolkit</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // === 3-PHASE PRICING SYSTEM ===
+        const PRICING_PHASES = {
+            FOUNDERS: 'founders',
+            EARLY_ADOPTER: 'early-adopter', 
+            REGULAR: 'regular'
+        };
+
+        // Phase dates - Set to active for testing
+        const now = new Date();
+        const foundersStart = new Date(now.getTime() - (1 * 24 * 60 * 60 * 1000)); // Started 1 day ago
+        const foundersEnd = new Date(now.getTime() + (15 * 24 * 60 * 60 * 1000)); // Ends in 15 days
+        const earlyAdopterStart = new Date(now.getTime() + (16 * 24 * 60 * 60 * 1000)); // Starts after Founder's Circle
+        const earlyAdopterEnd = new Date('2026-01-01T23:59:59.999Z'); // Jan 1, 2026
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCW1-I9qI2hIhGp5t43a4Rf0Zr0ihK0nPY",
+            authDomain: "freedom-compass-prod.firebaseapp.com",
+            projectId: "freedom-compass-prod",
+            storageBucket: "freedom-compass-prod.firebasestorage.app",
+            messagingSenderId: "1056653502231",
+            appId: "1:1056653502231:web:1d87dd662c70253cfbb952",
+            measurementId: "G-BJWRNE1F0S"
+        };
+
+        // Initialize Firebase with error handling
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('🔥 Firebase initialized successfully');
+        } catch (error) {
+            console.error('❌ Firebase initialization failed:', error);
+            // Continue without Firebase for now
+        }
+
+        // Real-time subscriber counts (will be fetched from Firebase)
+        let foundersCount = 0;
+        let earlyAdopterCount = 0;
+
+        // Firebase functions to fetch subscriber counts
+        async function fetchSubscriberCounts() {
+            try {
+                if (!db) {
+                    console.log('📊 Firebase not available, using simulated data');
+                    foundersCount = 8;
+                    earlyAdopterCount = 0;
+                    updateScarcity(); // Update UI immediately
+                    return;
+                }
+
+                // Fetch Founder's Circle count
+                const foundersDoc = await db.collection('app-config').doc('founders-circle').get();
+                if (foundersDoc.exists) {
+                    foundersCount = foundersDoc.data().subscriberCount || 0;
+                }
+
+                // Fetch Early Adopter count
+                const earlyAdopterDoc = await db.collection('app-config').doc('early-adopter').get();
+                if (earlyAdopterDoc.exists) {
+                    earlyAdopterCount = earlyAdopterDoc.data().subscriberCount || 0;
+                }
+
+                console.log(`📊 Founder's Circle: ${foundersCount}/100 spots taken`);
+                console.log(`📊 Early Adopter: ${earlyAdopterCount}/500 spots taken`);
+
+            } catch (error) {
+                console.error('Error fetching subscriber counts:', error);
+                // Fallback to simulated data
+                foundersCount = 8;
+                earlyAdopterCount = 0;
+                updateScarcity(); // Update UI immediately
+            }
+        }
+
+        // Real-time listener for subscriber count changes
+        function setupRealtimeListeners() {
+            try {
+                if (!db) {
+                    console.log('📊 Firebase not available, using simulated data');
+                    // Set simulated data immediately
+                    foundersCount = 8;
+                    earlyAdopterCount = 0;
+                    updateScarcity();
+                    return;
+                }
+
+                // Listen to Founder's Circle count changes
+                db.collection('app-config').doc('founders-circle')
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            foundersCount = doc.data().subscriberCount || 0;
+                            updateScarcity();
+                        }
+                    });
+
+                // Listen to Early Adopter count changes
+                db.collection('app-config').doc('early-adopter')
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            earlyAdopterCount = doc.data().subscriberCount || 0;
+                            updateScarcity();
+                        }
+                    });
+
+                console.log('🔥 Real-time Firebase listeners activated!');
+
+            } catch (error) {
+                console.error('Error setting up real-time listeners:', error);
+                // Fallback to periodic updates
+                setInterval(() => {
+                    fetchSubscriberCounts();
+                    updateScarcity();
+                }, 30000);
+            }
+        }
+
+        // Determine current phase
+        function getCurrentPhase() {
+            const now = new Date();
+            
+            if (now >= foundersStart && now <= foundersEnd && foundersCount < 100) {
+                return PRICING_PHASES.FOUNDERS;
+            } else if (now >= earlyAdopterStart && now <= earlyAdopterEnd && earlyAdopterCount < 500) {
+                return PRICING_PHASES.EARLY_ADOPTER;
+            } else {
+                return PRICING_PHASES.REGULAR;
+            }
+        }
+
+        // Show/hide phases
+        function showPhase(phase) {
+            const phases = ['founders-phase', 'early-adopter-phase', 'regular-phase'];
+            phases.forEach(phaseId => {
+                const element = document.getElementById(phaseId);
+                if (element) {
+                    if (phaseId === `${phase}-phase`) {
+                        element.classList.remove('hidden-phase');
+                    } else {
+                        element.classList.add('hidden-phase');
+                    }
+                }
+            });
+        }
+
+        // Update phase message
+        function updatePhaseMessage(phase) {
+            const messageElement = document.getElementById('phase-message');
+            const messages = {
+                [PRICING_PHASES.FOUNDERS]: "Start for free, and when you're ready, join the Founder's Circle to get lifetime access to our most powerful tools.",
+                [PRICING_PHASES.EARLY_ADOPTER]: "You missed the Founder's Circle, but you can still join the expedition at the Early Adopter rate.",
+                [PRICING_PHASES.REGULAR]: "Choose your plan and start your financial journey today."
+            };
+            if (messageElement) {
+                messageElement.textContent = messages[phase] || messages[PRICING_PHASES.REGULAR];
+            }
+        }
+
+        // === PRICING & LINKS ===
+        const prices = {
+            climber: { monthly: 7.99, annual: 79 },
+            operator: { monthly: 14.99, annual: 149 }
+        };
+        
+        const links = {
+            climber: { 
+                monthly: 'https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05', 
+                annual: 'https://buy.stripe.com/9B628l8GWaRtbQyard7bW06' 
+            },
+            operator: { 
+                monthly: 'https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03', 
+                annual: 'https://buy.stripe.com/4gM8wJ6yOcZBcUC0QD7bW04' 
+            }
+        };
+
+        const toggle = document.getElementById('billing-toggle');
+        const monthlyLabel = document.getElementById('monthly-label');
+        const annualLabel = document.getElementById('annual-label');
+
+        function updatePrices(isAnnual) {
+            const climberCard = document.getElementById('climber-card');
+            const operatorCard = document.getElementById('operator-card');
+
+            if (climberCard) {
+                climberCard.querySelector('.price-display').textContent = isAnnual ? `$${prices.climber.annual}` : `$${prices.climber.monthly}`;
+                climberCard.querySelector('.billing-period').textContent = isAnnual ? 'USD / year' : 'USD / month';
+                climberCard.querySelector('.cta-button').href = isAnnual ? links.climber.annual : links.climber.monthly;
+            }
+
+            if (operatorCard) {
+                operatorCard.querySelector('.price-display').textContent = isAnnual ? `$${prices.operator.annual}` : `$${prices.operator.monthly}`;
+                operatorCard.querySelector('.billing-period').textContent = isAnnual ? 'USD / year' : 'USD / month';
+                operatorCard.querySelector('.cta-button').href = isAnnual ? links.operator.annual : links.operator.monthly;
+            }
+
+            if (isAnnual) {
+                monthlyLabel.classList.replace('text-white', 'text-gray-400');
+                annualLabel.classList.replace('text-gray-400', 'text-white');
+            } else {
+                monthlyLabel.classList.replace('text-gray-400', 'text-white');
+                annualLabel.classList.replace('text-white', 'text-gray-400');
+            }
+        }
+
+        // === COUNTDOWN TIMER ===
+        function updateCountdown() {
+            const now = new Date();
+            const timeRemaining = foundersEnd - now;
+            const countdownElement = document.getElementById('countdown-timer');
+
+            if (timeRemaining <= 0) {
+                if(countdownElement) countdownElement.textContent = 'Offer Ended';
+                return;
+            }
+
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            if(countdownElement) countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // === SCARCITY SYSTEM ===
+        function updateScarcity() {
+            const currentPhase = getCurrentPhase();
+            const now = new Date();
+
+            if (currentPhase === PRICING_PHASES.FOUNDERS) {
+                const timeRemaining = foundersEnd - now;
+                const countdownElement = document.getElementById('countdown-timer');
+                const spotsTextElement = document.getElementById('spots-text');
+                const spotsProgressBarElement = document.getElementById('spots-progress-bar');
+
+                if (timeRemaining <= 0 || foundersCount >= 100) {
+                    if(countdownElement) countdownElement.textContent = 'Offer Ended';
+                    return;
+                }
+
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                if(countdownElement) countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                if(spotsTextElement) spotsTextElement.textContent = `${foundersCount} of 100 Founder's Circle spots claimed`;
+                if(spotsProgressBarElement) {
+                    const percentage = (foundersCount / 100) * 100;
+                    spotsProgressBarElement.style.width = percentage + '%';
+                }
+            } else if (currentPhase === PRICING_PHASES.EARLY_ADOPTER) {
+                const spotsTextElement = document.getElementById('early-adopter-spots-text');
+                const progressBarElement = document.getElementById('early-adopter-progress-bar');
+                
+                if(spotsTextElement) spotsTextElement.textContent = `${earlyAdopterCount} of 500 Early Adopter spots claimed`;
+                if(progressBarElement) {
+                    const percentage = (earlyAdopterCount / 500) * 100;
+                    progressBarElement.style.width = percentage + '%';
+                }
+            }
+        }
+
+        // === INITIALIZATION ===
+        async function initializePricing() {
+            // Initialize countdown timer immediately (don't wait for Firebase)
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Set simulated data immediately so UI shows something
+            foundersCount = 8;
+            earlyAdopterCount = 0;
+            
+            // Fetch initial subscriber counts (will update if Firebase works)
+            await fetchSubscriberCounts();
+            
+            const currentPhase = getCurrentPhase();
+            
+            // Show appropriate phase
+            showPhase(currentPhase);
+            
+            // Update phase message
+            updatePhaseMessage(currentPhase);
+            
+            // Initialize pricing
+            updatePrices(toggle.checked);
+            
+            // Initialize scarcity
+            updateScarcity();
+            
+            // Setup real-time listeners
+            setupRealtimeListeners();
+        }
+
+        // Event listeners
+        if (toggle) {
+            toggle.addEventListener('change', () => updatePrices(toggle.checked));
+        }
+
+        // Initialize everything
+        initializePricing();
+
+        // Update scarcity every second
+        setInterval(updateScarcity, 1000);
+
+        // Check for phase changes every minute
+        setInterval(() => {
+            const currentPhase = getCurrentPhase();
+            showPhase(currentPhase);
+            updatePhaseMessage(currentPhase);
+        }, 60000);
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survive Backpacking - Pricing</title>
+<style>
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #111827;
+        color: #E5E7EB;
+        margin: 0;
+        padding: 2rem 1rem;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .title {
+        font-size: 3rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    .subtitle {
+        font-size: 1.125rem;
+        color: #9CA3AF;
+        margin-bottom: 2rem;
+    }
+    .toggle-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .toggle-label {
+        font-weight: 700;
+        color: white;
+    }
+    .toggle-label.inactive {
+        color: #9CA3AF;
+    }
+    .toggle {
+        position: relative;
+        width: 56px;
+        height: 32px;
+        background: #4B5563;
+        border-radius: 16px;
+        cursor: pointer;
+    }
+    .toggle-dot {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+    .toggle-dot.active {
+        transform: translateX(24px);
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+    .card {
+        background: #1F2937;
+        border-radius: 1rem;
+        padding: 2rem;
+        border: 1px solid #374151;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .founders-card {
+        border: 2px solid #FBBF24;
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.03) 0%, #1F2937 100%);
+    }
+    .badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #FBBF24;
+        color: #111827;
+        padding: 0.5rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .card-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        color: #FBBF24;
+        margin-bottom: 0.5rem;
+    }
+    .card-description {
+        color: #D1D5DB;
+        margin-bottom: 1.5rem;
+    }
+    .price {
+        font-size: 3rem;
+        font-weight: 900;
+        color: #FBBF24;
+        margin-bottom: 1.5rem;
+    }
+    .price-period {
+        color: #9CA3AF;
+        font-size: 1rem;
+    }
+    .countdown-box {
+        background: #111827;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #374151;
+    }
+    .countdown-label {
+        font-size: 0.875rem;
+        color: #9CA3AF;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .countdown-timer {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #FBBF24;
+        letter-spacing: 0.1em;
+    }
+    .spots-text {
+        font-size: 0.875rem;
+        color: #D1D5DB;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    .progress-bar {
+        background: #374151;
+        border-radius: 9999px;
+        height: 0.5rem;
+        width: 100%;
+        overflow: hidden;
+    }
+    .progress-fill {
+        background: #FBBF24;
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 0.5s ease;
+    }
+    .features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+    }
+    .feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+    }
+    .feature-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: #FBBF24;
+        margin-right: 0.75rem;
+        margin-top: 0.25rem;
+        flex-shrink: 0;
+    }
+    .cta-button {
+        width: 100%;
+        margin-top: auto;
+        background: #FBBF24;
+        color: #111827;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 1.125rem;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        transition: all 0.3s ease;
+    }
+    .cta-button:hover {
+        background: #F59E0B;
+        transform: scale(1.05);
+    }
+    .standard-cta {
+        background: #374151;
+        color: white;
+    }
+    .standard-cta:hover {
+        background: #4B5563;
+    }
+    .price-display {
+        font-size: 3rem;
+        font-weight: 900;
+        color: white;
+    }
+    .billing-period {
+        color: #9CA3AF;
+        margin-left: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+        .title {
+            font-size: 2rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 class="title">Choose Your Gear. Start Your Climb.</h1>
+        <p class="subtitle">Start for free, and when you're ready, join the Founder's Circle to get lifetime access to our most powerful tools.</p>
+        
+        <div class="toggle-container">
+            <span id="monthly-label" class="toggle-label">Monthly</span>
+            <div class="toggle" onclick="toggleBilling()">
+                <div id="toggle-dot" class="toggle-dot"></div>
+            </div>
+            <span id="annual-label" class="toggle-label inactive">Annual <span style="font-size: 0.75rem; font-weight: 600; background: #10B981; color: #064E3B; padding: 0.125rem 0.5rem; border-radius: 9999px; margin-left: 0.25rem;">Save ~17%</span></span>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Right Column - Founder's Circle -->
+        <div style="order: 1;">
+            <div class="card founders-card" style="position: relative;">
+                <div class="badge">Limited Time</div>
+                
+                <h3 class="card-title">The Founder's Circle</h3>
+                <p class="card-description">Get a lifetime price lock on The Operator Plan. This is a no-brainer.</p>
+                
+                <div class="price">$7.49<span class="price-period">USD / month</span></div>
+                
+                <div class="countdown-box">
+                    <div class="countdown-label">Offer Ends In:</div>
+                    <div id="countdown-timer" class="countdown-timer">15d 10h 46m 23s</div>
+                </div>
+                
+                <div class="countdown-box">
+                    <div class="spots-text"><span id="spots-claimed">25</span> of 100 Founder's Circle spots claimed</div>
+                    <div class="progress-bar">
+                        <div id="progress-bar" class="progress-fill" style="width: 25%;"></div>
+                    </div>
+                </div>
+                
+                <ul class="features">
+                    <li class="feature">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span><strong>Everything in The Operator Plan</strong> (Side Hustle, Investments, Travel, Field Notes).</span>
+                    </li>
+                    <li class="feature">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>A permanent price lock. You will <strong>never</strong> pay the full $14.99 USD / month.</span>
+                    </li>
+                    <li class="feature">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Exclusive access to the private "Founder's Circle" Discord community.</span>
+                    </li>
+                    <li class="feature">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>A permanent "Founder" badge on your in-app profile.</span>
+                    </li>
+                </ul>
+                
+                <a href="https://buy.stripe.com/fZueV7bT82kX3k22YL7bW02" class="cta-button">Claim Your Founder's Spot</a>
+            </div>
+        </div>
+        
+        <!-- Left Column - Standard Plans -->
+        <div style="order: 2;">
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Recon Kit -->
+                <div class="card">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">THE RECON KIT</p>
+                    <h3 style="font-size: 1.5rem; font-weight: 700; color: white;">"The Recruit"</h3>
+                    <p style="color: #9CA3AF; margin-top: 0.25rem; margin-bottom: 1.5rem;">Get your financial bearings. Free forever.</p>
+                    <div style="font-size: 3rem; font-weight: 900; color: white; margin-bottom: 1.5rem;">$0</div>
+                    <a href="https://app.survivebackpacking.com" class="cta-button standard-cta">Start Your Recon</a>
+                </div>
+                
+                <!-- Climber Plan -->
+                <div class="card">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">THE CLIMBER PLAN</p>
+                    <h3 style="font-size: 1.5rem; font-weight: 700; color: white;">"The Climber"</h3>
+                    <p style="color: #9CA3AF; margin-top: 0.25rem; margin-bottom: 1.5rem;">The essential gear for the ascent.</p>
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="price-display" id="climber-price">$7.99</span><span class="billing-period" id="climber-period">USD / month</span>
+                    </div>
+                    <a href="https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05" id="climber-link" class="cta-button standard-cta">Begin the Climb</a>
+                </div>
+                
+                <!-- Operator Plan -->
+                <div class="card">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">THE OPERATOR PLAN</p>
+                    <h3 style="font-size: 1.5rem; font-weight: 700; color: white;">"The Operator"</h3>
+                    <p style="color: #9CA3AF; margin-top: 0.25rem; margin-bottom: 1.5rem;">The full arsenal for building your empire.</p>
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="price-display" id="operator-price">$14.99</span><span class="billing-period" id="operator-period">USD / month</span>
+                    </div>
+                    <a href="https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03" id="operator-link" class="cta-button standard-cta">Become an Operator</a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem;">
+        <p style="color: #9CA3AF; max-width: 64rem; margin: 0 auto;">
+            All paid plans are backed by our <strong style="color: white;">Mission Success Guarantee</strong>: Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions.
+        </p>
+    </div>
+</div>
+
+<script>
+console.log('🚀 Minimal pricing page loaded successfully!');
+
+// Global variables
+let isAnnual = false;
+
+// Pricing data
+const prices = {
+    climber: { monthly: 7.99, annual: 79 },
+    operator: { monthly: 14.99, annual: 149 }
+};
+
+const links = {
+    climber: { 
+        monthly: 'https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05', 
+        annual: 'https://buy.stripe.com/9B628l8GWaRtbQyard7bW06' 
+    },
+    operator: { 
+        monthly: 'https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03', 
+        annual: 'https://buy.stripe.com/4gM8wJ6yOcZBcUC0QD7bW04' 
+    }
+};
+
+// Toggle billing function
+function toggleBilling() {
+    isAnnual = !isAnnual;
+    updatePrices();
+    updateToggle();
+}
+
+// Update prices
+function updatePrices() {
+    console.log('Updating prices - isAnnual:', isAnnual);
+    
+    const climberPrice = document.getElementById('climber-price');
+    const climberPeriod = document.getElementById('climber-period');
+    const climberLink = document.getElementById('climber-link');
+    
+    const operatorPrice = document.getElementById('operator-price');
+    const operatorPeriod = document.getElementById('operator-period');
+    const operatorLink = document.getElementById('operator-link');
+    
+    if (isAnnual) {
+        // Annual pricing
+        climberPrice.textContent = '$' + prices.climber.annual;
+        climberPeriod.textContent = 'USD / year';
+        climberLink.href = links.climber.annual;
+        
+        operatorPrice.textContent = '$' + prices.operator.annual;
+        operatorPeriod.textContent = 'USD / year';
+        operatorLink.href = links.operator.annual;
+    } else {
+        // Monthly pricing
+        climberPrice.textContent = '$' + prices.climber.monthly;
+        climberPeriod.textContent = 'USD / month';
+        climberLink.href = links.climber.monthly;
+        
+        operatorPrice.textContent = '$' + prices.operator.monthly;
+        operatorPeriod.textContent = 'USD / month';
+        operatorLink.href = links.operator.monthly;
+    }
+    
+    console.log('Prices updated successfully');
+}
+
+// Update toggle appearance
+function updateToggle() {
+    const toggleDot = document.getElementById('toggle-dot');
+    const monthlyLabel = document.getElementById('monthly-label');
+    const annualLabel = document.getElementById('annual-label');
+    
+    if (isAnnual) {
+        toggleDot.classList.add('active');
+        monthlyLabel.classList.add('inactive');
+        annualLabel.classList.remove('inactive');
+    } else {
+        toggleDot.classList.remove('active');
+        monthlyLabel.classList.remove('inactive');
+        annualLabel.classList.add('inactive');
+    }
+}
+
+// Countdown timer
+function updateCountdown() {
+    const countdownElement = document.getElementById('countdown-timer');
+    if (countdownElement) {
+        const now = new Date();
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + 15);
+        endDate.setHours(23, 59, 59, 999);
+        const timeRemaining = endDate - now;
+
+        if (timeRemaining <= 0) {
+            countdownElement.textContent = 'Offer Ended';
+            return;
+        }
+
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+
+        countdownElement.textContent = days + 'd ' + formattedHours + 'h ' + formattedMinutes + 'm ' + formattedSeconds + 's';
+    }
+}
+
+// Update spots count
+function updateSpotsCount(spotsClaimed) {
+    const spotsElement = document.getElementById('spots-claimed');
+    const progressBar = document.getElementById('progress-bar');
+    
+    if (spotsElement && progressBar) {
+        spotsElement.textContent = spotsClaimed;
+        const percentage = (spotsClaimed / 100) * 100;
+        progressBar.style.width = percentage + '%';
+        console.log('Updated spots count to:', spotsClaimed);
+    }
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM loaded, initializing...');
+    
+    // Initialize pricing
+    updatePrices();
+    updateToggle();
+    
+    // Initialize countdown
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+    
+    // Initialize spots
+    updateSpotsCount(25);
+    
+    console.log('✅ Minimal pricing page initialized successfully!');
+});
+</script>
+
+</body>
+</html>
+

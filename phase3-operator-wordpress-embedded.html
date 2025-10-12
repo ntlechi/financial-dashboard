@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survive Backpacking - Operator Plan</title>
+<style>
+/* Survive Backpacking - Embedded CSS for WordPress */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #111827;
+    color: #f3f4f6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.text-5xl { font-size: 3rem; line-height: 1; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+
+.font-black { font-weight: 900; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+
+.text-white { color: #ffffff; }
+.text-gray-100 { color: #f3f4f6; }
+.text-gray-300 { color: #d1d5db; }
+.text-gray-400 { color: #9ca3af; }
+.text-gray-500 { color: #6b7280; }
+.text-amber-500 { color: #f59e0b; }
+.text-green-100 { color: #dcfce7; }
+.text-gray-900 { color: #111827; }
+
+.bg-gray-900 { background-color: #111827; }
+.bg-gray-800 { background-color: #1f2937; }
+.bg-gray-700 { background-color: #374151; }
+.bg-gray-600 { background-color: #4b5563; }
+.bg-amber-500 { background-color: #f59e0b; }
+.bg-amber-600 { background-color: #d97706; }
+.bg-green-600 { background-color: #16a34a; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.p-8 { padding: 2rem; }
+.p-4 { padding: 1rem; }
+.p-3 { padding: 0.75rem; }
+.p-2 { padding: 0.5rem; }
+.p-1 { padding: 0.25rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+
+.mb-12 { margin-bottom: 3rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mt-12 { margin-top: 3rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-0\.5 { margin-top: 0.125rem; }
+.mr-3 { margin-right: 0.75rem; }
+.ml-1 { margin-left: 0.25rem; }
+
+.gap-4 { gap: 1rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-8 { gap: 2rem; }
+
+.grid { display: grid; }
+.lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.flex { display: flex; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-center { justify-content: center; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+.top-6 { top: 1.5rem; }
+.right-6 { right: 1.5rem; }
+.top-1 { top: 0.25rem; }
+.left-1 { left: 0.25rem; }
+
+.border { border-width: 1px; border-style: solid; }
+.border-2 { border-width: 2px; border-style: solid; }
+.border-gray-700 { border-color: #374151; }
+.border-amber-500 { border-color: #f59e0b; }
+
+.rounded-2xl { border-radius: 1rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-full { border-radius: 9999px; }
+.rounded { border-radius: 0.25rem; }
+
+.shadow-inner { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); }
+.shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+
+.transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.duration-300 { transition-duration: 300ms; }
+.duration-500 { transition-duration: 500ms; }
+.ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+
+.hover\:bg-gray-600:hover { background-color: #4b5563; }
+.hover\:bg-amber-600:hover { background-color: #d97706; }
+.hover\:scale-105:hover { transform: scale(1.05); }
+
+.text-center { text-align: center; }
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+.line-through { text-decoration: line-through; }
+
+.block { display: block; }
+
+.w-14 { width: 3.5rem; }
+.h-8 { height: 2rem; }
+.w-6 { width: 1.5rem; }
+.h-6 { height: 1.5rem; }
+.w-5 { width: 1.25rem; }
+.h-5 { height: 1.25rem; }
+.w-full { width: 100%; }
+.h-2 { height: 0.5rem; }
+.max-w-6xl { max-width: 72rem; }
+.max-w-4xl { max-width: 56rem; }
+
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+
+.bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+.from-amber-500\/10 { --tw-gradient-from: rgba(245, 158, 11, 0.1); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(245, 158, 11, 0)); }
+.to-gray-800 { --tw-gradient-to: #1f2937; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.cursor-pointer { cursor: pointer; }
+.transform { transform: translateX(var(--tw-translate-x, 0)) translateY(var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1)); }
+
+svg { display: inline-block; vertical-align: middle; }
+
+@media (max-width: 1023px) {
+    .lg\:grid-cols-3 { grid-template-columns: 1fr; }
+    .lg\:grid-cols-2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .text-5xl { font-size: 2.5rem; }
+    .text-3xl { font-size: 1.5rem; }
+    .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .p-8 { padding: 1.5rem; }
+}
+</style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-black text-white mb-4">Choose Your Gear. Start Your Climb.</h1>
+        <p class="text-xl text-gray-400 mb-8">The expedition continues. Join the operators who are building their financial empire.</p>
+        
+        <!-- Billing Toggle -->
+        <div class="flex items-center justify-center gap-4 mb-8">
+            <span id="monthly-label" class="text-lg font-bold text-white">Monthly</span>
+            <div class="relative">
+                <input type="checkbox" id="billing-toggle" class="sr-only" onchange="updatePrices()">
+                <label for="billing-toggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                        <div class="w-14 h-8 bg-gray-600 rounded-full shadow-inner"></div>
+                        <div id="toggle-dot" class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow transform transition-transform duration-300 ease-in-out"></div>
+                    </div>
+                </label>
+            </div>
+            <span id="annual-label" class="text-lg font-bold text-gray-400">
+                Annual 
+                <span class="text-sm font-semibold bg-green-600 text-green-100 px-2 py-1 rounded-full ml-1">Save ~17%</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Pricing Grid - 3 Cards -->
+    <div id="pricing-section" class="grid lg:grid-cols-3 gap-8 items-start">
+        
+        <!-- Left Column - Recon Kit -->
+        <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative h-full">
+            <div class="absolute top-6 right-6">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE RECON KIT</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">"The Recruit"</h3>
+            <p class="text-gray-400 mb-6">Get your financial bearings. Free forever.</p>
+            <div class="text-5xl font-black text-white mb-6">$0</div>
+            <a href="https://app.survivebackpacking.com" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                Start Your Recon
+            </a>
+        </div>
+
+        <!-- Center Column - Climber Plan -->
+        <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative h-full">
+            <div class="absolute top-6 right-6">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE CLIMBER PLAN</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2 mt-6">"The Climber"</h3>
+            <p class="text-gray-400 mb-6">The essential gear for the ascent.</p>
+            <div class="mb-6">
+                <span class="text-5xl font-black text-white price-display" id="climber-price">$7.99</span>
+                <span class="text-gray-400 billing-period" id="climber-period">USD / month</span>
+            </div>
+            <a href="https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05" id="climber-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                Begin the Climb
+            </a>
+        </div>
+
+        <!-- Right Column - Operator Plan (Featured) -->
+        <div class="bg-gradient-to-br from-amber-500/10 to-gray-800 rounded-2xl p-8 border-2 border-amber-500 relative">
+            <div class="absolute top-6 right-6">
+                <span class="bg-amber-500 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Most Popular</span>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-amber-500 mb-2 mt-4">"The Operator"</h3>
+            <p class="text-gray-300 mb-6">The full arsenal for building your empire.</p>
+            
+            <div class="mb-6">
+                <span class="text-5xl font-black text-amber-500 price-display" id="operator-price">$14.99</span>
+                <span class="text-gray-400 billing-period" id="operator-period">USD / month</span>
+            </div>
+            
+            <!-- Features -->
+            <ul class="space-y-2 mb-6">
+                <li class="flex items-start">
+                    <svg class="w-4 h-4 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300 text-sm"><strong>Side Hustle Tracker</strong></span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-4 h-4 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300 text-sm"><strong>Investment Portfolio</strong></span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-4 h-4 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300 text-sm"><strong>Travel Budget Planner</strong></span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-4 h-4 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-300 text-sm"><strong>Field Notes</strong></span>
+                </li>
+            </ul>
+            
+            <a href="https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03" id="operator-link" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                Become an Operator
+            </a>
+        </div>
+    </div>
+    
+    <!-- Guarantee -->
+    <div class="text-center mt-12">
+        <p class="text-gray-400 max-w-4xl mx-auto">
+            All paid plans are backed by our <strong class="text-white">Mission Success Guarantee</strong>: Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions.
+        </p>
+    </div>
+    
+    <!-- French Version Waitlist -->
+    <div class="text-center mt-8">
+        <p class="text-gray-500 text-sm mb-2">
+            Si nous avons assez de personnes pour une version française, nous la créerons.
+        </p>
+        <a href="mailto:hello@survivebackpacking.com?subject=French Version Waitlist" class="text-amber-500 hover:text-amber-400 text-sm font-medium underline">
+            Rejoignez la liste d'attente de la version française
+        </a>
+    </div>
+</div>
+
+<!-- Pricing Toggle JavaScript (inline for WordPress) -->
+<script>
+// Global variables
+let isAnnual = false;
+
+// Pricing data
+const prices = {
+    climber: { monthly: 7.99, annual: 79 },
+    operator: { monthly: 14.99, annual: 149 }
+};
+
+const links = {
+    climber: { 
+        monthly: 'https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05', 
+        annual: 'https://buy.stripe.com/9B628l8GWaRtbQyard7bW06' 
+    },
+    operator: { 
+        monthly: 'https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03', 
+        annual: 'https://buy.stripe.com/4gM8wJ6yOcZBcUC0QD7bW04' 
+    }
+};
+
+// Update prices function
+function updatePrices() {
+    const toggle = document.getElementById('billing-toggle');
+    isAnnual = toggle.checked;
+    
+    const climberPrice = document.getElementById('climber-price');
+    const climberPeriod = document.getElementById('climber-period');
+    const climberLink = document.getElementById('climber-link');
+    
+    const operatorPrice = document.getElementById('operator-price');
+    const operatorPeriod = document.getElementById('operator-period');
+    const operatorLink = document.getElementById('operator-link');
+    
+    const monthlyLabel = document.getElementById('monthly-label');
+    const annualLabel = document.getElementById('annual-label');
+    const toggleDot = document.getElementById('toggle-dot');
+    
+    if (isAnnual) {
+        // Annual pricing
+        climberPrice.textContent = '$' + prices.climber.annual;
+        climberPeriod.textContent = 'USD / year';
+        climberLink.href = links.climber.annual;
+        
+        operatorPrice.textContent = '$' + prices.operator.annual;
+        operatorPeriod.textContent = 'USD / year';
+        operatorLink.href = links.operator.annual;
+        
+        // Update toggle appearance
+        monthlyLabel.classList.remove('text-white');
+        monthlyLabel.classList.add('text-gray-400');
+        annualLabel.classList.remove('text-gray-400');
+        annualLabel.classList.add('text-white');
+        toggleDot.style.transform = 'translateX(1.5rem)';
+    } else {
+        // Monthly pricing
+        climberPrice.textContent = '$' + prices.climber.monthly;
+        climberPeriod.textContent = 'USD / month';
+        climberLink.href = links.climber.monthly;
+        
+        operatorPrice.textContent = '$' + prices.operator.monthly;
+        operatorPeriod.textContent = 'USD / month';
+        operatorLink.href = links.operator.monthly;
+        
+        // Update toggle appearance
+        monthlyLabel.classList.remove('text-gray-400');
+        monthlyLabel.classList.add('text-white');
+        annualLabel.classList.remove('text-white');
+        annualLabel.classList.add('text-gray-400');
+        toggleDot.style.transform = 'translateX(0)';
+    }
+}
+
+// Initialize pricing on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updatePrices();
+});
+</script>
+
+</body>
+</html>

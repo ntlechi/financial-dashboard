@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 1: Founder's Circle - Survive Backpacking</title>
+    <style>
+        /* WordPress-safe inline CSS - no external dependencies */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #111827;
+            color: #f3f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-16 { margin-bottom: 4rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mb-10 { margin-bottom: 2.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-auto { margin-top: auto; }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem;
+            color: #9ca3af;
+            margin-bottom: 2.5rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        
+        .font-bold {
+            font-weight: 700;
+        }
+        
+        .text-white {
+            color: white;
+        }
+        
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+        
+        .relative {
+            position: relative;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        
+        .w-14 {
+            width: 3.5rem;
+        }
+        
+        .h-8 {
+            height: 2rem;
+        }
+        
+        .bg-gray-600 {
+            background-color: #4b5563;
+        }
+        
+        .rounded-full {
+            border-radius: 9999px;
+        }
+        
+        .shadow-inner {
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .absolute {
+            position: absolute;
+        }
+        
+        .top-1 {
+            top: 0.25rem;
+        }
+        
+        .left-1 {
+            left: 0.25rem;
+        }
+        
+        .w-6 {
+            width: 1.5rem;
+        }
+        
+        .h-6 {
+            height: 1.5rem;
+        }
+        
+        .bg-white {
+            background-color: white;
+        }
+        
+        .shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .transform {
+            transform: translateX(0);
+        }
+        
+        .transition-transform {
+            transition: transform 300ms ease-in-out;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        .bg-green-600 {
+            background-color: #059669;
+        }
+        
+        .text-green-100 {
+            color: #d1fae5;
+        }
+        
+        .px-2 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+        
+        .ml-1 {
+            margin-left: 0.25rem;
+        }
+        
+        .grid {
+            display: grid;
+        }
+        
+        .lg\\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        
+        @media (max-width: 1024px) {
+            .lg\\:grid-cols-4 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+        
+        .gap-8 {
+            gap: 2rem;
+        }
+        
+        .items-stretch {
+            align-items: stretch;
+        }
+        
+        .bg-gray-800 {
+            background-color: #1f2937;
+        }
+        
+        .rounded-2xl {
+            border-radius: 1rem;
+        }
+        
+        .p-8 {
+            padding: 2rem;
+        }
+        
+        .border {
+            border-width: 1px;
+        }
+        
+        .border-gray-700 {
+            border-color: #374151;
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .top-6 {
+            top: 1.5rem;
+        }
+        
+        .right-6 {
+            right: 1.5rem;
+        }
+        
+        .text-xs {
+            font-size: 0.75rem;
+        }
+        
+        .text-amber-500 {
+            color: #f59e0b;
+        }
+        
+        .uppercase {
+            text-transform: uppercase;
+        }
+        
+        .tracking-wider {
+            letter-spacing: 0.05em;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+        
+        .text-5xl {
+            font-size: 3rem;
+        }
+        
+        .font-black {
+            font-weight: 900;
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .bg-gray-700 {
+            background-color: #374151;
+        }
+        
+        .hover\\:bg-gray-600:hover {
+            background-color: #4b5563;
+        }
+        
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .block {
+            display: block;
+        }
+        
+        .transition-all {
+            transition: all 300ms;
+        }
+        
+        .hover\\:scale-105:hover {
+            transform: scale(1.05);
+        }
+        
+        .duration-300 {
+            transition-duration: 300ms;
+        }
+        
+        .price-display {
+            font-size: 3rem;
+            font-weight: 900;
+            color: white;
+        }
+        
+        .billing-period {
+            color: #9ca3af;
+        }
+        
+        .bg-gradient-to-br {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, #1f2937 100%);
+        }
+        
+        .from-amber-500\\/10 {
+            /* handled in bg-gradient-to-br */
+        }
+        
+        .to-gray-800 {
+            /* handled in bg-gradient-to-br */
+        }
+        
+        .border-2 {
+            border-width: 2px;
+        }
+        
+        .border-amber-500 {
+            border-color: #f59e0b;
+        }
+        
+        .bg-amber-500 {
+            background-color: #f59e0b;
+        }
+        
+        .text-gray-900 {
+            color: #111827;
+        }
+        
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        
+        .text-gray-300 {
+            color: #d1d5db;
+        }
+        
+        .text-gray-500 {
+            color: #6b7280;
+        }
+        
+        .line-through {
+            text-decoration: line-through;
+        }
+        
+        .bg-green-600 {
+            background-color: #059669;
+        }
+        
+        .text-white {
+            color: white;
+        }
+        
+        .rounded {
+            border-radius: 0.25rem;
+        }
+        
+        .bg-gray-900 {
+            background-color: #111827;
+        }
+        
+        .rounded-xl {
+            border-radius: 0.75rem;
+        }
+        
+        .border-gray-700 {
+            border-color: #374151;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .tracking-wider {
+            letter-spacing: 0.05em;
+        }
+        
+        .text-gray-300 {
+            color: #d1d5db;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .bg-gray-700 {
+            background-color: #374151;
+        }
+        
+        .h-2 {
+            height: 0.5rem;
+        }
+        
+        .transition-all {
+            transition: all 500ms;
+        }
+        
+        .duration-500 {
+            transition-duration: 500ms;
+        }
+        
+        .space-y-3 > * + * {
+            margin-top: 0.75rem;
+        }
+        
+        .items-start {
+            align-items: flex-start;
+        }
+        
+        .w-5 {
+            width: 1.25rem;
+        }
+        
+        .h-5 {
+            height: 1.25rem;
+        }
+        
+        .mr-3 {
+            margin-right: 0.75rem;
+        }
+        
+        .mt-0\\.5 {
+            margin-top: 0.125rem;
+        }
+        
+        .flex-shrink-0 {
+            flex-shrink: 0;
+        }
+        
+        .hover\\:bg-amber-600:hover {
+            background-color: #d97706;
+        }
+        
+        .mt-12 {
+            margin-top: 3rem;
+        }
+        
+        .max-w-4xl {
+            max-width: 64rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Toggle animation */
+        .toggle-dot {
+            transition: transform 300ms ease-in-out;
+        }
+        
+        .toggle-dot.active {
+            transform: translateX(1.5rem);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <h1>Choose Your Gear. Start Your Climb.</h1>
+            <p class="text-xl">Join thousands of adventurers who are taking control of their financial future.</p>
+
+            <!-- Billing Toggle -->
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <span id="monthly-label" class="text-lg font-bold text-white">Monthly</span>
+                <div class="relative">
+                    <input type="checkbox" id="billing-toggle" class="sr-only" onchange="updatePrices()">
+                    <label for="billing-toggle" class="flex items-center cursor-pointer">
+                        <div class="relative">
+                            <div class="w-14 h-8 bg-gray-600 rounded-full shadow-inner"></div>
+                            <div id="toggle-dot" class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow toggle-dot"></div>
+                        </div>
+                    </label>
+                </div>
+                <span id="annual-label" class="text-lg font-bold text-gray-400">
+                    Annual
+                    <span class="text-sm font-semibold bg-green-600 text-green-100 px-2 py-1 rounded-full ml-1">Save ~17%</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="grid lg:grid-cols-4 gap-8 items-stretch">
+
+            <!-- Recon Kit -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative flex flex-col">
+                <div class="absolute top-6 right-6">
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE RECON KIT</span>
+                </div>
+                <h3>"The Recruit"</h3>
+                <p class="text-gray-400 mb-6">Get your financial bearings. Free forever.</p>
+                <div class="text-5xl font-black text-white mb-6">$0</div>
+                <a href="https://app.survivebackpacking.com" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105 mt-auto">
+                    Start Your Recon
+                </a>
+            </div>
+
+            <!-- Climber Plan -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative flex flex-col">
+                <div class="absolute top-6 right-6">
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE CLIMBER PLAN</span>
+                </div>
+                <h3>"The Climber"</h3>
+                <p class="text-gray-400 mb-6">The essential gear for the ascent.</p>
+                <div class="mb-6">
+                    <span class="price-display" id="climber-price">$7.99</span>
+                    <span class="billing-period" id="climber-period">USD / month</span>
+                </div>
+                <a href="https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05" id="climber-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105 mt-auto">
+                    Begin the Climb
+                </a>
+            </div>
+
+            <!-- Operator Plan -->
+            <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative flex flex-col">
+                <div class="absolute top-6 right-6">
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE OPERATOR PLAN</span>
+                </div>
+                <h3>"The Operator"</h3>
+                <p class="text-gray-400 mb-6">The full arsenal for building your empire.</p>
+                <div class="mb-6">
+                    <span class="price-display" id="operator-price">$14.99</span>
+                    <span class="billing-period" id="operator-period">USD / month</span>
+                </div>
+                <a href="https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03" id="operator-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105 mt-auto">
+                    Become an Operator
+                </a>
+            </div>
+            
+            <!-- Founder's Circle Plan -->
+            <div class="bg-gradient-to-br from-amber-500/10 to-gray-800 rounded-2xl p-8 border-2 border-amber-500 relative">
+                <div class="absolute top-6 right-6">
+                    <span class="bg-amber-500 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Limited Time</span>
+                </div>
+                
+                <h3 class="text-3xl font-black text-amber-500 mb-3">The Founder's Circle</h3>
+                <p class="text-gray-300 mb-6">Get a lifetime price lock on The Operator Plan. This is a no-brainer.</p>
+                
+                <div class="text-5xl font-black text-amber-500 mb-2">$7.49<span class="text-gray-400 text-xl">USD / month</span></div>
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-lg text-gray-500 line-through">$14.99</span>
+                    <span class="bg-green-600 text-white text-sm font-semibold px-2 py-1 rounded">Save 50%</span>
+                </div>
+                
+                <!-- Countdown Timer -->
+                <div class="bg-gray-900 rounded-xl p-4 mb-6 border border-gray-700">
+                    <div class="text-sm text-gray-400 uppercase tracking-wider font-semibold mb-1">Offer Ends In:</div>
+                    <div id="countdown-timer" class="text-2xl font-bold text-amber-500 tracking-wider">15d 10h 46m 23s</div>
+                </div>
+                
+                <!-- Spots Counter -->
+                <div class="bg-gray-900 rounded-xl p-4 mb-6 border border-gray-700">
+                    <div class="text-sm text-gray-300 mb-2 font-medium">
+                        <span id="spots-claimed">25</span> of 100 Founder's Circle spots claimed
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="progress-bar" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width: 25%"></div>
+                    </div>
+                </div>
+                
+                <!-- Features -->
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-300"><strong>Everything in The Operator Plan</strong> (Side Hustle, Investments, Travel, Field Notes).</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-300">A permanent price lock. You will <strong>never</strong> pay the full $14.99 USD / month.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-300">Exclusive access to our private community of financial operators.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-amber-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-300">Priority support and feature requests.</span>
+                    </li>
+                </ul>
+                
+                <a href="https://buy.stripe.com/fZueV7bT82kX3k22YL7bW02" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105">
+                    Join the Founder's Circle
+                </a>
+            </div>
+        </div>
+
+        <!-- Guarantee -->
+        <div class="text-center mt-12">
+            <p class="text-gray-400 max-w-4xl mx-auto">
+                All paid plans are backed by our <strong class="text-white">Mission Success Guarantee</strong>: Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions.
+            </p>
+        </div>
+    </div>
+
+    <script>
+    // Ultra-safe JavaScript for WordPress - no modern syntax, no external dependencies
+    var isAnnual = false;
+    var endDate = new Date();
+    endDate.setDate(endDate.getDate() + 15);
+    endDate.setHours(23, 59, 59, 999);
+
+    var prices = {
+        climber: { monthly: 7.99, annual: 79 },
+        operator: { monthly: 14.99, annual: 149 }
+    };
+
+    var links = {
+        climber: {
+            monthly: 'https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05',
+            annual: 'https://buy.stripe.com/9B628l8GWaRtbQyard7bW06'
+        },
+        operator: {
+            monthly: 'https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03',
+            annual: 'https://buy.stripe.com/4gM8wJ6yOcZBcUC0QD7bW04'
+        }
+    };
+
+    function updatePrices() {
+        var toggle = document.getElementById('billing-toggle');
+        isAnnual = toggle.checked;
+
+        var climberPrice = document.getElementById('climber-price');
+        var climberPeriod = document.getElementById('climber-period');
+        var climberLink = document.getElementById('climber-link');
+
+        var operatorPrice = document.getElementById('operator-price');
+        var operatorPeriod = document.getElementById('operator-period');
+        var operatorLink = document.getElementById('operator-link');
+
+        var monthlyLabel = document.getElementById('monthly-label');
+        var annualLabel = document.getElementById('annual-label');
+        var toggleDot = document.getElementById('toggle-dot');
+
+        if (isAnnual) {
+            climberPrice.textContent = '$' + prices.climber.annual;
+            climberPeriod.textContent = 'USD / year';
+            climberLink.href = links.climber.annual;
+
+            operatorPrice.textContent = '$' + prices.operator.annual;
+            operatorPeriod.textContent = 'USD / year';
+            operatorLink.href = links.operator.annual;
+
+            monthlyLabel.style.color = '#9ca3af';
+            annualLabel.style.color = 'white';
+            toggleDot.classList.add('active');
+        } else {
+            climberPrice.textContent = '$' + prices.climber.monthly;
+            climberPeriod.textContent = 'USD / month';
+            climberLink.href = links.climber.monthly;
+
+            operatorPrice.textContent = '$' + prices.operator.monthly;
+            operatorPeriod.textContent = 'USD / month';
+            operatorLink.href = links.operator.monthly;
+
+            monthlyLabel.style.color = 'white';
+            annualLabel.style.color = '#9ca3af';
+            toggleDot.classList.remove('active');
+        }
+    }
+
+    function updateCountdown() {
+        var countdownElement = document.getElementById('countdown-timer');
+        if (countdownElement) {
+            var now = new Date();
+            var timeRemaining = endDate - now;
+
+            if (timeRemaining <= 0) {
+                countdownElement.textContent = 'Offer Ended';
+                return;
+            }
+
+            var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            var formattedHours = hours.toString();
+            var formattedMinutes = minutes.toString();
+            var formattedSeconds = seconds.toString();
+
+            if (hours < 10) formattedHours = '0' + formattedHours;
+            if (minutes < 10) formattedMinutes = '0' + formattedMinutes;
+            if (seconds < 10) formattedSeconds = '0' + formattedSeconds;
+
+            countdownElement.textContent = days + 'd ' + formattedHours + 'h ' + formattedMinutes + 'm ' + formattedSeconds + 's';
+        }
+    }
+
+    function updateSpotsCount(spotsClaimed) {
+        var spotsElement = document.getElementById('spots-claimed');
+        var progressBar = document.getElementById('progress-bar');
+
+        if (spotsElement && progressBar) {
+            spotsElement.textContent = spotsClaimed;
+            var percentage = (spotsClaimed / 100) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+    }
+
+    function initializePricing() {
+        updatePrices();
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        updateSpotsCount(25);
+    }
+
+    // Ultra-safe initialization
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializePricing);
+    } else {
+        initializePricing();
+    }
+    </script>
+</body>
+</html>
+

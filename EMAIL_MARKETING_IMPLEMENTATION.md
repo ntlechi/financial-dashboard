@@ -182,3 +182,4 @@ The Freedom Compass Team
 5. **Keep email content valuable**
 
 Your email marketing system is now ready! 🚀
+

@@ -139,3 +139,4 @@ export default function ChallengesPanel({ userId, onXpAwarded }) {
     </div>
   );
 }
+

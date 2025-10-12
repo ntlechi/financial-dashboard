@@ -121,3 +121,4 @@ export async function awardChallengeXp(db, userId, challenge) {
     challenge: challenge
   };
 }
+

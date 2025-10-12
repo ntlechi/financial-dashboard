@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survive Backpacking - Regular Pricing</title>
+<script src="https://cdn.tailwindcss.com/3.3.0"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'amber': {
+                        500: '#F59E0B',
+                        600: '#D97706',
+                    }
+                }
+            }
+        }
+    }
+</script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-16">
+        <h1 class="text-5xl font-black text-white mb-6">Choose Your Gear. Start Your Climb.</h1>
+        <p class="text-xl text-gray-400 mb-10">Join thousands of adventurers who are taking control of their financial future.</p>
+        
+        <!-- Billing Toggle -->
+        <div class="flex items-center justify-center gap-4 mb-12">
+            <span id="monthly-label" class="text-lg font-bold text-white">Monthly</span>
+            <div class="relative">
+                <input type="checkbox" id="billing-toggle" class="sr-only" onchange="updatePrices()">
+                <label for="billing-toggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                        <div class="w-14 h-8 bg-gray-600 rounded-full shadow-inner"></div>
+                        <div id="toggle-dot" class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow transform transition-transform duration-300 ease-in-out"></div>
+                    </div>
+                </label>
+            </div>
+            <span id="annual-label" class="text-lg font-bold text-gray-400">
+                Annual 
+                <span class="text-sm font-semibold bg-green-600 text-green-100 px-2 py-1 rounded-full ml-1">Save ~17%</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Pricing Grid -->
+    <div class="grid lg:grid-cols-3 gap-8 items-stretch">
+        
+        <!-- Recon Kit -->
+        <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative flex flex-col">
+            <div class="absolute top-6 right-6">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE RECON KIT</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-4 mt-6">"The Recruit"</h3>
+            <p class="text-gray-400 mb-6">Get your financial bearings. Free forever.</p>
+            <div class="text-5xl font-black text-white mb-6">$0</div>
+            <a href="https://app.survivebackpacking.com" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105 mt-auto">
+                Start Your Recon
+            </a>
+        </div>
+
+        <!-- Climber Plan -->
+        <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative flex flex-col">
+            <div class="absolute top-6 right-6">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE CLIMBER PLAN</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-4 mt-6">"The Climber"</h3>
+            <p class="text-gray-400 mb-6">The essential gear for the ascent.</p>
+            <div class="mb-6">
+                <span class="text-5xl font-black text-white price-display" id="climber-price">$7.99</span>
+                <span class="text-gray-400 billing-period" id="climber-period">USD / month</span>
+            </div>
+                <a href="https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05" id="climber-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105 mt-auto">
+                    Begin the Climb
+                </a>
+            </div>
+
+        <!-- Operator Plan -->
+        <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 relative flex flex-col">
+            <div class="absolute top-6 right-6">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">THE OPERATOR PLAN</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-4 mt-6">"The Operator"</h3>
+            <p class="text-gray-400 mb-6">The full arsenal for building your empire.</p>
+            <div class="mb-6">
+                <span class="text-5xl font-black text-white price-display" id="operator-price">$14.99</span>
+                <span class="text-gray-400 billing-period" id="operator-period">USD / month</span>
+            </div>
+                <a href="https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03" id="operator-link" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-lg text-center block transition-all duration-300 hover:scale-105 mt-auto">
+                    Become an Operator
+                </a>
+            </div>
+    </div>
+    
+    <!-- Guarantee -->
+    <div class="text-center mt-12">
+        <p class="text-gray-400 max-w-4xl mx-auto">
+            All paid plans are backed by our <strong class="text-white">Mission Success Guarantee</strong>: Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions.
+        </p>
+    </div>
+</div>
+
+<script>
+console.log('🚀 Phase 3: Regular Pricing loaded successfully!');
+
+// Global variables
+let isAnnual = false;
+
+// Pricing data
+const prices = {
+    climber: { monthly: 7.99, annual: 79 },
+    operator: { monthly: 14.99, annual: 149 }
+};
+
+const links = {
+    climber: { 
+        monthly: 'https://buy.stripe.com/fZu9ANe1ge3F07Q6aX7bW05', 
+        annual: 'https://buy.stripe.com/9B628l8GWaRtbQyard7bW06' 
+    },
+    operator: { 
+        monthly: 'https://buy.stripe.com/aFa6oB1eu6Bd2fY6aX7bW03', 
+        annual: 'https://buy.stripe.com/4gM8wJ6yOcZBcUC0QD7bW04' 
+    }
+};
+
+// Update prices function
+function updatePrices() {
+    const toggle = document.getElementById('billing-toggle');
+    isAnnual = toggle.checked;
+    
+    console.log('Updating prices - isAnnual:', isAnnual);
+    
+    const climberPrice = document.getElementById('climber-price');
+    const climberPeriod = document.getElementById('climber-period');
+    const climberLink = document.getElementById('climber-link');
+    
+    const operatorPrice = document.getElementById('operator-price');
+    const operatorPeriod = document.getElementById('operator-period');
+    const operatorLink = document.getElementById('operator-link');
+    
+    const monthlyLabel = document.getElementById('monthly-label');
+    const annualLabel = document.getElementById('annual-label');
+    const toggleDot = document.getElementById('toggle-dot');
+    
+    if (isAnnual) {
+        // Annual pricing
+        climberPrice.textContent = '$' + prices.climber.annual;
+        climberPeriod.textContent = 'USD / year';
+        climberLink.href = links.climber.annual;
+        
+        operatorPrice.textContent = '$' + prices.operator.annual;
+        operatorPeriod.textContent = 'USD / year';
+        operatorLink.href = links.operator.annual;
+        
+        // Update toggle appearance
+        monthlyLabel.classList.remove('text-white');
+        monthlyLabel.classList.add('text-gray-400');
+        annualLabel.classList.remove('text-gray-400');
+        annualLabel.classList.add('text-white');
+        toggleDot.style.transform = 'translateX(1.5rem)';
+    } else {
+        // Monthly pricing
+        climberPrice.textContent = '$' + prices.climber.monthly;
+        climberPeriod.textContent = 'USD / month';
+        climberLink.href = links.climber.monthly;
+        
+        operatorPrice.textContent = '$' + prices.operator.monthly;
+        operatorPeriod.textContent = 'USD / month';
+        operatorLink.href = links.operator.monthly;
+        
+        // Update toggle appearance
+        monthlyLabel.classList.remove('text-gray-400');
+        monthlyLabel.classList.add('text-white');
+        annualLabel.classList.remove('text-white');
+        annualLabel.classList.add('text-gray-400');
+        toggleDot.style.transform = 'translateX(0)';
+    }
+    
+    console.log('Prices updated successfully');
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM loaded, initializing Phase 3...');
+    
+    // Initialize pricing
+    updatePrices();
+    
+    console.log('✅ Phase 3: Regular Pricing initialized successfully!');
+});
+</script>
+
+</body>
+</html>

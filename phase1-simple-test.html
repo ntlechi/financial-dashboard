@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Pricing Test</title>
+    <style>
+        body {
+            background-color: #111827;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .toggle-switch {
+            width: 50px;
+            height: 25px;
+            background-color: #4b5563;
+            border-radius: 25px;
+            position: relative;
+            cursor: pointer;
+        }
+        .toggle-dot {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2.5px;
+            left: 2.5px;
+            transition: transform 0.3s;
+        }
+        .toggle-dot.active {
+            transform: translateX(25px);
+        }
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+        .countdown {
+            background-color: #111827;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #374151;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #f59e0b;
+            width: 25%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Pricing Test</h1>
+        
+        <div class="toggle">
+            <span id="monthly-label">Monthly</span>
+            <div class="toggle-switch" onclick="toggleBilling()">
+                <div class="toggle-dot" id="toggle-dot"></div>
+            </div>
+            <span id="annual-label">Annual</span>
+        </div>
+        
+        <div class="pricing-card">
+            <h3>Climber Plan</h3>
+            <div class="price" id="climber-price">$7.99</div>
+            <div id="climber-period">USD / month</div>
+        </div>
+        
+        <div class="pricing-card">
+            <h3>Operator Plan</h3>
+            <div class="price" id="operator-price">$14.99</div>
+            <div id="operator-period">USD / month</div>
+        </div>
+        
+        <div class="pricing-card">
+            <h3>Founder's Circle</h3>
+            <div class="price">$7.49</div>
+            <div>USD / month</div>
+            
+            <div class="countdown">
+                <div>Offer Ends In:</div>
+                <div id="countdown-timer">15d 10h 46m 23s</div>
+            </div>
+            
+            <div>
+                <div id="spots-claimed">25</div> of 100 spots claimed
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var isAnnual = false;
+        var endDate = new Date();
+        endDate.setDate(endDate.getDate() + 15);
+        endDate.setHours(23, 59, 59, 999);
+
+        function toggleBilling() {
+            isAnnual = !isAnnual;
+            var toggleDot = document.getElementById('toggle-dot');
+            var monthlyLabel = document.getElementById('monthly-label');
+            var annualLabel = document.getElementById('annual-label');
+            var climberPrice = document.getElementById('climber-price');
+            var climberPeriod = document.getElementById('climber-period');
+            var operatorPrice = document.getElementById('operator-price');
+            var operatorPeriod = document.getElementById('operator-period');
+
+            if (isAnnual) {
+                toggleDot.classList.add('active');
+                monthlyLabel.style.color = '#9ca3af';
+                annualLabel.style.color = 'white';
+                climberPrice.textContent = '$79';
+                climberPeriod.textContent = 'USD / year';
+                operatorPrice.textContent = '$149';
+                operatorPeriod.textContent = 'USD / year';
+            } else {
+                toggleDot.classList.remove('active');
+                monthlyLabel.style.color = 'white';
+                annualLabel.style.color = '#9ca3af';
+                climberPrice.textContent = '$7.99';
+                climberPeriod.textContent = 'USD / month';
+                operatorPrice.textContent = '$14.99';
+                operatorPeriod.textContent = 'USD / month';
+            }
+        }
+
+        function updateCountdown() {
+            var countdownElement = document.getElementById('countdown-timer');
+            if (countdownElement) {
+                var now = new Date();
+                var timeRemaining = endDate - now;
+
+                if (timeRemaining <= 0) {
+                    countdownElement.textContent = 'Offer Ended';
+                    return;
+                }
+
+                var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                var formattedHours = hours < 10 ? '0' + hours : hours;
+                var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+                var formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+
+                countdownElement.textContent = days + 'd ' + formattedHours + 'h ' + formattedMinutes + 'm ' + formattedSeconds + 's';
+            }
+        }
+
+        function updateProgress() {
+            var progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.style.width = '25%';
+            }
+        }
+
+        function init() {
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            updateProgress();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
+
