@@ -23,9 +23,9 @@ import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
 import TransactionModal from './components/TransactionModal';
-import FixedModal from
-import MomentsModal from
-import MomentsFeed from
+import FixedModal from './components/FixedModal';
+import MomentsModal from './components/MomentsModal';
+import MomentsFeed from './components/MomentsFeed';
 import InstallPrompt from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
