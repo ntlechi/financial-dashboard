@@ -12521,7 +12521,7 @@ function App() {
                                 type="number"
                                 step="0.1"
                                 placeholder="19.9"
-                                value={account.interestRate || ''}
+                                value={account.interestRate === 0 ? '0' : (account.interestRate || '')}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
@@ -12552,7 +12552,7 @@ function App() {
                                 <input
                                   type="number"
                                   placeholder="15000"
-                                  value={account.initialDebt || ''}
+                                  value={account.initialDebt === 0 ? '0' : (account.initialDebt || '')}
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
                                     const updatedAccounts = [...(currentData.accounts || [])];
@@ -12577,7 +12577,7 @@ function App() {
                               <input
                                 type="number"
                                 placeholder="200"
-                                value={account.minPayment || ''}
+                                value={account.minPayment === 0 ? '0' : (account.minPayment || '')}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
@@ -13254,10 +13254,10 @@ function App() {
                                 <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
                                 <input
                                   type="number"
-                                  value={account.contributed}
+                                  value={account.contributed === 0 ? '0' : (account.contributed || '')}
                                   onChange={(e) => {
                                     const updated = [...tempCardData.accounts];
-                                    updated[index] = { ...updated[index], contributed: Number(e.target.value) };
+                                    updated[index] = { ...updated[index], contributed: e.target.value === '' ? 0 : Number(e.target.value) };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
@@ -13268,10 +13268,10 @@ function App() {
                                 <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
                                 <input
                                   type="number"
-                                  value={account.limit}
+                                  value={account.limit === 0 ? '0' : (account.limit || '')}
                                   onChange={(e) => {
                                     const updated = [...tempCardData.accounts];
-                                    updated[index] = { ...updated[index], limit: Number(e.target.value) };
+                                    updated[index] = { ...updated[index], limit: e.target.value === '' ? 0 : Number(e.target.value) };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
@@ -13405,10 +13405,10 @@ function App() {
                               <input
                                 type="number"
                                 placeholder="0"
-                                value={goal.targetAmount || ''}
+                                value={goal.targetAmount === 0 ? '0' : (goal.targetAmount || '')}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
-                                  updatedGoals[index] = {...goal, targetAmount: e.target.value === '' ? '' : Number(e.target.value)};
+                                  updatedGoals[index] = {...goal, targetAmount: e.target.value === '' ? 0 : Number(e.target.value)};
                                   setTempCardData(updatedGoals);
                                 }}
                                 className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
@@ -13420,10 +13420,10 @@ function App() {
                               <input
                                 type="number"
                                 placeholder="0"
-                                value={goal.currentAmount || ''}
+                                value={goal.currentAmount === 0 ? '0' : (goal.currentAmount || '')}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
-                                  updatedGoals[index] = {...goal, currentAmount: e.target.value === '' ? '' : Number(e.target.value)};
+                                  updatedGoals[index] = {...goal, currentAmount: e.target.value === '' ? 0 : Number(e.target.value)};
                                   setTempCardData(updatedGoals);
                                 }}
                                 className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
