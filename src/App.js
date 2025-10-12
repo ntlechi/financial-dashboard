@@ -20,6 +20,9 @@ import UpgradePrompt from './components/UpgradePrompt';
 import FreedomJournal from './components/FreedomJournal';
 import ReflectionsPage from './components/ReflectionsPage';
 import MissionCompleteModal from './components/MissionCompleteModal';
+import QuickExpenseModal from './components/QuickExpenseModal';
+import QuickJournalModal from './components/QuickJournalModal';
+import TransactionModal from './components/TransactionModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 
@@ -11012,12 +11015,12 @@ function App() {
     setQuickJournalNote('');
   };
 
-  const saveQuickJournal = async () => {
-    if (!quickJournalNote.trim()) return;
+  const saveQuickJournal = async (noteContent) => {
+    if (!noteContent.trim()) return;
     
     const journalEntry = {
       id: Date.now(),
-      text: quickJournalNote.trim(),
+      text: noteContent.trim(),
       timestamp: new Date().toISOString(),
       createdAt: new Date().toLocaleString(),
       type: 'quick-note'
@@ -11052,20 +11055,20 @@ function App() {
     }
   };
 
-  const confirmQuickExpense = async () => {
-    if (!quickExpense.description || !quickExpense.amount || !userId) return;
+  const confirmQuickExpense = async (expense) => {
+    if (!expense.description || !expense.amount || !userId) return;
 
-    const amount = parseFloat(quickExpense.amount);
+    const amount = parseFloat(expense.amount);
     if (isNaN(amount) || amount <= 0) return;
 
     const transaction = {
       id: Date.now(),
-      description: quickExpense.description,
+      description: expense.description,
       amount: -Math.abs(amount), // Always negative for expenses
       type: 'expense',
       category: 'personal',
       subcategory: 'cash',
-      date: quickExpense.date
+      date: expense.date
     };
 
     const updatedTransactions = [transaction, ...(data.transactions || [])];
@@ -11076,15 +11079,17 @@ function App() {
       setData(updatedData);
       closeQuickExpense();
       
-      // Additional viewport cleanup after successful save
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-        
-
-      }, 150);
+      // Award XP for logging expense
+      try {
+        const result = await awardXp(db, userId, 5);
+        if (result?.rankUp && result.newRank) {
+          const prev = getRankFromXp((result.totalXp || 0) - 5);
+          setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 5, action: 'quick expense' });
+          setShowRankUpModal(true);
+        }
+      } catch (e) {
+        console.warn('XP award failed (quick expense)', e);
+      }
     } catch (error) {
       console.error('Error adding quick expense:', error);
     }
@@ -11960,183 +11965,19 @@ function App() {
       {/* Quick Expense Button - Moved to header (cleaner UX) */}
       {user && !authLoading && (
         <>
-          {/* Quick Expense Modal */}
-          {showQuickExpense && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            // Use the custom --vh property for height (iOS fix)
-            height: 'calc(var(--vh, 1vh) * 100)',
-            zIndex: 9999,
-            padding: '1rem' // Add padding to prevent modal touching edges
-          }}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
-        >
-          <Card 
-            className="w-full max-w-md border-red-500/30"
-            style={{
-              margin: 0 // Keep margin at 0
-            }}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-white">⚡ Quick Expense</h3>
-                <p className="text-xs text-gray-400">Log cash expenses fast!</p>
-              </div>
-              <button
-                onClick={closeQuickExpense}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-300 mb-2">What did you spend on?</label>
-                <input
-                  type="text"
-                  placeholder="e.g., Coffee, Lunch, Gas, Groceries..."
-                  value={quickExpense.description}
-                  onChange={(e) => setQuickExpense({...quickExpense, description: e.target.value})}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none placeholder-gray-400"
-                  autoFocus
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm text-gray-300 mb-2">Amount</label>
-                  <input
-                    type="number"
-                    placeholder="0.00"
-                    step="0.01"
-                    value={quickExpense.amount || ''}
-                    onChange={(e) => setQuickExpense({...quickExpense, amount: e.target.value === '' ? '' : e.target.value})}
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm text-gray-300 mb-2">Date</label>
-                  <input
-                    type="date"
-                    value={quickExpense.date}
-                    onChange={(e) => setQuickExpense({...quickExpense, date: e.target.value})}
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none"
-                  />
-                </div>
-              </div>
+          {/* Quick Expense Modal - FIXED VERSION */}
+          <QuickExpenseModal
+            isOpen={showQuickExpense}
+            onClose={closeQuickExpense}
+            onSave={confirmQuickExpense}
+          />
 
-              <div className="bg-red-900/20 rounded-lg p-3 border border-red-600/30">
-                <div className="text-xs text-red-200">
-                  💡 <strong>Quick Tip:</strong> This logs to your personal cash expenses. 
-                  For business expenses or other categories, use the full Transaction tab.
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={closeQuickExpense}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmQuickExpense}
-                disabled={!quickExpense.description || !quickExpense.amount}
-                className="bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Log Expense
-              </button>
-            </div>
-          </Card>
-        </div>
-          )}
-
-          {/* Quick Journal Modal */}
-          {showQuickJournal && (
-            <div 
-              className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 'calc(var(--vh, 1vh) * 100)',
-                zIndex: 9999,
-                padding: '1rem'
-              }}
-              onTouchMove={(e) => e.preventDefault()}
-              onWheel={(e) => e.preventDefault()}
-            >
-              <Card 
-                className="w-full max-w-md border-blue-500/30"
-                style={{
-                  margin: 0
-                }}
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white">📝 Quick Journal</h3>
-                    <p className="text-xs text-gray-400">Capture your thoughts and ideas!</p>
-                  </div>
-                  <button
-                    onClick={closeQuickJournal}
-                    className="text-gray-400 hover:text-white"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-gray-300 mb-2">What's on your mind?</label>
-                    <textarea
-                      placeholder="Ideas, reflections, goals, insights..."
-                      value={quickJournalNote}
-                      onChange={(e) => setQuickJournalNote(e.target.value)}
-                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none placeholder-gray-400 min-h-[120px] resize-none"
-                      rows="4"
-                      autoFocus
-                    />
-                  </div>
-
-                  <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
-                    <div className="text-xs text-blue-200">
-                      💡 <strong>Quick Tip:</strong> Your notes will appear in the Field Notes archive where you can edit or delete them later.
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    onClick={closeQuickJournal}
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={saveQuickJournal}
-                    disabled={!quickJournalNote.trim()}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    Save Note
-              </button>
-            </div>
-          </Card>
-        </div>
-          )}
+          {/* Quick Journal Modal - FIXED VERSION */}
+          <QuickJournalModal
+            isOpen={showQuickJournal}
+            onClose={closeQuickJournal}
+            onSave={saveQuickJournal}
+          />
         </>
       )}
 
