@@ -2357,8 +2357,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Current Age</label>
             <input
               type="number"
-              value={currentAge || ''}
-              onChange={(e) => setCurrentAge(e.target.value === '' ? '' : Number(e.target.value))}
+              value={currentAge === 0 ? '0' : (currentAge || '')}
+              onChange={(e) => setCurrentAge(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2366,8 +2366,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
             <input
               type="number"
-              value={targetAmount || ''}
-              onChange={(e) => setTargetAmount(e.target.value === '' ? '' : Number(e.target.value))}
+              value={targetAmount === 0 ? '0' : (targetAmount || '')}
+              onChange={(e) => setTargetAmount(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2375,8 +2375,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Current Savings</label>
             <input
               type="number"
-              value={currentSavings || ''}
-              onChange={(e) => setCurrentSavings(e.target.value === '' ? '' : Number(e.target.value))}
+              value={currentSavings === 0 ? '0' : (currentSavings || '')}
+              onChange={(e) => setCurrentSavings(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2384,8 +2384,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Monthly Contribution</label>
             <input
               type="number"
-              value={monthlyContribution || ''}
-              onChange={(e) => setMonthlyContribution(e.target.value === '' ? '' : Number(e.target.value))}
+              value={monthlyContribution === 0 ? '0' : (monthlyContribution || '')}
+              onChange={(e) => setMonthlyContribution(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2393,8 +2393,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Annual Return %</label>
             <input
               type="number"
-              value={annualReturn || ''}
-              onChange={(e) => setAnnualReturn(e.target.value === '' ? '' : Number(e.target.value))}
+              value={annualReturn === 0 ? '0' : (annualReturn || '')}
+              onChange={(e) => setAnnualReturn(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2402,8 +2402,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Monthly Expenses</label>
             <input
               type="number"
-              value={monthlyExpenses || ''}
-              onChange={(e) => setMonthlyExpenses(e.target.value === '' ? '' : Number(e.target.value))}
+              value={monthlyExpenses === 0 ? '0' : (monthlyExpenses || '')}
+              onChange={(e) => setMonthlyExpenses(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2411,8 +2411,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Current Passive Income</label>
             <input
               type="number"
-              value={passiveIncome || ''}
-              onChange={(e) => setPassiveIncome(e.target.value === '' ? '' : Number(e.target.value))}
+              value={passiveIncome === 0 ? '0' : (passiveIncome || '')}
+              onChange={(e) => setPassiveIncome(e.target.value === '' ? 0 : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2699,8 +2699,8 @@ const DebtPayoffCalculator = () => {
                     <div>
                       <input
                         type="number"
-                        value={debt.balance || ''}
-                        onChange={(e) => updateDebt(index, 'balance', e.target.value === '' ? '' : Number(e.target.value))}
+                        value={debt.balance === 0 ? '0' : (debt.balance || '')}
+                        onChange={(e) => updateDebt(index, 'balance', e.target.value === '' ? 0 : Number(e.target.value))}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
                         placeholder="$0"
                       />
@@ -2709,8 +2709,8 @@ const DebtPayoffCalculator = () => {
                       <input
                         type="number"
                         step="0.1"
-                        value={debt.interestRate || ''}
-                        onChange={(e) => updateDebt(index, 'interestRate', e.target.value === '' ? '' : Number(e.target.value))}
+                        value={debt.interestRate === 0 ? '0' : (debt.interestRate || '')}
+                        onChange={(e) => updateDebt(index, 'interestRate', e.target.value === '' ? 0 : Number(e.target.value))}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
                         placeholder="0.0"
                       />
@@ -2718,8 +2718,8 @@ const DebtPayoffCalculator = () => {
                     <div>
                       <input
                         type="number"
-                        value={debt.minPayment || ''}
-                        onChange={(e) => updateDebt(index, 'minPayment', e.target.value === '' ? '' : Number(e.target.value))}
+                        value={debt.minPayment === 0 ? '0' : (debt.minPayment || '')}
+                        onChange={(e) => updateDebt(index, 'minPayment', e.target.value === '' ? 0 : Number(e.target.value))}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
                         placeholder="$0"
                       />
@@ -2745,8 +2745,8 @@ const DebtPayoffCalculator = () => {
                 <label className="block text-sm text-gray-300 mb-2">Extra Monthly Payment</label>
                 <input
                   type="number"
-                  value={extraPayment || ''}
-                  onChange={(e) => setExtraPayment(e.target.value === '' ? '' : Number(e.target.value))}
+                  value={extraPayment === 0 ? '0' : (extraPayment || '')}
+                  onChange={(e) => setExtraPayment(e.target.value === '' ? 0 : Number(e.target.value))}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
                   placeholder="Extra payment amount"
                 />
@@ -5950,8 +5950,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <input
                       type="number"
                       placeholder="e.g., 10"
-                      value={newHolding.shares || ''}
-                      onChange={(e) => setNewHolding({...newHolding, shares: e.target.value === '' ? '' : e.target.value})}
+                      value={newHolding.shares === 0 ? '0' : (newHolding.shares || '')}
+                      onChange={(e) => setNewHolding({...newHolding, shares: e.target.value === '' ? 0 : e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -5968,8 +5968,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <input
                       type="number"
                       placeholder="e.g., 150.00"
-                      value={newHolding.avgCost || ''}
-                      onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value === '' ? '' : e.target.value})}
+                      value={newHolding.avgCost === 0 ? '0' : (newHolding.avgCost || '')}
+                      onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value === '' ? 0 : e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -5988,8 +5988,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <input
                       type="number"
                       placeholder="e.g., 175.50"
-                      value={newHolding.currentPrice || ''}
-                      onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value === '' ? '' : e.target.value})}
+                      value={newHolding.currentPrice === 0 ? '0' : (newHolding.currentPrice || '')}
+                      onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value === '' ? 0 : e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -6006,8 +6006,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <input
                       type="number"
                       placeholder="e.g., 2.5"
-                      value={newHolding.dividendYield || ''}
-                      onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value === '' ? '' : e.target.value})}
+                      value={newHolding.dividendYield === 0 ? '0' : (newHolding.dividendYield || '')}
+                      onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value === '' ? 0 : e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -6141,16 +6141,16 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <input
                     type="number"
                     placeholder="Shares"
-                    value={editingHolding.shares || ''}
-                    onChange={(e) => setEditingHolding({...editingHolding, shares: e.target.value === '' ? '' : e.target.value})}
+                    value={editingHolding.shares === 0 ? '0' : (editingHolding.shares || '')}
+                    onChange={(e) => setEditingHolding({...editingHolding, shares: e.target.value === '' ? 0 : e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                   
                   <input
                     type="number"
                     placeholder="Avg Cost"
-                    value={editingHolding.avgCost || ''}
-                    onChange={(e) => setEditingHolding({...editingHolding, avgCost: e.target.value === '' ? '' : e.target.value})}
+                    value={editingHolding.avgCost === 0 ? '0' : (editingHolding.avgCost || '')}
+                    onChange={(e) => setEditingHolding({...editingHolding, avgCost: e.target.value === '' ? 0 : e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
@@ -6159,16 +6159,16 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <input
                     type="number"
                     placeholder="Current Price"
-                    value={editingHolding.currentPrice || ''}
-                    onChange={(e) => setEditingHolding({...editingHolding, currentPrice: e.target.value === '' ? '' : e.target.value})}
+                    value={editingHolding.currentPrice === 0 ? '0' : (editingHolding.currentPrice || '')}
+                    onChange={(e) => setEditingHolding({...editingHolding, currentPrice: e.target.value === '' ? 0 : e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                   
                   <input
                     type="number"
                     placeholder="Dividend Yield %"
-                    value={editingHolding.dividendYield || ''}
-                    onChange={(e) => setEditingHolding({...editingHolding, dividendYield: e.target.value === '' ? '' : e.target.value})}
+                    value={editingHolding.dividendYield === 0 ? '0' : (editingHolding.dividendYield || '')}
+                    onChange={(e) => setEditingHolding({...editingHolding, dividendYield: e.target.value === '' ? 0 : e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
