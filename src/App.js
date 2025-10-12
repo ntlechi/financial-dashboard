@@ -23,8 +23,10 @@ import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
 import TransactionModal from './components/TransactionModal';
+import FixedModal from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
+import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -6250,7 +6252,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     type: 'expense',
     category: 'personal',
     subcategory: '',
-    date: new Date().toISOString().split('T')[0],
+    date: getTodayInUserTimezone(),
     isRecurring: false,
     isPassive: false, // 🏔️ Freedom Ratio: Passive income flag
     frequency: 'monthly',
@@ -6776,18 +6778,14 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </Card>
       )}
 
-      {/* Add Transaction Form */}
-      {showAddForm && (
-        <Card className="border-blue-500/30">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-white">Add New Transaction</h3>
-            <button
-              onClick={() => setShowAddForm(false)}
-              className="text-gray-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+      {/* Add Transaction Form - FIXED MODAL VERSION */}
+      <FixedModal
+        isOpen={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        title="Add New Transaction"
+        description="Track your income and expenses"
+        size="lg"
+      >
           
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -6978,8 +6976,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               Add Transaction
             </button>
           </div>
-        </Card>
-      )}
+      </FixedModal>
 
       {/* 📊 UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-indigo-900/40 to-blue-900/40 border-blue-500/30">
@@ -7498,7 +7495,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     <h4 className="font-semibold text-white">{transaction.description}</h4>
                     <div className="text-sm text-gray-400">
-                      {new Date(transaction.date).toLocaleDateString()} • 
+                      {formatDateForUser(transaction.date)} • 
                       <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
                         {transaction.category}
                       </span>
@@ -9848,7 +9845,7 @@ function App() {
   const [quickExpense, setQuickExpense] = useState({
     description: '',
     amount: '',
-    date: new Date().toISOString().split('T')[0]
+    date: getTodayInUserTimezone()
   });
 
   // 📝 QUICK JOURNAL SYSTEM
@@ -11071,8 +11068,8 @@ function App() {
       date: expense.date,
       timestamp: new Date().toISOString(),
       createdAt: new Date().toLocaleString(),
-      // Ensure date is properly formatted for display
-      displayDate: new Date(expense.date).toLocaleDateString()
+      // Use timezone-aware date formatting
+      displayDate: formatDateForUser(expense.date)
     };
 
     // Add transaction and sort by timestamp (newest first)
@@ -11550,7 +11547,7 @@ function App() {
                             <p className="text-gray-400 text-sm truncate">{devDemoMode ? 'demo@example.com' : user?.email}</p>
                           </div>
                         </div>
-                        <div className="mt-3">
+                        <div className="mt-3 flex items-center gap-2">
                           <span className={`inline-block text-xs px-3 py-1 rounded-full font-semibold ${
                             userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
                             userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
@@ -11562,6 +11559,10 @@ function App() {
                              userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator Plan' :
                              userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder\'s Circle' : 
                              'Free Plan'}
+                          </span>
+                          {/* Timezone Indicator */}
+                          <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded">
+                            🌍 {getTimezoneInfo().displayName}
                           </span>
                         </div>
                       </div>
