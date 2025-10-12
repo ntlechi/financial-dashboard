@@ -12302,12 +12302,10 @@ function App() {
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
-                    {!checkFeatureAccess('Travel
-                    {!checkFeatureAccess(" travel-mode\) && <Crown className=\w-3 h-3 ml-1 text-amber-400\ />}
- }
- <button onClick={() => handleTabClick(\moments\)} className={px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap }>
- Moments
- </button>
+                    {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                  </button>
+                  <button onClick={() => handleTabClick('moments')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'moments' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    💫 Moments
                   </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     📓 Field Notes
