@@ -24,7 +24,7 @@ import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
 import TransactionModal from './components/TransactionModal';
 import FixedModal from './components/FixedModal';
-import MomentsModal from './components/MomentsModal';
+// import MomentsModal from './components/MomentsModal'; // TODO: Create MomentsModal component
 import MomentsFeed from './components/MomentsFeed';
 import InstallPrompt from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
