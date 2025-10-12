@@ -3418,14 +3418,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         } catch (error) {
 
-  //  MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   const handleEditMoment = (moment) => {
-    console.log(" Edit moment:\, moment);
- };
+    console.log('Edit moment:', moment);
+  };
 
- const handleShareMoment = (moment) => {
- console.log(\Share moment:\, moment);
- };
+  const handleShareMoment = (moment) => {
+    console.log('Share moment:', moment);
+  };
           console.warn('Milestone check failed:', error);
         }
       }
