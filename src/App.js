@@ -12236,11 +12236,16 @@ function App() {
                               />
                             </div>
                               <div className="col-span-4">
-                                <label className="block text-xs text-gray-400 mb-1">Current Balance</label>
+                                <label className="block text-xs text-gray-400 mb-1">
+                                  Current Balance
+                                  {account.balance === 0 && (
+                                    <span className="ml-2 text-green-400 font-bold">🎉 PAID OFF!</span>
+                                  )}
+                                </label>
                               <input
                                 type="number"
                                 placeholder="10000"
-                                value={account.balance || ''}
+                                value={account.balance === 0 ? '0' : (account.balance || '')}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
@@ -12249,8 +12254,34 @@ function App() {
                                     const amountPaid = Math.max(0, initialDebt - currentBalance);
                                     updatedAccounts[index] = {...account, balance: currentBalance, amountPaid};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
+                                  
+                                  // 🎉 CELEBRATE DEBT PAYOFF!
+                                  if (currentBalance === 0 && account.balance > 0) {
+                                    // Award XP for paying off debt
+                                    if (userId) {
+                                      awardXp(db, userId, 50).then(result => {
+                                        if (result?.rankUp && result.newRank) {
+                                          const prev = getRankFromXp((result.totalXp || 0) - 50);
+                                          setRankUpData({ 
+                                            newRank: result.newRank, 
+                                            oldRank: prev.current, 
+                                            xpGained: 50, 
+                                            action: 'debt payoff' 
+                                          });
+                                          setShowRankUpModal(true);
+                                        }
+                                      }).catch(e => console.warn('XP award failed (debt payoff)', e));
+                                    }
+                                    
+                                    // Show celebration notification
+                                    showNotification('🎉 DEBT PAID OFF! You earned 50 XP!', 'success');
+                                  }
                                 }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
+                                className={`w-full px-2 py-1 rounded text-sm border focus:outline-none ${
+                                  account.balance === 0 
+                                    ? 'bg-green-600/20 text-green-400 border-green-500 focus:border-green-400' 
+                                    : 'bg-gray-600 text-white border-gray-500 focus:border-red-500'
+                                }`}
                               />
                             </div>
                               <div className="col-span-3">
