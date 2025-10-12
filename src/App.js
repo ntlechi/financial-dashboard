@@ -11072,7 +11072,8 @@ function App() {
     };
 
     const updatedTransactions = [transaction, ...(data.transactions || [])];
-    const updatedData = { ...data, transactions: updatedTransactions };
+    const updatedExpenses = [transaction, ...(data.expenses || [])];
+    const updatedData = { ...data, transactions: updatedTransactions, expenses: updatedExpenses };
 
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
