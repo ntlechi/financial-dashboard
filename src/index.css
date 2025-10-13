@@ -16,3 +16,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 🔒 STEALTH MODE - Privacy Protection Feature */
+/* Blur sensitive financial data when stealth mode is active */
+.stealth-active .stealth-target {
+  filter: blur(8px);
+  transition: filter 0.3s ease-in-out;
+  user-select: none;
+}
+
+.stealth-target {
+  transition: filter 0.3s ease-in-out;
+}

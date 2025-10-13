@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -883,7 +883,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
       
       <div className="space-y-4 mt-8">
         <div className="text-center">
-          <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
+          <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2 stealth-target">
             ${data.total.toLocaleString()}
           </div>
           {/* 🎯 DYNAMIC STATUS INDICATOR */}
@@ -891,14 +891,14 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             {resilience.status}
           </div>
           <div className="text-xs sm:text-sm text-gray-400">
-            {monthsOfExpenses.toFixed(1)} months of expenses covered
+            <span className="stealth-target">{monthsOfExpenses.toFixed(1)}</span> months of expenses covered
           </div>
         </div>
         
         <div className="mt-6">
           <div className="flex justify-between text-xs sm:text-sm text-gray-300 mb-2">
-            <span>Current: ${data.total.toLocaleString()}</span>
-            <span>Goal: ${data.goal.toLocaleString()}</span>
+            <span>Current: <span className="stealth-target">${data.total.toLocaleString()}</span></span>
+            <span>Goal: <span className="stealth-target">${data.goal.toLocaleString()}</span></span>
           </div>
           {/* 🎨 DYNAMIC COLOR PROGRESS BAR */}
           <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -1370,7 +1370,7 @@ const NetWorthCard = ({ data, onEdit }) => {
         <Edit className="w-4 h-4" />
       </button>
     </div>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white stealth-target">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1380,12 +1380,12 @@ const NetWorthCard = ({ data, onEdit }) => {
       <div className="mt-3 flex gap-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#84CC16'}}></div>
-          <span className="text-sm text-gray-300">Assets: ${totalAssets.toLocaleString()}</span>
+          <span className="text-sm text-gray-300">Assets: <span className="stealth-target">${totalAssets.toLocaleString()}</span></span>
         </div>
         {totalLiabilities > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#F43F5E'}}></div>
-            <span className="text-sm text-gray-300">Liabilities: ${totalLiabilities.toLocaleString()}</span>
+            <span className="text-sm text-gray-300">Liabilities: <span className="stealth-target">${totalLiabilities.toLocaleString()}</span></span>
           </div>
         )}
       </div>
@@ -1408,7 +1408,7 @@ const NetWorthCard = ({ data, onEdit }) => {
                 ).map(item => (
                   <div key={item.id} className="flex justify-between items-center text-xs">
                     <span className="text-white font-medium truncate mr-1">{item.name}</span>
-                    <span className="text-green-400 font-semibold whitespace-nowrap">${item.value.toLocaleString()}</span>
+                    <span className="text-green-400 font-semibold whitespace-nowrap stealth-target">${item.value.toLocaleString()}</span>
                   </div>
                 ))}
                 {data.breakdown.filter(item => item.type === 'asset').length > maxVisibleItems && (
@@ -1438,7 +1438,7 @@ const NetWorthCard = ({ data, onEdit }) => {
                 ).map(item => (
                   <div key={item.id} className="flex justify-between items-center text-xs">
                     <span className="text-white font-medium truncate mr-1">{item.name}</span>
-                    <span className="text-red-400 font-semibold whitespace-nowrap">-${Math.abs(item.value).toLocaleString()}</span>
+                    <span className="text-red-400 font-semibold whitespace-nowrap stealth-target">-${Math.abs(item.value).toLocaleString()}</span>
                   </div>
                 ))}
                 {data.breakdown.filter(item => item.type === 'liability').length > maxVisibleItems && (
@@ -1738,7 +1738,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     {/* 🎯 HERO METRIC: Runway Time */}
     <div className="mb-2">
       <p className={`text-4xl sm:text-5xl font-extrabold ${status.textColor} mb-1`}>
-        {runwayMonths.toFixed(1)} <span className="text-2xl sm:text-3xl">months</span>
+        <span className="stealth-target">{runwayMonths.toFixed(1)}</span> <span className="text-2xl sm:text-3xl">months</span>
       </p>
       <p className="text-sm font-semibold" style={{ color: status.color }}>
         {status.label}
@@ -1746,7 +1746,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     </div>
     
     {/* 💰 Cash Amount (Secondary) */}
-    <p className="text-lg text-gray-300 mb-4">
+    <p className="text-lg text-gray-300 mb-4 stealth-target">
       ${data.total.toLocaleString()} cash on hand
     </p>
     
@@ -1780,7 +1780,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
               <span className="text-white font-medium">{account.name}</span>
               <span className="text-gray-400 ml-2 text-[10px] sm:text-xs">({account.type})</span>
             </div>
-            <span className="text-teal-300 font-semibold">${account.balance.toLocaleString()}</span>
+            <span className="text-teal-300 font-semibold stealth-target">${account.balance.toLocaleString()}</span>
           </div>
         ))}
         {data.accounts.length > maxVisibleAccounts && (
@@ -1799,7 +1799,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
         <span>•</span>
-        <span>Avg expenses: ${avgMonthlyExpenses.toLocaleString()}/mo</span>
+        <span>Avg expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
       </div>
     </div>
   </Card>
@@ -1894,7 +1894,7 @@ const IncomeCard = ({ data, viewMode }) => {
       <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
       {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
     </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white stealth-target">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center flex-1">
@@ -1907,7 +1907,7 @@ const IncomeCard = ({ data, viewMode }) => {
           return (
             <div key={source.id} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
-              <span className="text-xs text-gray-300">{source.name}: ${source.amount.toLocaleString()}</span>
+              <span className="text-xs text-gray-300">{source.name}: <span className="stealth-target">${source.amount.toLocaleString()}</span></span>
             </div>
           );
         })}
@@ -2017,7 +2017,7 @@ const ExpensesCard = ({ data, viewMode }) => {
       <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
       {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
     </h2>
-    <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white stealth-target">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center flex-1">
@@ -2030,7 +2030,7 @@ const ExpensesCard = ({ data, viewMode }) => {
           return (
             <div key={cat.id} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
-              <span className="text-xs text-gray-300">{cat.name}: ${cat.amount.toLocaleString()}</span>
+              <span className="text-xs text-gray-300">{cat.name}: <span className="stealth-target">${cat.amount.toLocaleString()}</span></span>
             </div>
           );
         })}
@@ -2258,7 +2258,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       <p className={`text-4xl sm:text-5xl font-extrabold mb-3 ${isPositive ? 'text-lime-500' : 'text-rose-500'}`} style={{
         color: isPositive ? '#84CC16' : '#F43F5E'
       }}>
-        {isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}
+        <span className="stealth-target">{isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}</span>
       </p>
       
       {/* 💰 COMPONENT BREAKDOWN - Strategic Intelligence */}
@@ -2266,12 +2266,12 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
           <span className="text-gray-300">Income:</span>
-          <span className="text-white font-semibold">${monthlyIncome.toLocaleString()}</span>
+          <span className="text-white font-semibold stealth-target">${monthlyIncome.toLocaleString()}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-400"></div>
           <span className="text-gray-300">Expenses:</span>
-          <span className="text-white font-semibold">${monthlyExpenses.toLocaleString()}</span>
+          <span className="text-white font-semibold stealth-target">${monthlyExpenses.toLocaleString()}</span>
         </div>
       </div>
       
@@ -10228,6 +10228,22 @@ function App() {
     amount: '',
     date: getTodayInUserTimezone()
   });
+  
+  // 🔒 STEALTH MODE - Privacy Protection Feature (Free for everyone!)
+  const [stealthMode, setStealthMode] = useState(() => {
+    // Check localStorage for saved preference
+    const saved = localStorage.getItem('stealthMode');
+    return saved === 'enabled';
+  });
+  
+  // Toggle stealth mode and persist to localStorage
+  const toggleStealthMode = () => {
+    setStealthMode(prev => {
+      const newValue = !prev;
+      localStorage.setItem('stealthMode', newValue ? 'enabled' : 'disabled');
+      return newValue;
+    });
+  };
 
   // 📝 QUICK JOURNAL SYSTEM
   const [showQuickJournal, setShowQuickJournal] = useState(false);
@@ -12123,7 +12139,7 @@ function App() {
 
       {/* Main Dashboard - Only show when authenticated */}
       {user && !authLoading && (
-      <div className="max-w-7xl mx-auto">
+      <div className={`max-w-7xl mx-auto ${stealthMode ? 'stealth-active' : ''}`}>
         <header className="mb-8">
           {/* Mission Status Banner */}
           <MissionStatusBanner userId={userId} />
@@ -12174,7 +12190,18 @@ function App() {
                 </button>
               )}
               
-              {/* Stealth removed (fresh start) */}
+              {/* 🔒 STEALTH MODE Toggle - Free for Everyone! */}
+              <button
+                onClick={toggleStealthMode}
+                className={`${
+                  stealthMode 
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700' 
+                    : 'bg-gray-700 hover:bg-gray-600'
+                } text-white p-2 rounded-lg transition-colors flex items-center gap-2`}
+                title={stealthMode ? "Stealth Mode: ON (Hide Numbers)" : "Stealth Mode: OFF (Show Numbers)"}
+              >
+                {stealthMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
 
               {/* Help FAQ Button */}
               <button
