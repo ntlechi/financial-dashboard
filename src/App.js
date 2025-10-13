@@ -46,6 +46,7 @@ import {
   clearPendingSync,
   markAsSynced
 } from './utils/offlineUtils';
+import GlobalStealthToggle from './components/GlobalStealthToggle';
 import { 
   createBackup, 
   getUserBackups, 
@@ -533,7 +534,7 @@ const initialData = {
 };
 
 const Card = ({ children, className = '' }) => (
-  <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 w-full min-h-[360px] ${className}`}>
+  <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 ${className}`}>
     {children}
   </div>
 );
@@ -12054,7 +12055,23 @@ function App() {
                 </button>
               )}
               
-              {/* Global stealth removed (per-card only) */}
+              {/* Global Stealth Toggle - restored (Gemini-style blur) */}
+              <GlobalStealthToggle
+                isOn={document?.body?.classList?.contains('stealth-active')}
+                onToggle={() => {
+                  const root = document?.body;
+                  if (!root) return;
+                  if (root.classList.contains('stealth-active')) {
+                    root.classList.remove('stealth-active');
+                    try { localStorage.setItem('stealthMode', 'disabled'); } catch {}
+                  } else {
+                    root.classList.add('stealth-active');
+                    try { localStorage.setItem('stealthMode', 'enabled'); } catch {}
+                  }
+                  // Force re-render via state update by toggling a dummy value if needed
+                }}
+                className="ml-1"
+              />
 
               {/* Help FAQ Button */}
               <button
@@ -12337,7 +12354,7 @@ function App() {
           </div>
         </header>
 
-        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-[minmax(360px,_auto)]">
+        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
           {activeTab === 'dashboard' && (
             <>
               {/* Monthly History View */}
@@ -12391,7 +12408,7 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Cash Flow - FREE+ (Left) */}
-              <StealthCard className="col-span-1 lg:col-span-1">
+              <StealthCard>
                 <CashFlowCard 
                   data={displayData?.cashflow} 
                   income={displayData?.income}
@@ -12402,7 +12419,7 @@ function App() {
               </StealthCard>
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
-              <StealthCard className="col-span-1 lg:col-span-1">
+              <StealthCard>
                 {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
                   <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
                 ) : (
@@ -12415,12 +12432,12 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Monthly Income - FREE+ (Left) */}
-              <StealthCard className="col-span-1 lg:col-span-1">
+              <StealthCard>
                 <IncomeCard data={displayData?.income} viewMode={viewMode} />
               </StealthCard>
               
               {/* Monthly Expenses - FREE+ (Right) */}
-              <StealthCard className="col-span-1 lg:col-span-1">
+              <StealthCard>
                 <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
               </StealthCard>
               
@@ -12429,14 +12446,14 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Net Worth - FREE+ (Left) */}
-              <StealthCard className="col-span-1 lg:col-span-1">
+              <StealthCard>
                 <FinancialErrorBoundary componentName="Net Worth Calculator">
                   <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
                 </FinancialErrorBoundary>
               </StealthCard>
               
               {/* Survival Runway - CLIMBER+ (Right) */}
-              <StealthCard className="col-span-1 lg:col-span-1">
+              <StealthCard>
                 {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                   <FinancialErrorBoundary componentName="Cash Management">
                     <CashOnHandCard 
