@@ -37,13 +37,23 @@ const StealthCard = ({
         transition-all duration-300 ease-in-out
       `}
       {...props}
+      style={{
+        // Ensure stealth never collapses card layout
+        minHeight: '100%',
+        width: '100%'
+      }}
     >
       {/* Main Content */}
       <div className={`
         ${isStealth ? stealthStyles.blur : ''}
         ${isStealth ? stealthStyles.opacity : ''}
         transition-all duration-300 ease-in-out
-      `}>
+      `}
+      style={{
+        // Preserve internal spacing when masked
+        minHeight: '100%',
+        width: '100%'
+      }}>
         {children}
       </div>
 
@@ -68,3 +78,4 @@ const StealthCard = ({
 };
 
 export default StealthCard;
+
