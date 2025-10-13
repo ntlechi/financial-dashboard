@@ -30,8 +30,6 @@ import InstallPrompt from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
-import { initStealthMode, isStealthModeEnabled, onStealthModeChange } from './utils/stealthMode';
-import StealthToggle from './components/StealthToggle';
 import StealthCard from './components/StealthCard';
 import { 
   isOnline, 
@@ -12070,12 +12068,7 @@ function App() {
                 </button>
               )}
               
-              {/* 🛡️ STEALTH MODE TOGGLE - Universal Trust Feature (Always Free) */}
-              <StealthToggle 
-                className="flex-shrink-0" 
-                size="default"
-                showLabel={false}
-              />
+              {/* Stealth removed (fresh start) */}
 
               {/* Help FAQ Button */}
               <button
