@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Download, Lock, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X, Copy, Shield, ShieldOff } from 'lucide-react';
+import { BookOpen, Download, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X, Copy } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId }) {
   const [expandedEntries, setExpandedEntries] = useState(new Set());
+  const [expandedNotes, setExpandedNotes] = useState(new Set());
   const [allJournalEntries, setAllJournalEntries] = useState([]);
-  
-  // 🔒 Stealth Mode State (Privacy Protection)
-  const [stealthMode, setStealthMode] = useState(() => {
-    const saved = localStorage.getItem('stealthMode');
-    return saved === 'enabled';
-  });
   
   // Quick Notes State
   const [quickNotes, setQuickNotes] = useState([]);
@@ -75,6 +70,17 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
     setExpandedEntries(newExpanded);
   };
 
+  // Toggle note expansion
+  const toggleNote = (noteId) => {
+    const newExpanded = new Set(expandedNotes);
+    if (newExpanded.has(noteId)) {
+      newExpanded.delete(noteId);
+    } else {
+      newExpanded.add(noteId);
+    }
+    setExpandedNotes(newExpanded);
+  };
+
   // Format date for display
   const formatDate = (timestamp) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
@@ -90,14 +96,6 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
   const getExcerpt = (text, maxLength = 150) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
-  };
-
-  // 🔒 Toggle Stealth Mode
-  const toggleStealthMode = () => {
-    const newMode = !stealthMode;
-    setStealthMode(newMode);
-    localStorage.setItem('stealthMode', newMode ? 'enabled' : 'disabled');
-    showNotification(newMode ? '🔒 Privacy mode enabled' : '👁️ Privacy mode disabled', 'success');
   };
 
   // Show notification
@@ -274,7 +272,7 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
   const hasOperatorAccess = userPlan === 'OPERATOR' || userPlan === 'FOUNDER\'S_CIRCLE';
 
   return (
-    <div className={`col-span-1 md:col-span-6 lg:col-span-6 space-y-6 ${stealthMode ? 'stealth-active' : ''}`}>
+    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Notification */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg ${
@@ -297,41 +295,15 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
             </p>
           </div>
           
-          {/* Stealth Mode & Export Buttons */}
-          <div className="flex items-center gap-3">
-            {/* 🔒 Stealth Mode Toggle */}
-            <button
-              onClick={toggleStealthMode}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                stealthMode
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
-                  : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-              }`}
-              title={stealthMode ? 'Disable privacy mode' : 'Enable privacy mode'}
-            >
-              {stealthMode ? (
-                <>
-                  <Shield className="w-5 h-5" />
-                  Privacy ON
-                </>
-              ) : (
-                <>
-                  <ShieldOff className="w-5 h-5" />
-                  Privacy OFF
-                </>
-              )}
-            </button>
-
-            {/* Export PDF Button */}
-            <button
-              onClick={() => exportFieldNotesToPDF()}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
-              title="Export all field notes to PDF"
-            >
-              <Download className="w-5 h-5" />
-              Export PDF
-            </button>
-          </div>
+          {/* Export Button */}
+          <button
+            onClick={() => exportFieldNotesToPDF()}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+            title="Export all field notes"
+          >
+            <Download className="w-5 h-5" />
+            Export Notes
+          </button>
         </div>
       </div>
 
@@ -432,9 +404,25 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
                 ) : (
                   // View Mode
                   <div>
-                    <p className={`text-gray-200 leading-relaxed mb-3 ${stealthMode ? 'stealth-target' : ''}`}>
-                      {note.text}
-                    </p>
+                    {note.text.length > 150 ? (
+                      <>
+                        <p className="text-gray-200 leading-relaxed mb-3">
+                          {expandedNotes.has(note.id) ? note.text : getExcerpt(note.text, 150)}
+                        </p>
+                        <button
+                          onClick={() => toggleNote(note.id)}
+                          className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1 mb-3"
+                        >
+                          {expandedNotes.has(note.id) ? (
+                            <><EyeOff className="w-4 h-4" /> Show Less</>
+                          ) : (
+                            <><Eye className="w-4 h-4" /> Read More</>
+                          )}
+                        </button>
+                      </>
+                    ) : (
+                      <p className="text-gray-200 leading-relaxed mb-3">{note.text}</p>
+                    )}
                     <div className="flex justify-between items-center">
                       <div className="text-xs text-gray-400">
                         {note.lastEdited ? `Edited ${note.lastEdited}` : `Created ${note.createdAt}`}
