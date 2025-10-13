@@ -30,8 +30,7 @@ import InstallPrompt from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
-import { initStealthMode, isStealthModeEnabled, onStealthModeChange } from './utils/stealthMode';
-import StealthToggle from './components/StealthToggle';
+// Stealth: per-card only (global removed)
 import StealthCard from './components/StealthCard';
 import { 
   isOnline, 
@@ -10135,22 +10134,7 @@ function App() {
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
 
-  // 🛡️ STEALTH MODE STATE - Universal Trust Feature (Always Free)
-  const [isStealthMode, setIsStealthMode] = useState(false);
-
-  // 🛡️ STEALTH MODE INITIALIZATION
-  useEffect(() => {
-    // Initialize stealth mode from localStorage
-    initStealthMode();
-    setIsStealthMode(isStealthModeEnabled());
-    
-    // Subscribe to stealth mode changes
-    const unsubscribe = onStealthModeChange((enabled) => {
-      setIsStealthMode(enabled);
-    });
-    
-    return unsubscribe;
-  }, []);
+  // Global stealth removed; each card controls its own masking
 
   // User feedback system
   // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
@@ -12070,12 +12054,7 @@ function App() {
                 </button>
               )}
               
-              {/* 🛡️ STEALTH MODE TOGGLE - Universal Trust Feature (Always Free) */}
-              <StealthToggle 
-                className="flex-shrink-0" 
-                size="default"
-                showLabel={false}
-              />
+              {/* Global stealth removed (per-card only) */}
 
               {/* Help FAQ Button */}
               <button
