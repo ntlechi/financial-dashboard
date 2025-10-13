@@ -12388,7 +12388,7 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
               {/* ═══════════════════════════════════════════════════════ */}
-              
+              <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Cash Flow - FREE+ (Left) */}
               <StealthCard>
                 <CashFlowCard 
@@ -12408,11 +12408,12 @@ function App() {
                   <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 )}
               </StealthCard>
+              </div>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
               {/* ═══════════════════════════════════════════════════════ */}
-              
+              <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Monthly Income - FREE+ (Left) */}
               <StealthCard>
                 <IncomeCard data={displayData?.income} viewMode={viewMode} />
@@ -12422,11 +12423,12 @@ function App() {
               <StealthCard>
                 <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
               </StealthCard>
+              </div>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
               {/* ═══════════════════════════════════════════════════════ */}
-              
+              <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Net Worth - FREE+ (Left) */}
               <StealthCard>
                 <FinancialErrorBoundary componentName="Net Worth Calculator">
@@ -12449,6 +12451,7 @@ function App() {
                   <LockedCard cardName="Survival Runway" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 )}
               </StealthCard>
+              </div>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
