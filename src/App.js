@@ -10133,22 +10133,7 @@ function App() {
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
 
-  // 🛡️ STEALTH MODE STATE - Universal Trust Feature (Always Free)
-  const [isStealthMode, setIsStealthMode] = useState(false);
-
-  // 🛡️ STEALTH MODE INITIALIZATION
-  useEffect(() => {
-    // Initialize stealth mode from localStorage
-    initStealthMode();
-    setIsStealthMode(isStealthModeEnabled());
-    
-    // Subscribe to stealth mode changes
-    const unsubscribe = onStealthModeChange((enabled) => {
-      setIsStealthMode(enabled);
-    });
-    
-    return unsubscribe;
-  }, []);
+  // Stealth removed (fresh start)
 
   // User feedback system
   // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
