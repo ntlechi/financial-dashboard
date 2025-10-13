@@ -45,9 +45,8 @@ const StealthCard = ({
     >
       {/* Main Content */}
       <div className={`
-        ${isStealth ? stealthStyles.blur : ''}
-        ${isStealth ? stealthStyles.opacity : ''}
         transition-all duration-300 ease-in-out
+        ${isStealth ? 'pointer-events-none' : ''}
       `}
       style={{
         // Preserve internal spacing when masked
@@ -59,7 +58,7 @@ const StealthCard = ({
 
       {/* Stealth Overlay */}
       {isStealth && showOverlay && (
-        <div {...overlayProps}>
+        <div {...overlayProps} className={`${overlayProps.className} pointer-events-auto`}>
           {overlayProps.children}
         </div>
       )}
