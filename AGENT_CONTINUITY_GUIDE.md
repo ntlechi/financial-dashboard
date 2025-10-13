@@ -245,3 +245,4 @@
 ---
 
 *This guide should be updated after each major development session.*
+

@@ -255,3 +255,4 @@ We're handling this. Will update as we progress.
 **The goal isn't to avoid all crises - it's to handle them so well that you come out stronger on the other side.** 🚀
 
 **When crisis hits, activate this system and let your AI Co-Founder help you navigate through it with maximum efficiency and minimum damage.**
+

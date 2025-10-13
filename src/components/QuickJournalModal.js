@@ -74,3 +74,4 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
 };
 
 export default QuickJournalModal;
+

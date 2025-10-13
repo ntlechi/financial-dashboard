@@ -189,3 +189,4 @@ export function getEducationContent(moduleId) {
   return FINANCIAL_EDUCATION_MODULES[moduleId] || null;
 }
 
+

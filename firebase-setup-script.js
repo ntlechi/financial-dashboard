@@ -58,3 +58,4 @@ async function setupFirebaseCollections() {
 // Run the setup
 setupFirebaseCollections();
 
+

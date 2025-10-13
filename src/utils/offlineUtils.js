@@ -256,3 +256,4 @@ export default {
   getOfflineSummary,
   hasOfflineData
 };
+

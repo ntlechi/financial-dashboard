@@ -222,3 +222,4 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
 };
 
 export default TransactionModal;
+

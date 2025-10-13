@@ -101,3 +101,4 @@ const StealthToggle = ({ className = '', showLabel = true, size = 'default' }) =
 };
 
 export default StealthToggle;
+

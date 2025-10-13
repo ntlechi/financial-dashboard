@@ -177,3 +177,4 @@ function survive_pricing_shortcode($atts) {
 add_shortcode('survive_pricing', 'survive_pricing_shortcode');
 ?>
 
+

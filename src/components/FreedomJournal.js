@@ -173,3 +173,4 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
   );
 }
 
+

@@ -399,3 +399,4 @@ const saveQuickJournal = async (noteContent) => {
 - ✅ **Accessibility compliant**
 
 **Your users will love the smooth, bug-free modal experience!** 🚀
+

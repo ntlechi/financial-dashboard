@@ -279,3 +279,4 @@ function get_regular_pricing_html() {
 add_shortcode('survive_pricing', 'survive_pricing_shortcode');
 ?>
 
+

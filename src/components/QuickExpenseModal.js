@@ -115,3 +115,4 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
 };
 
 export default QuickExpenseModal;
+

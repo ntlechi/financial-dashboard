@@ -282,3 +282,4 @@ function get_founders_circle_html($spots) {
 add_shortcode('survive_pricing', 'survive_pricing_shortcode');
 ?>
 
+

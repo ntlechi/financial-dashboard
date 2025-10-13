@@ -226,3 +226,4 @@ export default {
   getMonthName,
   getDayOfWeek
 };
+
