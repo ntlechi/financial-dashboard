@@ -1391,70 +1391,72 @@ const NetWorthCard = ({ data, onEdit }) => {
       </div>
     </div>
     
-    {/* 📋 NET WORTH BREAKDOWN */}
+    {/* 📋 NET WORTH BREAKDOWN - Side by Side Layout */}
     {data.breakdown && data.breakdown.length > 0 && (
       <div className="border-t border-sky-800/50 pt-4 mt-4">
         <h3 className="text-xs sm:text-sm font-semibold text-sky-300 uppercase tracking-wide mb-3">Breakdown</h3>
         
-        {/* Assets Section */}
-        {data.breakdown.filter(item => item.type === 'asset').length > 0 && (
-          <div className="mb-4">
-            <h4 className="text-xs text-green-400 font-semibold mb-2">💰 Assets</h4>
-            <div className="space-y-2">
-              {(showAllAssets 
-                ? data.breakdown.filter(item => item.type === 'asset')
-                : data.breakdown.filter(item => item.type === 'asset').slice(0, maxVisibleItems)
-              ).map(item => (
-                <div key={item.id} className="flex justify-between items-center text-xs sm:text-sm">
-                  <span className="text-white font-medium">{item.name}</span>
-                  <span className="text-green-400 font-semibold">${item.value.toLocaleString()}</span>
-                </div>
-              ))}
-              {data.breakdown.filter(item => item.type === 'asset').length > maxVisibleItems && (
-                <button
-                  onClick={() => setShowAllAssets(!showAllAssets)}
-                  className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
-                >
-                  {showAllAssets ? (
-                    <><ChevronUp className="w-3 h-3" /> Show Less</>
-                  ) : (
-                    <><ChevronDown className="w-3 h-3" /> Show {data.breakdown.filter(item => item.type === 'asset').length - maxVisibleItems} More</>
-                  )}
-                </button>
-              )}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Assets Section - Left Column */}
+          {data.breakdown.filter(item => item.type === 'asset').length > 0 && (
+            <div>
+              <h4 className="text-xs text-green-400 font-semibold mb-2">💰 Assets</h4>
+              <div className="space-y-2">
+                {(showAllAssets 
+                  ? data.breakdown.filter(item => item.type === 'asset')
+                  : data.breakdown.filter(item => item.type === 'asset').slice(0, maxVisibleItems)
+                ).map(item => (
+                  <div key={item.id} className="flex justify-between items-center text-xs">
+                    <span className="text-white font-medium truncate mr-1">{item.name}</span>
+                    <span className="text-green-400 font-semibold whitespace-nowrap">${item.value.toLocaleString()}</span>
+                  </div>
+                ))}
+                {data.breakdown.filter(item => item.type === 'asset').length > maxVisibleItems && (
+                  <button
+                    onClick={() => setShowAllAssets(!showAllAssets)}
+                    className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+                  >
+                    {showAllAssets ? (
+                      <><ChevronUp className="w-3 h-3" /> Less</>
+                    ) : (
+                      <><ChevronDown className="w-3 h-3" /> +{data.breakdown.filter(item => item.type === 'asset').length - maxVisibleItems}</>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-        
-        {/* Liabilities Section */}
-        {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
-          <div>
-            <h4 className="text-xs text-red-400 font-semibold mb-2">💳 Liabilities</h4>
-            <div className="space-y-2">
-              {(showAllLiabilities 
-                ? data.breakdown.filter(item => item.type === 'liability')
-                : data.breakdown.filter(item => item.type === 'liability').slice(0, maxVisibleItems)
-              ).map(item => (
-                <div key={item.id} className="flex justify-between items-center text-xs sm:text-sm">
-                  <span className="text-white font-medium">{item.name}</span>
-                  <span className="text-red-400 font-semibold">-${Math.abs(item.value).toLocaleString()}</span>
-                </div>
-              ))}
-              {data.breakdown.filter(item => item.type === 'liability').length > maxVisibleItems && (
-                <button
-                  onClick={() => setShowAllLiabilities(!showAllLiabilities)}
-                  className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
-                >
-                  {showAllLiabilities ? (
-                    <><ChevronUp className="w-3 h-3" /> Show Less</>
-                  ) : (
-                    <><ChevronDown className="w-3 h-3" /> Show {data.breakdown.filter(item => item.type === 'liability').length - maxVisibleItems} More</>
-                  )}
-                </button>
-              )}
+          )}
+          
+          {/* Liabilities Section - Right Column */}
+          {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
+            <div>
+              <h4 className="text-xs text-red-400 font-semibold mb-2">💳 Liabilities</h4>
+              <div className="space-y-2">
+                {(showAllLiabilities 
+                  ? data.breakdown.filter(item => item.type === 'liability')
+                  : data.breakdown.filter(item => item.type === 'liability').slice(0, maxVisibleItems)
+                ).map(item => (
+                  <div key={item.id} className="flex justify-between items-center text-xs">
+                    <span className="text-white font-medium truncate mr-1">{item.name}</span>
+                    <span className="text-red-400 font-semibold whitespace-nowrap">-${Math.abs(item.value).toLocaleString()}</span>
+                  </div>
+                ))}
+                {data.breakdown.filter(item => item.type === 'liability').length > maxVisibleItems && (
+                  <button
+                    onClick={() => setShowAllLiabilities(!showAllLiabilities)}
+                    className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+                  >
+                    {showAllLiabilities ? (
+                      <><ChevronUp className="w-3 h-3" /> Less</>
+                    ) : (
+                      <><ChevronDown className="w-3 h-3" /> +{data.breakdown.filter(item => item.type === 'liability').length - maxVisibleItems}</>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     )}
   </Card>
