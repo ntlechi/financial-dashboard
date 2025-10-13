@@ -4549,7 +4549,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 type="number"
                 placeholder="Amount"
                 value={newItem.amount === 0 ? '0' : (newItem.amount || '')}
-                onChange={(e) => setNewItem({...newItem, amount: e.target.value === '' ? 0 : e.target.value})}
+                onChange={(e) => setNewItem({...newItem, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
               />
               
@@ -4634,7 +4634,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 type="number"
                 placeholder="Amount"
                 value={editingItem.amount === 0 ? '0' : (editingItem.amount || '')}
-                onChange={(e) => setEditingItem({...editingItem, amount: e.target.value === '' ? 0 : e.target.value})}
+                onChange={(e) => setEditingItem({...editingItem, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
@@ -6227,7 +6227,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       type="number"
                       placeholder="e.g., 10"
                       value={newHolding.shares === 0 ? '0' : (newHolding.shares || '')}
-                      onChange={(e) => setNewHolding({...newHolding, shares: e.target.value === '' ? 0 : e.target.value})}
+                      onChange={(e) => setNewHolding({...newHolding, shares: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -6245,7 +6245,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       type="number"
                       placeholder="e.g., 150.00"
                       value={newHolding.avgCost === 0 ? '0' : (newHolding.avgCost || '')}
-                      onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value === '' ? 0 : e.target.value})}
+                      onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -6265,7 +6265,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       type="number"
                       placeholder="e.g., 175.50"
                       value={newHolding.currentPrice === 0 ? '0' : (newHolding.currentPrice || '')}
-                      onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value === '' ? 0 : e.target.value})}
+                      onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -6283,7 +6283,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       type="number"
                       placeholder="e.g., 2.5"
                       value={newHolding.dividendYield === 0 ? '0' : (newHolding.dividendYield || '')}
-                      onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value === '' ? 0 : e.target.value})}
+                      onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -12898,7 +12898,7 @@ function App() {
                       <input
                         type="number"
                         value={tempCardData.targetAmount || ''}
-                        onChange={(e) => setTempCardData({...tempCardData, targetAmount: Number(e.target.value)})}
+                        onChange={(e) => setTempCardData({...tempCardData, targetAmount: e.target.value})}
                         className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
@@ -12907,7 +12907,7 @@ function App() {
                       <input
                         type="number"
                         value={tempCardData.currentInvestments || ''}
-                        onChange={(e) => setTempCardData({...tempCardData, currentInvestments: Number(e.target.value)})}
+                        onChange={(e) => setTempCardData({...tempCardData, currentInvestments: e.target.value})}
                         className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
@@ -12918,7 +12918,7 @@ function App() {
                       <input
                         type="number"
                         value={tempCardData.monthlyContribution || ''}
-                        onChange={(e) => setTempCardData({...tempCardData, monthlyContribution: Number(e.target.value)})}
+                        onChange={(e) => setTempCardData({...tempCardData, monthlyContribution: e.target.value})}
                         className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
@@ -13002,8 +13002,8 @@ function App() {
                                 value={account.balance || ''}
                                 onChange={(e) => {
                                   const updatedAccounts = [...tempCardData.accounts];
-                                  updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  const newTotal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
+                                  updatedAccounts[index] = {...account, balance: e.target.value};
+                                  const newTotal = updatedAccounts.reduce((sum, acc) => sum + Number(acc.balance || 0), 0);
                                   setTempCardData({...tempCardData, accounts: updatedAccounts, total: newTotal});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
@@ -13104,9 +13104,9 @@ function App() {
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
-                                    const currentBalance = e.target.value === '' ? 0 : Number(e.target.value);
-                                    const initialDebt = account.initialDebt || 0;
-                                    const amountPaid = Math.max(0, initialDebt - currentBalance);
+                                    const currentBalance = e.target.value;
+                                    const initialDebt = Number(account.initialDebt || 0);
+                                    const amountPaid = Math.max(0, initialDebt - Number(currentBalance || 0));
                                     updatedAccounts[index] = {...account, balance: currentBalance, amountPaid};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                   
@@ -13149,7 +13149,7 @@ function App() {
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
+                                  updatedAccounts[index] = {...account, interestRate: e.target.value};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -13180,9 +13180,9 @@ function App() {
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
                                     const updatedAccounts = [...(currentData.accounts || [])];
-                                    const initialDebt = e.target.value === '' ? 0 : Number(e.target.value);
-                                    const currentBalance = account.balance || 0;
-                                    const amountPaid = Math.max(0, initialDebt - currentBalance);
+                                    const initialDebt = e.target.value;
+                                    const currentBalance = Number(account.balance || 0);
+                                    const amountPaid = Math.max(0, Number(initialDebt || 0) - currentBalance);
                                     updatedAccounts[index] = {...account, initialDebt, amountPaid};
                                     setTempCardData({...currentData, accounts: updatedAccounts});
                                   }}
@@ -13205,7 +13205,7 @@ function App() {
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
-                                  updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
+                                  updatedAccounts[index] = {...account, minPayment: e.target.value};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
@@ -13476,7 +13476,7 @@ function App() {
                     <input
                       type="number"
                       value={tempCardData.target || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, target: Number(e.target.value)})}
+                      onChange={(e) => setTempCardData({...tempCardData, target: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
                       placeholder="e.g., 50"
                       min="0"
@@ -13503,7 +13503,7 @@ function App() {
                     <input
                       type="number"
                       value={tempCardData.total || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, total: e.target.value === '' ? 0 : Number(e.target.value)})}
+                      onChange={(e) => setTempCardData({...tempCardData, total: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
                     />
                   </div>
@@ -13512,7 +13512,7 @@ function App() {
                     <input
                       type="number"
                       value={tempCardData.goal || ''}
-                      onChange={(e) => setTempCardData({...tempCardData, goal: Number(e.target.value)})}
+                      onChange={(e) => setTempCardData({...tempCardData, goal: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
                     />
                   </div>
@@ -13538,7 +13538,7 @@ function App() {
                           min="300"
                           max="850"
                           value={tempCardData.newScore || ''}
-                          onChange={(e) => setTempCardData({...tempCardData, newScore: Number(e.target.value)})}
+                          onChange={(e) => setTempCardData({...tempCardData, newScore: e.target.value})}
                           className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
                           placeholder="750"
                         />
@@ -13722,12 +13722,12 @@ function App() {
                                 value={Math.abs(item.value) || ''}
                                 onChange={(e) => {
                                   const updatedBreakdown = [...tempCardData.breakdown];
-                                  const value = e.target.value === '' ? 0 : Number(e.target.value);
+                                  const value = e.target.value;
                                   updatedBreakdown[index] = {
                                     ...item, 
-                                    value: item.type === 'liability' ? -value : value
+                                    value: item.type === 'liability' ? -Number(value || 0) : Number(value || 0)
                                   };
-                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
+                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + Number(b.value || 0), 0);
                                   setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
@@ -13881,7 +13881,7 @@ function App() {
                                   value={account.contributed === 0 ? '0' : (account.contributed || '')}
                                   onChange={(e) => {
                                     const updated = [...tempCardData.accounts];
-                                    updated[index] = { ...updated[index], contributed: e.target.value === '' ? 0 : Number(e.target.value) };
+                                    updated[index] = { ...updated[index], contributed: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
@@ -13895,7 +13895,7 @@ function App() {
                                   value={account.limit === 0 ? '0' : (account.limit || '')}
                                   onChange={(e) => {
                                     const updated = [...tempCardData.accounts];
-                                    updated[index] = { ...updated[index], limit: e.target.value === '' ? 0 : Number(e.target.value) };
+                                    updated[index] = { ...updated[index], limit: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
                                   className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
@@ -14032,7 +14032,7 @@ function App() {
                                 value={goal.targetAmount === 0 ? '0' : (goal.targetAmount || '')}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
-                                  updatedGoals[index] = {...goal, targetAmount: e.target.value === '' ? 0 : Number(e.target.value)};
+                                  updatedGoals[index] = {...goal, targetAmount: e.target.value};
                                   setTempCardData(updatedGoals);
                                 }}
                                 className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
@@ -14047,7 +14047,7 @@ function App() {
                                 value={goal.currentAmount === 0 ? '0' : (goal.currentAmount || '')}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
-                                  updatedGoals[index] = {...goal, currentAmount: e.target.value === '' ? 0 : Number(e.target.value)};
+                                  updatedGoals[index] = {...goal, currentAmount: e.target.value};
                                   setTempCardData(updatedGoals);
                                 }}
                                 className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
