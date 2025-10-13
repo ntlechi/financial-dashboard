@@ -10311,6 +10311,18 @@ function App() {
   const [showMissionCompleteModal, setShowMissionCompleteModal] = useState(false);
   const [completedTrip, setCompletedTrip] = useState(null);
 
+  // 💫 MOMENTS SYSTEM
+  const [showMomentModal, setShowMomentModal] = useState(false);
+  const [editingMoment, setEditingMoment] = useState(null);
+  const [newMoment, setNewMoment] = useState({
+    title: '',
+    story: '',
+    location: '',
+    date: new Date().toISOString().split('T')[0],
+    isAchievement: false,
+    photos: []
+  });
+
   // 🎯 PRICING PHASE STATE
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
@@ -10334,13 +10346,126 @@ function App() {
     }
   }, []);
 
-  // 💫 MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS - Creating memories from financial milestones
   const handleEditMoment = (moment) => {
-    console.log('Edit moment:', moment);
+    if (moment) {
+      // Edit existing moment
+      setEditingMoment(moment);
+      setNewMoment({
+        title: moment.title || '',
+        story: moment.story || '',
+        location: moment.location || '',
+        date: moment.timestamp ? new Date(moment.timestamp).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        isAchievement: moment.isAchievement || false,
+        photos: moment.photos || []
+      });
+    } else {
+      // Create new moment
+      setEditingMoment(null);
+      setNewMoment({
+        title: '',
+        story: '',
+        location: '',
+        date: new Date().toISOString().split('T')[0],
+        isAchievement: false,
+        photos: []
+      });
+    }
+    setShowMomentModal(true);
   };
 
   const handleShareMoment = (moment) => {
-    console.log('Share moment:', moment);
+    // Create shareable text
+    const shareText = `${moment.title}\n\n${moment.story}\n\n📍 ${moment.location || 'My Journey'}\n📅 ${new Date(moment.timestamp).toLocaleDateString()}\n\n#FinancialFreedom #TheCompass`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: moment.title,
+        text: shareText
+      }).catch((error) => console.log('Error sharing:', error));
+    } else {
+      // Fallback - copy to clipboard
+      navigator.clipboard.writeText(shareText).then(() => {
+        showNotification('📋 Moment copied to clipboard!', 'success');
+      });
+    }
+  };
+
+  const handleSaveMoment = async () => {
+    if (!newMoment.title.trim() || !newMoment.story.trim()) {
+      showNotification('Please add a title and story', 'error');
+      return;
+    }
+
+    const moment = {
+      id: editingMoment ? editingMoment.id : Date.now(),
+      ...newMoment,
+      timestamp: new Date(newMoment.date).toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    let updatedMoments;
+    if (editingMoment) {
+      // Update existing moment
+      updatedMoments = (data.moments || []).map(m => m.id === editingMoment.id ? moment : m);
+    } else {
+      // Add new moment
+      updatedMoments = [moment, ...(data.moments || [])];
+    }
+
+    const updatedData = {
+      ...data,
+      moments: updatedMoments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      setShowMomentModal(false);
+      setEditingMoment(null);
+      setNewMoment({
+        title: '',
+        story: '',
+        location: '',
+        date: new Date().toISOString().split('T')[0],
+        isAchievement: false,
+        photos: []
+      });
+      showNotification(editingMoment ? '✨ Moment updated!' : '💫 Moment created!', 'success');
+      
+      // Award XP for creating moment
+      if (!editingMoment) {
+        try {
+          const result = await awardXp(db, userId, 10);
+          if (result?.rankUp && result.newRank) {
+            const prev = getRankFromXp((result.totalXp || 0) - 10);
+            setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 10, action: 'moment created' });
+            setShowRankUpModal(true);
+          }
+        } catch (e) {
+          console.warn('XP award failed (moment)', e);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving moment:', error);
+      showNotification('Failed to save moment', 'error');
+    }
+  };
+
+  const handleDeleteMoment = async (momentId) => {
+    if (!window.confirm('Delete this moment? This cannot be undone.')) return;
+
+    const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
+    const updatedData = { ...data, moments: updatedMoments };
+
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      setData(updatedData);
+      showNotification('🗑️ Moment deleted', 'success');
+    } catch (error) {
+      console.error('Error deleting moment:', error);
+      showNotification('Failed to delete moment', 'error');
+    }
   };
 
   // 📧 FEEDBACK SUBMISSION HANDLER
@@ -12791,7 +12916,7 @@ function App() {
 
           {activeTab === 'moments' && (
             <FinancialErrorBoundary componentName="Moments Feed">
-              <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} />
+              <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} onDeleteMoment={handleDeleteMoment} />
             </FinancialErrorBoundary>
           )}
 
@@ -12867,6 +12992,130 @@ function App() {
             onClose={closeQuickJournal}
             onSave={saveQuickJournal}
           />
+
+          {/* 💫 Moments Modal - Add/Edit Moments */}
+          {showMomentModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-gray-800 rounded-lg w-full max-w-2xl border border-purple-500/30 shadow-xl">
+                <div className="flex justify-between items-center p-6 border-b border-gray-700">
+                  <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <Award className="w-6 h-6 text-purple-400" />
+                    {editingMoment ? 'Edit Moment' : 'Create New Moment'}
+                  </h3>
+                  <button
+                    onClick={() => setShowMomentModal(false)}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-300 mb-2">
+                      Title *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., First Debt Payment, Emergency Fund Milestone..."
+                      value={newMoment.title}
+                      onChange={(e) => setNewMoment({...newMoment, title: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      autoFocus
+                    />
+                  </div>
+
+                  {/* Story */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-300 mb-2">
+                      Your Story *
+                    </label>
+                    <textarea
+                      placeholder="Share the story behind this moment... How did it feel? What did you learn? Why is it meaningful?"
+                      value={newMoment.story}
+                      onChange={(e) => setNewMoment({...newMoment, story: e.target.value})}
+                      rows={5}
+                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none resize-none"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">
+                      💡 Tip: Be specific! Future you will love reading this.
+                    </p>
+                  </div>
+
+                  {/* Location & Date */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-300 mb-2">
+                        Location (optional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Home, Coffee Shop, Bank..."
+                        value={newMoment.location}
+                        onChange={(e) => setNewMoment({...newMoment, location: e.target.value})}
+                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-300 mb-2">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        value={newMoment.date}
+                        onChange={(e) => setNewMoment({...newMoment, date: e.target.value})}
+                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Achievement Toggle */}
+                  <div className="flex items-center gap-3 bg-purple-900/20 border border-purple-600/30 rounded-lg p-4">
+                    <input
+                      type="checkbox"
+                      id="isAchievement"
+                      checked={newMoment.isAchievement}
+                      onChange={(e) => setNewMoment({...newMoment, isAchievement: e.target.checked})}
+                      className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500"
+                    />
+                    <label htmlFor="isAchievement" className="text-sm text-purple-200 font-medium cursor-pointer">
+                      🏆 Mark as Achievement (shows special badge)
+                    </label>
+                  </div>
+
+                  {/* Info Box */}
+                  <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4">
+                    <p className="text-sm text-purple-200">
+                      <strong>💫 What are Moments?</strong>
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      Moments capture the emotional side of your financial journey. They're not just numbers - 
+                      they're the stories of your growth, your wins, and your lessons learned. 
+                      Years from now, you'll look back and remember not just what you achieved, but how it felt.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-6 border-t border-gray-700 flex justify-end gap-3">
+                  <button
+                    onClick={() => setShowMomentModal(false)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveMoment}
+                    disabled={!newMoment.title.trim() || !newMoment.story.trim()}
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    <Award className="w-5 h-5" />
+                    {editingMoment ? 'Update Moment' : 'Create Moment'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
 

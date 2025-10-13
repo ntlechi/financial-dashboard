@@ -2,9 +2,9 @@
 // 💫 MOMENTS FEED - Emotional Timeline Component
 
 import React, { useState, useEffect } from 'react';
-import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus } from 'lucide-react';
+import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2 } from 'lucide-react';
 
-const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment }) => {
+const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
   const [filter, setFilter] = useState('all'); // 'all', 'travel', 'achievements', 'expenses'
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -164,8 +164,29 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment }) => {
                 </div>
                 <div className="flex gap-2">
                   {getMomentSourceBadge(moment)}
-                  <button onClick={() => onEditMoment(moment)} className="text-gray-400 hover:text-purple-400"><Edit className="w-4 h-4"/></button>
-                  <button onClick={() => onShareMoment(moment)} className="text-gray-400 hover:text-purple-400"><Share2 className="w-4 h-4"/></button>
+                  <button 
+                    onClick={() => onEditMoment(moment)} 
+                    className="text-gray-400 hover:text-purple-400 p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    title="Edit moment"
+                  >
+                    <Edit className="w-4 h-4"/>
+                  </button>
+                  <button 
+                    onClick={() => onShareMoment(moment)} 
+                    className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    title="Share moment"
+                  >
+                    <Share2 className="w-4 h-4"/>
+                  </button>
+                  {onDeleteMoment && (
+                    <button 
+                      onClick={() => onDeleteMoment(moment.id)} 
+                      className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      title="Delete moment"
+                    >
+                      <Trash2 className="w-4 h-4"/>
+                    </button>
+                  )}
                 </div>
               </div>
 
