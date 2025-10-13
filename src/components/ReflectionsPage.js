@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Download, Lock, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X } from 'lucide-react';
+import { BookOpen, Download, Lock, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X, Copy, Shield, ShieldOff } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -7,12 +7,19 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
   const [expandedEntries, setExpandedEntries] = useState(new Set());
   const [allJournalEntries, setAllJournalEntries] = useState([]);
   
+  // 🔒 Stealth Mode State (Privacy Protection)
+  const [stealthMode, setStealthMode] = useState(() => {
+    const saved = localStorage.getItem('stealthMode');
+    return saved === 'enabled';
+  });
+  
   // Quick Notes State
   const [quickNotes, setQuickNotes] = useState([]);
   const [showAddNote, setShowAddNote] = useState(false);
   const [newNote, setNewNote] = useState('');
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [editingText, setEditingText] = useState('');
+  const [notification, setNotification] = useState(null);
 
   // Collect all journal entries from all trips and quick notes
   useEffect(() => {
@@ -50,6 +57,11 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
     // Sort by timestamp (newest first)
     entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     setAllJournalEntries(entries);
+    
+    // Load persisted field notes
+    if (data?.fieldNotes) {
+      setQuickNotes(data.fieldNotes);
+    }
   }, [data]);
 
   // Toggle entry expansion
@@ -80,6 +92,29 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
     return text.substring(0, maxLength) + '...';
   };
 
+  // 🔒 Toggle Stealth Mode
+  const toggleStealthMode = () => {
+    const newMode = !stealthMode;
+    setStealthMode(newMode);
+    localStorage.setItem('stealthMode', newMode ? 'enabled' : 'disabled');
+    showNotification(newMode ? '🔒 Privacy mode enabled' : '👁️ Privacy mode disabled', 'success');
+  };
+
+  // Show notification
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  // Copy to clipboard
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      showNotification('📋 Copied to clipboard!', 'success');
+    }).catch(() => {
+      showNotification('Failed to copy', 'error');
+    });
+  };
+
   // Quick Notes Handlers
   const addQuickNote = () => {
     if (!newNote.trim()) return;
@@ -101,18 +136,30 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
     setEditingText(note.text);
   };
 
-  const saveEditedNote = () => {
-    if (!editingText.trim()) return;
+  const saveEditedNote = async () => {
+    if (!editingText.trim() || !userId) return;
     
-    setQuickNotes(prev => 
-      prev.map(note => 
-        note.id === editingNoteId 
-          ? { ...note, text: editingText.trim(), lastEdited: new Date().toLocaleString() }
-          : note
-      )
+    const updatedNotes = (data.fieldNotes || []).map(note => 
+      note.id === editingNoteId 
+        ? { ...note, text: editingText.trim(), lastEdited: new Date().toLocaleString() }
+        : note
     );
-    setEditingNoteId(null);
-    setEditingText('');
+    
+    const updatedData = {
+      ...data,
+      fieldNotes: updatedNotes
+    };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      onUpdateData(updatedData);
+      setEditingNoteId(null);
+      setEditingText('');
+      showNotification('✏️ Note updated!', 'success');
+    } catch (error) {
+      console.error('Error updating note:', error);
+      showNotification('Failed to update note', 'error');
+    }
   };
 
   const cancelEditing = () => {
@@ -120,8 +167,23 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
     setEditingText('');
   };
 
-  const deleteNote = (noteId) => {
-    setQuickNotes(prev => prev.filter(note => note.id !== noteId));
+  const deleteNote = async (noteId) => {
+    if (!userId || !window.confirm('Delete this note?')) return;
+    
+    const updatedNotes = (data.fieldNotes || []).filter(note => note.id !== noteId);
+    const updatedData = {
+      ...data,
+      fieldNotes: updatedNotes
+    };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      onUpdateData(updatedData);
+      showNotification('🗑️ Note deleted', 'success');
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      showNotification('Failed to delete note', 'error');
+    }
   };
 
   // Quick Journal Entry Handlers (for editing/deleting in Reflections)
@@ -163,11 +225,65 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
     }
   };
 
+  // Export Field Notes to PDF
+  const exportFieldNotesToPDF = () => {
+    const content = [];
+    
+    // Add all journal entries
+    allJournalEntries.forEach(entry => {
+      content.push(`\n${'='.repeat(60)}\n`);
+      content.push(`${entry.tripName}\n`);
+      content.push(`${formatDate(entry.timestamp)}\n`);
+      if (entry.tripCountries.length > 0) {
+        content.push(`📍 ${entry.tripCountries.join(', ')}\n`);
+      }
+      if (entry.prompt) {
+        content.push(`\n"${entry.prompt}"\n`);
+      }
+      content.push(`\n${entry.text}\n`);
+    });
+    
+    // Add quick notes
+    if (quickNotes.length > 0) {
+      content.push(`\n${'='.repeat(60)}\n`);
+      content.push(`QUICK NOTES & IDEAS\n`);
+      content.push(`${'='.repeat(60)}\n\n`);
+      quickNotes.forEach(note => {
+        content.push(`📝 ${formatDate(note.timestamp)}\n`);
+        content.push(`${note.text}\n\n`);
+      });
+    }
+    
+    const fullContent = `FIELD NOTES ARCHIVE\n${'='.repeat(60)}\n` + content.join('');
+    
+    // Create a blob and download
+    const blob = new Blob([fullContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `field-notes-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showNotification('📥 Field Notes exported!', 'success');
+  };
+
   // Check if user has Operator access
   const hasOperatorAccess = userPlan === 'OPERATOR' || userPlan === 'FOUNDER\'S_CIRCLE';
 
   return (
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+    <div className={`col-span-1 md:col-span-6 lg:col-span-6 space-y-6 ${stealthMode ? 'stealth-active' : ''}`}>
+      {/* Notification */}
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg ${
+          notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+        } text-white font-semibold animate-fade-in`}>
+          {notification.message}
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-6 border border-slate-500/40">
         <div className="flex items-center justify-between">
@@ -181,33 +297,40 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
             </p>
           </div>
           
-          {/* Export PDF Button */}
-          <div className="flex flex-col items-end">
+          {/* Stealth Mode & Export Buttons */}
+          <div className="flex items-center gap-3">
+            {/* 🔒 Stealth Mode Toggle */}
             <button
-              onClick={hasOperatorAccess ? onExportPDF : () => {}} // Will trigger upgrade modal if not Operator
-              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                hasOperatorAccess
-                  ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-lg hover:shadow-xl'
-                  : 'bg-gray-600 text-gray-300 cursor-not-allowed relative'
+              onClick={toggleStealthMode}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                stealthMode
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
               }`}
+              title={stealthMode ? 'Disable privacy mode' : 'Enable privacy mode'}
             >
-              {hasOperatorAccess ? (
+              {stealthMode ? (
                 <>
-                  <Download className="w-5 h-5" />
-                  Export Field Notes
+                  <Shield className="w-5 h-5" />
+                  Privacy ON
                 </>
               ) : (
                 <>
-                  <Lock className="w-5 h-5" />
-                  Export Field Notes
+                  <ShieldOff className="w-5 h-5" />
+                  Privacy OFF
                 </>
               )}
             </button>
-            {!hasOperatorAccess && (
-              <p className="text-xs text-gray-400 mt-2 text-right">
-                Operator feature
-              </p>
-            )}
+
+            {/* Export PDF Button */}
+            <button
+              onClick={() => exportFieldNotesToPDF()}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+              title="Export all field notes to PDF"
+            >
+              <Download className="w-5 h-5" />
+              Export PDF
+            </button>
           </div>
         </div>
       </div>
@@ -309,12 +432,21 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
                 ) : (
                   // View Mode
                   <div>
-                    <p className="text-gray-200 leading-relaxed mb-3">{note.text}</p>
+                    <p className={`text-gray-200 leading-relaxed mb-3 ${stealthMode ? 'stealth-target' : ''}`}>
+                      {note.text}
+                    </p>
                     <div className="flex justify-between items-center">
                       <div className="text-xs text-gray-400">
                         {note.lastEdited ? `Edited ${note.lastEdited}` : `Created ${note.createdAt}`}
                       </div>
                       <div className="flex gap-2">
+                        <button
+                          onClick={() => copyToClipboard(note.text)}
+                          className="text-green-400 hover:text-green-300 p-1 hover:bg-green-900/20 rounded transition-colors"
+                          title="Copy to clipboard"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => startEditingNote(note)}
                           className="text-blue-400 hover:text-blue-300 p-1 hover:bg-blue-900/20 rounded transition-colors"
