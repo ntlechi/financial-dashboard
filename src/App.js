@@ -12577,6 +12577,12 @@ function App() {
             </FinancialErrorBoundary>
           )}
 
+          {activeTab === 'moments' && (
+            <FinancialErrorBoundary componentName="Moments Feed">
+              <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} />
+            </FinancialErrorBoundary>
+          )}
+
           {activeTab === 'reflections' && (
             currentUserPlan === SUBSCRIPTION_TIERS.OPERATOR || currentUserPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? (
               <FinancialErrorBoundary componentName="Field Notes Archive">
