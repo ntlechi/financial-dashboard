@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -809,7 +809,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   const resilience = getResilienceStatus(progressPercentage);
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40 min-h-[420px] flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
@@ -1796,8 +1796,13 @@ const IncomeCard = ({ data, viewMode }) => {
     );
   }
 
+  const [showAllSources, setShowAllSources] = useState(false);
+  const maxVisibleItems = 3;
+  const hasMore = data.sources.length > maxVisibleItems;
+  const displayedSources = showAllSources ? data.sources : data.sources.slice(0, maxVisibleItems);
+
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40 min-h-[420px] flex flex-col">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
       {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
@@ -1805,20 +1810,32 @@ const IncomeCard = ({ data, viewMode }) => {
     <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
-    <div className="mt-4 flex flex-col items-center">
+    <div className="mt-4 flex flex-col items-center flex-1">
       <svg ref={incomeChartRef}></svg>
       
       {/* Legend */}
-      <div className="mt-3 space-y-1">
-        {data.sources.map((source, idx) => {
+      <div className="mt-3 space-y-1 w-full">
+        {displayedSources.map((source, idx) => {
           const vibrantColors = ['#FBBF24', '#38BDF8', '#F43F5E', '#8B5CF6', '#14B8A6', '#84CC16'];
           return (
             <div key={source.id} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
               <span className="text-xs text-gray-300">{source.name}: ${source.amount.toLocaleString()}</span>
             </div>
           );
         })}
+        {hasMore && (
+          <button
+            onClick={() => setShowAllSources(!showAllSources)}
+            className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+          >
+            {showAllSources ? (
+              <><ChevronUp className="w-3 h-3" /> Show Less</>
+            ) : (
+              <><ChevronDown className="w-3 h-3" /> Show {data.sources.length - maxVisibleItems} More</>
+            )}
+          </button>
+        )}
       </div>
     </div>
   </Card>
@@ -1902,8 +1919,13 @@ const ExpensesCard = ({ data, viewMode }) => {
     );
   }
 
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const maxVisibleItems = 3;
+  const hasMore = data.categories.length > maxVisibleItems;
+  const displayedCategories = showAllCategories ? data.categories : data.categories.slice(0, maxVisibleItems);
+
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40 min-h-[420px] flex flex-col">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
       {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
@@ -1911,20 +1933,32 @@ const ExpensesCard = ({ data, viewMode }) => {
     <p className="text-5xl font-extrabold text-white">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
-    <div className="mt-4 flex flex-col items-center">
+    <div className="mt-4 flex flex-col items-center flex-1">
       <svg ref={expensesChartRef}></svg>
       
       {/* Legend */}
-      <div className="mt-3 space-y-1">
-        {data.categories.map((cat, idx) => {
+      <div className="mt-3 space-y-1 w-full">
+        {displayedCategories.map((cat, idx) => {
           const vibrantColors = ['#FBBF24', '#38BDF8', '#F43F5E', '#8B5CF6', '#14B8A6', '#84CC16'];
           return (
             <div key={cat.id} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
               <span className="text-xs text-gray-300">{cat.name}: ${cat.amount.toLocaleString()}</span>
             </div>
           );
         })}
+        {hasMore && (
+          <button
+            onClick={() => setShowAllCategories(!showAllCategories)}
+            className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+          >
+            {showAllCategories ? (
+              <><ChevronUp className="w-3 h-3" /> Show Less</>
+            ) : (
+              <><ChevronDown className="w-3 h-3" /> Show {data.categories.length - maxVisibleItems} More</>
+            )}
+          </button>
+        )}
       </div>
     </div>
   </Card>
@@ -2125,7 +2159,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const monthlyExpenses = expenses?.total || 0;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40 min-h-[420px] flex flex-col">
       <div className="flex justify-between items-start mb-2">
         <h2 className="text-xl font-bold text-white flex items-center">
           <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
