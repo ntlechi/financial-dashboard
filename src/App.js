@@ -1268,6 +1268,9 @@ const GoalsCard = ({ data, onEdit }) => {
 // 🎯 COMMAND CENTER: Net Worth Card with Donut Chart
 const NetWorthCard = ({ data, onEdit }) => {
   const netWorthChartRef = useRef(null);
+  const [showAllAssets, setShowAllAssets] = useState(false);
+  const [showAllLiabilities, setShowAllLiabilities] = useState(false);
+  const maxVisibleItems = 3;
   
   // Calculate totals for donut chart (before any returns)
   const totalAssets = data?.breakdown?.filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0) || 0;
@@ -1387,6 +1390,73 @@ const NetWorthCard = ({ data, onEdit }) => {
         )}
       </div>
     </div>
+    
+    {/* 📋 NET WORTH BREAKDOWN */}
+    {data.breakdown && data.breakdown.length > 0 && (
+      <div className="border-t border-sky-800/50 pt-4 mt-4">
+        <h3 className="text-xs sm:text-sm font-semibold text-sky-300 uppercase tracking-wide mb-3">Breakdown</h3>
+        
+        {/* Assets Section */}
+        {data.breakdown.filter(item => item.type === 'asset').length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-xs text-green-400 font-semibold mb-2">💰 Assets</h4>
+            <div className="space-y-2">
+              {(showAllAssets 
+                ? data.breakdown.filter(item => item.type === 'asset')
+                : data.breakdown.filter(item => item.type === 'asset').slice(0, maxVisibleItems)
+              ).map(item => (
+                <div key={item.id} className="flex justify-between items-center text-xs sm:text-sm">
+                  <span className="text-white font-medium">{item.name}</span>
+                  <span className="text-green-400 font-semibold">${item.value.toLocaleString()}</span>
+                </div>
+              ))}
+              {data.breakdown.filter(item => item.type === 'asset').length > maxVisibleItems && (
+                <button
+                  onClick={() => setShowAllAssets(!showAllAssets)}
+                  className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+                >
+                  {showAllAssets ? (
+                    <><ChevronUp className="w-3 h-3" /> Show Less</>
+                  ) : (
+                    <><ChevronDown className="w-3 h-3" /> Show {data.breakdown.filter(item => item.type === 'asset').length - maxVisibleItems} More</>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        
+        {/* Liabilities Section */}
+        {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
+          <div>
+            <h4 className="text-xs text-red-400 font-semibold mb-2">💳 Liabilities</h4>
+            <div className="space-y-2">
+              {(showAllLiabilities 
+                ? data.breakdown.filter(item => item.type === 'liability')
+                : data.breakdown.filter(item => item.type === 'liability').slice(0, maxVisibleItems)
+              ).map(item => (
+                <div key={item.id} className="flex justify-between items-center text-xs sm:text-sm">
+                  <span className="text-white font-medium">{item.name}</span>
+                  <span className="text-red-400 font-semibold">-${Math.abs(item.value).toLocaleString()}</span>
+                </div>
+              ))}
+              {data.breakdown.filter(item => item.type === 'liability').length > maxVisibleItems && (
+                <button
+                  onClick={() => setShowAllLiabilities(!showAllLiabilities)}
+                  className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+                >
+                  {showAllLiabilities ? (
+                    <><ChevronUp className="w-3 h-3" /> Show Less</>
+                  ) : (
+                    <><ChevronDown className="w-3 h-3" /> Show {data.breakdown.filter(item => item.type === 'liability').length - maxVisibleItems} More</>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    )}
   </Card>
   );
 };
