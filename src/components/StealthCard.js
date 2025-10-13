@@ -74,7 +74,7 @@ const StealthCard = ({
         <button
           type="button"
           onClick={() => setLocalStealth(!localStealth)}
-          className="absolute top-2 left-2 z-20 bg-gray-700/70 hover:bg-gray-600 text-white p-1 rounded-full border border-gray-600"
+          className="absolute top-2 right-10 z-20 bg-gray-700/70 hover:bg-gray-600 text-white p-1 rounded-full border border-gray-600"
           title={localStealth ? 'Disable card stealth' : 'Enable card stealth'}
         >
           {localStealth ? <Shield className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
