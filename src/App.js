@@ -12456,20 +12456,25 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
               {/* ═══════════════════════════════════════════════════════ */}
-              
+              <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Financial Freedom Goal - CLIMBER+ (Left) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <FinancialErrorBoundary componentName="Financial Freedom Goal">
-                  <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
-                </FinancialErrorBoundary>
-              ) : (
-                <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              <StealthCard>
+                {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                  <FinancialErrorBoundary componentName="Financial Freedom Goal">
+                    <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+                  </FinancialErrorBoundary>
+                ) : (
+                  <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                )}
+              </StealthCard>
               
               {/* Savings Rate - FREE+ (Right) */}
-              <FinancialErrorBoundary componentName="Savings Rate Tracker">
-                <SavingsRateCard data={displayData?.savingsRate} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
+              <StealthCard>
+                <FinancialErrorBoundary componentName="Savings Rate Tracker">
+                  <SavingsRateCard data={displayData?.savingsRate} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              </StealthCard>
+              </div>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* FULL-WIDTH CARDS: Detailed Intelligence */}
@@ -12477,7 +12482,7 @@ function App() {
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-              <div className="col-span-1 md:col-span-6 lg:col-span-6">
+              <div className="col-span-1 md:col-span-2 lg:col-span-2">
                 <DebtPayoffProgressTracker 
                   data={displayData?.debt} 
                   onEdit={openCardEditor}
@@ -12486,43 +12491,43 @@ function App() {
                 />
               </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Debt Payoff Calculator" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
               {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <CreditScoreCard data={displayData?.creditScore} onEdit={openCardEditor} />
                 </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
               {/* Financial Goals - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
                 </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
               {/* Retirement Accounts - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <RegisteredAccountsCard 
                     data={displayData?.registeredAccounts} 
                     onEdit={openCardEditor} 
                   />
                 </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
