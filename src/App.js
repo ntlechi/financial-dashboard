@@ -30,6 +30,9 @@ import InstallPrompt from './components/FixedModal';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
+import { initStealthMode, isStealthModeEnabled, onStealthModeChange } from './utils/stealthMode';
+import StealthToggle from './components/StealthToggle';
+import StealthCard from './components/StealthCard';
 import { 
   isOnline, 
   getOfflineSummary, 
@@ -10118,6 +10121,23 @@ function App() {
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
 
+  // 🛡️ STEALTH MODE STATE - Universal Trust Feature (Always Free)
+  const [isStealthMode, setIsStealthMode] = useState(false);
+
+  // 🛡️ STEALTH MODE INITIALIZATION
+  useEffect(() => {
+    // Initialize stealth mode from localStorage
+    initStealthMode();
+    setIsStealthMode(isStealthModeEnabled());
+    
+    // Subscribe to stealth mode changes
+    const unsubscribe = onStealthModeChange((enabled) => {
+      setIsStealthMode(enabled);
+    });
+    
+    return unsubscribe;
+  }, []);
+
   // User feedback system
   // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
   const [notification, setNotification] = useState(null);
@@ -12036,6 +12056,13 @@ function App() {
                 </button>
               )}
               
+              {/* 🛡️ STEALTH MODE TOGGLE - Universal Trust Feature (Always Free) */}
+              <StealthToggle 
+                className="flex-shrink-0" 
+                size="default"
+                showLabel={false}
+              />
+
               {/* Help FAQ Button */}
               <button
                 onClick={() => setShowHelpFAQ(true)}
@@ -12371,53 +12398,65 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Cash Flow - FREE+ (Left) */}
-              <CashFlowCard 
-                data={displayData?.cashflow} 
-                income={displayData?.income}
-                expenses={displayData?.expenses}
-                transactions={data?.transactions || []}
-                onEdit={openCardEditor} 
-              />
+              <StealthCard>
+                <CashFlowCard 
+                  data={displayData?.cashflow} 
+                  income={displayData?.income}
+                  expenses={displayData?.expenses}
+                  transactions={data?.transactions || []}
+                  onEdit={openCardEditor} 
+                />
+              </StealthCard>
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
-              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
-              ) : (
-                <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              <StealthCard>
+                {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
+                  <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
+                ) : (
+                  <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                )}
+              </StealthCard>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Monthly Income - FREE+ (Left) */}
-              <IncomeCard data={displayData?.income} viewMode={viewMode} />
+              <StealthCard>
+                <IncomeCard data={displayData?.income} viewMode={viewMode} />
+              </StealthCard>
               
               {/* Monthly Expenses - FREE+ (Right) */}
-              <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
+              <StealthCard>
+                <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
+              </StealthCard>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Net Worth - FREE+ (Left) */}
-              <FinancialErrorBoundary componentName="Net Worth Calculator">
-                <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
-              </FinancialErrorBoundary>
+              <StealthCard>
+                <FinancialErrorBoundary componentName="Net Worth Calculator">
+                  <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              </StealthCard>
               
               {/* Survival Runway - CLIMBER+ (Right) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <FinancialErrorBoundary componentName="Cash Management">
-                  <CashOnHandCard 
-                    data={displayData?.cashOnHand} 
-                    rainyDayGoal={6}
-                    transactions={data?.transactions || []}
-                    onEdit={openCardEditor} 
-                  />
-                </FinancialErrorBoundary>
-              ) : (
-                <LockedCard cardName="Survival Runway" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
+              <StealthCard>
+                {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                  <FinancialErrorBoundary componentName="Cash Management">
+                    <CashOnHandCard 
+                      data={displayData?.cashOnHand} 
+                      rainyDayGoal={6}
+                      transactions={data?.transactions || []}
+                      onEdit={openCardEditor} 
+                    />
+                  </FinancialErrorBoundary>
+                ) : (
+                  <LockedCard cardName="Survival Runway" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                )}
+              </StealthCard>
               
               {/* ═══════════════════════════════════════════════════════ */}
               {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
