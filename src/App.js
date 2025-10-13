@@ -10076,6 +10076,20 @@ function App() {
   
   const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
   
+  // 🔐 URL Parameter Dev Mode (Admin Only)
+  React.useEffect(() => {
+    if (isAdmin) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const devMode = urlParams.get('dev');
+      if (devMode === 'true') {
+        setShowDevPanel(true);
+        // Clean up URL without page reload
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }, [isAdmin]);
+  
   // Get current plan (with dev override if admin)
   const currentUserPlan = (isAdmin && devOverridePlan) ? devOverridePlan : userPlan;
   
