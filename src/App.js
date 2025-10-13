@@ -1155,7 +1155,7 @@ const GoalsCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !Array.isArray(data)) {
     return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+      <Card className="col-span-1 md:col-span-2 lg:col-span-2">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <Calendar className="w-6 h-6 mr-3 text-amber-400" />
           Financial Goals
@@ -1166,7 +1166,7 @@ const GoalsCard = ({ data, onEdit }) => {
   }
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+    <Card className="col-span-1 md:col-span-2 lg:col-span-2">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Calendar className="w-6 h-6 mr-3 text-amber-400" />
@@ -1361,7 +1361,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/30 to-indigo-900/30">
+      <Card className="col-span-1 md:col-span-2 lg:col-span-2 bg-gradient-to-br from-blue-900/30 to-indigo-900/30">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
           Retirement Accounts
@@ -1379,7 +1379,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-sky-900/40 to-blue-900/40 border-sky-600/30">
+    <Card className="col-span-1 md:col-span-2 lg:col-span-2 bg-gradient-to-br from-sky-900/40 to-blue-900/40 border-sky-600/30">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <ShieldCheck className="w-6 h-6 mr-3 text-sky-400" />
@@ -1477,7 +1477,7 @@ const DebtCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
+      <Card className="col-span-1 md:col-span-2 lg:col-span-2 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
           Total Debt
@@ -1493,7 +1493,7 @@ const DebtCard = ({ data, onEdit }) => {
     data.accounts.reduce((sum, account) => sum + account.interestRate, 0) / data.accounts.length : 0;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40 relative">
+    <Card className="col-span-1 md:col-span-2 lg:col-span-2 bg-gradient-to-br from-rose-900/40 to-pink-900/40 relative">
       <button
         onClick={() => onEdit('debt', data)}
         className="absolute top-4 right-4 p-2 bg-rose-700/20 hover:bg-rose-600/30 rounded-lg transition-colors"
@@ -2932,7 +2932,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
 
   return (
     // This is the critical layout fix: col-span-6 for full width
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-6">
       <Card>
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
@@ -3783,7 +3783,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   }, [data.businesses]);
 
   return (
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-6">
       {/* 🏔️ FREEDOM COMMAND CENTER - 4-Card Dashboard Header */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-teal-900/40 to-emerald-900/40 border-teal-500/30">
@@ -5284,7 +5284,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   };
 
   return (
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-6">
       {/* Portfolio Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
@@ -6595,7 +6595,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   }, [spendingByCategory]);
 
   return (
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-6">
       {/* Transaction Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
@@ -8017,7 +8017,7 @@ const TravelTab = ({ data, setData, userId }) => {
   const runway = calculateRunway();
 
   return (
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
       <Card style={{ backgroundColor: '#18212F' }} className="border-slate-500/30 relative">
         <button
@@ -11705,13 +11705,13 @@ function App() {
           </div>
         </header>
 
-        <main className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-6">
+        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {activeTab === 'dashboard' && (
             <>
               {/* Monthly History View */}
               {showHistory && data.monthlyHistory && (
                 <FinancialErrorBoundary componentName="Monthly History">
-                <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+                <Card className="col-span-1 md:col-span-2 lg:col-span-2">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
                     Monthly History
@@ -11831,7 +11831,7 @@ function App() {
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-              <div className="col-span-1 md:col-span-6 lg:col-span-6">
+              <div className="col-span-1 md:col-span-2 lg:col-span-2">
                 <DebtPayoffProgressTracker 
                   data={displayData?.debt} 
                   onEdit={openCardEditor}
@@ -11840,43 +11840,43 @@ function App() {
                 />
               </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Debt Payoff Calculator" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
               {/* Credit Score - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'credit-score') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <CreditScoreCard data={displayData?.creditScore} onEdit={openCardEditor} />
                 </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
               {/* Financial Goals - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
                 </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
               
               {/* Retirement Accounts - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <RegisteredAccountsCard 
                     data={displayData?.registeredAccounts} 
                     onEdit={openCardEditor} 
                   />
                 </div>
               ) : (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                   <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
                 </div>
               )}
@@ -11899,7 +11899,7 @@ function App() {
           )}
           
           {activeTab === 'rank-medals' && (
-            <div className="col-span-1 md:col-span-6 lg:col-span-6">
+            <div className="col-span-1 md:col-span-2 lg:col-span-2">
               <RankMedalsPage 
                 userId={userId} 
                 userPlan={userPlan} 
