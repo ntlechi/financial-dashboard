@@ -7400,7 +7400,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <input
                     type="number"
                     placeholder="50"
-                    value={editingRecurring.amount === 0 ? '0' : (editingRecurring.amount || '')}
+                    value={editingRecurring.amount || ''}
                     onChange={(e) => setEditingRecurring({...editingRecurring, amount: parseFloat(e.target.value) || 0})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   />
@@ -9712,7 +9712,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    <input
                      type="number"
                      placeholder="50000"
-                     value={runwaySettings.totalSavings === 0 ? '0' : (runwaySettings.totalSavings || '')}
+                     value={runwaySettings.totalSavings || ''}
                      onChange={(e) => setRunwaySettings({
                        ...runwaySettings, 
                        totalSavings: e.target.value === '' ? 0 : Number(e.target.value)
@@ -9758,7 +9758,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      <input
                        type="number"
                        placeholder="90"
-                       value={runwaySettings.tripPlan.cheap === 0 ? '0' : (runwaySettings.tripPlan.cheap || '')}
+                       value={runwaySettings.tripPlan.cheap || ''}
                        onChange={(e) => setRunwaySettings({
                          ...runwaySettings,
                          tripPlan: {
@@ -9780,7 +9780,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      <input
                        type="number"
                        placeholder="30"
-                       value={runwaySettings.tripPlan.moderate === 0 ? '0' : (runwaySettings.tripPlan.moderate || '')}
+                       value={runwaySettings.tripPlan.moderate || ''}
                        onChange={(e) => setRunwaySettings({
                          ...runwaySettings,
                          tripPlan: {
@@ -9802,7 +9802,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      <input
                        type="number"
                        placeholder="15"
-                       value={runwaySettings.tripPlan.expensive === 0 ? '0' : (runwaySettings.tripPlan.expensive || '')}
+                       value={runwaySettings.tripPlan.expensive || ''}
                        onChange={(e) => setRunwaySettings({
                          ...runwaySettings,
                          tripPlan: {
@@ -12963,7 +12963,7 @@ function App() {
                                 type="number"
                                 step="0.1"
                                 placeholder="19.9"
-                                value={account.interestRate === 0 ? '0' : (account.interestRate || '')}
+                                value={account.interestRate || ''}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
@@ -12994,7 +12994,7 @@ function App() {
                                 <input
                                   type="number"
                                   placeholder="15000"
-                                  value={account.initialDebt === 0 ? '0' : (account.initialDebt || '')}
+                                  value={account.initialDebt || ''}
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
                                     const updatedAccounts = [...(currentData.accounts || [])];
@@ -13019,7 +13019,7 @@ function App() {
                               <input
                                 type="number"
                                 placeholder="200"
-                                value={account.minPayment === 0 ? '0' : (account.minPayment || '')}
+                                value={account.minPayment || ''}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
                                   const updatedAccounts = [...(currentData.accounts || [])];
@@ -13696,7 +13696,7 @@ function App() {
                                 <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
                                 <input
                                   type="number"
-                                  value={account.contributed === 0 ? '0' : (account.contributed || '')}
+                                  value={account.contributed || ''}
                                   onChange={(e) => {
                                     const updated = [...tempCardData.accounts];
                                     updated[index] = { ...updated[index], contributed: e.target.value === '' ? 0 : Number(e.target.value) };
@@ -13710,7 +13710,7 @@ function App() {
                                 <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
                                 <input
                                   type="number"
-                                  value={account.limit === 0 ? '0' : (account.limit || '')}
+                                  value={account.limit || ''}
                                   onChange={(e) => {
                                     const updated = [...tempCardData.accounts];
                                     updated[index] = { ...updated[index], limit: e.target.value === '' ? 0 : Number(e.target.value) };
@@ -13847,7 +13847,7 @@ function App() {
                               <input
                                 type="number"
                                 placeholder="0"
-                                value={goal.targetAmount === 0 ? '0' : (goal.targetAmount || '')}
+                                value={goal.targetAmount || ''}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
                                   updatedGoals[index] = {...goal, targetAmount: e.target.value === '' ? 0 : Number(e.target.value)};
@@ -13862,7 +13862,7 @@ function App() {
                               <input
                                 type="number"
                                 placeholder="0"
-                                value={goal.currentAmount === 0 ? '0' : (goal.currentAmount || '')}
+                                value={goal.currentAmount || ''}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
                                   updatedGoals[index] = {...goal, currentAmount: e.target.value === '' ? 0 : Number(e.target.value)};
