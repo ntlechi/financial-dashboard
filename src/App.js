@@ -623,7 +623,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40 min-h-[420px] flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Target className="w-6 h-6 mr-3 text-violet-400" />
@@ -700,7 +700,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40 min-h-[420px] flex flex-col">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <PiggyBank className="w-6 h-6 mr-3 text-amber-400" />
@@ -1354,7 +1354,7 @@ const NetWorthCard = ({ data, onEdit }) => {
   }
 
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-sky-900/40 to-blue-900/40">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-sky-900/40 to-blue-900/40 min-h-[420px] flex flex-col">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
         <DollarSign className="w-6 h-6 mr-3 text-sky-400" />
@@ -1646,7 +1646,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   const progressPercent = Math.min((runwayMonths / goalMonths) * 100, 100);
 
   return (
-  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
+  <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30 min-h-[420px] flex flex-col">
     <div className="flex justify-between items-start mb-3">
       <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
         <Wallet className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-teal-400" />
@@ -1722,6 +1722,8 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
 // 🎯 COMMAND CENTER: Income Card with Donut Chart
 const IncomeCard = ({ data, viewMode }) => {
   const incomeChartRef = useRef(null);
+  const [showAllSources, setShowAllSources] = useState(false);
+  const maxVisibleItems = 3;
   
   // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
@@ -1796,8 +1798,6 @@ const IncomeCard = ({ data, viewMode }) => {
     );
   }
 
-  const [showAllSources, setShowAllSources] = useState(false);
-  const maxVisibleItems = 3;
   const hasMore = data.sources.length > maxVisibleItems;
   const displayedSources = showAllSources ? data.sources : data.sources.slice(0, maxVisibleItems);
 
@@ -1845,6 +1845,8 @@ const IncomeCard = ({ data, viewMode }) => {
 // 🎯 COMMAND CENTER: Expenses Card with Donut Chart
 const ExpensesCard = ({ data, viewMode }) => {
   const expensesChartRef = useRef(null);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const maxVisibleItems = 3;
   
   // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
@@ -1919,8 +1921,6 @@ const ExpensesCard = ({ data, viewMode }) => {
     );
   }
 
-  const [showAllCategories, setShowAllCategories] = useState(false);
-  const maxVisibleItems = 3;
   const hasMore = data.categories.length > maxVisibleItems;
   const displayedCategories = showAllCategories ? data.categories : data.categories.slice(0, maxVisibleItems);
 
