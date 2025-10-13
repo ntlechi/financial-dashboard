@@ -623,7 +623,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40 min-h-[420px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40 min-h-[320px] flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Target className="w-6 h-6 mr-3 text-violet-400" />
@@ -700,7 +700,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40 min-h-[420px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40 min-h-[320px] flex flex-col">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <PiggyBank className="w-6 h-6 mr-3 text-amber-400" />
@@ -881,7 +881,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
         </div>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-4 mt-8">
         <div className="text-center">
           <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
             ${data.total.toLocaleString()}
@@ -895,7 +895,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
           </div>
         </div>
         
-        <div>
+        <div className="mt-6">
           <div className="flex justify-between text-xs sm:text-sm text-gray-300 mb-2">
             <span>Current: ${data.total.toLocaleString()}</span>
             <span>Goal: ${data.goal.toLocaleString()}</span>
@@ -1584,6 +1584,9 @@ const DebtCard = ({ data, onEdit }) => {
 
 // Cash on Hand Card - PREMIUM UPGRADE: Survival Runway Calculator 🎯
 const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
+  const [showAllAccounts, setShowAllAccounts] = useState(false);
+  const maxVisibleAccounts = 3;
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
@@ -1699,7 +1702,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     <div className="border-t border-teal-800/50 pt-4">
       <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide mb-3">Account Breakdown</h3>
       <div className="space-y-2 mb-3">
-        {data.accounts.map(account => (
+        {(showAllAccounts ? data.accounts : data.accounts.slice(0, maxVisibleAccounts)).map(account => (
           <div key={account.id} className="flex justify-between items-center text-xs sm:text-sm">
             <div>
               <span className="text-white font-medium">{account.name}</span>
@@ -1708,6 +1711,18 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
             <span className="text-teal-300 font-semibold">${account.balance.toLocaleString()}</span>
           </div>
         ))}
+        {data.accounts.length > maxVisibleAccounts && (
+          <button
+            onClick={() => setShowAllAccounts(!showAllAccounts)}
+            className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+          >
+            {showAllAccounts ? (
+              <><ChevronUp className="w-3 h-3" /> Show Less</>
+            ) : (
+              <><ChevronDown className="w-3 h-3" /> Show {data.accounts.length - maxVisibleAccounts} More</>
+            )}
+          </button>
+        )}
       </div>
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
