@@ -7926,7 +7926,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <input
                 type="number"
                 placeholder="Amount"
-                value={Math.abs(editingTransaction.amount) === 0 ? '0' : (Math.abs(editingTransaction.amount) || '')}
+                value={editingTransaction.amount ? Math.abs(parseFloat(editingTransaction.amount) || 0) : ''}
                 onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
@@ -11693,7 +11693,7 @@ function App() {
     }
   };
 
-  // ⚡ QUICK EXPENSE HANDLER
+  // ⚡ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
   const confirmQuickExpense = async (expense) => {
     if (!expense.description || !expense.amount || !userId) return;
 
@@ -11710,17 +11710,22 @@ function App() {
       date: expense.date,
       timestamp: new Date().toISOString(),
       createdAt: new Date().toLocaleString(),
-      displayDate: formatDateForUser(expense.date)
+      displayDate: formatDateForUser(expense.date),
+      isRecurring: false // Mark as manual transaction
     };
 
-    // Update all transaction arrays
-    const updatedTransactions = [transaction, ...(data.transactions || [])].sort((a, b) => 
+    // CRITICAL FIX: Ensure transaction appears in Recent Transactions immediately!
+    // We add to ALL transaction arrays to guarantee visibility
+    const currentTransactions = data.transactions || [];
+    const currentRecentTransactions = data.recentTransactions || currentTransactions; // Use transactions as fallback
+    
+    const updatedTransactions = [transaction, ...currentTransactions].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
     const updatedExpenses = [transaction, ...(data.expenses || [])].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
-    const updatedRecentTransactions = [transaction, ...(data.recentTransactions || [])].sort((a, b) => 
+    const updatedRecentTransactions = [transaction, ...currentRecentTransactions].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
 
