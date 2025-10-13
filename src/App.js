@@ -2320,35 +2320,44 @@ const FinancialFreedomCalculator = () => {
   
   const chartRef = useRef(null);
 
+  // Convert strings to numbers for calculations
+  const age = Number(currentAge || 0);
+  const target = Number(targetAmount || 0);
+  const savings = Number(currentSavings || 0);
+  const contribution = Number(monthlyContribution || 0);
+  const returnRate = Number(annualReturn || 0);
+  const expenses = Number(monthlyExpenses || 0);
+  const passive = Number(passiveIncome || 0);
+
   // Calculate financial independence
-  const monthlyReturn = annualReturn / 100 / 12;
-  const totalMonths = targetAmount > currentSavings && monthlyContribution > 0
-    ? Math.log((targetAmount * monthlyReturn + monthlyContribution) / (currentSavings * monthlyReturn + monthlyContribution)) / Math.log(1 + monthlyReturn)
+  const monthlyReturn = returnRate / 100 / 12;
+  const totalMonths = target > savings && contribution > 0
+    ? Math.log((target * monthlyReturn + contribution) / (savings * monthlyReturn + contribution)) / Math.log(1 + monthlyReturn)
     : 0;
   
   const yearsToFI = Math.ceil(totalMonths / 12);
-  const targetAge = currentAge + yearsToFI;
-  const monthlyPassiveNeeded = monthlyExpenses - passiveIncome;
+  const targetAge = age + yearsToFI;
+  const monthlyPassiveNeeded = expenses - passive;
   const requiredAmountFor4Percent = monthlyPassiveNeeded * 12 / 0.04;
 
   // Generate projection data
   const projectionData = useMemo(() => {
     const data = [];
-    let amount = currentSavings;
+    let amount = savings;
     for (let month = 0; month <= totalMonths && month <= 600; month++) { // Max 50 years
       if (month > 0) {
-        amount = amount * (1 + monthlyReturn) + monthlyContribution;
+        amount = amount * (1 + monthlyReturn) + contribution;
       }
       if (month % 12 === 0) {
         data.push({
-          year: currentAge + Math.floor(month / 12),
+          year: age + Math.floor(month / 12),
           amount: amount,
           passiveIncome: amount * 0.04 / 12 // 4% rule monthly
         });
       }
     }
     return data;
-  }, [currentSavings, totalMonths, monthlyReturn, monthlyContribution, currentAge]);
+  }, [savings, totalMonths, monthlyReturn, contribution, age]);
 
   useEffect(() => {
     if (chartRef.current && projectionData.length > 0) {
@@ -2364,7 +2373,7 @@ const FinancialFreedomCalculator = () => {
         .range([0, width]);
 
       const y = d3.scaleLinear()
-        .domain([0, d3.max(projectionData, d => Math.max(d.amount, monthlyExpenses * 12 * 25))])
+        .domain([0, d3.max(projectionData, d => Math.max(d.amount, expenses * 12 * 25))])
         .nice()
         .range([height, 0]);
 
@@ -2467,7 +2476,7 @@ const FinancialFreedomCalculator = () => {
         .style("font-weight", "bold")
         .text("Financial Freedom Target");
     }
-  }, [projectionData, targetAmount, monthlyExpenses]);
+  }, [projectionData, target, expenses]);
 
   return (
     <div className="space-y-6">
@@ -2501,7 +2510,7 @@ const FinancialFreedomCalculator = () => {
             <input
               type="number"
               value={currentSavings === 0 ? '0' : (currentSavings || '')}
-              onChange={(e) => setCurrentSavings(e.target.value === '' ? 0 : Number(e.target.value))}
+              onChange={(e) => setCurrentSavings(e.target.value)}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2553,7 +2562,7 @@ const FinancialFreedomCalculator = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-600/30">
             <h4 className="text-emerald-400 font-semibold mb-2">Financial Independence</h4>
-            <div className="text-2xl font-bold text-white">${targetAmount.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${target.toLocaleString()}</div>
             <div className="text-sm text-gray-300">Target amount needed</div>
           </div>
           <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
@@ -2563,7 +2572,7 @@ const FinancialFreedomCalculator = () => {
           </div>
           <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
             <h4 className="text-purple-400 font-semibold mb-2">4% Rule Amount</h4>
-            <div className="text-2xl font-bold text-white">${requiredAmountFor4Percent.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${Math.round(requiredAmountFor4Percent).toLocaleString()}</div>
             <div className="text-sm text-gray-300">For current lifestyle</div>
           </div>
         </div>
@@ -2670,7 +2679,14 @@ const DebtPayoffCalculator = () => {
   
   // Calculate payoff scenarios
   const calculatePayoffScenario = (debts, extraPayment, strategy) => {
-    const debtsCopy = debts.map(debt => ({ ...debt }));
+    // Convert all string values to numbers
+    const debtsCopy = debts.map(debt => ({ 
+      ...debt,
+      balance: Number(debt.balance || 0),
+      interestRate: Number(debt.interestRate || 0),
+      minPayment: Number(debt.minPayment || 0)
+    }));
+    const extraPaymentNum = Number(extraPayment || 0);
     let totalInterestPaid = 0;
     let months = 0;
     let payoffOrder = [];
@@ -2686,7 +2702,7 @@ const DebtPayoffCalculator = () => {
     
     while (sortedDebts.some(debt => debt.balance > 0) && months < 600) { // Max 50 years
       months++;
-      let remainingExtraPayment = extraPayment;
+      let remainingExtraPayment = extraPaymentNum;
       
       // Apply minimum payments and interest
       for (const debt of sortedDebts) {
@@ -2844,7 +2860,7 @@ const DebtPayoffCalculator = () => {
                       <input
                         type="number"
                         value={debt.minPayment === 0 ? '0' : (debt.minPayment || '')}
-                        onChange={(e) => updateDebt(index, 'minPayment', e.target.value === '' ? 0 : Number(e.target.value))}
+                        onChange={(e) => updateDebt(index, 'minPayment', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
                         placeholder="$0"
                       />
@@ -3050,19 +3066,37 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
     }
   });
   
+  // Convert to numbers for calculations
+  const income = Number(monthlyIncome || 0);
+  const percentages = {
+    '50-30-20': {
+      needs: Number(budgetPercentages['50-30-20'].needs || 0),
+      wants: Number(budgetPercentages['50-30-20'].wants || 0),
+      savings: Number(budgetPercentages['50-30-20'].savings || 0)
+    },
+    '6-jars': {
+      necessities: Number(budgetPercentages['6-jars'].necessities || 0),
+      financialFreedom: Number(budgetPercentages['6-jars'].financialFreedom || 0),
+      longTermSavings: Number(budgetPercentages['6-jars'].longTermSavings || 0),
+      education: Number(budgetPercentages['6-jars'].education || 0),
+      play: Number(budgetPercentages['6-jars'].play || 0),
+      give: Number(budgetPercentages['6-jars'].give || 0)
+    }
+  };
+
   const fiftyThirtyTwenty = {
-    needs: Math.round(monthlyIncome * (budgetPercentages['50-30-20'].needs / 100)),
-    wants: Math.round(monthlyIncome * (budgetPercentages['50-30-20'].wants / 100)),
-    savings: Math.round(monthlyIncome * (budgetPercentages['50-30-20'].savings / 100))
+    needs: Math.round(income * (percentages['50-30-20'].needs / 100)),
+    wants: Math.round(income * (percentages['50-30-20'].wants / 100)),
+    savings: Math.round(income * (percentages['50-30-20'].savings / 100))
   };
   
   const sixJars = {
-    necessities: Math.round(monthlyIncome * (budgetPercentages['6-jars'].necessities / 100)),
-    financialFreedom: Math.round(monthlyIncome * (budgetPercentages['6-jars'].financialFreedom / 100)),
-    longTermSavings: Math.round(monthlyIncome * (budgetPercentages['6-jars'].longTermSavings / 100)),
-    education: Math.round(monthlyIncome * (budgetPercentages['6-jars'].education / 100)),
-    play: Math.round(monthlyIncome * (budgetPercentages['6-jars'].play / 100)),
-    give: Math.round(monthlyIncome * (budgetPercentages['6-jars'].give / 100))
+    necessities: Math.round(income * (percentages['6-jars'].necessities / 100)),
+    financialFreedom: Math.round(income * (percentages['6-jars'].financialFreedom / 100)),
+    longTermSavings: Math.round(income * (percentages['6-jars'].longTermSavings / 100)),
+    education: Math.round(income * (percentages['6-jars'].education / 100)),
+    play: Math.round(income * (percentages['6-jars'].play / 100)),
+    give: Math.round(income * (percentages['6-jars'].give / 100))
   };
   
   // Function to update budget percentages
@@ -3071,20 +3105,20 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
       ...prev,
       [budgetSystem]: {
         ...prev[budgetSystem],
-        [category]: Math.max(0, Math.min(100, percentage)) // Ensure 0-100 range
+        [category]: percentage
       }
     }));
   };
 
   // Calculate total percentage for validation
   const totalPercentage = budgetType === '50-30-20'
-    ? budgetPercentages['50-30-20'].needs + budgetPercentages['50-30-20'].wants + budgetPercentages['50-30-20'].savings
-    : Object.values(budgetPercentages['6-jars']).reduce((sum, val) => sum + val, 0);
+    ? percentages['50-30-20'].needs + percentages['50-30-20'].wants + percentages['50-30-20'].savings
+    : percentages['6-jars'].necessities + percentages['6-jars'].financialFreedom + percentages['6-jars'].longTermSavings + percentages['6-jars'].education + percentages['6-jars'].play + percentages['6-jars'].give;
 
   // Calculate remaining balance after budgeting
   const remainingBalance = budgetType === '50-30-20' 
-    ? monthlyIncome - (fiftyThirtyTwenty.needs + fiftyThirtyTwenty.wants + fiftyThirtyTwenty.savings)
-    : monthlyIncome - (sixJars.necessities + sixJars.financialFreedom + sixJars.longTermSavings + sixJars.education + sixJars.play + sixJars.give);
+    ? income - (fiftyThirtyTwenty.needs + fiftyThirtyTwenty.wants + fiftyThirtyTwenty.savings)
+    : income - (sixJars.necessities + sixJars.financialFreedom + sixJars.longTermSavings + sixJars.education + sixJars.play + sixJars.give);
 
   return (
     // This is the critical layout fix: col-span-6 for full width
@@ -3147,7 +3181,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           <input
             type="number"
             value={monthlyIncome || ''}
-            onChange={(e) => setMonthlyIncome(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={(e) => setMonthlyIncome(e.target.value)}
             className="w-full bg-gray-700 text-white text-xl p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
             placeholder="Enter your monthly income"
           />
@@ -3155,7 +3189,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         
         <div className="bg-green-900/20 rounded-xl p-6 border-2 border-green-800/40">
           <label className="block text-green-400 text-lg font-bold mb-4">Monthly Income</label>
-          <div className="text-3xl font-bold text-white mb-2">${monthlyIncome.toLocaleString()}</div>
+          <div className="text-3xl font-bold text-white mb-2">${income.toLocaleString()}</div>
           <p className="text-gray-400">Ready for budgeting</p>
         </div>
         
@@ -3296,7 +3330,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
               <input
                 type="number"
                 value={budgetPercentages['6-jars'].education || ''}
-                onChange={(e) => updateBudgetPercentage('6-jars', 'education', e.target.value === '' ? '' : Number(e.target.value))}
+                onChange={(e) => updateBudgetPercentage('6-jars', 'education', e.target.value)}
                 className="w-12 bg-amber-800/50 text-amber-300 text-xs px-1 py-0.5 rounded border border-amber-600 focus:border-amber-400 focus:outline-none text-center"
                 min="0"
                 max="100"
@@ -7189,7 +7223,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   {newTransaction.frequency === 'weekly' && (
                     <select
                       value={newTransaction.dayOfWeek}
-                      onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: parseInt(e.target.value)})}
+                      onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: e.target.value})}
                       className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                     >
                       <option value={0}>Sunday</option>
@@ -11129,6 +11163,20 @@ function App() {
   const saveCardData = async () => {
     if (!editingCard || !data) return;
     
+    // 🔧 Convert string values to numbers before saving
+    const convertedData = {};
+    Object.keys(tempCardData).forEach(key => {
+      const value = tempCardData[key];
+      // Convert string numbers to actual numbers
+      if (typeof value === 'string' && value !== '' && !isNaN(value)) {
+        convertedData[key] = Number(value);
+      } else if (value === '' || value === null || value === undefined) {
+        convertedData[key] = 0; // Empty becomes 0
+      } else {
+        convertedData[key] = value; // Keep as-is (objects, arrays, etc)
+      }
+    });
+    
     let updatedData;
     
     // Special handling for savings rate target (only update the target, not the entire savingsRate object)
@@ -11137,11 +11185,11 @@ function App() {
         ...data, 
         savingsRate: { 
           ...data.savingsRate, 
-          target: tempCardData.target 
+          target: Number(tempCardData.target) || 0
         } 
       };
     } else {
-      updatedData = { ...data, [editingCard]: tempCardData };
+      updatedData = { ...data, [editingCard]: convertedData };
     }
     
     try {
@@ -12879,7 +12927,7 @@ function App() {
                       <input
                         type="number"
                         value={tempCardData.annualReturn || ''}
-                        onChange={(e) => setTempCardData({...tempCardData, annualReturn: Number(e.target.value)})}
+                        onChange={(e) => setTempCardData({...tempCardData, annualReturn: e.target.value})}
                         className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
