@@ -13,6 +13,41 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment }) => {
     // Simulate fetching moments from data or Firebase
     if (data?.moments) {
       setMoments(data.moments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+    } else {
+      // Add sample moments for demo
+      const sampleMoments = [
+        {
+          id: 1,
+          title: "First Debt Payment",
+          story: "Made my first extra payment on my credit card. It's small but it's progress!",
+          timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          location: "Home",
+          isAchievement: true,
+          photos: []
+        },
+        {
+          id: 2,
+          title: "Coffee Shop Budget Win",
+          story: "Instead of buying coffee every day, I started making it at home. Saving $150/month!",
+          timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          location: "Coffee Shop",
+          expenseLink: {
+            description: "Daily Coffee",
+            amount: 150
+          },
+          photos: []
+        },
+        {
+          id: 3,
+          title: "Emergency Fund Milestone",
+          story: "Reached $1000 in my emergency fund! It took 3 months but I'm so proud.",
+          timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          location: "Bank",
+          isAchievement: true,
+          photos: []
+        }
+      ];
+      setMoments(sampleMoments);
     }
   }, [data]);
 
