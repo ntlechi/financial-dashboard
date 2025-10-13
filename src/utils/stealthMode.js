@@ -92,9 +92,9 @@ export const getStealthMessages = () => ({
  * Get stealth mode styles
  */
 export const getStealthStyles = () => ({
-  blur: stealthModeEnabled ? 'blur-sm' : '',
-  opacity: stealthModeEnabled ? 'opacity-60' : '',
-  overlay: stealthModeEnabled ? 'bg-black/20' : '',
+  blur: stealthModeEnabled ? 'blur-md' : '',
+  opacity: stealthModeEnabled ? 'opacity-30' : '',
+  overlay: stealthModeEnabled ? 'bg-black/40' : '',
   border: stealthModeEnabled ? 'border-amber-500/50' : '',
   text: stealthModeEnabled ? 'text-amber-400' : ''
 });
@@ -103,11 +103,11 @@ export const getStealthStyles = () => ({
  * Create stealth mode overlay component props
  */
 export const getStealthOverlayProps = () => ({
-  className: stealthModeEnabled ? 'absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg' : 'hidden',
+  className: stealthModeEnabled ? 'absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-10 rounded-lg' : 'hidden',
   children: (
     <div className="text-center p-4">
-      <div className="text-2xl mb-2">🛡️</div>
-      <p className="text-amber-400 font-semibold text-sm">
+      <div className="text-3xl mb-3">🛡️</div>
+      <p className="text-amber-400 font-bold text-base">
         {getStealthMessages().enabled}
       </p>
     </div>
