@@ -2363,8 +2363,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Current Age</label>
             <input
               type="number"
-              value={currentAge === 0 ? '0' : (currentAge || '')}
-              onChange={(e) => setCurrentAge(e.target.value === '' ? 0 : Number(e.target.value))}
+              value={currentAge || ''}
+              onChange={(e) => setCurrentAge(e.target.value === '' ? '' : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2372,8 +2372,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
             <input
               type="number"
-              value={targetAmount === 0 ? '0' : (targetAmount || '')}
-              onChange={(e) => setTargetAmount(e.target.value === '' ? 0 : Number(e.target.value))}
+              value={targetAmount || ''}
+              onChange={(e) => setTargetAmount(e.target.value === '' ? '' : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -2381,8 +2381,8 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">Current Savings</label>
             <input
               type="number"
-              value={currentSavings === 0 ? '0' : (currentSavings || '')}
-              onChange={(e) => setCurrentSavings(e.target.value === '' ? 0 : Number(e.target.value))}
+              value={currentSavings || ''}
+              onChange={(e) => setCurrentSavings(e.target.value === '' ? '' : Number(e.target.value))}
               className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
             />
           </div>
@@ -6999,7 +6999,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <input
                 type="number"
                 placeholder="Amount"
-                value={newTransaction.amount === 0 ? '0' : (newTransaction.amount || '')}
+                value={newTransaction.amount || ''}
                 onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? 0 : e.target.value})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
@@ -7767,7 +7767,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <input
                 type="number"
                 placeholder="Amount"
-                value={Math.abs(editingTransaction.amount) === 0 ? '0' : (Math.abs(editingTransaction.amount) || '')}
+                value={Math.abs(editingTransaction.amount) || ''}
                 onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value === '' ? 0 : e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
