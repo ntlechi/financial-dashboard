@@ -20,9 +20,10 @@ code {
 /* 🔒 STEALTH MODE - Privacy Protection Feature */
 /* Blur sensitive financial data when stealth mode is active */
 .stealth-active .stealth-target {
-  filter: blur(8px);
+  filter: blur(15px);
   transition: filter 0.3s ease-in-out;
   user-select: none;
+  pointer-events: none; /* Prevent interaction with blurred data */
 }
 
 .stealth-target {

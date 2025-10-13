@@ -4062,7 +4062,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <TrendingUp className="w-4 h-4 mr-2" />
             Side Hustle Income
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white">${freedomMetrics.sideHustleIncomeThisMonth.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.sideHustleIncomeThisMonth.toLocaleString()}</p>
           <p className="text-xs text-teal-300 mt-1">This Month</p>
         </Card>
         
@@ -4071,7 +4071,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <ArrowDown className="w-4 h-4 mr-2" />
             Side Hustle Expenses
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white">${freedomMetrics.sideHustleExpensesThisMonth.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.sideHustleExpensesThisMonth.toLocaleString()}</p>
           <p className="text-xs text-rose-300 mt-1">This Month</p>
         </Card>
         
@@ -4080,7 +4080,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <DollarSign className="w-4 h-4 mr-2" />
             Passive Income
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white">${freedomMetrics.totalPassiveIncome.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.totalPassiveIncome.toLocaleString()}</p>
           <p className="text-xs text-amber-300 mt-1">Last 30 Days</p>
         </Card>
         
@@ -4089,7 +4089,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <Target className="w-4 h-4 mr-2" />
             Freedom Ratio
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white">{freedomMetrics.freedomRatio.toFixed(1)}%</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">{freedomMetrics.freedomRatio.toFixed(1)}%</p>
           <p className="text-xs text-violet-300 mt-1">{freedomMetrics.progressLevel}</p>
         </Card>
       </div>
@@ -5604,7 +5604,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <span>Total Value</span>
             </InfoTooltip>
           </h3>
-          <p className="text-3xl font-bold text-blue-400">${actualTotalValue.toLocaleString()}</p>
+          <p className="text-3xl font-bold text-blue-400 stealth-target">${actualTotalValue.toLocaleString()}</p>
           <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} holdings</p>
         </Card>
         
@@ -5618,10 +5618,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <span>Total Gain/Loss</span>
             </InfoTooltip>
           </h3>
-          <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+          <p className={`text-2xl font-bold stealth-target ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toLocaleString()}
           </p>
-          <p className={`text-sm mt-2 ${totalGainLossPercent >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+          <p className={`text-sm mt-2 stealth-target ${totalGainLossPercent >= 0 ? 'text-green-300' : 'text-red-300'}`}>
             {totalGainLossPercent >= 0 ? '+' : ''}{totalGainLossPercent.toFixed(2)}%
           </p>
         </Card>
@@ -5636,7 +5636,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <span>Annual Dividends</span>
             </InfoTooltip>
           </h3>
-          <p className="text-2xl font-bold text-cyan-400">
+          <p className="text-2xl font-bold text-cyan-400 stealth-target">
             ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()}
           </p>
           <p className="text-sm text-gray-300 mt-2">
@@ -5657,7 +5657,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <p className="text-2xl font-bold text-amber-400">
             {data.investments.holdings.filter(h => h.dripEnabled).length} Active
           </p>
-          <p className="text-sm text-gray-300 mt-2">
+          <p className="text-sm text-gray-300 mt-2 stealth-target">
             ${data.investments.holdings.reduce((sum, h) => sum + h.dividendAccumulated, 0).toLocaleString()} accumulated
           </p>
         </Card>
@@ -6946,10 +6946,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
             Total Income
           </h3>
-          <p className="text-2xl font-bold text-green-400">${totalIncome.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-green-400 stealth-target">${totalIncome.toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div>Personal: ${personalIncome.toLocaleString()}</div>
-            <div>Business: ${businessIncome.toLocaleString()}</div>
+            <div className="stealth-target">Personal: ${personalIncome.toLocaleString()}</div>
+            <div className="stealth-target">Business: ${businessIncome.toLocaleString()}</div>
           </div>
         </Card>
         
@@ -6958,10 +6958,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
             Total Expenses
           </h3>
-          <p className="text-2xl font-bold text-red-400">${totalExpenses.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-red-400 stealth-target">${totalExpenses.toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div>Personal: ${personalExpenses.toLocaleString()}</div>
-            <div>Business: ${businessExpenses.toLocaleString()}</div>
+            <div className="stealth-target">Personal: ${personalExpenses.toLocaleString()}</div>
+            <div className="stealth-target">Business: ${businessExpenses.toLocaleString()}</div>
           </div>
         </Card>
         
@@ -6970,7 +6970,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
             Net Flow
           </h3>
-          <p className={`text-2xl font-bold ${(totalIncome - totalExpenses) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+          <p className={`text-2xl font-bold stealth-target ${(totalIncome - totalExpenses) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
             ${(totalIncome - totalExpenses).toLocaleString()}
           </p>
           <div className="mt-2 text-sm text-gray-300">
@@ -6983,7 +6983,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <CreditCard className="w-5 h-5 mr-2 text-purple-400" />
             Avg Transaction
           </h3>
-          <p className="text-2xl font-bold text-purple-400">
+          <p className="text-2xl font-bold text-purple-400 stealth-target">
             ${data.transactions.length > 0 ? Math.abs(data.transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0) / data.transactions.length).toLocaleString() : '0'}
           </p>
           <div className="mt-2 text-sm text-gray-300">
