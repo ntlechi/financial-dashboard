@@ -533,7 +533,7 @@ const initialData = {
 };
 
 const Card = ({ children, className = '' }) => (
-  <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 ${className}`}>
+  <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 w-full min-h-[360px] ${className}`}>
     {children}
   </div>
 );
@@ -12337,7 +12337,7 @@ function App() {
           </div>
         </header>
 
-        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-[minmax(360px,_auto)]">
           {activeTab === 'dashboard' && (
             <>
               {/* Monthly History View */}
@@ -12391,7 +12391,7 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Cash Flow - FREE+ (Left) */}
-              <StealthCard>
+              <StealthCard className="col-span-1 lg:col-span-1">
                 <CashFlowCard 
                   data={displayData?.cashflow} 
                   income={displayData?.income}
@@ -12402,7 +12402,7 @@ function App() {
               </StealthCard>
               
               {/* Rainy Day Fund - CLIMBER+ (Right) */}
-              <StealthCard>
+              <StealthCard className="col-span-1 lg:col-span-1">
                 {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
                   <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
                 ) : (
@@ -12415,12 +12415,12 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Monthly Income - FREE+ (Left) */}
-              <StealthCard>
+              <StealthCard className="col-span-1 lg:col-span-1">
                 <IncomeCard data={displayData?.income} viewMode={viewMode} />
               </StealthCard>
               
               {/* Monthly Expenses - FREE+ (Right) */}
-              <StealthCard>
+              <StealthCard className="col-span-1 lg:col-span-1">
                 <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
               </StealthCard>
               
@@ -12429,14 +12429,14 @@ function App() {
               {/* ═══════════════════════════════════════════════════════ */}
               
               {/* Net Worth - FREE+ (Left) */}
-              <StealthCard>
+              <StealthCard className="col-span-1 lg:col-span-1">
                 <FinancialErrorBoundary componentName="Net Worth Calculator">
                   <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
                 </FinancialErrorBoundary>
               </StealthCard>
               
               {/* Survival Runway - CLIMBER+ (Right) */}
-              <StealthCard>
+              <StealthCard className="col-span-1 lg:col-span-1">
                 {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
                   <FinancialErrorBoundary componentName="Cash Management">
                     <CashOnHandCard 
