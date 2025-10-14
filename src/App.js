@@ -12907,20 +12907,16 @@ function App() {
                 </FinancialErrorBoundary>
               </StealthCard>
               
-              {/* Survival Runway - CLIMBER+ (Right) */}
+              {/* Survival Runway - 🎁 NOW FREE! (Financial Runway Tracker) */}
               <StealthCard>
-                {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                  <FinancialErrorBoundary componentName="Cash Management">
-                    <CashOnHandCard 
-                      data={displayData?.cashOnHand} 
-                      rainyDayGoal={6}
-                      transactions={data?.transactions || []}
-                      onEdit={openCardEditor} 
-                    />
-                  </FinancialErrorBoundary>
-                ) : (
-                  <LockedCard cardName="Survival Runway" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-                )}
+                <FinancialErrorBoundary componentName="Cash Management">
+                  <CashOnHandCard 
+                    data={displayData?.cashOnHand} 
+                    rainyDayGoal={6}
+                    transactions={data?.transactions || []}
+                    onEdit={openCardEditor} 
+                  />
+                </FinancialErrorBoundary>
               </StealthCard>
               </div>
               
@@ -13089,10 +13085,33 @@ function App() {
             </FinancialErrorBoundary>
           )}
 
+          {/* 💫 Moments - OPERATOR+ ONLY */}
           {activeTab === 'moments' && (
-            <FinancialErrorBoundary componentName="Moments Feed">
-              <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} onDeleteMoment={handleDeleteMoment} />
-            </FinancialErrorBoundary>
+            checkFeatureAccess('travel-mode') ? (
+              <FinancialErrorBoundary componentName="Moments Feed">
+                <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} onDeleteMoment={handleDeleteMoment} />
+              </FinancialErrorBoundary>
+            ) : (
+              <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-gray-700/50 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-pink-600/20 rounded-full flex items-center justify-center">
+                    <Crown className="w-8 h-8 text-pink-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">💫 Moments - Operator Feature</h3>
+                  <p className="text-gray-300 mb-6 max-w-lg mx-auto">
+                    Capture and celebrate your financial milestones with photos and stories. 
+                    Document your journey from start to freedom!
+                  </p>
+                  <button
+                    onClick={() => showUpgradePromptForFeature('travel-mode')}
+                    className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                  >
+                    <Crown className="w-5 h-5" />
+                    Upgrade to Operator
+                  </button>
+                </div>
+              </div>
+            )
           )}
 
           {/* 🎁 Field Notes - NOW FREE FOR EVERYONE! Export PDF = Operator+ */}
