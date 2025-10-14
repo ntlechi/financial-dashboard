@@ -12796,10 +12796,7 @@ function App() {
                   </button>
                   <button onClick={() => handleTabClick('moments')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'moments' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     💫 Moments
-                  </button>
-                  <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    📓 Field Notes
-                    {/* 🎁 FREE for everyone! No crown icon */}
+                    {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
               </div>
@@ -15172,6 +15169,31 @@ function App() {
                   >
                     <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                    </svg>
+                    <div>
+                      <p className="text-white font-medium">Click to select backup file</p>
+                      <p className="text-sm text-gray-400">JSON format only</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Wrap the entire app with error boundary for maximum protection
+const AppWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;
+okeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                     </svg>
                     <div>
                       <p className="text-white font-medium">Click to select backup file</p>
