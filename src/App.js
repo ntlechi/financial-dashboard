@@ -27,7 +27,7 @@ import FixedModal from './components/FixedModal';
 // import MomentsModal from './components/MomentsModal'; // TODO: Create MomentsModal component
 import MomentsFeed from './components/MomentsFeed';
 import InstallPrompt from './components/FixedModal';
-import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
+import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS, canAddGoal, getGoalLimit } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
@@ -14315,23 +14315,39 @@ function App() {
               {editingCard === 'goals' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-lg font-semibold text-white">Financial Goals</h4>
-                    <button
-                      onClick={() => {
-                        const newGoal = {
-                          id: Date.now(),
-                          name: '',
-                          targetAmount: 0,
-                          currentAmount: 0,
-                          deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
-                        };
-                        setTempCardData([...(tempCardData || []), newGoal]);
-                      }}
-                      className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors"
-                    >
-                      <Plus className="w-3 h-3" />
-                      Add Goal
-                    </button>
+                    <h4 className="text-lg font-semibold text-white">
+                      Financial Goals {userPlan === SUBSCRIPTION_TIERS.FREE && (
+                        <span className="text-xs text-amber-400 font-normal">
+                          ({(tempCardData || []).length}/{getGoalLimit(userPlan)} goals)
+                        </span>
+                      )}
+                    </h4>
+                    {canAddGoal(userPlan, (tempCardData || []).length) ? (
+                      <button
+                        onClick={() => {
+                          const newGoal = {
+                            id: Date.now(),
+                            name: '',
+                            targetAmount: 0,
+                            currentAmount: 0,
+                            deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
+                          };
+                          setTempCardData([...(tempCardData || []), newGoal]);
+                        }}
+                        className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add Goal
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => showUpgradePromptForFeature('unlimited-goals')}
+                        className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2 transition-colors shadow-lg"
+                      >
+                        <Crown className="w-3 h-3" />
+                        Upgrade for More Goals
+                      </button>
+                    )}
                   </div>
                   
                   <div className="space-y-3 max-h-96 overflow-y-auto">
