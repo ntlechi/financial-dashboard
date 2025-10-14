@@ -3396,26 +3396,35 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [showAddRecurring, setShowAddRecurring] = useState(false);
   const [recurringType, setRecurringType] = useState('income');
   
-  const [newBusiness, setNewBusiness] = useState({
-    name: '',
-    description: '',
-    startDate: new Date().toISOString().split('T')[0]
+  const [newBusiness, setNewBusiness] = useState(() => {
+    const today = new Date();
+    return {
+      name: '',
+      description: '',
+      startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    };
   });
   
-  const [newItem, setNewItem] = useState({
-    description: '',
-    amount: '',
-    date: new Date().toISOString().split('T')[0],
-    isPassive: false // 🏔️ NEW: Passive income flag
+  const [newItem, setNewItem] = useState(() => {
+    const today = new Date();
+    return {
+      description: '',
+      amount: '',
+      date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+      isPassive: false // 🏔️ NEW: Passive income flag
+    };
   });
 
-  const [newRecurringItem, setNewRecurringItem] = useState({
-    name: '',
-    amount: '',
-    isPassive: false,
-    frequency: 'monthly',
-    startDate: new Date().toISOString().split('T')[0],
-    category: ''
+  const [newRecurringItem, setNewRecurringItem] = useState(() => {
+    const today = new Date();
+    return {
+      name: '',
+      amount: '',
+      isPassive: false,
+      frequency: 'monthly',
+      startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+      category: ''
+    };
   });
 
   // 🔧 EDGE CASE FIX: Null safety for empty businesses array
@@ -3621,7 +3630,10 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         }
       } catch (e) { console.warn('XP award failed (new business)', e); }
       setData(updatedData);
-      setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
+      // FIX: Use local date instead of UTC
+      const today = new Date();
+      const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      setNewBusiness({ name: '', description: '', startDate: localDate });
       setShowAddBusiness(false);
     } catch (error) {
 
@@ -3684,7 +3696,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         }
       } catch (e) { console.warn('XP award failed (business item)', e); }
       setData(updatedData);
-      setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0], isPassive: false });
+      const today = new Date();
+      setNewItem({ description: '', amount: '', date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`, isPassive: false });
       setShowAddItem(false);
     } catch (error) {
 
@@ -3869,12 +3882,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
+      const today = new Date();
       setNewRecurringItem({
         name: '',
         amount: '',
         isPassive: false,
         frequency: 'monthly',
-        startDate: new Date().toISOString().split('T')[0],
+        startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
         category: ''
       });
       setShowAddRecurring(false);
@@ -6736,12 +6750,20 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   };
 
   const handleDeleteTransaction = async (transactionId) => {
-    const updatedTransactions = data.transactions.filter(t => t.id !== transactionId);
-    const updatedData = { ...data, transactions: updatedTransactions };
+    // FIX: Delete from BOTH arrays to ensure UI updates
+    const updatedTransactions = (data.transactions || []).filter(t => t.id !== transactionId);
+    const updatedRecentTransactions = (data.recentTransactions || []).filter(t => t.id !== transactionId);
+    
+    const updatedData = { 
+      ...data, 
+      transactions: updatedTransactions,
+      recentTransactions: updatedRecentTransactions
+    };
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
+      console.log('✅ Transaction deleted successfully');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -6753,6 +6775,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   //   console.log('Share moment:', moment);
   // };
       console.error('Error deleting transaction:', error);
+      alert('Failed to delete transaction');
     }
   };
 
@@ -8028,12 +8051,18 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showAddWishlistCountry, setShowAddWishlistCountry] = useState(false);
   const [wishlistCountryInput, setWishlistCountryInput] = useState('');
 
+  // FIX: Helper function for local date
+  const getTodayLocal = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  };
+  
   const [newExpense, setNewExpense] = useState({
     description: '',
     amount: '',
     currency: data.travel?.homeCurrency || 'CAD',
     category: 'other',
-    date: new Date().toISOString().split('T')[0]
+    date: getTodayLocal() // FIX: Use local date instead of UTC
   });
 
   // 🔤 Auto-capitalize first letter of country name
@@ -10265,9 +10294,15 @@ function App() {
   const [editingCard, setEditingCard] = useState(null);
   const [tempCardData, setTempCardData] = useState({});
   
+  // 📅 HELPER: Get today's date in local timezone (not UTC)
+  const getTodayLocal = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  };
+
   // Reset data states
   const [showResetModal, setShowResetModal] = useState(false);
-  const [resetStartDate, setResetStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [resetStartDate, setResetStartDate] = useState(getTodayLocal());
   const [resetToSample, setResetToSample] = useState(false);
   
   // Quick expense logging states
@@ -10318,13 +10353,16 @@ function App() {
   // 💫 MOMENTS SYSTEM
   const [showMomentModal, setShowMomentModal] = useState(false);
   const [editingMoment, setEditingMoment] = useState(null);
-  const [newMoment, setNewMoment] = useState({
-    title: '',
-    story: '',
-    location: '',
-    date: new Date().toISOString().split('T')[0],
-    isAchievement: false,
-    photos: []
+  const [newMoment, setNewMoment] = useState(() => {
+    const today = new Date();
+    return {
+      title: '',
+      story: '',
+      location: '',
+      date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+      isAchievement: false,
+      photos: []
+    };
   });
 
   // 🎯 PRICING PHASE STATE
