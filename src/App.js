@@ -12974,16 +12974,15 @@ function App() {
                 </div>
               )}
               
-              {/* Financial Goals - CLIMBER+ (Full Width) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-2 lg:col-span-2">
-                  <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
-                </div>
-              ) : (
-                <div className="col-span-1 md:col-span-2 lg:col-span-2">
-                  <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-                </div>
-              )}
+              {/* Financial Goals - 🎁 NOW FREE! (3 goals max for free, unlimited for paid) */}
+              <div className="col-span-1 md:col-span-2 lg:col-span-2">
+                <GoalsCard 
+                  data={displayData?.goals} 
+                  onEdit={openCardEditor}
+                  userPlan={userPlan}
+                  goalLimit={getGoalLimit(userPlan)}
+                />
+              </div>
               
               {/* Retirement Accounts - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
