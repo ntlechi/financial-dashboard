@@ -228,6 +228,30 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                   </div>
                   <p className="text-xs text-gray-400">Log income/expenses for your business</p>
                 </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-emerald-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-emerald-400 font-semibold">Create Supply Crate</span>
+                    <span className="bg-emerald-600/20 text-emerald-300 px-2 py-1 rounded text-sm font-bold">+25/+10 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">First crate +25 XP, additional +10 XP each</p>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-amber-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-amber-400 font-semibold">Field Notes Milestones</span>
+                    <span className="bg-amber-600/20 text-amber-300 px-2 py-1 rounded text-sm font-bold">+10-50 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">1st note +10, 5th +15, 10th +25, 25th +50 XP</p>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-rose-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-rose-400 font-semibold">First Climb Protocol</span>
+                    <span className="bg-rose-600/20 text-rose-300 px-2 py-1 rounded text-sm font-bold">+100 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Complete all 4 Week 1 missions for bonus!</p>
+                </div>
               </div>
             </div>
 
