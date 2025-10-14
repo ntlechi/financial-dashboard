@@ -1189,8 +1189,8 @@ const CreditScoreCard = ({ data, onEdit }) => {
   );
 };
 
-// Goals Card
-const GoalsCard = ({ data, onEdit }) => {
+// Goals Card - 🎁 FREE for everyone! (3 max for free, unlimited for paid)
+const GoalsCard = ({ data, onEdit, userPlan, goalLimit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !Array.isArray(data)) {
     return (
@@ -1198,11 +1198,18 @@ const GoalsCard = ({ data, onEdit }) => {
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <Calendar className="w-6 h-6 mr-3 text-amber-400" />
           Financial Goals
+          {userPlan === SUBSCRIPTION_TIERS.FREE && (
+            <span className="text-xs text-amber-400 font-normal ml-2">
+              (0/{goalLimit} goals)
+            </span>
+          )}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
     );
   }
+
+  const isFree = userPlan === SUBSCRIPTION_TIERS.FREE;
 
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -1210,6 +1217,11 @@ const GoalsCard = ({ data, onEdit }) => {
         <h2 className="text-xl font-bold text-white flex items-center">
           <Calendar className="w-6 h-6 mr-3 text-amber-400" />
           Financial Goals
+          {isFree && (
+            <span className="text-xs text-amber-400 font-normal ml-2">
+              ({data.length}/{goalLimit} goals)
+            </span>
+          )}
         </h2>
         <button
           onClick={() => onEdit('goals', data)}
