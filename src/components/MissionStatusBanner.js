@@ -411,6 +411,10 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-orange-400 font-bold">6.</span>
+                  <span><strong>Share your story!</strong> When you hit milestones, complete the Dispatch Mission for +150 XP and "The Storyteller" badge!</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold">7.</span>
                   <span><strong>Aim for 100% Freedom Ratio!</strong> Build passive income streams to unlock all milestones.</span>
                 </li>
               </ul>
