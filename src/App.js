@@ -10839,9 +10839,9 @@ function App() {
       return;
     }
 
-    console.log('🔐 Setting up authentication listener...');
+    debugLog('🔐 Setting up authentication listener...');
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
+      debugLog('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
       setAuthLoading(true);
       
       if (firebaseUser) {
@@ -10907,7 +10907,7 @@ function App() {
               setUserPlan(SUBSCRIPTION_TIERS.FREE);
             }
           } else {
-            console.log('📋 No user document, using free tier');
+            debugLog('📋 No user document, using free tier');
             setUserPlan(SUBSCRIPTION_TIERS.FREE);
           }
         } catch (error) {
@@ -10925,7 +10925,7 @@ function App() {
         }
       } else {
         // User is signed out - show authentication screen
-        console.log('No user found, showing auth screen...');
+        debugLog('No user found, showing auth screen...');
         setUser(null);
         setUserId(null);
         setData(null);
