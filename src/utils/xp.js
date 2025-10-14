@@ -24,7 +24,8 @@ export function getRankFromXp(totalXp) {
 }
 
 export async function ensureUserProfileInitialized(db, userId) {
-  const profileRef = doc(db, `users/${userId}/profile`);
+  // FIX: Use userProfiles collection with userId as document ID (2 segments)
+  const profileRef = doc(db, 'userProfiles', userId);
   const snap = await getDoc(profileRef);
   if (!snap.exists()) {
     const initial = { xpPoints: 0, rank: 'Recruit', rankLevel: 1, unlockedMilestones: [], createdAt: new Date().toISOString() };
@@ -46,7 +47,8 @@ export async function ensureUserProfileInitialized(db, userId) {
 // Awards XP and updates rank if threshold crossed. Returns { totalXp, rankUp, newRank }
 export async function awardXp(db, userId, amount) {
   if (!db || !userId || !amount) return { totalXp: 0, rankUp: false, newRank: null };
-  const profileRef = doc(db, `users/${userId}/profile`);
+  // FIX: Use userProfiles collection with userId as document ID (2 segments)
+  const profileRef = doc(db, 'userProfiles', userId);
   const snap = await getDoc(profileRef);
   const current = snap.exists() ? snap.data() : { xpPoints: 0, rank: 'Recruit', rankLevel: 1 };
   const totalXp = Math.max(0, (current.xpPoints || 0) + amount);
