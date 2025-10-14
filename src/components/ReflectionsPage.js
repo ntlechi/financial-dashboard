@@ -3,7 +3,7 @@ import { BookOpen, Download, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2,
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId }) {
+export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId, checkFeatureAccess, showUpgradePromptForFeature }) {
   const [expandedEntries, setExpandedEntries] = useState(new Set());
   const [expandedNotes, setExpandedNotes] = useState(new Set());
   const [allJournalEntries, setAllJournalEntries] = useState([]);
@@ -295,15 +295,31 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
             </p>
           </div>
           
-          {/* Export Button */}
-          <button
-            onClick={() => exportFieldNotesToPDF()}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
-            title="Export all field notes"
-          >
-            <Download className="w-5 h-5" />
-            Export Notes
-          </button>
+          {/* Export Button - FREE users see upgrade prompt */}
+          {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
+            <button
+              onClick={() => exportFieldNotesToPDF()}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+              title="Export all field notes"
+            >
+              <Download className="w-5 h-5" />
+              Export Notes
+            </button>
+          ) : (
+            <button
+              onClick={() => showUpgradePromptForFeature && showUpgradePromptForFeature('field-notes-export')}
+              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+              title="Upgrade to export notes"
+            >
+              <Download className="w-5 h-5" />
+              <span className="flex items-center gap-2">
+                Export Notes
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+              </span>
+            </button>
+          )}
         </div>
       </div>
 
