@@ -190,20 +190,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                 </div>
               </div>
 
-              {moment.photos && moment.photos.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4">
-                  {moment.photos.slice(0, 4).map((photo, index) => (
-                    <div key={index} className="relative w-full h-24 bg-gray-700 rounded-lg overflow-hidden">
-                      <img src={photo.url} alt={`Moment photo ${index + 1}`} className="w-full h-full object-cover"/>
-                      {index === 3 && moment.photos.length > 4 && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-lg font-bold">
-                          +{moment.photos.length - 4}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* Photos removed for launch - text-only moments for scalability */}
 
               <p className="text-gray-300 mb-4">{moment.story}</p>
 
