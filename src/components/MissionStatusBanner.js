@@ -385,6 +385,60 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
               </div>
             </div>
 
+            {/* XP Management - IMPORTANT! */}
+            <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 rounded-lg p-5 border border-red-600/40">
+              <h3 className="text-xl font-bold text-red-300 mb-3 flex items-center gap-2">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                ⚠️ XP Management - READ THIS!
+              </h3>
+              <div className="space-y-3 text-sm text-gray-200">
+                <p className="font-semibold text-red-200">
+                  🎮 <strong>XP works both ways!</strong> You earn XP by creating things, but you also LOSE XP by deleting them.
+                </p>
+                <div className="bg-black/30 rounded-lg p-3 space-y-2">
+                  <div className="font-semibold text-amber-300">YOU LOSE XP WHEN YOU DELETE:</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center gap-1">
+                      <span className="text-red-400">−50 XP</span>
+                      <span>Delete Business</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-red-400">−50 XP</span>
+                      <span>Delete Investment</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-red-400">−25 XP</span>
+                      <span>Delete Goal</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-red-400">−10-25 XP</span>
+                      <span>Delete Supply Crate</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-red-400">−10 XP</span>
+                      <span>Delete Moment</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-green-900/20 rounded-lg p-3 border border-green-600/30">
+                  <div className="font-semibold text-green-300 mb-1">✅ NO PENALTY for:</div>
+                  <ul className="text-xs space-y-1 text-green-200">
+                    <li>• Deleting transactions (corrections are okay!)</li>
+                    <li>• Deleting Field Notes (personal journaling!)</li>
+                    <li>• Editing items (only deletion loses XP!)</li>
+                  </ul>
+                </div>
+                <p className="text-amber-300 font-semibold">
+                  💡 <strong>Pro Tip:</strong> Think long-term! Build your financial foundation steadily. The game rewards consistency, not churning!
+                </p>
+                <p className="text-xs text-gray-400">
+                  🛡️ <strong>Why?</strong> This prevents exploits and keeps the game fair for everyone. You can't spam create/delete for infinite XP!
+                </p>
+              </div>
+            </div>
+
             {/* Pro Tips */}
             <div className="bg-gradient-to-r from-blue-900/30 to-indigo-900/30 rounded-lg p-5 border border-blue-600/30">
               <h3 className="text-xl font-bold text-blue-300 mb-3">💡 Pro Tips for Fast Progression</h3>
