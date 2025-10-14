@@ -65,9 +65,13 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                   <Gamepad2 className="w-4 h-4" />
                 </button>
               </div>
+              {/* FIX: Show total XP earned (motivating!) */}
+              <div className="text-xs font-bold text-amber-400">
+                ⚡ {(profile.xpPoints || 0).toLocaleString()} XP Earned
+              </div>
               {next && (
                 <div className="text-xs opacity-90">
-                  {progress}% to {next.name}
+                  {next.xpRequired - (profile.xpPoints || 0)} XP to {next.name}
                 </div>
               )}
             </div>

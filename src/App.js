@@ -3381,7 +3381,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
 };
 
 // Side Hustle Management Component
-const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
+const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger }) => {
   const [showAddBusiness, setShowAddBusiness] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [showAddItem, setShowAddItem] = useState(false);
@@ -3620,6 +3620,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       // Award XP (+50) for creating a new business and trigger rank-up UI if applicable
       try {
         const result = await awardXp(db, userId, 50);
+        setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
         if (result?.rankUp && result.newRank) {
           const prev = getRankFromXp((result.totalXp || 0) - 50);
           setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 50, action: 'new business' });
@@ -3686,6 +3687,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       try {
         const amountXp = itemType === 'income' ? 5 : 1;
         const result = await awardXp(db, userId, amountXp);
+        setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
         if (result?.rankUp && result.newRank) {
           const prev = getRankFromXp((result.totalXp || 0) - amountXp);
           setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: amountXp, action: 'business item' });
@@ -4954,7 +4956,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 };
 
 // Investment Portfolio Component with Charts
-const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
+const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger }) => {
   const pieChartRef = useRef(null);
   const lineChartRef = useRef(null);
   const [showAddHolding, setShowAddHolding] = useState(false);
@@ -5460,6 +5462,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         // Award XP (+50) for adding a new investment holding
         try {
           const result = await awardXp(db, userId, 50);
+          setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
           if (result?.rankUp && result.newRank) {
             const prev = getRankFromXp((result.totalXp || 0) - 50);
             setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 50, action: 'add holding' });
@@ -6545,7 +6548,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   };
 
 // Transaction Management Component
-const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
+const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger }) => {
   const spendingChartRef = useRef(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -6650,6 +6653,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       // Award XP (+1) for logging a transaction
       try {
         const result = await awardXp(db, userId, 1);
+        setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
         if (result?.rankUp && result.newRank) {
           const prev = getRankFromXp((result.totalXp || 0) - 1);
           setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 1, action: 'transaction' });
@@ -10482,6 +10486,7 @@ function App() {
       if (!editingMoment) {
         try {
           const result = await awardXp(db, userId, 10);
+          setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
           if (result?.rankUp && result.newRank) {
             const prev = getRankFromXp((result.totalXp || 0) - 10);
             setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 10, action: 'moment created' });
@@ -11382,6 +11387,7 @@ function App() {
         if (editingCard === 'goals') { xpAmount = 25; action = 'create goal'; }
         else if (editingCard === 'budgets') { xpAmount = 25; action = 'create budget'; }
         const result = await awardXp(db, userId, xpAmount);
+        setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
         if (result?.rankUp && result.newRank) {
           const prev = getRankFromXp((result.totalXp || 0) - xpAmount);
           setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: xpAmount, action });
@@ -11511,10 +11517,10 @@ function App() {
         ...initialData,
         // Update all dates to spread across the month
         transactions: initialData.transactions.map((t, index) => {
-          // Spread transactions across the month (days 1, 3, 5, 8, 10, 12, 15, etc.)
-          const daysToAdd = index * 2; // 0, 2, 4, 6, 8, 10, 12, 14...
+          // FIX: Spread transactions across the PAST month, not future
+          const daysToSubtract = index * 2; // 0, 2, 4, 6, 8, 10, 12, 14...
           const transactionDate = new Date(startDate);
-          transactionDate.setDate(startDate.getDate() + daysToAdd);
+          transactionDate.setDate(startDate.getDate() - daysToSubtract); // SUBTRACT days to go backwards
           
           return {
             ...t,
@@ -12005,6 +12011,7 @@ function App() {
       // Award XP for journaling
       try {
         const result = await awardXp(db, userId, 10);
+        setXpRefreshTrigger(prev => prev + 1); // FIX: Refresh XP banner
         if (result?.rankUp && result.newRank) {
           const prev = getRankFromXp((result.totalXp || 0) - 10);
           setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 10, action: 'quick journal' });
@@ -12959,7 +12966,7 @@ function App() {
           
           {activeTab === 'side-hustle' && (
             <FinancialErrorBoundary componentName="Side Hustle Management">
-              <SideHustleTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
+              <SideHustleTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} setXpRefreshTrigger={setXpRefreshTrigger} />
             </FinancialErrorBoundary>
           )}
           
@@ -12975,13 +12982,13 @@ function App() {
           
           {activeTab === 'investment' && (
             <FinancialErrorBoundary componentName="Investment Portfolio">
-              <InvestmentTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
+              <InvestmentTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} setXpRefreshTrigger={setXpRefreshTrigger} />
             </FinancialErrorBoundary>
           )}
           
           {activeTab === 'transactions' && (
             <FinancialErrorBoundary componentName="Transaction Management">
-              <TransactionsTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
+              <TransactionsTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} setXpRefreshTrigger={setXpRefreshTrigger} />
             </FinancialErrorBoundary>
           )}
           
