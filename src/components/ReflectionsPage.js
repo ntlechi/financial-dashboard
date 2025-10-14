@@ -3,7 +3,7 @@ import { BookOpen, Download, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2,
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId, checkFeatureAccess, showUpgradePromptForFeature }) {
+export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId, checkFeatureAccess, showUpgradePromptForFeature, awardXp, setXpRefreshTrigger }) {
   const [expandedEntries, setExpandedEntries] = useState(new Set());
   const [expandedNotes, setExpandedNotes] = useState(new Set());
   const [allJournalEntries, setAllJournalEntries] = useState([]);
@@ -114,8 +114,8 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
   };
 
   // Quick Notes Handlers
-  const addQuickNote = () => {
-    if (!newNote.trim()) return;
+  const addQuickNote = async () => {
+    if (!newNote.trim() || !userId) return;
     
     const note = {
       id: Date.now(),
@@ -124,9 +124,56 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
       createdAt: new Date().toLocaleString()
     };
     
-    setQuickNotes(prev => [note, ...prev]);
-    setNewNote('');
-    setShowAddNote(false);
+    const updatedNotes = [note, ...(data.fieldNotes || [])];
+    
+    // Save to Firebase
+    const updatedData = {
+      ...data,
+      fieldNotes: updatedNotes
+    };
+    
+    try {
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      onUpdateData(updatedData);
+      setQuickNotes(updatedNotes);
+      
+      // 🎮 GAMIFICATION: Award XP for Field Notes milestones!
+      const noteCount = updatedNotes.length;
+      if (awardXp && setXpRefreshTrigger) {
+        try {
+          if (noteCount === 1) {
+            await awardXp(db, userId, 10);
+            showNotification('📝 First note! +10 XP', 'success');
+            setXpRefreshTrigger(prev => prev + 1);
+          } else if (noteCount === 5) {
+            await awardXp(db, userId, 15);
+            showNotification('🎯 5 notes milestone! +15 XP', 'success');
+            setXpRefreshTrigger(prev => prev + 1);
+          } else if (noteCount === 10) {
+            await awardXp(db, userId, 25);
+            showNotification('📚 10 notes milestone! +25 XP', 'success');
+            setXpRefreshTrigger(prev => prev + 1);
+          } else if (noteCount === 25) {
+            await awardXp(db, userId, 50);
+            showNotification('🏆 25 notes milestone! +50 XP', 'success');
+            setXpRefreshTrigger(prev => prev + 1);
+          } else {
+            showNotification('📝 Note saved!', 'success');
+          }
+        } catch (error) {
+          console.warn('XP award failed (field note)', error);
+          showNotification('📝 Note saved!', 'success');
+        }
+      } else {
+        showNotification('📝 Note saved!', 'success');
+      }
+      
+      setNewNote('');
+      setShowAddNote(false);
+    } catch (error) {
+      console.error('Error saving note:', error);
+      showNotification('Failed to save note', 'error');
+    }
   };
 
   const startEditingNote = (note) => {

@@ -79,6 +79,11 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
+// 🧹 PRODUCTION-READY LOGGING: Only log in development, silent in production
+const isDevelopment = process.env.NODE_ENV === 'development';
+const debugLog = isDevelopment ? console.log.bind(console) : () => {};
+const infoLog = isDevelopment ? console.log.bind(console) : () => {};
+
 // 🤖 Smart Expense Categorization System
 const expenseCategorizationRules = {
   housing: [
@@ -4309,7 +4314,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               type="date"
               value={newBusiness.startDate}
               onChange={(e) => setNewBusiness({...newBusiness, startDate: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
             />
           </div>
           
@@ -6438,7 +6443,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     placeholder="Shares"
                     value={editingHolding.shares === 0 ? '0' : (editingHolding.shares || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, shares: e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                   
                   <input
@@ -6446,7 +6451,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     placeholder="Avg Cost"
                     value={editingHolding.avgCost === 0 ? '0' : (editingHolding.avgCost || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, avgCost: e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 
@@ -6456,7 +6461,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     placeholder="Current Price"
                     value={editingHolding.currentPrice === 0 ? '0' : (editingHolding.currentPrice || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, currentPrice: e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                   
                   <input
@@ -6464,7 +6469,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     placeholder="Dividend Yield %"
                     value={editingHolding.dividendYield === 0 ? '0' : (editingHolding.dividendYield || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, dividendYield: e.target.value})}
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 
@@ -6769,7 +6774,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
-      console.log('✅ Transaction deleted successfully');
+      infoLog('✅ Transaction deleted successfully');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -6786,9 +6791,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   };
 
   // 🔍 UPGRADE 2: Advanced Filtering Logic with Search
-  console.log('🔍 DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
-  console.log('🔍 DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
-  console.log('🔍 DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
+  debugLog('🔍 DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
+  debugLog('🔍 DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
+  debugLog('🔍 DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
   
   const filteredTransactions = (data.recentTransactions || data.transactions || [])
     // Keyword search (description)
@@ -7185,7 +7190,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     }));
                   }
                 }}
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
               <input
@@ -7193,7 +7198,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 placeholder="Amount"
                 value={newTransaction.amount === 0 ? '0' : (newTransaction.amount || '')}
                 onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value})}
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
               
               <select
@@ -7229,7 +7234,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 type="date"
                 value={newTransaction.date}
                 onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
               />
             </div>
 
@@ -11718,13 +11723,13 @@ function App() {
     }
 
     try {
-      console.log('🔧 Reset Data: Starting Firebase write...');
+      debugLog('🔧 Reset Data: Starting Firebase write...');
       // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
-      console.log('✅ Reset Data: Firebase write successful');
+      debugLog('✅ Reset Data: Firebase write successful');
       
       // 🎮 CRITICAL FIX: Also reset XP profile to 0!
-      console.log('🎮 Resetting XP profile to Recruit (0 XP)...');
+      debugLog('🎮 Resetting XP profile to Recruit (0 XP)...');
       const initialProfile = {
         xpPoints: 0,
         rank: 'Recruit',
@@ -11733,17 +11738,17 @@ function App() {
         createdAt: new Date().toISOString()
       };
       await setDoc(doc(db, 'userProfiles', userId), initialProfile);
-      console.log('✅ XP profile reset successful');
+      debugLog('✅ XP profile reset successful');
       
       setData(resetData);
-      console.log('✅ Reset Data: Local state updated');
+      debugLog('✅ Reset Data: Local state updated');
       
       // Trigger MissionStatusBanner refresh by changing state
       setXpRefreshTrigger(prev => prev + 1);
       
       setShowResetModal(false);
       setResetToSample(false);
-      console.log('✅ Reset Data: Modal closed');
+      debugLog('✅ Reset Data: Modal closed');
       
       showNotification('✅ Data reset successfully! XP reset to 0.', 'success');
     } catch (error) {
@@ -11948,16 +11953,16 @@ function App() {
     };
 
     try {
-      console.log('🔍 DEBUG: Quick Expense Transaction:', transaction);
-      console.log('🔍 DEBUG: Updated transactions array length:', updatedTransactions.length);
-      console.log('🔍 DEBUG: Updated recentTransactions array length:', updatedData.recentTransactions.length);
-      console.log('🔍 DEBUG: First item in recentTransactions:', updatedData.recentTransactions[0]);
+      debugLog('🔍 DEBUG: Quick Expense Transaction:', transaction);
+      debugLog('🔍 DEBUG: Updated transactions array length:', updatedTransactions.length);
+      debugLog('🔍 DEBUG: Updated recentTransactions array length:', updatedData.recentTransactions.length);
+      debugLog('🔍 DEBUG: First item in recentTransactions:', updatedData.recentTransactions[0]);
       
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       
-      console.log('✅ DEBUG: Data saved to Firebase and state updated');
-      console.log('🔍 DEBUG: Current data.recentTransactions:', updatedData.recentTransactions.slice(0, 3));
+      debugLog('✅ DEBUG: Data saved to Firebase and state updated');
+      debugLog('🔍 DEBUG: Current data.recentTransactions:', updatedData.recentTransactions.slice(0, 3));
       
       showNotification('⚡ Quick expense logged!', 'success');
       
@@ -13070,6 +13075,8 @@ function App() {
                 userId={userId}
                 checkFeatureAccess={checkFeatureAccess}
                 showUpgradePromptForFeature={showUpgradePromptForFeature}
+                awardXp={awardXp}
+                setXpRefreshTrigger={setXpRefreshTrigger}
               />
             </FinancialErrorBoundary>
           )}
