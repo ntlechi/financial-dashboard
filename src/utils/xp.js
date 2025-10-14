@@ -84,7 +84,8 @@ export async function checkMilestoneUnlocks(db, userId, freedomRatio, currentUnl
 
   // Update user profile with new milestones if any were unlocked
   if (newMilestones.length > 0) {
-    const profileRef = doc(db, `users/${userId}/profile`);
+    // FIX: Use userProfiles collection with userId as document ID (2 segments)
+    const profileRef = doc(db, 'userProfiles', userId);
     await setDoc(profileRef, { unlockedMilestones: updatedMilestones }, { merge: true });
   }
 

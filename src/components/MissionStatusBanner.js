@@ -20,7 +20,8 @@ export default function MissionStatusBanner({ userId }) {
     async function load() {
       if (!userId) return;
       try {
-        const snap = await getDoc(doc(db, `users/${userId}/profile`));
+        // FIX: Use userProfiles collection with userId as document ID (2 segments)
+        const snap = await getDoc(doc(db, 'userProfiles', userId));
         if (isMounted) setProfile(snap.exists() ? snap.data() : { xpPoints: 0, rank: 'Recruit', rankLevel: 1 });
       } catch (e) {
         if (isMounted) setProfile({ xpPoints: 0, rank: 'Recruit', rankLevel: 1 });

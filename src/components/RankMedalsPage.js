@@ -58,7 +58,8 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
     async function loadProfile() {
       if (!userId) return;
       try {
-        const snap = await getDoc(doc(db, `users/${userId}/profile`));
+        // FIX: Use userProfiles collection with userId as document ID (2 segments)
+        const snap = await getDoc(doc(db, 'userProfiles', userId));
         setProfile(snap.exists() ? snap.data() : { xpPoints: 0, rank: 'Recruit', rankLevel: 1 });
       } catch (e) {
         setProfile({ xpPoints: 0, rank: 'Recruit', rankLevel: 1 });
