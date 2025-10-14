@@ -18,6 +18,11 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
+    // 🎮 NEW: User profiles collection (gamification data) - FIX for 2-segment path
+    match /userProfiles/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
     // User subscription data - only accessible by the authenticated user
     match /users/{userId}/subscription {
       allow read, write: if request.auth != null && request.auth.uid == userId;
