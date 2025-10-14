@@ -6757,6 +6757,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   };
 
   // 🔍 UPGRADE 2: Advanced Filtering Logic with Search
+  console.log('🔍 DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
+  console.log('🔍 DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
+  console.log('🔍 DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
+  
   const filteredTransactions = (data.recentTransactions || data.transactions || [])
     // Keyword search (description)
     .filter(t => {
@@ -11857,8 +11861,17 @@ function App() {
     };
 
     try {
+      console.log('🔍 DEBUG: Quick Expense Transaction:', transaction);
+      console.log('🔍 DEBUG: Updated transactions array length:', updatedTransactions.length);
+      console.log('🔍 DEBUG: Updated recentTransactions array length:', updatedData.recentTransactions.length);
+      console.log('🔍 DEBUG: First item in recentTransactions:', updatedData.recentTransactions[0]);
+      
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
+      
+      console.log('✅ DEBUG: Data saved to Firebase and state updated');
+      console.log('🔍 DEBUG: Current data.recentTransactions:', updatedData.recentTransactions.slice(0, 3));
+      
       showNotification('⚡ Quick expense logged!', 'success');
       
       // Award XP for logging expense
@@ -11882,7 +11895,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('Error adding quick expense:', error);
+      console.error('❌ ERROR adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
   };
