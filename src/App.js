@@ -19,6 +19,7 @@ import FreedomMilestones from './components/FreedomMilestones';
 import UpgradePrompt from './components/UpgradePrompt';
 import FreedomJournal from './components/FreedomJournal';
 import ReflectionsPage from './components/ReflectionsPage';
+import FirstClimbProtocol from './components/FirstClimbProtocol';
 import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
@@ -10307,6 +10308,15 @@ function App() {
   // 🎮 XP Refresh Trigger - increment this to force MissionStatusBanner to reload
   const [xpRefreshTrigger, setXpRefreshTrigger] = useState(0);
 
+  // 🎯 First Climb Protocol states
+  const [showFirstClimbProtocol, setShowFirstClimbProtocol] = useState(false);
+  const [missions, setMissions] = useState({
+    mission1: { completed: false, progress: 0, target: 10 },
+    mission2: { completed: false, progress: 0, target: 3 },
+    mission3: { completed: false, progress: 0, target: 1 },
+    mission4: { completed: false, progress: 0, target: 1 }
+  });
+
   // Reset data states
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetStartDate, setResetStartDate] = useState(getTodayLocal());
@@ -13058,6 +13068,20 @@ function App() {
             onClose={closeQuickJournal}
             onSave={saveQuickJournal}
           />
+
+          {/* 🎯 First Climb Protocol - Week 1 Missions */}
+          {showFirstClimbProtocol && (
+            <FirstClimbProtocol
+              userId={userId}
+              data={data}
+              onClose={() => setShowFirstClimbProtocol(false)}
+              onComplete={() => {
+                setXpRefreshTrigger(prev => prev + 1);
+                setShowFirstClimbProtocol(false);
+              }}
+              awardXp={awardXp}
+            />
+          )}
 
           {/* 💫 Moments Modal - Add/Edit Moments */}
           {showMomentModal && (
