@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -20,6 +20,7 @@ import UpgradePrompt from './components/UpgradePrompt';
 import FreedomJournal from './components/FreedomJournal';
 import ReflectionsPage from './components/ReflectionsPage';
 import FirstClimbProtocol from './components/FirstClimbProtocol';
+import SupplyCrateSystem from './components/SupplyCrateSystem';
 import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
@@ -12966,12 +12967,51 @@ function App() {
           )}
           
           {activeTab === 'budget' && (
-            <ErrorBoundary>
-              <BudgetCalculatorTab 
-                checkFeatureAccess={checkFeatureAccess}
-                showUpgradePromptForFeature={showUpgradePromptForFeature}
-              />
-            </ErrorBoundary>
+            <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
+              {/* 📦 Supply Crate System - Climber+ Feature */}
+              {checkFeatureAccess('financial-calculators') ? (
+                <SupplyCrateSystem
+                  data={data}
+                  setData={setData}
+                  userId={userId}
+                  currentMonth={new Date().getMonth()}
+                />
+              ) : (
+                <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-gray-700/50 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-green-600/20 rounded-full flex items-center justify-center">
+                    <Package className="w-8 h-8 text-green-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">📦 Supply Crate System</h3>
+                  <p className="text-gray-300 mb-4 max-w-lg mx-auto">
+                    Real-time budget management that shows you EXACTLY what you can spend, right now. 
+                    Like envelope budgeting, but gamified!
+                  </p>
+                  <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30 mb-6 max-w-md mx-auto">
+                    <div className="text-sm text-green-200 space-y-2">
+                      <p>✅ Assign monthly supplies to each category</p>
+                      <p>✅ Track burn rate in real-time</p>
+                      <p>✅ Visual warnings before overspending</p>
+                      <p>✅ The discipline tool you've been missing!</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => showUpgradePromptForFeature('financial-calculators')}
+                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                  >
+                    <Crown className="w-5 h-5" />
+                    Upgrade to Climber
+                  </button>
+                </div>
+              )}
+
+              {/* Original Budget Calculator */}
+              <ErrorBoundary>
+                <BudgetCalculatorTab 
+                  checkFeatureAccess={checkFeatureAccess}
+                  showUpgradePromptForFeature={showUpgradePromptForFeature}
+                />
+              </ErrorBoundary>
+            </div>
           )}
           
           {activeTab === 'side-hustle' && (
