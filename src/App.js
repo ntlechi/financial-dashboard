@@ -12868,13 +12868,9 @@ function App() {
                 />
               </StealthCard>
               
-              {/* Rainy Day Fund - CLIMBER+ (Right) */}
+              {/* Rainy Day Fund - 🎁 NOW FREE! (Emergency fund tracking) */}
               <StealthCard>
-                {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                  <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
-                ) : (
-                  <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-                )}
+                <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
               </StealthCard>
               </div>
               
@@ -15169,31 +15165,6 @@ function App() {
                   >
                     <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                    </svg>
-                    <div>
-                      <p className="text-white font-medium">Click to select backup file</p>
-                      <p className="text-sm text-gray-400">JSON format only</p>
-                    </div>
-                  </label>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Wrap the entire app with error boundary for maximum protection
-const AppWithErrorBoundary = () => (
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
-
-export default AppWithErrorBoundary;
-okeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                     </svg>
                     <div>
                       <p className="text-white font-medium">Click to select backup file</p>
