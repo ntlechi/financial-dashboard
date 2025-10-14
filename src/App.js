@@ -8790,11 +8790,13 @@ const TravelTab = ({ data, setData, userId }) => {
                     </svg>
                   </div>
                   
-                  {/* The Map */}
+                  {/* The Map - FIX: Prevent scroll-to-top on mobile */}
                   <div 
-                    onTouchStart={(e) => e.stopPropagation()}
-                    onTouchMove={(e) => e.stopPropagation()}
-                    onTouchEnd={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => { e.stopPropagation(); }}
+                    onTouchMove={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                    onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    style={{ touchAction: 'none', userSelect: 'none' }}
                   >
                   <ComposableMap
                     projection="geoMercator"
@@ -8807,10 +8809,11 @@ const TravelTab = ({ data, setData, userId }) => {
                       height: 'auto',
                       minHeight: '400px',
                       background: 'linear-gradient(to bottom, #1e3a5f, #0f1f3d)',
-                      touchAction: 'manipulation'
+                      touchAction: 'none',
+                      userSelect: 'none'
                     }}
                   >
-                    <ZoomableGroup>
+                    <ZoomableGroup zoom={1} minZoom={1} maxZoom={3}>
                       <Geographies geography="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json">
                         {({ geographies }) =>
                           geographies.map((geo) => {
@@ -12975,6 +12978,8 @@ function App() {
                   setData={setData}
                   userId={userId}
                   currentMonth={new Date().getMonth()}
+                  awardXp={awardXp}
+                  setXpRefreshTrigger={setXpRefreshTrigger}
                 />
               ) : (
                 <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-gray-700/50 text-center">

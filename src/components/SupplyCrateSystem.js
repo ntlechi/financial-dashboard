@@ -7,7 +7,7 @@ import { Package, Plus, Edit3, Trash2, AlertCircle, CheckCircle, TrendingDown, X
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export default function SupplyCrateSystem({ data, setData, userId, currentMonth }) {
+export default function SupplyCrateSystem({ data, setData, userId, currentMonth, awardXp, setXpRefreshTrigger }) {
   const [crates, setCrates] = useState([]);
   const [showAddCrate, setShowAddCrate] = useState(false);
   const [editingCrate, setEditingCrate] = useState(null);
@@ -99,6 +99,17 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth 
 
     const updatedCrates = [...crates, crate];
     await saveCrates(updatedCrates);
+
+    // 🎮 GAMIFICATION: Award XP for creating Supply Crate!
+    if (awardXp && setXpRefreshTrigger) {
+      try {
+        const xpAmount = crates.length === 0 ? 25 : 10; // First crate = 25 XP, others = 10 XP
+        await awardXp(db, userId, xpAmount);
+        setXpRefreshTrigger(prev => prev + 1);
+      } catch (error) {
+        console.warn('XP award failed (supply crate)', error);
+      }
+    }
 
     setNewCrate({ name: '', allocated: '', category: 'needs', icon: '📦' });
     setShowAddCrate(false);
