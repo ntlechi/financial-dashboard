@@ -69,14 +69,19 @@ async function handleCheckoutCompleted(session) {
     return;
   }
 
-  // Map Stripe price IDs to our subscription tiers
+  // 🔧 REAL STRIPE PRICE IDS - Updated with actual production IDs!
   const planMapping = {
-    'price_climber_monthly': SUBSCRIPTION_TIERS.CLIMBER,
-    'price_climber_annual': SUBSCRIPTION_TIERS.CLIMBER,
-    'price_operator_monthly': SUBSCRIPTION_TIERS.OPERATOR,
-    'price_operator_annual': SUBSCRIPTION_TIERS.OPERATOR,
-    'price_founders_monthly': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
-    'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+    // Founder's Circle (Phase 1: Oct 19-26, 2025)
+    'price_1SEtrg82nQ0x7qb2NBJr0IVU': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, // $7.49/month ✅
+    
+    // Early Adopter (Phase 2: Oct 27 - Jan 1, 2026)
+    'price_1SH2rg82nQ0x7qb2wte7rkSV': SUBSCRIPTION_TIERS.EARLY_ADOPTER, // $8.49/month ✅
+    
+    // Regular Pricing (Phase 3: Jan 2, 2026+)
+    'price_1fZu9ANe1ge3F07Q6aX7bW05': SUBSCRIPTION_TIERS.CLIMBER, // Climber Monthly
+    'price_19B628l8GWaRtbQyard7bW06': SUBSCRIPTION_TIERS.CLIMBER, // Climber Yearly
+    'price_1aFa6oB1eu6Bd2fY6aX7bW03': SUBSCRIPTION_TIERS.OPERATOR, // Operator Monthly
+    'price_14gM8wJ6yOcZBcUC0QD7bW04': SUBSCRIPTION_TIERS.OPERATOR, // Operator Yearly
   };
 
   const subscriptionTier = planMapping[planId];
@@ -137,14 +142,19 @@ async function handleSubscriptionUpdated(subscription) {
     return;
   }
 
-  // Map Stripe price ID to subscription tier
+  // 🔧 REAL STRIPE PRICE IDS - Updated with actual production IDs!
   const planMapping = {
-    'price_climber_monthly': SUBSCRIPTION_TIERS.CLIMBER,
-    'price_climber_annual': SUBSCRIPTION_TIERS.CLIMBER,
-    'price_operator_monthly': SUBSCRIPTION_TIERS.OPERATOR,
-    'price_operator_annual': SUBSCRIPTION_TIERS.OPERATOR,
-    'price_founders_monthly': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
-    'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+    // Founder's Circle (Phase 1: Oct 19-26, 2025)
+    'price_1SEtrg82nQ0x7qb2NBJr0IVU': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, // $7.49/month ✅
+    
+    // Early Adopter (Phase 2: Oct 27 - Jan 1, 2026)
+    'price_1SH2rg82nQ0x7qb2wte7rkSV': SUBSCRIPTION_TIERS.EARLY_ADOPTER, // $8.49/month ✅
+    
+    // Regular Pricing (Phase 3: Jan 2, 2026+)
+    'price_1fZu9ANe1ge3F07Q6aX7bW05': SUBSCRIPTION_TIERS.CLIMBER, // Climber Monthly
+    'price_19B628l8GWaRtbQyard7bW06': SUBSCRIPTION_TIERS.CLIMBER, // Climber Yearly
+    'price_1aFa6oB1eu6Bd2fY6aX7bW03': SUBSCRIPTION_TIERS.OPERATOR, // Operator Monthly
+    'price_14gM8wJ6yOcZBcUC0QD7bW04': SUBSCRIPTION_TIERS.OPERATOR, // Operator Yearly
   };
 
   const priceId = subscription.items.data[0]?.price.id;
