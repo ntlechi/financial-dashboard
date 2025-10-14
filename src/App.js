@@ -10404,8 +10404,7 @@ function App() {
       story: '',
       location: '',
       date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-      isAchievement: false,
-      photos: []
+      isAchievement: false
     };
   });
 
@@ -10442,8 +10441,7 @@ function App() {
         story: moment.story || '',
         location: moment.location || '',
         date: moment.timestamp ? new Date(moment.timestamp).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        isAchievement: moment.isAchievement || false,
-        photos: moment.photos || []
+        isAchievement: moment.isAchievement || false
       });
     } else {
       // Create new moment
@@ -10453,8 +10451,7 @@ function App() {
         story: '',
         location: '',
         date: new Date().toISOString().split('T')[0],
-        isAchievement: false,
-        photos: []
+        isAchievement: false
       });
     }
     setShowMomentModal(true);
@@ -10514,8 +10511,7 @@ function App() {
         story: '',
         location: '',
         date: new Date().toISOString().split('T')[0],
-        isAchievement: false,
-        photos: []
+        isAchievement: false
       });
       showNotification(editingMoment ? '✨ Moment updated!' : '💫 Moment created!', 'success');
       
@@ -13091,7 +13087,7 @@ function App() {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3">💫 Moments - Operator Feature</h3>
                   <p className="text-gray-300 mb-6 max-w-lg mx-auto">
-                    Capture and celebrate your financial milestones with photos and stories. 
+                    Capture and celebrate your financial milestones with stories and achievements. 
                     Document your journey from start to freedom!
                   </p>
                   <button
