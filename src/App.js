@@ -50,10 +50,7 @@ import {
 import { 
   createBackup, 
   getUserBackups, 
-  restoreFromBackup, 
-  saveVersion, 
-  getVersionHistory, 
-  restoreFromVersion,
+  restoreFromBackup,
   getDataSafetySummary,
   exportUserData,
   importUserData,
