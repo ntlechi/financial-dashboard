@@ -3,11 +3,20 @@ import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import FixedModal, { FixedInput, FixedButton } from './FixedModal';
 
+// Helper function to get local date in YYYY-MM-DD format (fixes "tomorrow" bug)
+const getTodayLocalDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
   const [expense, setExpense] = useState({
     description: '',
     amount: '',
-    date: new Date().toISOString().split('T')[0],
+    date: getTodayLocalDate(), // FIX: Use local date instead of UTC
   });
 
   const handleSave = () => {
@@ -26,7 +35,7 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
     setExpense({
       description: '',
       amount: '',
-      date: new Date().toISOString().split('T')[0],
+      date: getTodayLocalDate(), // FIX: Use local date
     });
 
     onClose();
@@ -37,7 +46,7 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
     setExpense({
       description: '',
       amount: '',
-      date: new Date().toISOString().split('T')[0],
+      date: getTodayLocalDate(), // FIX: Use local date
     });
     onClose();
   };

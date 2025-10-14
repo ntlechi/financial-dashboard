@@ -11829,6 +11829,13 @@ function App() {
     const amount = parseFloat(expense.amount);
     if (isNaN(amount) || amount <= 0) return;
 
+    // CRITICAL FIX: Ensure data is valid before proceeding
+    if (!data || typeof data !== 'object') {
+      console.error('❌ Quick Expense Error: data is invalid:', data);
+      showNotification('Error: Data not loaded. Please refresh the page.', 'error');
+      return;
+    }
+
     const transaction = {
       id: Date.now(),
       description: expense.description,
@@ -11845,10 +11852,14 @@ function App() {
 
     // CRITICAL FIX: Ensure transaction appears in Recent Transactions immediately!
     // Add to ALL transaction arrays AND ensure recentTransactions mirrors transactions
-    const updatedTransactions = [transaction, ...(data.transactions || [])].sort((a, b) => 
+    // SAFETY: Ensure arrays exist before spreading
+    const currentTransactions = Array.isArray(data.transactions) ? data.transactions : [];
+    const currentExpenses = Array.isArray(data.expenses) ? data.expenses : [];
+    
+    const updatedTransactions = [transaction, ...currentTransactions].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
-    const updatedExpenses = [transaction, ...(data.expenses || [])].sort((a, b) => 
+    const updatedExpenses = [transaction, ...currentExpenses].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
 
