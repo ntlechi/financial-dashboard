@@ -10,7 +10,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import HelpFAQ from './components/HelpFAQ';
 import PricingModal from './components/PricingModal';
-import { ensureUserProfileInitialized, awardXp, getRankFromXp, checkMilestoneUnlocks } from './utils/xp';
+import { ensureUserProfileInitialized, awardXp, deductXp, getRankFromXp, checkMilestoneUnlocks } from './utils/xp';
 import MissionStatusBanner from './components/MissionStatusBanner';
 import RankUpModal from './components/RankUpModal';
 import RankMedalsPage from './components/RankMedalsPage';
@@ -3738,6 +3738,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
+      
+      // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting business
+      try {
+        await deductXp(db, userId, 50);
+        setXpRefreshTrigger(prev => prev + 1);
+      } catch (error) {
+        console.warn('XP deduction failed (business delete)', error);
+      }
+      
       setBusinessToDelete(null);
       setShowDeleteConfirm(false);
     } catch (error) {
@@ -10519,7 +10528,7 @@ function App() {
   };
 
   const handleDeleteMoment = async (momentId) => {
-    if (!window.confirm('Delete this moment? This cannot be undone.')) return;
+    if (!window.confirm('Delete this moment?\\n\\n⚠️ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
 
     const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
     const updatedData = { ...data, moments: updatedMoments };
@@ -10527,7 +10536,20 @@ function App() {
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
-      showNotification('🗑️ Moment deleted', 'success');
+      
+      // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting moment
+      try {
+        const result = await deductXp(db, userId, 10);
+        setXpRefreshTrigger(prev => prev + 1);
+        if (result.rankDown) {
+          showNotification(`🗑️ Moment deleted. -10 XP. Rank: ${result.newRank.name}`, 'warning');
+        } else {
+          showNotification('🗑️ Moment deleted. -10 XP', 'warning');
+        }
+      } catch (error) {
+        console.warn('XP deduction failed (moment delete)', error);
+        showNotification('🗑️ Moment deleted', 'success');
+      }
     } catch (error) {
       console.error('Error deleting moment:', error);
       showNotification('Failed to delete moment', 'error');

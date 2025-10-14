@@ -59,6 +59,33 @@ export async function awardXp(db, userId, amount) {
   return { totalXp, rankUp, newRank };
 }
 
+// 🛡️ Deducts XP for deleting items (anti-exploit protection!)
+// Prevents infinite XP from create/delete loops
+export async function deductXp(db, userId, amount) {
+  if (!db || !userId || !amount) return { totalXp: 0, rankDown: false, newRank: null };
+  
+  const profileRef = doc(db, 'userProfiles', userId);
+  const snap = await getDoc(profileRef);
+  const current = snap.exists() ? snap.data() : { xpPoints: 0, rank: 'Recruit', rankLevel: 1 };
+  
+  // 🛡️ PROTECTION: Can't go below 0 XP
+  const totalXp = Math.max(0, (current.xpPoints || 0) - amount);
+  
+  // Check if rank decreased
+  const { current: oldRank } = getRankFromXp(current.xpPoints || 0);
+  const { current: newRank } = getRankFromXp(totalXp);
+  const rankDown = newRank.level < oldRank.level;
+  
+  // Update profile
+  await setDoc(profileRef, { 
+    xpPoints: totalXp, 
+    rank: newRank.name, 
+    rankLevel: newRank.level 
+  }, { merge: true });
+  
+  return { totalXp, rankDown, newRank, oldRank };
+}
+
 // Freedom Milestones System
 export const FREEDOM_MILESTONES = [
   { id: 'MILESTONE_10', threshold: 10, title: 'Basecamp Secured', icon: '🏕️', description: 'Reach a 10% Freedom Ratio' },
