@@ -13,7 +13,7 @@ const RANK_INSIGNIA = {
   'Free Agent': { icon: '🕊️', material: 'gold', color: '#FFD700' }
 };
 
-export default function MissionStatusBanner({ userId }) {
+export default function MissionStatusBanner({ userId, refreshTrigger }) {
   const [profile, setProfile] = useState(null);
   const [showGuide, setShowGuide] = useState(false);
 
@@ -31,7 +31,7 @@ export default function MissionStatusBanner({ userId }) {
     }
     load();
     return () => { isMounted = false; };
-  }, [userId]);
+  }, [userId, refreshTrigger]); // FIX: Also refresh when refreshTrigger changes!
 
   if (!profile) return null;
   const { current, next, progress } = getRankFromXp(profile.xpPoints || 0);

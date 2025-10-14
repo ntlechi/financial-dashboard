@@ -10300,6 +10300,9 @@ function App() {
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   };
 
+  // 🎮 XP Refresh Trigger - increment this to force MissionStatusBanner to reload
+  const [xpRefreshTrigger, setXpRefreshTrigger] = useState(0);
+
   // Reset data states
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetStartDate, setResetStartDate] = useState(getTodayLocal());
@@ -11700,14 +11703,29 @@ function App() {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
       console.log('✅ Reset Data: Firebase write successful');
       
+      // 🎮 CRITICAL FIX: Also reset XP profile to 0!
+      console.log('🎮 Resetting XP profile to Recruit (0 XP)...');
+      const initialProfile = {
+        xpPoints: 0,
+        rank: 'Recruit',
+        rankLevel: 1,
+        unlockedMilestones: [],
+        createdAt: new Date().toISOString()
+      };
+      await setDoc(doc(db, 'userProfiles', userId), initialProfile);
+      console.log('✅ XP profile reset successful');
+      
       setData(resetData);
       console.log('✅ Reset Data: Local state updated');
+      
+      // Trigger MissionStatusBanner refresh by changing state
+      setXpRefreshTrigger(prev => prev + 1);
       
       setShowResetModal(false);
       setResetToSample(false);
       console.log('✅ Reset Data: Modal closed');
       
-      showNotification('✅ Data reset successfully!', 'success');
+      showNotification('✅ Data reset successfully! XP reset to 0.', 'success');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -11926,6 +11944,8 @@ function App() {
       // Award XP for logging expense
       try {
         const result = await awardXp(db, userId, 5);
+        // FIX: Trigger XP banner refresh immediately
+        setXpRefreshTrigger(prev => prev + 1);
         if (result?.rankUp && result.newRank) {
           const prev = getRankFromXp((result.totalXp || 0) - 5);
           setRankUpData({ newRank: result.newRank, oldRank: prev.current, xpGained: 5, action: 'quick expense' });
@@ -12388,7 +12408,7 @@ function App() {
       <div className={`max-w-7xl mx-auto ${stealthMode ? 'stealth-active' : ''}`}>
         <header className="mb-8">
           {/* Mission Status Banner */}
-          <MissionStatusBanner userId={userId} />
+          <MissionStatusBanner userId={userId} refreshTrigger={xpRefreshTrigger} />
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
