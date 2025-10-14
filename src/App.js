@@ -11840,25 +11840,20 @@ function App() {
     };
 
     // CRITICAL FIX: Ensure transaction appears in Recent Transactions immediately!
-    // We add to ALL transaction arrays to guarantee visibility
-    const currentTransactions = data.transactions || [];
-    const currentRecentTransactions = data.recentTransactions || currentTransactions; // Use transactions as fallback
-    
-    const updatedTransactions = [transaction, ...currentTransactions].sort((a, b) => 
+    // Add to ALL transaction arrays AND ensure recentTransactions mirrors transactions
+    const updatedTransactions = [transaction, ...(data.transactions || [])].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
     const updatedExpenses = [transaction, ...(data.expenses || [])].sort((a, b) => 
       new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
     );
-    const updatedRecentTransactions = [transaction, ...currentRecentTransactions].sort((a, b) => 
-      new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
-    );
 
+    // CRITICAL: recentTransactions should be same as transactions for consistency
     const updatedData = { 
       ...data, 
       transactions: updatedTransactions, 
       expenses: updatedExpenses,
-      recentTransactions: updatedRecentTransactions
+      recentTransactions: updatedTransactions // Mirror transactions array
     };
 
     try {
