@@ -12283,7 +12283,7 @@ function App() {
       setIsOffline(false);
       setShowOfflineIndicator(false);
       setOfflineSummary(getOfflineSummary());
-      console.log('🧳 Back online! Syncing offline data...');
+      debugLog('🧳 Back online! Syncing offline data...');
       
       // TODO: Implement sync of pending offline data
       // syncPendingOfflineData();
@@ -12293,7 +12293,7 @@ function App() {
       setIsOffline(true);
       setShowOfflineIndicator(true);
       setOfflineSummary(getOfflineSummary());
-      console.log('🧳 Gone offline! Storing data locally...');
+      debugLog('🧳 Gone offline! Storing data locally...');
     };
 
     // Add event listeners
