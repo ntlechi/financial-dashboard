@@ -10410,7 +10410,7 @@ function App() {
   const trackEvent = useCallback((eventName, eventParams = {}) => {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', eventName, eventParams);
-      console.log('📊 Analytics Event:', eventName, eventParams);
+      debugLog('📊 Analytics Event:', eventName, eventParams);
     }
   }, []);
 
@@ -11213,7 +11213,7 @@ function App() {
         if (foundersDoc.exists()) {
           const count = foundersDoc.data().subscriberCount || 0;
           setFoundersCircleCount(count);
-          console.log(`📊 Founder's Circle: ${count}/100 spots taken`);
+          infoLog(`📊 Founder's Circle: ${count}/100 spots taken`);
         }
 
         // Load Early Adopter count
@@ -11223,7 +11223,7 @@ function App() {
         if (earlyAdopterDoc.exists()) {
           const count = earlyAdopterDoc.data().subscriberCount || 0;
           setEarlyAdopterCount(count);
-          console.log(`📊 Early Adopter: ${count}/500 spots taken`);
+          infoLog(`📊 Early Adopter: ${count}/500 spots taken`);
         }
       } catch (error) {
 
@@ -11516,9 +11516,9 @@ function App() {
   };
 
   const confirmResetData = async () => {
-    console.log('🔧 Reset Data: Function called');
-    console.log('🔧 Reset Data: userId =', userId);
-    console.log('🔧 Reset Data: resetToSample =', resetToSample);
+    debugLog('🔧 Reset Data: Function called');
+    debugLog('🔧 Reset Data: userId =', userId);
+    debugLog('🔧 Reset Data: resetToSample =', resetToSample);
     
     if (!userId) {
       console.error('❌ Reset Data: No userId available!');
