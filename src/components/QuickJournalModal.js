@@ -1,4 +1,5 @@
-// 🛠️ QUICK JOURNAL MODAL - Fixed version that prevents all modal bugs
+// 🛠️ QUICK JOURNAL MODAL - Feeds into unified My Logbook system
+// 🎯 REDESIGNED: Simplified for "Capture Now, Organize Later" workflow
 import React, { useState } from 'react';
 import { Edit3 } from 'lucide-react';
 import FixedModal, { FixedTextarea, FixedButton } from './FixedModal';
@@ -29,7 +30,7 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
       isOpen={isOpen}
       onClose={handleClose}
       title="Quick Journal"
-      description="Capture your thoughts and ideas!"
+      description="Capture your thoughts instantly!"
       size="md"
     >
       <div className="space-y-4">
@@ -48,7 +49,7 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
 
         <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
           <div className="text-xs text-blue-200">
-            💡 <strong>Quick Tip:</strong> Your notes will appear in the Field Notes archive where you can edit or delete them later.
+            💡 <strong>Capture Now, Organize Later:</strong> Your note will appear in My Logbook where you can add a title, tags, and edit it anytime!
           </div>
         </div>
       </div>
