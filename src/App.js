@@ -2518,12 +2518,13 @@ const FinancialFreedomCalculator = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <Target className="w-6 h-6 mr-3 text-emerald-400" />
-            Financial Freedom Calculator
-          </div>
-          {/* Help Tooltip */}
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-white mb-2 flex items-center justify-between">
+            <div className="flex items-center">
+              <Target className="w-6 h-6 mr-3 text-emerald-400" />
+              Financial Freedom Calculator
+            </div>
+            {/* Help Tooltip */}
           <div className="group relative">
             <HelpCircle className="w-5 h-5 text-gray-400 hover:text-blue-400 cursor-help transition-colors" />
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -2537,7 +2538,9 @@ const FinancialFreedomCalculator = () => {
               </div>
             </div>
           </div>
-        </h3>
+          </h3>
+          <p className="text-emerald-300/80 text-sm ml-9">🏔️ Calculate your trail to financial independence</p>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div>
@@ -2608,6 +2611,31 @@ const FinancialFreedomCalculator = () => {
             <div className="bg-emerald-900/30 rounded px-3 py-2 border border-emerald-600">
               <div className="text-emerald-400 font-bold">{yearsToFI} years</div>
               <div className="text-xs text-emerald-300">Age {targetAge}</div>
+              {/* Progress Bar */}
+              <div className="mt-2">
+                <div className="w-full bg-gray-700 rounded-full h-1.5">
+                  <div 
+                    className="bg-emerald-400 h-1.5 rounded-full transition-all" 
+                    style={{ width: `${Math.min((savings / target * 100), 100)}%` }}
+                  ></div>
+                </div>
+                <div className="text-xs text-emerald-300 mt-1">
+                  {((savings / target) * 100).toFixed(1)}% to FI Basecamp 🏕️
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ETA to Freedom Display */}
+        <div className="bg-gradient-to-r from-emerald-900/30 to-green-900/30 rounded-lg p-4 border border-emerald-500/30 mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <div className="text-emerald-400 font-semibold mb-1">🎯 ETA to Freedom</div>
+              <div className="text-2xl font-bold text-white">{yearsToFI} years (Age {targetAge})</div>
+            </div>
+            <div className="text-sm text-gray-300 max-w-md">
+              ⚡ Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
             </div>
           </div>
         </div>
@@ -2617,6 +2645,19 @@ const FinancialFreedomCalculator = () => {
             <h4 className="text-emerald-400 font-semibold mb-2">Financial Independence</h4>
             <div className="text-2xl font-bold text-white">${target.toLocaleString()}</div>
             <div className="text-sm text-gray-300">Target amount needed</div>
+            {/* Progress Bar Under Card */}
+            <div className="mt-3">
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-emerald-500 to-green-500 h-2 rounded-full transition-all" 
+                  style={{ width: `${Math.min((savings / target * 100), 100)}%` }}
+                ></div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <span>Current: ${(savings/1000).toFixed(0)}K</span>
+                <span>Target: ${(target/1000000).toFixed(1)}M</span>
+              </div>
+            </div>
           </div>
           <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
             <h4 className="text-blue-400 font-semibold mb-2">Monthly Passive Needed</h4>
@@ -2801,12 +2842,13 @@ const DebtPayoffCalculator = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <CreditCard className="w-6 h-6 mr-3 text-red-400" />
-            Debt Payoff Calculator
-          </div>
-          {/* Help Tooltip */}
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-white mb-2 flex items-center justify-between">
+            <div className="flex items-center">
+              <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+              Debt Payoff Calculator
+            </div>
+            {/* Help Tooltip */}
           <div className="group relative">
             <HelpCircle className="w-5 h-5 text-gray-400 hover:text-blue-400 cursor-help transition-colors" />
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -2823,7 +2865,22 @@ const DebtPayoffCalculator = () => {
               </div>
             </div>
           </div>
-        </h3>
+          </h3>
+          {/* Debt Liberation Countdown */}
+          {currentResult.payoffOrder.length > 0 && (
+            <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 rounded-lg p-4 border border-red-500/30">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl">🔥</div>
+                <div>
+                  <div className="text-red-400 font-semibold">Debt Liberation Countdown</div>
+                  <div className="text-white text-sm">
+                    You're <span className="font-bold text-orange-400">{currentResult.payoffOrder[0].months} months</span> from your first cleared debt. Stay the course.
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         
         {/* Strategy Selection */}
         <div className="mb-6">
@@ -3038,6 +3095,42 @@ const DebtPayoffCalculator = () => {
                   <div>
                     <p className="text-gray-400">Interest Paid</p>
                     <p className="text-orange-400 font-bold">${Math.round(currentResult.totalInterestPaid).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Milestone Badges */}
+              <div className="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg p-4 border border-orange-500/30">
+                <h5 className="text-orange-400 font-semibold mb-3">🏆 Liberation Milestones</h5>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                    <div className="text-2xl">💥</div>
+                    <div className="flex-1">
+                      <div className="text-white font-medium text-sm">First Debt Cleared</div>
+                      <div className="text-gray-400 text-xs">
+                        {currentResult.payoffOrder.length > 0 
+                          ? `${currentResult.payoffOrder[0].months} months away`
+                          : 'Add debts to see timeline'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                    <div className="text-2xl">⚡</div>
+                    <div className="flex-1">
+                      <div className="text-white font-medium text-sm">50% Debt Reduction</div>
+                      <div className="text-gray-400 text-xs">
+                        Halfway to freedom
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                    <div className="text-2xl">🕊️</div>
+                    <div className="flex-1">
+                      <div className="text-white font-medium text-sm">All Debts Paid - You're Free</div>
+                      <div className="text-emerald-400 text-xs font-semibold">
+                        {currentResult.totalYears}y {currentResult.remainingMonths}m ({(currentResult.totalYears * 12 + currentResult.remainingMonths)} months total)
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
