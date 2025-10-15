@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Download, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X, Copy } from 'lucide-react';
+import { BookOpen, Download, Calendar, MapPin, Eye, EyeOff, Plus, Edit3, Trash2, Save, X, Copy, Compass } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import TheTrail from './TheTrail';
 
 export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateData, userId, checkFeatureAccess, showUpgradePromptForFeature, awardXp, setXpRefreshTrigger }) {
+  // 🆕 Tab State
+  const [activeTab, setActiveTab] = useState('logbook'); // 'logbook' or 'trail'
+  
   const [expandedEntries, setExpandedEntries] = useState(new Set());
   const [expandedNotes, setExpandedNotes] = useState(new Set());
   const [allJournalEntries, setAllJournalEntries] = useState([]);
@@ -329,50 +333,105 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
         </div>
       )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-6 border border-slate-500/40">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-              <BookOpen className="w-8 h-8 text-amber-400" />
-              📓 Field Notes Archive
-            </h1>
-            <p className="text-slate-300">
-              Your collection of expedition memories and financial insights
-            </p>
-          </div>
-          
-          {/* Export Button - FREE users see upgrade prompt */}
-          {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
-            <button
-              onClick={() => exportFieldNotesToPDF()}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
-              title="Export all field notes"
-            >
-              <Download className="w-5 h-5" />
-              Export Notes
-            </button>
+      {/* 🆕 TWO-TAB HEADER */}
+      <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg border border-slate-500/40">
+        {/* Tab Navigation */}
+        <div className="flex items-center gap-2 p-4 border-b border-slate-600/30">
+          <button
+            onClick={() => setActiveTab('logbook')}
+            className={`px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 ${
+              activeTab === 'logbook'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-gray-700/30 text-gray-400 hover:bg-gray-700/50 hover:text-white'
+            }`}
+          >
+            <BookOpen className="w-5 h-5" />
+            My Logbook
+          </button>
+          <button
+            onClick={() => setActiveTab('trail')}
+            className={`px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 ${
+              activeTab === 'trail'
+                ? 'bg-amber-600 text-white shadow-lg'
+                : 'bg-gray-700/30 text-gray-400 hover:bg-gray-700/50 hover:text-white'
+            }`}
+          >
+            <Compass className="w-5 h-5" />
+            The Trail
+            <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-xs rounded-full font-semibold border border-amber-500/30">
+              NEW
+            </span>
+          </button>
+        </div>
+
+        {/* Tab Content Header */}
+        <div className="p-6">
+          {activeTab === 'logbook' ? (
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                  <BookOpen className="w-8 h-8 text-blue-400" />
+                  My Logbook
+                </h1>
+                <p className="text-slate-300">
+                  Your personal journal of expedition memories and financial insights
+                </p>
+              </div>
+              
+              {/* Export Button - FREE users see upgrade prompt */}
+              {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
+                <button
+                  onClick={() => exportFieldNotesToPDF()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+                  title="Export all field notes"
+                >
+                  <Download className="w-5 h-5" />
+                  Export Notes
+                </button>
+              ) : (
+                <button
+                  onClick={() => showUpgradePromptForFeature && showUpgradePromptForFeature('field-notes-export')}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+                  title="Upgrade to export notes"
+                >
+                  <Download className="w-5 h-5" />
+                  <span className="flex items-center gap-2">
+                    Export Notes
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                    </svg>
+                  </span>
+                </button>
+              )}
+            </div>
           ) : (
-            <button
-              onClick={() => showUpgradePromptForFeature && showUpgradePromptForFeature('field-notes-export')}
-              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
-              title="Upgrade to export notes"
-            >
-              <Download className="w-5 h-5" />
-              <span className="flex items-center gap-2">
-                Export Notes
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
-              </span>
-            </button>
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                <Compass className="w-8 h-8 text-amber-400" />
+                The Trail
+              </h1>
+              <p className="text-slate-300">
+                Guided missions spanning Financial Freedom, Becoming Great, Entrepreneurship, Essential Survival, and Traveler's Wisdom
+              </p>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Quick Notes Section */}
-      <div className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-lg p-6 border border-blue-500/40">
-        <div className="flex items-center justify-between mb-4">
+      {/* 🆕 CONDITIONAL CONTENT BASED ON ACTIVE TAB */}
+      {activeTab === 'trail' ? (
+        <TheTrail 
+          userId={userId}
+          awardXp={awardXp}
+          setXpRefreshTrigger={setXpRefreshTrigger}
+        />
+      ) : (
+        <>
+          {/* MY LOGBOOK CONTENT (Existing functionality) */}
+          
+          {/* Quick Notes Section */}
+          <div className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-lg p-6 border border-blue-500/40">
+            <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
               <Edit3 className="w-5 h-5 text-blue-400" />
@@ -703,6 +762,8 @@ export default function ReflectionsPage({ data, userPlan, onExportPDF, onUpdateD
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

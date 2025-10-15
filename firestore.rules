@@ -40,6 +40,14 @@ service cloud.firestore {
       allow write: if false; // Only webhooks/backend can write
     }
     
+    // 📚 Missions collection (The Trail - Educational Content)
+    match /missions/{missionId} {
+      // All authenticated users can read missions
+      allow read: if request.auth != null;
+      // Only admins can write (via Firebase Console)
+      allow write: if false;
+    }
+    
     // Deny all other access - secure by default
     match /{document=**} {
       allow read, write: if false;
