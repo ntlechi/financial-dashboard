@@ -4352,7 +4352,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               type="date"
               value={newBusiness.startDate}
               onChange={(e) => setNewBusiness({...newBusiness, startDate: e.target.value})}
-              className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+              className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+              style={{ maxWidth: '100%' }}
             />
           </div>
           
@@ -4618,7 +4619,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 type="date"
                 value={newItem.date}
                 onChange={(e) => setNewItem({...newItem, date: e.target.value})}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+                className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
+                style={{ maxWidth: '100%' }}
               />
               
               {/* 🏔️ PASSIVE INCOME CHECKBOX - Freedom Ratio Feature! */}
@@ -4703,7 +4705,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 type="date"
                 value={editingItem.date}
                 onChange={(e) => setEditingItem({...editingItem, date: e.target.value})}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                style={{ maxWidth: '100%' }}
               />
               
               {/* 🏔️ PASSIVE INCOME CHECKBOX - Only for Income Items */}
@@ -4868,7 +4871,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     type="date"
                     value={newRecurringItem.startDate}
                     onChange={(e) => setNewRecurringItem({...newRecurringItem, startDate: e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    style={{ maxWidth: '100%' }}
                   />
                 </div>
                 <div>
@@ -7299,7 +7303,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 type="date"
                 value={newTransaction.date}
                 onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                style={{ maxWidth: '100%' }}
               />
             </div>
 
@@ -7770,7 +7775,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   type="date"
                   value={editingRecurring.nextDueDate || ''}
                   onChange={(e) => setEditingRecurring({...editingRecurring, nextDueDate: e.target.value})}
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  style={{ maxWidth: '100%' }}
                 />
               </div>
 
@@ -8097,7 +8103,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 type="date"
                 value={editingTransaction.date}
                 onChange={(e) => setEditingTransaction({...editingTransaction, date: e.target.value})}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                style={{ maxWidth: '100%' }}
               />
             </div>
             
@@ -9490,7 +9497,8 @@ const TravelTab = ({ data, setData, userId }) => {
                     type="date"
                     value={newTrip.startDate}
                     onChange={(e) => setNewTrip({...newTrip, startDate: e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                    className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                    style={{ maxWidth: '100%' }}
                   />
                 </div>
                 <div>
@@ -9499,7 +9507,8 @@ const TravelTab = ({ data, setData, userId }) => {
                     type="date"
                     value={newTrip.endDate}
                     onChange={(e) => setNewTrip({...newTrip, endDate: e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                    className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                    style={{ maxWidth: '100%' }}
                   />
                 </div>
                 <div>
@@ -9695,7 +9704,8 @@ const TravelTab = ({ data, setData, userId }) => {
                     type="date"
                     value={newExpense.date}
                     onChange={(e) => setNewExpense({...newExpense, date: e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                    className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
+                    style={{ maxWidth: '100%' }}
                   />
                 </div>
               </div>
@@ -9800,7 +9810,8 @@ const TravelTab = ({ data, setData, userId }) => {
                      type="date"
                      value={editingTrip.startDate}
                      onChange={(e) => setEditingTrip({...editingTrip, startDate: e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                     className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                     style={{ maxWidth: '100%' }}
                    />
                  </div>
                  <div>
@@ -9809,7 +9820,8 @@ const TravelTab = ({ data, setData, userId }) => {
                      type="date"
                      value={editingTrip.endDate}
                      onChange={(e) => setEditingTrip({...editingTrip, endDate: e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                     className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                     style={{ maxWidth: '100%' }}
                    />
                  </div>
                  <div>
@@ -13349,7 +13361,8 @@ function App() {
                         type="date"
                         value={newMoment.date}
                         onChange={(e) => setNewMoment({...newMoment, date: e.target.value})}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                        className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                        style={{ maxWidth: '100%' }}
                       />
                     </div>
                   </div>
@@ -14103,7 +14116,8 @@ function App() {
                             console.log('Date selected:', e.target.value);
                             setTempCardData({...tempCardData, newDate: e.target.value});
                           }}
-                          className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                          className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                          style={{ maxWidth: '100%' }}
                         />
                         <div className="text-xs text-gray-400 mt-1">When was this score checked?</div>
                       </div>
@@ -14629,7 +14643,8 @@ function App() {
                                   updatedGoals[index] = {...goal, targetDate: e.target.value};
                                   setTempCardData(updatedGoals);
                                 }}
-                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
+                                className="w-full max-w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
+                                style={{ maxWidth: '100%' }}
                               />
                             </div>
                           </div>
@@ -14765,7 +14780,8 @@ function App() {
                   type="date"
                   value={resetStartDate}
                   onChange={(e) => setResetStartDate(e.target.value)}
-                  className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-red-400 focus:outline-none"
+                  className="w-full max-w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-red-400 focus:outline-none"
+                  style={{ maxWidth: '100%' }}
                 />
                 <p className="text-xs text-gray-400">
                   This will be your financial tracking start date
