@@ -252,6 +252,30 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                   </div>
                   <p className="text-xs text-gray-400">Complete all 4 Week 1 missions for bonus!</p>
                 </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-blue-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-blue-400 font-semibold">The Trail - Complete Mission</span>
+                    <span className="bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-sm font-bold">+25 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Finish a learning mission in The Trail</p>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-green-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-green-400 font-semibold">The Trail - Correct Drill</span>
+                    <span className="bg-green-600/20 text-green-300 px-2 py-1 rounded text-sm font-bold">+50 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Answer a mission drill correctly</p>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-purple-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-purple-400 font-semibold">Trail Badges</span>
+                    <span className="bg-purple-600/20 text-purple-300 px-2 py-1 rounded text-sm font-bold">+50-150 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Scout (5), Pathfinder (15), Guide (30) missions</p>
+                </div>
               </div>
             </div>
 

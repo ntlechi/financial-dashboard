@@ -41,6 +41,14 @@ service cloud.firestore {
                             && request.resource.data.userId == request.auth.uid;
     }
     
+    // 📚 Missions collection (The Trail - Educational Content)
+    match /missions/{missionId} {
+      // All authenticated users can read missions
+      allow read: if request.auth != null;
+      // Only admins can write (via Firebase Console)
+      allow write: if false;
+    }
+    
     // User subscription data - only accessible by the authenticated user
     match /users/{userId}/subscription {
       allow read, write: if request.auth != null && request.auth.uid == userId;
