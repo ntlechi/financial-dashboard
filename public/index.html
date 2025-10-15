@@ -41,7 +41,7 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script>
-      // 🔧 MOBILE KEYBOARD FIX - Prevent viewport jumping on iOS
+      // 🔧 PREMIUM MOBILE KEYBOARD FIX - Viewport restoration without scroll-to-top
       (function() {
         // Set CSS variable for viewport height (fixes iOS Safari keyboard issue)
         function setVH() {
@@ -56,13 +56,62 @@
         window.addEventListener('resize', setVH);
         window.addEventListener('orientationchange', setVH);
         
-        // 🔧 DISABLED: iOS keyboard fix was causing scroll-to-top issues
-        // The fix was too aggressive and caused more problems than it solved
-        // Modern browsers handle keyboard viewport better now
+        // 🎯 NEW: Visual Viewport API for smooth keyboard handling
+        // This fixes the "bottom gap" issue when keyboard closes
+        if (window.visualViewport) {
+          let previousHeight = window.visualViewport.height;
+          
+          window.visualViewport.addEventListener('resize', () => {
+            const currentHeight = window.visualViewport.height;
+            const heightDifference = currentHeight - previousHeight;
+            
+            // Keyboard is CLOSING (viewport getting bigger)
+            if (heightDifference > 100) {
+              // Small delay to let keyboard fully dismiss
+              setTimeout(() => {
+                // Get current scroll position
+                const currentScroll = window.scrollY || document.documentElement.scrollTop;
+                
+                // Only adjust if we're not at the very top
+                // This prevents unwanted scroll-to-top
+                if (currentScroll > 0) {
+                  // Gently restore viewport by adjusting scroll slightly
+                  // This "snaps" the page back without jumping to top
+                  window.scrollTo({
+                    top: currentScroll - 1,
+                    behavior: 'auto' // Instant, no animation
+                  });
+                  
+                  // Trigger a reflow to ensure browser recalculates layout
+                  document.body.offsetHeight;
+                  
+                  // Restore to exact position (this fixes the bottom gap)
+                  window.scrollTo({
+                    top: currentScroll,
+                    behavior: 'auto'
+                  });
+                }
+                
+                // Update viewport height variable
+                setVH();
+              }, 100);
+            }
+            
+            previousHeight = currentHeight;
+          });
+        }
         
-        // If you need iOS-specific fixes later, detect iOS first:
-        // const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        // if (isIOS) { ... apply iOS-specific fixes ... }
+        // 🛡️ Fallback for older browsers
+        // Only fixes viewport height, no scroll manipulation
+        else {
+          let resizeTimer;
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+              setVH();
+            }, 150);
+          });
+        }
       })();
       
       // 📱 Register Service Worker for PWA functionality
