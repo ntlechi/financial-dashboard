@@ -30,7 +30,7 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // 📣 Reviews collection (Milestone Review System)
+    // 📣 Reviews collection (Text-Only Milestone Review System)
     match /reviews/{reviewId} {
       // Users can write their own reviews
       allow create: if request.auth != null;
@@ -74,19 +74,10 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     
-    // 📣 Testimonial Video Uploads (Milestone Review System)
-    match /testimonial-videos/{userId}/{video} {
-      // Allow authenticated users to upload their own videos only
-      allow write: if request.auth != null 
-                   && request.auth.uid == userId
-                   && request.resource.size < 50 * 1024 * 1024; // 50MB limit
-      
-      // Allow authenticated users to read all testimonial videos
-      // (For admin moderation and Wall of Wins display)
-      allow read: if request.auth != null;
-    }
+    // 🚫 Storage not currently used (text-only reviews for launch)
+    // Future: Add video testimonials when user base grows
     
-    // Deny all other access by default - secure!
+    // Deny all access by default (no storage features active)
     match /{allPaths=**} {
       allow read, write: if false;
     }
@@ -114,15 +105,7 @@ OPTION 1: Via Firebase Console (Easiest):
    - Copy/paste STORAGE.RULES above
    - Click "Publish"
 
-OPTION 2: Via Firebase CLI:
-----------------------------
-If you have Firebase CLI installed:
-
-firebase deploy --only firestore:rules
-firebase deploy --only storage:rules
-
-(Or both at once:)
-firebase deploy --only firestore:rules,storage:rules
+⏱️ Time: 10 minutes total
 
 ===========================================
 
@@ -137,10 +120,25 @@ FIRESTORE:
 ✅ App config (read-only!)
 
 STORAGE:
-✅ Video uploads (user-specific folders!)
-✅ 50MB limit (prevents abuse!)
-✅ Authenticated only (no anonymous uploads!)
+✅ No storage features (text-only reviews!)
+✅ Future: Video testimonials when needed
+✅ Avoids Firebase upgrade costs for startup
 
 SECURITY LEVEL: PRODUCTION-READY! 🔒
+
+===========================================
+
+💡 WHY NO STORAGE RULES?
+=========================
+
+Decision: Text-only reviews for launch!
+
+Reasons:
+- Avoid Firebase Storage upgrade costs
+- Startup-friendly (small user base)
+- Most users won't video review initially
+- Can add video later when profitable
+
+Text reviews are enough for Phase 1! ✅
 
 ===========================================

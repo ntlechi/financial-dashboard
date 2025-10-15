@@ -7693,11 +7693,37 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingRecurring({...editingRecurring, frequency: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                 >
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
+                  <option value="weekly">📅 Weekly</option>
+                  <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
+                  <option value="monthly">🗓️ Monthly</option>
+                  <option value="yearly">📆 Yearly</option>
                 </select>
               </div>
+              
+              {/* 🆕 Day of Week Selector (for weekly/bi-weekly) */}
+              {(editingRecurring.frequency === 'weekly' || editingRecurring.frequency === 'bi-weekly') && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Day of Week
+                  </label>
+                  <select
+                    value={editingRecurring.dayOfWeek || 1}
+                    onChange={(e) => setEditingRecurring({...editingRecurring, dayOfWeek: parseInt(e.target.value)})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                  >
+                    <option value={0}>Sunday</option>
+                    <option value={1}>Monday</option>
+                    <option value={2}>Tuesday</option>
+                    <option value={3}>Wednesday</option>
+                    <option value={4}>Thursday</option>
+                    <option value={5}>Friday</option>
+                    <option value={6}>Saturday</option>
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">
+                    💡 {editingRecurring.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                  </p>
+                </div>
+              )}
 
               {/* Category & Subcategory */}
               <div className="grid grid-cols-2 gap-4">
@@ -12313,7 +12339,9 @@ function App() {
         // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
         current: calculatedData.income.total > 0 ? 
           Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
-      }
+      },
+      // 🔧 FIX: Ensure goals are included in displayData
+      goals: data.goals || []
     };
     
     return viewMode === 'annual' ? getAnnualizedData() : baseData;
@@ -12821,6 +12849,9 @@ function App() {
                   </button>
                   <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Calculator className="w-4 h-4 mr-2"/>Budget
+                  </button>
+                  <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    📓 Field Notes
                   </button>
                   <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Award className="w-4 h-4 mr-2"/>Rank & Medals

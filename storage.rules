@@ -1,19 +1,10 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // 📣 Testimonial Video Uploads (Milestone Review System)
-    match /testimonial-videos/{userId}/{video} {
-      // Allow authenticated users to upload their own videos
-      allow write: if request.auth != null 
-                   && request.auth.uid == userId
-                   && request.resource.size < 50 * 1024 * 1024; // 50MB limit
-      
-      // Allow authenticated users to read all testimonial videos
-      // (For moderation and Wall of Wins display)
-      allow read: if request.auth != null;
-    }
+    // 🚫 Storage not currently used (text-only reviews for launch)
+    // Future: Add video testimonials when user base grows
     
-    // Deny all other access by default
+    // Deny all access by default (no storage features active)
     match /{allPaths=**} {
       allow read, write: if false;
     }
