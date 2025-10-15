@@ -2518,9 +2518,25 @@ const FinancialFreedomCalculator = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-          <Target className="w-6 h-6 mr-3 text-emerald-400" />
-          Financial Freedom Calculator
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <Target className="w-6 h-6 mr-3 text-emerald-400" />
+            Financial Freedom Calculator
+          </div>
+          {/* Help Tooltip */}
+          <div className="group relative">
+            <HelpCircle className="w-5 h-5 text-gray-400 hover:text-blue-400 cursor-help transition-colors" />
+            <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
+              <div className="text-xs text-gray-300 space-y-2">
+                <p><strong>📊 Enter Your Info:</strong> Input your current age, savings, and monthly contribution.</p>
+                <p><strong>🎯 Set Your Target:</strong> How much do you need to be financially free?</p>
+                <p><strong>📈 Expected Return:</strong> Average annual investment return (7% is typical for stocks).</p>
+                <p><strong>🔮 See Your Timeline:</strong> The chart shows when you'll reach financial freedom!</p>
+                <p className="text-blue-400 mt-2">💡 Tip: The higher your monthly contribution and return rate, the faster you reach freedom!</p>
+              </div>
+            </div>
+          </div>
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -2785,9 +2801,28 @@ const DebtPayoffCalculator = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-          <CreditCard className="w-6 h-6 mr-3 text-red-400" />
-          Debt Payoff Calculator
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+            Debt Payoff Calculator
+          </div>
+          {/* Help Tooltip */}
+          <div className="group relative">
+            <HelpCircle className="w-5 h-5 text-gray-400 hover:text-blue-400 cursor-help transition-colors" />
+            <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
+              <div className="text-xs text-gray-300 space-y-2">
+                <p><strong>💳 Add Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
+                <p><strong>💰 Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
+                <p><strong>🏔️ Choose Strategy:</strong></p>
+                <ul className="ml-4 space-y-1">
+                  <li>• <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
+                  <li>• <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
+                </ul>
+                <p className="text-blue-400 mt-2">💡 Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
+              </div>
+            </div>
+          </div>
         </h3>
         
         {/* Strategy Selection */}
