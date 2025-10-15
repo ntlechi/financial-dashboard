@@ -56,32 +56,13 @@
         window.addEventListener('resize', setVH);
         window.addEventListener('orientationchange', setVH);
         
-        // Fix for iOS Safari - prevent body from being pushed up when keyboard appears
-        document.addEventListener('focusin', function(e) {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            // Prevent body scroll
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${window.scrollY}px`;
-            document.body.style.width = '100%';
-          }
-        });
+        // 🔧 DISABLED: iOS keyboard fix was causing scroll-to-top issues
+        // The fix was too aggressive and caused more problems than it solved
+        // Modern browsers handle keyboard viewport better now
         
-        document.addEventListener('focusout', function(e) {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            // Restore body scroll position
-            const scrollY = document.body.style.top;
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            window.scrollTo(0, parseInt(scrollY || '0') * -1);
-            
-            // 🔧 FIX: Don't force scroll to top - just reset viewport height
-            setTimeout(() => {
-              setVH();
-              // REMOVED: window.scrollTo(0, 0); - This was causing scroll-to-top on input blur
-            }, 100);
-          }
-        });
+        // If you need iOS-specific fixes later, detect iOS first:
+        // const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // if (isIOS) { ... apply iOS-specific fixes ... }
       })();
       
       // 📱 Register Service Worker for PWA functionality

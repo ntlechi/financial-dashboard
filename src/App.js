@@ -8128,6 +8128,7 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showRunwayModal, setShowRunwayModal] = useState(false);
+  const [showRunwayCalculator, setShowRunwayCalculator] = useState(false); // NEW: Toggle for runway calculator
   const [hoveredCountry, setHoveredCountry] = useState(null);
   const [runwaySettings, setRunwaySettings] = useState({
     totalSavings: data.travel?.totalSavings || 0,
@@ -8566,89 +8567,9 @@ const TravelTab = ({ data, setData, userId }) => {
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* Travel Runway Calculator - Hero Section */}
-      <Card style={{ backgroundColor: '#18212F' }} className="border-slate-500/30 relative">
-        <button
-          onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
-          title="Edit Travel Runway Settings"
-        >
-          <Edit className="w-4 h-4 text-slate-300" />
-        </button>
-        
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
-          
-          {/* Main Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
-              <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
-              <div className="text-slate-300">Total Possible Days</div>
-            </div>
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
-              <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
-              <div className="text-slate-300">Weeks of Travel</div>
-            </div>
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
-              <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
-              <div className="text-slate-300">Months of Travel</div>
-            </div>
-          </div>
-
-          {/* Destination Cost Breakdown */}
-          <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
-            <h3 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
-                <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
-                <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
-                <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
-                <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
-                <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
-              </div>
-              <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
-                <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
-                <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
-                <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
-                <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
-                <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
-              </div>
-              <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
-                <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
-                <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
-                <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
-                <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
-                <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Financial Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
-              <div className="text-slate-300">Total Travel Funds</div>
-              <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
-            </div>
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
-              <div className="text-slate-300">Planned Trip Cost</div>
-              <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
-              <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
-            </div>
-            <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
-              <div className="text-emerald-200">Remaining Funds</div>
-              <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
-              <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
-            </div>
-          </div>
-          
-          <div className="text-xs text-slate-400 text-center">
-            💡 Extend your journey by choosing cheaper destinations with remaining funds
-          </div>
-        </div>
-      </Card>
-
-      {/* 🗺️ OPERATOR'S WORLD MAP - Epic Interactive Visualization */}
+      {/* ✅ Travel Runway Calculator MOVED to "Trip Planning & Budgets" section below! */}
+      {/* Now it's collapsible with a "Show Travel Runway" button - much cleaner! */}
+      {/* 🗺️ OPERATOR'S WORLD MAP - Now at TOP of page (no more scroll issues!) */}
       {(() => {
         // 🌍 COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
         const normalizeCountryName = (userInput) => {
@@ -9197,7 +9118,7 @@ const TravelTab = ({ data, setData, userId }) => {
         );
       })()}
 
-      {/* Trip Planning Header */}
+      {/* Trip Planning Header with Runway Calculator Toggle */}
       <Card>
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
@@ -9206,14 +9127,109 @@ const TravelTab = ({ data, setData, userId }) => {
             </h2>
             <p className="text-gray-400">Manage your travel budgets and track expenses by trip</p>
           </div>
-          <button
-            onClick={() => setShowAddTrip(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Plan New Trip
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowRunwayCalculator(!showRunwayCalculator)}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+            >
+              <Calculator className="w-4 h-4 mr-2" />
+              {showRunwayCalculator ? 'Hide' : 'Show'} Travel Runway
+            </button>
+            <button
+              onClick={() => setShowAddTrip(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Plan New Trip
+            </button>
+          </div>
         </div>
+        
+        {/* 🌍 TRAVEL RUNWAY CALCULATOR - Collapsible Section */}
+        {showRunwayCalculator && (
+          <div className="mt-6 pt-6 border-t border-gray-700">
+            <div className="relative">
+              <button
+                onClick={() => setShowRunwayModal(true)}
+                className="absolute top-0 right-0 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
+                title="Edit Travel Runway Settings"
+              >
+                <Edit className="w-4 h-4 text-slate-300" />
+              </button>
+              
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h3>
+                <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
+                
+                {/* Main Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                  <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+                    <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
+                    <div className="text-slate-300">Total Possible Days</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+                    <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
+                    <div className="text-slate-300">Weeks of Travel</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+                    <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
+                    <div className="text-slate-300">Months of Travel</div>
+                  </div>
+                </div>
+
+                {/* Destination Cost Breakdown */}
+                <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
+                  <h4 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
+                      <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
+                      <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
+                      <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
+                      <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
+                      <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
+                      <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
+                      <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
+                      <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
+                      <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
+                      <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
+                      <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
+                      <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
+                      <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
+                      <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
+                      <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financial Summary */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
+                  <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+                    <div className="text-slate-300">Total Travel Funds</div>
+                    <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+                    <div className="text-slate-300">Planned Trip Cost</div>
+                    <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
+                    <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
+                    <div className="text-emerald-200">Remaining Funds</div>
+                    <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
+                    <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-slate-400 text-center">
+                  💡 Extend your journey by choosing cheaper destinations with remaining funds
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Trip Cards */}
