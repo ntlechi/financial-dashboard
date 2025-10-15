@@ -59,7 +59,7 @@ import {
 } from './utils/dataSafetyUtils';
 
 // Firebase Imports
-import { db, auth } from './firebase';
+import { db, auth, functions } from './firebase';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
@@ -71,6 +71,7 @@ import {
   updateProfile 
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 
 // Firebase App ID available if needed
 // const appId = process.env.REACT_APP_FIREBASE_APP_ID;
@@ -11264,42 +11265,20 @@ function App() {
     };
   }, []);
 
-  // 🔧 MOBILE KEYBOARD FIX - Reset viewport when keyboard dismisses
-  useEffect(() => {
-    const handleInputBlur = () => {
-      // Small delay to let keyboard fully dismiss
-      setTimeout(() => {
-        // Reset scroll position
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        
-        // Force viewport recalculation
-        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-        
-        // Reset any body positioning
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-      }, 100);
-    };
-
-    // Listen for all input/textarea blur events
-    const inputs = document.querySelectorAll('input, textarea, select');
-    inputs.forEach(input => {
-      input.addEventListener('blur', handleInputBlur);
-    });
-
-    // Also handle on focusout for the document
-    document.addEventListener('focusout', handleInputBlur);
-
-    return () => {
-      inputs.forEach(input => {
-        input.removeEventListener('blur', handleInputBlur);
-      });
-      document.removeEventListener('focusout', handleInputBlur);
-    };
-  }, []);
+  // 🔧 REMOVED: Aggressive scroll-to-top fix that was breaking UX
+  // This was scrolling to top on EVERY input blur - breaking Side Hustle, Travel, etc.
+  // Modern browsers (iOS 14+, Android 10+) handle mobile keyboards correctly
+  // No manual intervention needed!
+  
+  // REMOVED CODE (kept for reference):
+  // useEffect(() => {
+  //   const handleInputBlur = () => {
+  //     setTimeout(() => {
+  //       window.scrollTo(0, 0); // ← THIS caused scroll-to-top on every input!
+  //     }, 100);
+  //   };
+  //   document.addEventListener('focusout', handleInputBlur);
+  // }, []);
 
 
   // Firebase Data Loading - DISABLED FOR DEVELOPMENT
@@ -11966,17 +11945,36 @@ function App() {
     }
   };
 
-  const handleDataExport = () => {
-    if (!data) {
+  const handleDataExport = async () => {
+    if (!data || !userId) {
       showNotification('No data to export', 'error');
       return;
     }
     
-    const success = exportUserData(data);
-    if (success) {
-      showNotification('📁 Data exported successfully!', 'success');
-    } else {
-      showNotification('Export failed', 'error');
+    try {
+      // Show loading notification
+      showNotification('📦 Preparing your complete archive...', 'info');
+      
+      // Call Firebase Cloud Function to generate .zip
+      const exportFunction = httpsCallable(functions, 'exportUserData');
+      const result = await exportFunction();
+      
+      if (result.data.success) {
+        // Automatically download the .zip file
+        const link = document.createElement('a');
+        link.href = result.data.downloadURL;
+        link.download = result.data.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification(`✅ Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} files)`, 'success');
+      } else {
+        showNotification('Export failed. Please try again.', 'error');
+      }
+    } catch (error) {
+      console.error('Export error:', error);
+      showNotification(`❌ Export failed: ${error.message}`, 'error');
     }
   };
 
