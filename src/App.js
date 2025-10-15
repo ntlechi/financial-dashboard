@@ -171,17 +171,35 @@ const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, las
   
   switch (frequency) {
     case 'weekly':
-      nextDate.setDate(lastDate.getDate() + 7);
+      // 🔧 ENHANCED: Calculate next occurrence of the specified day of week
+      const currentDay = lastDate.getDay();
+      const targetDay = parseInt(dayOfWeek) || 0; // 0=Sunday, 1=Monday, ..., 6=Saturday
+      let daysToAdd = targetDay - currentDay;
+      if (daysToAdd <= 0) daysToAdd += 7; // If target day already passed this week, go to next week
+      nextDate.setDate(lastDate.getDate() + daysToAdd);
       break;
+      
+    case 'bi-weekly':
+      // 🆕 NEW: Bi-weekly on specific day (e.g., "every other Thursday")
+      const currentDayBiWeekly = lastDate.getDay();
+      const targetDayBiWeekly = parseInt(dayOfWeek) || 0;
+      let daysToAddBiWeekly = targetDayBiWeekly - currentDayBiWeekly;
+      if (daysToAddBiWeekly <= 0) daysToAddBiWeekly += 7; // Next occurrence this week
+      daysToAddBiWeekly += 7; // Add another week to make it bi-weekly (14 days total)
+      nextDate.setDate(lastDate.getDate() + daysToAddBiWeekly);
+      break;
+      
     case 'monthly':
       nextDate.setMonth(lastDate.getMonth() + 1);
       nextDate.setDate(dayOfMonth);
       break;
+      
     case 'yearly':
       nextDate.setFullYear(lastDate.getFullYear() + 1);
       nextDate.setMonth(monthOfYear - 1); // monthOfYear is 1-12, setMonth expects 0-11
       nextDate.setDate(dayOfMonth);
       break;
+      
     default:
       nextDate.setMonth(lastDate.getMonth() + 1);
   }
@@ -3438,6 +3456,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       amount: '',
       isPassive: false,
       frequency: 'monthly',
+      dayOfWeek: 1, // 🆕 For weekly/bi-weekly: 0=Sunday, 1=Monday, etc.
       startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
       category: ''
     };
@@ -3915,6 +3934,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         amount: '',
         isPassive: false,
         frequency: 'monthly',
+        dayOfWeek: 1, // 🆕 Reset day of week
         startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
         category: ''
       });
@@ -4804,13 +4824,39 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     onChange={(e) => setNewRecurringItem({...newRecurringItem, frequency: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="annually">Annually</option>
+                    <option value="weekly">📅 Weekly</option>
+                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
+                    <option value="monthly">🗓️ Monthly</option>
+                    <option value="quarterly">📊 Quarterly</option>
+                    <option value="annually">📆 Annually</option>
                   </select>
                 </div>
               </div>
+
+              {/* 🆕 Day of Week Selector (for weekly/bi-weekly) */}
+              {(newRecurringItem.frequency === 'weekly' || newRecurringItem.frequency === 'bi-weekly') && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    Day of Week
+                  </label>
+                  <select
+                    value={newRecurringItem.dayOfWeek}
+                    onChange={(e) => setNewRecurringItem({...newRecurringItem, dayOfWeek: parseInt(e.target.value)})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value={0}>Sunday</option>
+                    <option value={1}>Monday</option>
+                    <option value={2}>Tuesday</option>
+                    <option value={3}>Wednesday</option>
+                    <option value={4}>Thursday</option>
+                    <option value={5}>Friday</option>
+                    <option value={6}>Saturday</option>
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">
+                    💡 {newRecurringItem.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                  </p>
+                </div>
+              )}
 
               {/* Start Date & Category */}
               <div className="grid grid-cols-2 gap-4">
@@ -7278,11 +7324,12 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                   >
                     <option value="weekly">📅 Weekly</option>
+                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
                     <option value="monthly">🗓️ Monthly</option>
                     <option value="yearly">📆 Yearly</option>
                   </select>
                   
-                  {newTransaction.frequency === 'weekly' && (
+                  {(newTransaction.frequency === 'weekly' || newTransaction.frequency === 'bi-weekly') && (
                     <select
                       value={newTransaction.dayOfWeek}
                       onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: e.target.value})}
@@ -7353,6 +7400,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     This {newTransaction.type} will automatically be added every{' '}
                     {newTransaction.frequency === 'weekly' && `week on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]}`}
+                    {newTransaction.frequency === 'bi-weekly' && `2 weeks on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]} (e.g., paychecks!)`}
                     {newTransaction.frequency === 'monthly' && `month on day ${newTransaction.dayOfMonth}`}
                     {newTransaction.frequency === 'yearly' && `year on ${['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][newTransaction.monthOfYear]} ${newTransaction.dayOfMonth}`}
                     . You can manage all recurring {newTransaction.type}s in the Transactions tab.
