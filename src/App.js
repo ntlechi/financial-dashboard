@@ -6806,28 +6806,33 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   };
 
   const handleEditTransaction = async (transaction) => {
-    const updatedTransactions = data.transactions.map(t => 
+    // FIX: Update BOTH arrays (same as delete function)
+    const updatedTransactions = (data.transactions || []).map(t => 
       t.id === transaction.id ? {
         ...transaction,
         amount: transaction.type === 'expense' ? -Math.abs(parseFloat(transaction.amount)) : Math.abs(parseFloat(transaction.amount))
       } : t
     );
-    const updatedData = { ...data, transactions: updatedTransactions };
+    
+    const updatedRecentTransactions = (data.recentTransactions || []).map(t => 
+      t.id === transaction.id ? {
+        ...transaction,
+        amount: transaction.type === 'expense' ? -Math.abs(parseFloat(transaction.amount)) : Math.abs(parseFloat(transaction.amount))
+      } : t
+    );
+    
+    const updatedData = { 
+      ...data, 
+      transactions: updatedTransactions,
+      recentTransactions: updatedRecentTransactions
+    };
     
     try {
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setEditingTransaction(null);
+      infoLog('✅ Transaction updated successfully');
     } catch (error) {
-
-  // 💫 MOMENTS HANDLERS
-  // const handleEditMoment = (moment) => {
-  //   console.log('Edit moment:', moment);
-  // };
-
-  // const handleShareMoment = (moment) => {
-  //   console.log('Share moment:', moment);
-  // };
       console.error('Error updating transaction:', error);
     }
   };
@@ -7100,7 +7105,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             Avg Transaction
           </h3>
           <p className="text-2xl font-bold text-purple-400 stealth-target">
-            ${data.transactions.length > 0 ? Math.abs(data.transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0) / data.transactions.length).toLocaleString() : '0'}
+            ${data.transactions.length > 0 ? (Math.abs(data.transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0) / data.transactions.length)).toFixed(2) : '0.00'}
           </p>
           <div className="mt-2 text-sm text-gray-300">
             Last 30 days

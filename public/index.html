@@ -56,7 +56,7 @@
         window.addEventListener('resize', setVH);
         window.addEventListener('orientationchange', setVH);
         
-        // 🎯 NEW: Visual Viewport API for smooth keyboard handling
+        // 🎯 NEW: ENHANCED Visual Viewport API for ultra-smooth keyboard handling
         // This fixes the "bottom gap" issue when keyboard closes
         if (window.visualViewport) {
           let previousHeight = window.visualViewport.height;
@@ -67,7 +67,7 @@
             
             // Keyboard is CLOSING (viewport getting bigger)
             if (heightDifference > 100) {
-              // Small delay to let keyboard fully dismiss
+              // ENHANCED: Shorter delay for snappier response
               setTimeout(() => {
                 // Get current scroll position
                 const currentScroll = window.scrollY || document.documentElement.scrollTop;
@@ -75,26 +75,34 @@
                 // Only adjust if we're not at the very top
                 // This prevents unwanted scroll-to-top
                 if (currentScroll > 0) {
-                  // Gently restore viewport by adjusting scroll slightly
-                  // This "snaps" the page back without jumping to top
+                  // ENHANCED: Double reflow trigger for better gap fix
+                  // First adjustment - triggers initial reflow
                   window.scrollTo({
                     top: currentScroll - 1,
-                    behavior: 'auto' // Instant, no animation
+                    behavior: 'auto'
                   });
                   
-                  // Trigger a reflow to ensure browser recalculates layout
+                  // Force immediate reflow
                   document.body.offsetHeight;
                   
-                  // Restore to exact position (this fixes the bottom gap)
+                  // Second adjustment - ensures complete layout
                   window.scrollTo({
                     top: currentScroll,
                     behavior: 'auto'
                   });
+                  
+                  // Force another reflow for stubborn browsers
+                  void document.body.offsetWidth;
+                  
+                  // Final viewport recalculation
+                  requestAnimationFrame(() => {
+                    setVH();
+                  });
+                } else {
+                  // Even at top, update viewport height
+                  setVH();
                 }
-                
-                // Update viewport height variable
-                setVH();
-              }, 100);
+              }, 80); // ENHANCED: 80ms instead of 100ms for snappier feel
             }
             
             previousHeight = currentHeight;
