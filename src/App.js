@@ -12651,25 +12651,14 @@ function App() {
                 <Plus className="w-5 h-5" />
               </button>
               
-              {/* Quick Journal Button - Operator+ Only */}
-              {currentUserPlan === SUBSCRIPTION_TIERS.OPERATOR || currentUserPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? (
-                <button
-                  onClick={() => setShowQuickJournal(true)}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-                  title="Quick Journal"
-                >
-                  <Edit3 className="w-5 h-5" />
-                </button>
-              ) : (
-                <button
-                  onClick={() => setShowPricingModal(true)}
-                  className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2 relative"
-                  title="Quick Journal - Operator+ Feature"
-                >
-                  <Edit3 className="w-5 h-5" />
-                  <Crown className="w-3 h-3 absolute -top-1 -right-1 text-amber-400" />
-                </button>
-              )}
+              {/* Quick Journal Button - FREE FOR EVERYONE! 🎁 */}
+              <button
+                onClick={() => setShowQuickJournal(true)}
+                className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
+                title="Quick Journal - Capture your thoughts!"
+              >
+                <Edit3 className="w-5 h-5" />
+              </button>
               
               {/* 🔒 STEALTH MODE Toggle - Free for Everyone! */}
               <button
