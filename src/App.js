@@ -12654,7 +12654,8 @@ function App() {
               {/* Quick Journal Button - FREE FOR EVERYONE! 🎁 */}
               <button
                 onClick={() => setShowQuickJournal(true)}
-                className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
+                className="bg-amber-600 hover:bg-amber-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
+                style={{ backgroundColor: '#F59E0B' }}
                 title="Quick Journal - Capture your thoughts!"
               >
                 <Edit3 className="w-5 h-5" />

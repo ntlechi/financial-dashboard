@@ -371,16 +371,17 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* Header with Add New Entry Button - COLORFUL! */}
-      <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-xl p-6 border border-purple-500/20">
+      {/* Header with Add New Entry Button - BRAND GOLD! */}
+      <div className="bg-gradient-to-r from-amber-900/30 to-yellow-900/30 rounded-xl p-6 border border-amber-500/20">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">My Logbook</h2>
-            <p className="text-purple-200 text-sm mt-1">✨ Capture your thoughts, organize your mind</p>
+            <h2 className="text-3xl font-bold" style={{ color: '#111827' }}>My Logbook</h2>
+            <p className="text-amber-200 text-sm mt-1">✨ Capture your thoughts, organize your mind</p>
           </div>
           <button
             onClick={openAddEntryModal}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-lg hover:shadow-2xl transform hover:scale-105"
+            className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-lg hover:shadow-2xl transform hover:scale-105"
+            style={{ backgroundColor: '#F59E0B' }}
           >
             <Plus className="w-5 h-5" />
             Add New Entry
@@ -388,8 +389,8 @@ export default function MyLogbook({
         </div>
       </div>
 
-      {/* Search & Filter Bar - INSPIRING COLORS! */}
-      <div className="bg-gradient-to-br from-blue-900/20 to-indigo-900/20 rounded-lg p-4 border border-blue-500/20 space-y-3">
+      {/* Search & Filter Bar - BRAND GOLD! */}
+      <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/20 space-y-3">
         {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -398,7 +399,7 @@ export default function MyLogbook({
             placeholder="Search entries by title or content..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-700/50 text-white pl-10 pr-4 py-3 rounded-lg border border-blue-500/30 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+            className="w-full bg-gray-700/50 text-white pl-10 pr-4 py-3 rounded-lg border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
           />
         </div>
 
@@ -413,9 +414,10 @@ export default function MyLogbook({
                 onClick={() => toggleTagFilter(tag)}
                 className={`px-3 py-1 rounded-full text-xs font-semibold transition-all transform hover:scale-105 ${
                   selectedTags.includes(tag)
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                    ? 'text-white shadow-md'
                     : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 border border-gray-600/50'
                 }`}
+                style={selectedTags.includes(tag) ? { backgroundColor: '#F59E0B' } : {}}
               >
                 {tag}
               </button>
@@ -441,7 +443,7 @@ export default function MyLogbook({
 
       {/* Entries Feed */}
       {filteredEntries.length === 0 ? (
-        <div className="bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-lg p-12 border border-purple-500/20 text-center">
+        <div className="bg-gradient-to-br from-amber-900/10 to-yellow-900/10 rounded-lg p-12 border border-amber-500/20 text-center">
           {entries.length === 0 ? (
             <>
               <Edit3 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
@@ -451,7 +453,8 @@ export default function MyLogbook({
               </p>
               <button
                 onClick={openAddEntryModal}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-bold transition-all inline-flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-lg font-bold transition-all inline-flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                style={{ backgroundColor: '#F59E0B' }}
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Entry
@@ -484,7 +487,7 @@ export default function MyLogbook({
             return (
               <div
                 key={entry.id}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-purple-500/10 overflow-hidden hover:border-purple-500/40 hover:shadow-lg transition-all"
+                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-amber-500/10 overflow-hidden hover:border-amber-500/40 hover:shadow-lg transition-all"
               >
                 {/* Card Header (Always Visible) */}
                 <div
@@ -495,7 +498,7 @@ export default function MyLogbook({
                     <div className="flex-1 min-w-0">
                       {/* Title (if exists) */}
                       {hasTitle && (
-                        <h3 className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-blue-300 mb-2">
+                        <h3 className="text-lg font-semibold mb-2" style={{ color: '#F59E0B' }}>
                           {entry.title}
                         </h3>
                       )}
@@ -512,7 +515,8 @@ export default function MyLogbook({
                             e.stopPropagation();
                             toggleEntry(entry.id);
                           }}
-                          className="text-purple-400 hover:text-purple-300 text-sm flex items-center gap-1 transition-colors font-semibold"
+                          className="hover:text-amber-300 text-sm flex items-center gap-1 transition-colors font-semibold"
+                          style={{ color: '#F59E0B' }}
                         >
                           {isExpanded ? (
                             <>
@@ -547,7 +551,8 @@ export default function MyLogbook({
                       {entry.tags.map(tag => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 text-xs font-semibold rounded-full border border-purple-500/30"
+                          className="inline-flex items-center gap-1 px-3 py-1 text-amber-300 text-xs font-semibold rounded-full border border-amber-500/30"
+                          style={{ backgroundColor: 'rgba(245, 158, 11, 0.2)' }}
                         >
                           <Tag className="w-3 h-3" />
                           {tag}
@@ -689,7 +694,7 @@ export default function MyLogbook({
                   placeholder="What's on your mind? Ideas, reflections, goals, insights..."
                   value={entryContent}
                   onChange={(e) => setEntryContent(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[200px] resize-none"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 min-h-[200px] resize-none"
                   rows="8"
                 />
               </div>
