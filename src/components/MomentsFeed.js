@@ -88,21 +88,14 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         "Where money meets meaning." Capture the stories behind your financial journey.
       </p>
 
-      {/* Stats Dashboard */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      {/* Stats Dashboard - Text-only for launch! */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         <div className="bg-gray-800 border-purple-500/30 p-4 rounded-lg flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-400">Total Moments</p>
             <p className="text-2xl font-bold text-white">{totalMoments}</p>
           </div>
           <Calendar className="w-8 h-8 text-purple-500"/>
-        </div>
-        <div className="bg-gray-800 border-purple-500/30 p-4 rounded-lg flex items-center justify-between">
-          <div>
-            <p className="text-sm text-gray-400">Total Photos</p>
-            <p className="text-2xl font-bold text-white">{totalPhotos}</p>
-          </div>
-          <Camera className="w-8 h-8 text-purple-500"/>
         </div>
         <div className="bg-gray-800 border-purple-500/30 p-4 rounded-lg flex items-center justify-between">
           <div>

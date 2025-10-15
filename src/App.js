@@ -6685,9 +6685,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     
     let updatedData = { ...data };
     
-    // Add the transaction
-    const updatedTransactions = [transaction, ...data.transactions];
+    // Add the transaction to BOTH arrays for consistency
+    const updatedTransactions = [transaction, ...(data.transactions || [])];
     updatedData.transactions = updatedTransactions;
+    updatedData.recentTransactions = updatedTransactions; // CRITICAL FIX: Update both arrays!
     
     // If this is a recurring expense, add it to recurring expenses
     if (finalTransaction.isRecurring) {
@@ -11319,11 +11320,11 @@ function App() {
     }
   }, [data]);
 
-  // 🎯 LOAD PRICING PHASE DATA
+  // 🎯 LOAD PRICING PHASE DATA (OPTIONAL - Don't error if no access)
   useEffect(() => {
     const loadPricingPhaseData = async () => {
       try {
-        // Load Founder's Circle count
+        // Load Founder's Circle count (OPTIONAL - fail silently if no access)
         const foundersDocRef = doc(db, 'app-config', 'founders-circle');
         const foundersDoc = await getDoc(foundersDocRef);
         
@@ -11352,7 +11353,8 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-        console.error('Error loading pricing phase data:', error);
+        // SILENT: Pricing phase data is optional - don't show error to users
+        // (Firestore permissions may restrict access to app-config collection)
       }
     };
 
@@ -12357,7 +12359,14 @@ function App() {
           Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
       },
       // 🔧 FIX: Ensure goals are included in displayData
-      goals: data.goals || []
+      goals: data.goals || [],
+      // 🔧 FIX: Ensure financialFreedom is included in displayData
+      financialFreedom: data.financialFreedom || {
+        targetAmount: 500000,
+        currentInvestments: 0,
+        monthlyContribution: 0,
+        annualReturn: 7
+      }
     };
     
     return viewMode === 'annual' ? getAnnualizedData() : baseData;

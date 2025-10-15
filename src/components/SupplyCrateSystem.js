@@ -419,15 +419,18 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Icon (optional)</label>
+                <label className="block text-sm text-gray-300 mb-2">Icon (Type or paste emoji)</label>
                 <input
                   type="text"
-                  placeholder="📦 🍔 ⛽ 🎬 🏠"
+                  placeholder="Type emoji here: 📦 🍔 ⛽ 🎬 🏠"
                   value={newCrate.icon}
                   onChange={(e) => setNewCrate({ ...newCrate, icon: e.target.value })}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none text-2xl text-center"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none text-3xl text-center"
                   maxLength={2}
                 />
+                <p className="text-xs text-gray-400 mt-2">
+                  💡 On iPhone/Android: Tap to open keyboard → tap emoji button → select emoji
+                </p>
               </div>
 
               <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
