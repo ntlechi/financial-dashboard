@@ -29,6 +29,7 @@ import FixedModal from './components/FixedModal';
 // import MomentsModal from './components/MomentsModal'; // TODO: Create MomentsModal component
 import MomentsFeed from './components/MomentsFeed';
 import InstallPrompt from './components/FixedModal';
+import QuickStartGuide from './components/QuickStartGuide';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS, canAddGoal, getGoalLimit } from './utils/subscriptionUtils';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
 import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
@@ -373,13 +374,14 @@ const initialData = {
     ]
   },
   transactions: [
-    { id: 1, date: '2025-01-15', description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
-    { id: 2, date: '2025-01-01', description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
-    { id: 3, date: '2025-01-12', description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
-    { id: 4, date: '2025-01-10', description: 'Gas', amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
-    { id: 5, date: '2025-01-08', description: 'Credit Card Payment', amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
-    { id: 6, date: '2025-01-05', description: 'Netflix', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
-    { id: 7, date: '2025-01-03', description: 'Coffee', amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    // 🔧 FIX: Use relative dates (days ago from today) so sample data is ALWAYS in the past!
+    { id: 1, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
+    { id: 2, date: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
+    { id: 3, date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
+    { id: 4, date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Gas', amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
+    { id: 5, date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Credit Card Payment', amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
+    { id: 6, date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Netflix', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 7, date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Coffee', amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
   ],
   recurringExpenses: [
     {
@@ -10380,6 +10382,8 @@ function App() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
   const [showHelpFAQ, setShowHelpFAQ] = useState(false);
+  const [showQuickStart, setShowQuickStart] = useState(false);
+  const [forceShowQuickStart, setForceShowQuickStart] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
@@ -11000,6 +11004,13 @@ function App() {
             // 🔄 Process recurring expenses on data load
             await processRecurringExpenses(userData, firebaseUser.uid);
           } else {
+            // 🆕 NEW USER - Show Quick Start Guide!
+            // Check if they haven't dismissed it before
+            const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
+            if (hasSeenQuickStart !== 'true') {
+              setShowQuickStart(true);
+            }
+            
             // New user - initialize with sample data
             console.log('New user detected, initializing with sample data');
             const newUserData = { ...initialData };
@@ -14874,7 +14885,25 @@ function App() {
 
       {/* Help FAQ Modal */}
       {showHelpFAQ && (
-        <HelpFAQ onClose={() => setShowHelpFAQ(false)} />
+        <HelpFAQ 
+          onClose={() => setShowHelpFAQ(false)} 
+          onOpenQuickStart={() => {
+            setForceShowQuickStart(true);
+            setShowQuickStart(true);
+            setShowHelpFAQ(false);
+          }}
+        />
+      )}
+
+      {/* 🆕 Quick Start Guide - Auto-shows for new users, accessible from Help menu */}
+      {showQuickStart && (
+        <QuickStartGuide 
+          onClose={() => {
+            setShowQuickStart(false);
+            setForceShowQuickStart(false);
+          }}
+          forceShow={forceShowQuickStart}
+        />
       )}
 
       {/* Pricing Modal */}

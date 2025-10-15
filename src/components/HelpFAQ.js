@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, Search, ChevronDown, ChevronRight, Rocket, DollarSign, Crown, Wrench, Settings, AlertTriangle, TrendingUp } from 'lucide-react';
+import { X, Search, ChevronDown, ChevronRight, Rocket, DollarSign, Crown, Wrench, Settings, AlertTriangle, TrendingUp, Compass } from 'lucide-react';
 
-const HelpFAQ = ({ onClose }) => {
+const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedFAQ, setExpandedFAQ] = useState(null);
@@ -347,6 +347,19 @@ const HelpFAQ = ({ onClose }) => {
             className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
           >
             <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Quick Start Guide Button */}
+        <div className="p-4 border-b border-gray-700">
+          <button
+            onClick={() => {
+              if (onOpenQuickStart) onOpenQuickStart();
+            }}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mb-4"
+          >
+            <Compass className="w-5 h-5" />
+            🧭 View Quick Start Guide
           </button>
         </div>
 
