@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -12851,7 +12851,7 @@ function App() {
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    📓 Field Notes
+                    <BookOpen className="w-4 h-4 mr-2"/>Field Notes
                   </button>
                   <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Award className="w-4 h-4 mr-2"/>Rank & Medals
