@@ -99,67 +99,68 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
-      {/* 💎 PHASE 1: PREMIUM HEADER - Inspiring & Elegant */}
-      <div className="bg-gradient-to-br from-amber-900/30 via-purple-900/20 to-gray-900/40 rounded-2xl p-10 border border-amber-500/30 mb-8 text-center shadow-2xl">
-        <h2 className="text-5xl font-black mb-4" style={{ color: '#FBBF24' }}>
+      {/* 💎 PHASE 1: PREMIUM HEADER - Inspiring & Elegant - MOBILE RESPONSIVE! */}
+      <div className="bg-gradient-to-br from-amber-900/30 via-purple-900/20 to-gray-900/40 rounded-2xl p-6 sm:p-10 border border-amber-500/30 mb-6 sm:mb-8 text-center shadow-2xl">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4" style={{ color: '#FBBF24' }}>
           💫 Your Moments
         </h2>
-        <p className="text-2xl text-amber-100 italic font-semibold mb-3">
+        <p className="text-lg sm:text-xl md:text-2xl text-amber-100 italic font-semibold mb-2 sm:mb-3 px-2">
           Every milestone. Every sacrifice. Every win — remembered forever.
         </p>
-        <p className="text-base text-amber-200/70 font-medium">
+        <p className="text-sm sm:text-base text-amber-200/70 font-medium px-2">
           ✨ Because numbers fade, but moments don't.
         </p>
       </div>
 
-      {/* 💎 PHASE 1: ELEGANT STATS BAR - Single Unified Bar */}
-      <div className="bg-gradient-to-r from-gray-800/60 to-gray-900/60 rounded-xl p-6 border border-amber-500/20 mb-8 shadow-lg">
-        <div className="flex justify-around items-center">
+      {/* 💎 PHASE 1: ELEGANT STATS BAR - MOBILE RESPONSIVE! */}
+      <div className="bg-gradient-to-r from-gray-800/60 to-gray-900/60 rounded-xl p-4 sm:p-6 border border-amber-500/20 mb-6 sm:mb-8 shadow-lg">
+        <div className="flex flex-col sm:flex-row justify-around items-center gap-6 sm:gap-0">
           <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <BookOpen className="w-6 h-6 text-amber-400" />
-              <span className="text-5xl font-black" style={{ color: '#FBBF24' }}>{totalMoments}</span>
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+              <span className="text-4xl sm:text-5xl font-black" style={{ color: '#FBBF24' }}>{totalMoments}</span>
             </div>
-            <p className="text-sm text-gray-400 uppercase tracking-wide font-medium">Total Moments</p>
+            <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">Total Moments</p>
           </div>
           
-          <div className="h-16 w-px bg-amber-500/20"></div>
+          <div className="hidden sm:block h-16 w-px bg-amber-500/20"></div>
+          <div className="sm:hidden w-full h-px bg-amber-500/20"></div>
           
           <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <Link className="w-6 h-6 text-amber-400" />
-              <span className="text-5xl font-black" style={{ color: '#FBBF24' }}>{totalExpensesLinked}</span>
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+              <Link className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+              <span className="text-4xl sm:text-5xl font-black" style={{ color: '#FBBF24' }}>{totalExpensesLinked}</span>
             </div>
-            <p className="text-sm text-gray-400 uppercase tracking-wide font-medium">Expenses Linked</p>
+            <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">Expenses Linked</p>
           </div>
         </div>
       </div>
 
-      {/* 💎 PHASE 3: PROMINENT SEARCH BAR */}
-      <div className="mb-8">
+      {/* 💎 PHASE 3: PROMINENT SEARCH BAR - MOBILE RESPONSIVE! */}
+      <div className="mb-6 sm:mb-8">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-amber-400" />
+          <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
           <input
             type="text"
-            placeholder="Search moments by story, location, or title..."
+            placeholder="Search moments..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-800/60 text-white pl-14 pr-4 py-4 rounded-xl border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50 text-lg shadow-lg"
+            className="w-full bg-gray-800/60 text-white pl-10 sm:pl-14 pr-4 py-3 sm:py-4 rounded-xl border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50 text-base sm:text-lg shadow-lg"
           />
         </div>
         {searchQuery && (
-          <div className="mt-3 text-sm text-amber-300 font-medium">
+          <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-amber-300 font-medium">
             ✨ Showing {filteredMoments.length} of {totalMoments} moments
           </div>
         )}
       </div>
 
-      {/* 💎 PHASE 3: ACTION BUTTONS - Filter (Secondary) + Add (Primary) */}
-      <div className="flex justify-between items-center mb-10">
+      {/* 💎 PHASE 3: ACTION BUTTONS - MOBILE RESPONSIVE! */}
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-0 mb-6 sm:mb-10">
         <div className="relative">
           <button
             onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-            className="bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 px-5 py-3 rounded-lg flex items-center gap-2 text-sm font-medium border border-gray-600/30 transition-all"
+            className="w-full sm:w-auto bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 px-4 sm:px-5 py-3 rounded-lg flex items-center justify-center gap-2 text-sm font-medium border border-gray-600/30 transition-all"
           >
             <Filter className="w-4 h-4"/>
             Filter: {filter.charAt(0).toUpperCase() + filter.slice(1)}
@@ -174,12 +175,12 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
           )}
         </div>
         
-        {/* 💎 PRIMARY CTA - Vibrant Purple */}
+        {/* 💎 PRIMARY CTA - Vibrant Purple - MOBILE RESPONSIVE! */}
         <button
           onClick={() => onEditMoment(null)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl flex items-center gap-3 text-base font-bold shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
+          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 sm:gap-3 text-base font-bold shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
         >
-          <Plus className="w-5 h-5"/> Add New Moment
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5"/> Add New Moment
         </button>
       </div>
 
@@ -210,16 +211,16 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                 key={moment.id} 
                 className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group"
               >
-                {/* Card Header */}
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    {/* 💎 HERO TITLE - Large, Bold, White */}
-                    <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-100 transition-colors">
+                {/* Card Header - MOBILE RESPONSIVE! */}
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0 mb-4">
+                  <div className="flex-1 w-full">
+                    {/* 💎 HERO TITLE - Large, Bold, White - MOBILE RESPONSIVE! */}
+                    <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3 group-hover:text-amber-100 transition-colors break-words">
                       {moment.title || 'Untitled Moment'}
                     </h3>
                     
-                    {/* 💎 DATE & LOCATION - Amber/Gold */}
-                    <div className="flex flex-wrap items-center gap-3 text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
+                    {/* 💎 DATE & LOCATION - Amber/Gold - MOBILE RESPONSIVE! */}
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4"/> 
                         {new Date(moment.timestamp).toLocaleDateString('en-US', { 
@@ -241,32 +242,32 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                     </div>
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Action Buttons - MOBILE: Always visible! */}
+                <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => onEditMoment(moment)} 
+                    className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                    title="Edit moment"
+                  >
+                    <Edit className="w-4 h-4"/>
+                  </button>
+                  <button 
+                    onClick={() => onShareMoment(moment)} 
+                    className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                    title="Share moment"
+                  >
+                    <Share2 className="w-4 h-4"/>
+                  </button>
+                  {onDeleteMoment && (
                     <button 
-                      onClick={() => onEditMoment(moment)} 
-                      className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Edit moment"
+                      onClick={() => onDeleteMoment(moment.id)} 
+                      className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Delete moment"
                     >
-                      <Edit className="w-4 h-4"/>
+                      <Trash2 className="w-4 h-4"/>
                     </button>
-                    <button 
-                      onClick={() => onShareMoment(moment)} 
-                      className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Share moment"
-                    >
-                      <Share2 className="w-4 h-4"/>
-                    </button>
-                    {onDeleteMoment && (
-                      <button 
-                        onClick={() => onDeleteMoment(moment.id)} 
-                        className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                        title="Delete moment"
-                      >
-                        <Trash2 className="w-4 h-4"/>
-                      </button>
-                    )}
-                  </div>
+                  )}
+                </div>
                 </div>
 
                 {/* 💎 STORY - Collapsible! */}

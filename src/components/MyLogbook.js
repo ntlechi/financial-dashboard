@@ -374,54 +374,57 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* 💎 PHASE 1: MAIN HEADER BANNER - Clean & Inspiring! */}
-      <div className="text-center mb-8">
-        <h1 className="text-5xl font-black text-white mb-3 flex items-center justify-center gap-3">
-          <BookOpen className="w-12 h-12 text-amber-400" />
-          Your Mission Logbook
-        </h1>
-        <p className="text-xl text-gray-300 font-medium">
-          Your thoughts are the blueprint for your freedom. Capture them here.
-        </p>
-      </div>
+      {/* 💎 UNIFIED HEADER - One Container! */}
+      <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-2xl p-6 sm:p-8 border border-amber-500/30 mb-6 shadow-xl">
+        {/* Header Text - Centered */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3 flex items-center justify-center gap-2 sm:gap-3">
+            <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-amber-400" />
+            Your Mission Logbook
+          </h1>
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 font-medium px-4">
+            Your thoughts are the blueprint for your freedom. Capture them here.
+          </p>
+        </div>
 
-      {/* 💎 PHASE 2: COMMAND BAR - Action-Oriented! */}
-      <div className="flex justify-between items-center p-4 bg-gray-800/40 rounded-lg border border-gray-700/50 mb-6">
-        {/* Secondary Action - Export (Left) */}
-        {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
-          <button
-            onClick={onExport}
-            className="bg-gray-700 hover:bg-gray-600 text-gray-300 px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 border border-gray-600"
-            title="Export all logbook entries"
-          >
-            <Download className="w-5 h-5" />
-            Export Notes
-          </button>
-        ) : (
-          <button
-            onClick={() => showUpgradePromptForFeature && showUpgradePromptForFeature('field-notes-export')}
-            className="bg-gray-700 hover:bg-gray-600 text-gray-300 px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 border border-gray-600"
-            title="Upgrade to export notes"
-          >
-            <Download className="w-5 h-5" />
-            <span className="flex items-center gap-2">
+        {/* 💎 ACTION BUTTONS - Mobile Responsive! */}
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
+          {/* Secondary Action - Export (Left) */}
+          {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
+            <button
+              onClick={onExport}
+              className="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-gray-300 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 border border-gray-600"
+              title="Export all logbook entries"
+            >
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
               Export Notes
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-              </svg>
-            </span>
-          </button>
-        )}
+            </button>
+          ) : (
+            <button
+              onClick={() => showUpgradePromptForFeature && showUpgradePromptForFeature('field-notes-export')}
+              className="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-gray-300 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 border border-gray-600"
+              title="Upgrade to export notes"
+            >
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="flex items-center gap-2">
+                Export Notes
+                <svg className="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+              </span>
+            </button>
+          )}
 
-        {/* Primary Action - Add Entry (Right) */}
-        <button
-          onClick={openAddEntryModal}
-          className="text-gray-900 px-8 py-3 rounded-lg font-black text-base transition-all flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105"
-          style={{ backgroundColor: '#FBBF24' }}
-        >
-          <Plus className="w-5 h-5" />
-          Add New Entry
-        </button>
+          {/* Primary Action - Add Entry (Right) - SMALLER! */}
+          <button
+            onClick={openAddEntryModal}
+            className="w-full sm:w-auto text-gray-900 px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+            style={{ backgroundColor: '#FBBF24' }}
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            Add New Entry
+          </button>
+        </div>
       </div>
 
       {/* Search & Filter Bar - BRAND GOLD! */}

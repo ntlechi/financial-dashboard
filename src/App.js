@@ -12925,11 +12925,10 @@ function App() {
                 <Plus className="w-5 h-5" />
               </button>
               
-              {/* Quick Journal Button - FREE FOR EVERYONE! 🎁 */}
+              {/* Quick Journal Button - FREE FOR EVERYONE! 🎁 - BRIGHT BLUE! */}
               <button
                 onClick={() => setShowQuickJournal(true)}
-                className="bg-amber-600 hover:bg-amber-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
-                style={{ backgroundColor: '#F59E0B' }}
+                className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
                 title="Quick Journal - Capture your thoughts!"
               >
                 <Edit3 className="w-5 h-5" />
