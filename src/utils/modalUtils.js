@@ -34,6 +34,12 @@ export const useScrollPrevention = (isOpen) => {
     // Store original scroll position
     const scrollY = window.scrollY;
     
+    // Store original styles
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+    const originalTop = document.body.style.top;
+    const originalWidth = document.body.style.width;
+    
     // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
@@ -41,8 +47,13 @@ export const useScrollPrevention = (isOpen) => {
     document.body.style.left = '0';
     document.body.style.right = '0';
     document.body.style.width = '100%';
-    document.body.style.height = '100vh';
     document.body.style.touchAction = 'none'; // Prevent touch scrolling
+    
+    // Also prevent html element scroll
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.position = 'fixed';
+    document.documentElement.style.width = '100%';
+    document.documentElement.style.height = '100%';
     
     // Store scroll position for restoration
     document.body.setAttribute('data-scroll-y', scrollY.toString());
@@ -52,22 +63,29 @@ export const useScrollPrevention = (isOpen) => {
       if (!document.body) return;
       
       // Get stored scroll position
-      const scrollY = document.body.getAttribute('data-scroll-y');
+      const storedScrollY = document.body.getAttribute('data-scroll-y');
       
       // Restore body scroll when modal is closed
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+      document.body.style.top = originalTop;
       document.body.style.left = '';
       document.body.style.right = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
+      document.body.style.width = originalWidth;
       document.body.style.touchAction = '';
       
-      // Restore scroll position
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY));
-        document.body.removeAttribute('data-scroll-y');
+      // Restore html element
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.position = '';
+      document.documentElement.style.width = '';
+      document.documentElement.style.height = '';
+      
+      // Restore scroll position with small delay for keyboard
+      if (storedScrollY) {
+        requestAnimationFrame(() => {
+          window.scrollTo(0, parseInt(storedScrollY));
+          document.body.removeAttribute('data-scroll-y');
+        });
       }
     };
   }, [isOpen]);

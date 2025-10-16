@@ -39,23 +39,28 @@ code {
     width: 100% !important;
     box-sizing: border-box !important;
     font-size: 16px !important; /* Prevents zoom on iOS */
-    height: 44px !important; /* Fixed height to match other inputs */
-    padding: 0.75rem 1rem !important; /* Match standard input padding */
-    line-height: 1.5 !important;
   }
   
   /* Fix for date picker icon spacing on mobile */
   input[type="date"]::-webkit-calendar-picker-indicator {
-    margin-left: auto;
+    margin-left: 4px;
     margin-right: 0;
     padding: 0;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
   }
   
-  /* Ensure date input text is properly sized */
+  /* Ensure date input doesn't overflow */
   input[type="date"]::-webkit-datetime-edit {
     padding: 0;
-    line-height: 1.5;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Constrain date field wrapper */
+  input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    max-width: calc(100% - 30px);
   }
 }

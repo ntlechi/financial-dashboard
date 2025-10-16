@@ -3557,6 +3557,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // ✏️ EDIT ITEM - New Feature!
   const [editingItem, setEditingItem] = useState(null);
   
+  // ✏️ EDIT BUSINESS - New Feature!
+  const [editingBusiness, setEditingBusiness] = useState(null);
+  
   // 🔄 RECURRING ITEMS - New Feature!
   const [showAddRecurring, setShowAddRecurring] = useState(false);
   const [recurringType, setRecurringType] = useState('income');
@@ -4513,6 +4516,74 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </Card>
       )}
 
+      {/* ✏️ EDIT BUSINESS MODAL */}
+      {editingBusiness && (
+        <Card className="border-amber-500/30">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-white">Edit Business</h3>
+            <button
+              onClick={() => setEditingBusiness(null)}
+              className="text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Business Name"
+              value={editingBusiness.name}
+              onChange={(e) => setEditingBusiness({...editingBusiness, name: e.target.value})}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+            />
+            
+            <input
+              type="date"
+              value={editingBusiness.startDate}
+              onChange={(e) => setEditingBusiness({...editingBusiness, startDate: e.target.value})}
+              className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+              style={{ maxWidth: '100%' }}
+            />
+          </div>
+          
+          <textarea
+            placeholder="Business Description"
+            value={editingBusiness.description}
+            onChange={(e) => setEditingBusiness({...editingBusiness, description: e.target.value})}
+            className="w-full mt-4 bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+            rows="3"
+          />
+          
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              onClick={() => setEditingBusiness(null)}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                const updatedBusinesses = data.businesses.map(b => 
+                  b.id === editingBusiness.id ? editingBusiness : b
+                );
+                const updatedData = { ...data, businesses: updatedBusinesses };
+                try {
+                  await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+                  setData(updatedData);
+                  setEditingBusiness(null);
+                } catch (error) {
+                  console.error('Error updating business:', error);
+                }
+              }}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        </Card>
+      )}
+
       {/* Business List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {data.businesses.map(business => (
@@ -4524,6 +4595,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 <p className="text-gray-500 text-xs">Since {new Date(business.startDate).toLocaleDateString()}</p>
               </div>
               <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setEditingBusiness(business)}
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
+                  title="Edit Business"
+                >
+                  <Edit className="w-3 h-3" />
+                </button>
                 <button
                   onClick={() => {
                     setSelectedBusiness(business);
@@ -9388,12 +9466,12 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <p className="text-slate-300">Smart destination-based travel planning with cost tiers</p>
-                  {/* 💡 Help Tooltip - Moved to tagline */}
+                  {/* 💡 Help Tooltip - Left side on mobile */}
                   <div className="group relative">
                     <button className="text-slate-400 hover:text-amber-400 transition-colors">
                       <HelpCircle className="w-5 h-5" />
                     </button>
-                    <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 bg-gray-900 text-white text-sm rounded-lg p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-2xl border border-amber-500/30 z-50">
+                    <div className="absolute right-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 bottom-full mb-2 w-72 sm:w-80 bg-gray-900 text-white text-sm rounded-lg p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-2xl border border-amber-500/30 z-50">
                       <div className="font-bold text-amber-400 mb-2">How It Works:</div>
                       <div className="space-y-2 text-xs text-gray-300">
                         <p><strong>1. Set Your Travel Savings:</strong> Enter your total travel fund (top right edit button)</p>
@@ -10334,8 +10412,8 @@ const TravelTab = ({ data, setData, userId }) => {
 
              {/* Travel Runway Settings Modal */}
       {showRunwayModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <Card className="w-full max-w-sm sm:max-w-2xl border-blue-500/30 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+          <Card className="w-full max-w-sm sm:max-w-2xl border-blue-500/30 my-4 sm:my-8 max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-3 sm:mb-4">
                  <h3 className="text-lg sm:text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
                <button
