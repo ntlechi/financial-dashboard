@@ -25,7 +25,7 @@ const MissionControl = ({
 
   // Load data
   useEffect(() => {
-    if (data?.goals) {
+    if (data?.goals && Array.isArray(data.goals)) {
       // Find North Star goal
       const northStar = data.goals.find(g => g.isNorthStar);
       setNorthStarGoal(northStar || null);
@@ -110,6 +110,43 @@ const MissionControl = ({
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  // Set North Star
+  const setAsNorthStar = async (missionId) => {
+    if (!userId || !data) return;
+
+    try {
+      const updatedGoals = data.goals.map(g => ({
+        ...g,
+        isNorthStar: g.id === missionId
+      }));
+
+      const updatedData = {
+        ...data,
+        goals: updatedGoals
+      };
+
+      const { doc, setDoc } = await import('firebase/firestore');
+      const { db } = await import('../firebase');
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      
+      onUpdateData(updatedData);
+      showNotification('⭐ North Star set! +100 XP', 'success');
+
+      // Award XP for setting North Star
+      if (awardXp && setXpRefreshTrigger) {
+        try {
+          await awardXp(db, userId, 100);
+          setXpRefreshTrigger(prev => prev + 1);
+        } catch (error) {
+          console.warn('XP award failed', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error setting North Star:', error);
+      showNotification('Failed to set North Star', 'error');
+    }
   };
 
   // Save Why Statement
@@ -281,18 +318,15 @@ const MissionControl = ({
               Set Your North Star
             </h3>
             <p className="text-gray-400 mb-6 max-w-md mx-auto">
-              Choose your main life goal from your existing goals. This becomes your North Star - your ultimate destination.
+              Your North Star is your ultimate life goal - your reason for climbing.
             </p>
-            <div className="bg-blue-900/30 rounded-lg p-4 border border-blue-500/30 mb-6 max-w-md mx-auto">
-              <p className="text-sm text-blue-200 font-semibold mb-2">
+            <div className="bg-amber-900/30 rounded-lg p-4 border border-amber-500/30 mb-6 max-w-md mx-auto">
+              <p className="text-sm text-amber-200 font-semibold mb-2">
                 💡 How to set your North Star:
               </p>
-              <ol className="text-sm text-blue-300 space-y-1 list-decimal list-inside">
-                <li>Go to your <span className="font-bold">Financial Goals</span> card on the Dashboard</li>
-                <li>Click the edit icon (pencil)</li>
-                <li>Check the "⭐ Make this my North Star" box on your ultimate goal</li>
-                <li>Save, and it will appear here!</li>
-              </ol>
+              <p className="text-sm text-amber-300">
+                Scroll down to <span className="font-bold">Active Missions</span> below and click the <span className="font-bold">⭐ Set as North Star</span> button on your ultimate goal!
+              </p>
             </div>
           </div>
         )}
@@ -311,7 +345,14 @@ const MissionControl = ({
         </div>
 
         {activeMissions.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div>
+            <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30 mb-6 text-center">
+              <p className="text-amber-300 text-sm">
+                ⭐ Click <span className="font-bold">"Set as North Star"</span> on your ultimate life goal below!
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {activeMissions.map(mission => {
               const progress = (mission.currentAmount / mission.targetAmount) * 100;
               const isComplete = progress >= 100;
@@ -382,9 +423,21 @@ const MissionControl = ({
                       </div>
                     </div>
                   )}
+
+                  {/* ⭐ SET AS NORTH STAR BUTTON */}
+                  <div className="mt-4 pt-4 border-t border-gray-700">
+                    <button
+                      onClick={() => setAsNorthStar(mission.id)}
+                      className="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white px-4 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                      <Target className="w-4 h-4" />
+                      ⭐ Set as North Star
+                    </button>
+                  </div>
                 </div>
               );
             })}
+          </div>
           </div>
         ) : (
           <div className="text-center py-12">
