@@ -30,15 +30,15 @@ export const FEATURE_ACCESS = {
   
   // 🎁 FREE TIER ENHANCEMENTS - High-impact guidance features!
   'financial-runway': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
-  'goal-tracking': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // Free = 3 max, Paid = unlimited
   'field-notes': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // 🎁 FREE! Write & view notes
   'field-notes-export': [SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // Export PDF = Operator+ only
   'first-climb-protocol': [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   
   // Climber+ Features
+  'goal-tracking': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // CLIMBER+ Feature
   'financial-calculators': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   'advanced-analytics': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
-  'unlimited-goals': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER], // Free users limited to 3
+  'unlimited-goals': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   'projections': [SUBSCRIPTION_TIERS.CLIMBER, SUBSCRIPTION_TIERS.OPERATOR, SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE, SUBSCRIPTION_TIERS.EARLY_ADOPTER],
   
   // Side Hustle: Operator+ only (SIMPLIFIED - no limits to enforce)
@@ -64,34 +64,7 @@ export const SIDE_HUSTLE_LIMITS = {
   [SUBSCRIPTION_TIERS.EARLY_ADOPTER]: Infinity
 };
 
-// 🎁 Goal tracking limits by tier (NEW!)
-export const GOAL_LIMITS = {
-  [SUBSCRIPTION_TIERS.FREE]: 3, // Free users get 3 goals - enough to start!
-  [SUBSCRIPTION_TIERS.CLIMBER]: Infinity,
-  [SUBSCRIPTION_TIERS.OPERATOR]: Infinity,
-  [SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE]: Infinity,
-  [SUBSCRIPTION_TIERS.EARLY_ADOPTER]: Infinity
-};
-
-/**
- * Get goal limit for user's tier
- * @param {string} userTier - User's current subscription tier
- * @returns {number} - Maximum number of goals allowed
- */
-export const getGoalLimit = (userTier) => {
-  return GOAL_LIMITS[userTier] || 3;
-};
-
-/**
- * Check if user can add another goal
- * @param {string} userTier - User's current subscription tier
- * @param {number} currentCount - Current number of active goals
- * @returns {boolean} - Whether user can add more
- */
-export const canAddGoal = (userTier, currentCount) => {
-  const limit = getGoalLimit(userTier);
-  return currentCount < limit;
-};
+// Goal tracking is now CLIMBER+ only (no FREE tier limits to track)
 
 // Dashboard card access control
 export const DASHBOARD_CARDS = {
@@ -101,6 +74,7 @@ export const DASHBOARD_CARDS = {
   'savings-rate': { tier: SUBSCRIPTION_TIERS.FREE, name: 'Savings Rate' },
   
   // Climber+ only
+  'financial-goals': { tier: SUBSCRIPTION_TIERS.CLIMBER, name: 'Financial Goals' },
   'financial-freedom': { tier: SUBSCRIPTION_TIERS.CLIMBER, name: 'Financial Freedom Goal' },
   'debt-payoff': { tier: SUBSCRIPTION_TIERS.CLIMBER, name: 'Debt Payoff Calculator' },
   'emergency-fund': { tier: SUBSCRIPTION_TIERS.CLIMBER, name: 'Emergency Fund' },
