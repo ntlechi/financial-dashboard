@@ -15083,6 +15083,47 @@ function App() {
                             </div>
                           </div>
                           
+                          {/* ⭐ NORTH STAR SELECTION - For Mission Control! */}
+                          <div className="mt-3 p-3 bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg border border-amber-500/30">
+                            <label className="flex items-center gap-3 cursor-pointer group">
+                              <input
+                                type="checkbox"
+                                checked={goal.isNorthStar || false}
+                                onChange={(e) => {
+                                  const updatedGoals = [...tempCardData];
+                                  // If checking this goal, uncheck all others
+                                  if (e.target.checked) {
+                                    updatedGoals.forEach((g, i) => {
+                                      if (i === index) {
+                                        g.isNorthStar = true;
+                                      } else {
+                                        g.isNorthStar = false;
+                                      }
+                                    });
+                                  } else {
+                                    updatedGoals[index] = {...goal, isNorthStar: false};
+                                  }
+                                  setTempCardData(updatedGoals);
+                                }}
+                                className="w-5 h-5 rounded border-2 border-amber-500 bg-gray-700 checked:bg-amber-500 focus:ring-2 focus:ring-amber-400 cursor-pointer"
+                              />
+                              <div className="flex-1">
+                                <div className="text-amber-300 font-bold flex items-center gap-2">
+                                  ⭐ Make this my North Star
+                                  {goal.isNorthStar && <span className="text-xs bg-amber-500/20 px-2 py-0.5 rounded-full">Active</span>}
+                                </div>
+                                <div className="text-xs text-amber-200/70 mt-0.5">
+                                  Your ultimate life goal. Displayed in Mission Control.
+                                </div>
+                              </div>
+                            </label>
+                            {goal.isNorthStar && (
+                              <div className="mt-2 text-xs text-green-300 bg-green-900/20 px-3 py-2 rounded border border-green-600/30">
+                                ✅ This goal is your North Star! View it in Mission Control.
+                              </div>
+                            )}
+                          </div>
+                          
                           {goal.targetAmount > 0 && (
                             <div className="mt-3">
                               <div className="flex justify-between text-xs text-gray-400 mb-1">

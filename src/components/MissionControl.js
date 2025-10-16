@@ -283,9 +283,17 @@ const MissionControl = ({
             <p className="text-gray-400 mb-6 max-w-md mx-auto">
               Choose your main life goal from your existing goals. This becomes your North Star - your ultimate destination.
             </p>
-            <p className="text-sm text-blue-300 mb-4">
-              💡 Tip: Go to your Financial Goals and mark one as your "North Star"
-            </p>
+            <div className="bg-blue-900/30 rounded-lg p-4 border border-blue-500/30 mb-6 max-w-md mx-auto">
+              <p className="text-sm text-blue-200 font-semibold mb-2">
+                💡 How to set your North Star:
+              </p>
+              <ol className="text-sm text-blue-300 space-y-1 list-decimal list-inside">
+                <li>Go to your <span className="font-bold">Financial Goals</span> card on the Dashboard</li>
+                <li>Click the edit icon (pencil)</li>
+                <li>Check the "⭐ Make this my North Star" box on your ultimate goal</li>
+                <li>Save, and it will appear here!</li>
+              </ol>
+            </div>
           </div>
         )}
       </div>
@@ -323,9 +331,9 @@ const MissionControl = ({
                       {mission.name}
                     </h3>
                     {isComplete ? (
-                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" title="Mission Complete! ✅" />
                     ) : (
-                      <Circle className="w-6 h-6 text-blue-400/50 flex-shrink-0" />
+                      <Circle className="w-6 h-6 text-blue-400/50 flex-shrink-0" title="In Progress ⭕" />
                     )}
                   </div>
 
@@ -392,8 +400,7 @@ const MissionControl = ({
       {/* 3️⃣ THE "WHY" STATEMENT - Founder's Touch */}
       <div className="bg-gradient-to-br from-purple-900/30 to-gray-900/50 rounded-2xl p-6 sm:p-8 border border-purple-500/30">
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-black text-white mb-2 flex items-center justify-center gap-3">
-            <Compass className="w-8 h-8 text-purple-400" />
+          <h2 className="text-3xl font-black text-white mb-2">
             My "Why"
           </h2>
           <p className="text-gray-400">
