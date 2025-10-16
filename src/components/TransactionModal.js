@@ -1,6 +1,6 @@
 // 🛠️ TRANSACTION MODAL - Fixed version that prevents all modal bugs
 import React, { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import FixedModal, { FixedInput, FixedSelect, FixedButton } from './FixedModal';
 
 const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditing = false }) => {

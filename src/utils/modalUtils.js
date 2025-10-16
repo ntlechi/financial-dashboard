@@ -36,36 +36,23 @@ export const useScrollPrevention = (isOpen) => {
     
     // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.height = '100vh';
+    document.body.style.touchAction = 'none'; // Prevent touch scrolling
     
-    // Mobile-specific fix: Use transform instead of position fixed
-    // This prevents the keyboard background issue
-    if (window.innerWidth <= 768) {
-      // Mobile: Use transform to prevent scroll without position fixed
-      document.body.style.position = 'relative';
-      document.body.style.transform = `translateY(-${scrollY}px)`;
-      document.body.style.top = '0';
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.bottom = '0';
-      document.body.style.width = '100%';
-      document.body.style.height = '100%';
-      
-      // Store scroll position for restoration
-      document.body.setAttribute('data-scroll-y', scrollY.toString());
-    } else {
-      // Desktop: Use position fixed (works fine on desktop)
-      document.body.style.position = 'fixed';
-      document.body.style.top = '0';
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.bottom = '0';
-      document.body.style.width = '100%';
-      document.body.style.height = '100%';
-    }
+    // Store scroll position for restoration
+    document.body.setAttribute('data-scroll-y', scrollY.toString());
 
     // Cleanup function
     return () => {
       if (!document.body) return;
+      
+      // Get stored scroll position
+      const scrollY = document.body.getAttribute('data-scroll-y');
       
       // Restore body scroll when modal is closed
       document.body.style.overflow = '';
@@ -73,18 +60,14 @@ export const useScrollPrevention = (isOpen) => {
       document.body.style.top = '';
       document.body.style.left = '';
       document.body.style.right = '';
-      document.body.style.bottom = '';
       document.body.style.width = '';
       document.body.style.height = '';
-      document.body.style.transform = '';
+      document.body.style.touchAction = '';
       
-      // Restore scroll position on mobile
-      if (window.innerWidth <= 768) {
-        const scrollY = document.body.getAttribute('data-scroll-y');
-        if (scrollY) {
-          window.scrollTo(0, parseInt(scrollY));
-          document.body.removeAttribute('data-scroll-y');
-        }
+      // Restore scroll position
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY));
+        document.body.removeAttribute('data-scroll-y');
       }
     };
   }, [isOpen]);
@@ -158,15 +141,18 @@ export const getModalContainerStyles = () => ({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '1rem',
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  // backgroundColor removed - now using Tailwind classes in FixedModal.js
   backdropFilter: 'blur(4px)',
   WebkitBackdropFilter: 'blur(4px)',
+  // Ensure modal covers everything on mobile
+  minHeight: 'calc(var(--vh, 1vh) * 100)',
+  width: '100vw',
 });
 
 // 🎯 MODAL CONTENT STYLES
 export const getModalContentStyles = () => ({
   position: 'relative',
-  maxHeight: '85vh',
+  maxHeight: 'calc(var(--vh, 1vh) * 85)', // Mobile-safe viewport height
   overflowY: 'auto',
   overflowX: 'hidden',
   outline: 'none',
@@ -174,6 +160,7 @@ export const getModalContentStyles = () => ({
   backgroundColor: '#1F2937',
   border: '1px solid rgba(75, 85, 99, 0.3)',
   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+  WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
 });
 
 // 🎯 INPUT FOCUS STYLES

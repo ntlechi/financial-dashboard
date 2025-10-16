@@ -38,12 +38,14 @@ const FixedModal = ({
   return (
     <div
       ref={modalRef}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       style={{
         ...containerStyles,
         // Mobile-safe viewport height
         height: 'calc(var(--vh, 1vh) * 100)',
         minHeight: 'calc(var(--vh, 1vh) * 100)',
+        // Override inline background to use Tailwind classes instead
+        backgroundColor: undefined,
       }}
       onClick={closeOnBackdropClick ? handleBackdropClick : undefined}
       onWheel={preventModalScroll}
