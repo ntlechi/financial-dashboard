@@ -371,19 +371,19 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* Header with Add New Entry Button - BRAND GOLD! */}
-      <div className="bg-gradient-to-r from-amber-900/30 to-yellow-900/30 rounded-xl p-6 border border-amber-500/20">
+      {/* 💎 PHASE 1: "CALL TO WRITE" CARD - Premium Invitation! */}
+      <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl p-8 border border-amber-500/30 shadow-2xl">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold" style={{ color: '#111827' }}>My Logbook</h2>
-            <p className="text-amber-200 text-sm mt-1">✨ Capture your thoughts, organize your mind</p>
+            <h2 className="text-4xl font-black tracking-tight mb-2" style={{ color: '#FBBF24' }}>My Logbook</h2>
+            <p className="text-amber-100 text-base font-medium leading-relaxed">📝 Your thoughts are the blueprint for your freedom. Capture them here.</p>
           </div>
           <button
             onClick={openAddEntryModal}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-lg hover:shadow-2xl transform hover:scale-105"
-            style={{ backgroundColor: '#F59E0B' }}
+            className="hover:shadow-amber-500/50 text-gray-900 px-10 py-4 rounded-lg font-black text-lg transition-all flex items-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-110 hover:rotate-1"
+            style={{ backgroundColor: '#FBBF24' }}
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-6 h-6" />
             Add New Entry
           </button>
         </div>
@@ -412,12 +412,12 @@ export default function MyLogbook({
               <button
                 key={tag}
                 onClick={() => toggleTagFilter(tag)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all transform hover:scale-105 ${
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all transform hover:scale-105 ${
                   selectedTags.includes(tag)
-                    ? 'text-white shadow-md'
+                    ? 'text-gray-900 shadow-lg'
                     : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 border border-gray-600/50'
                 }`}
-                style={selectedTags.includes(tag) ? { backgroundColor: '#F59E0B' } : {}}
+                style={selectedTags.includes(tag) ? { backgroundColor: '#FBBF24' } : {}}
               >
                 {tag}
               </button>
@@ -453,10 +453,10 @@ export default function MyLogbook({
               </p>
               <button
                 onClick={openAddEntryModal}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-lg font-bold transition-all inline-flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
-                style={{ backgroundColor: '#F59E0B' }}
+                className="text-gray-900 px-10 py-5 rounded-lg font-black text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-110 hover:rotate-1"
+                style={{ backgroundColor: '#FBBF24' }}
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-6 h-6" />
                 Add Your First Entry
               </button>
             </>
@@ -487,7 +487,7 @@ export default function MyLogbook({
             return (
               <div
                 key={entry.id}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-amber-500/10 overflow-hidden hover:border-amber-500/40 hover:shadow-lg transition-all"
+                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-amber-500/10 overflow-hidden hover:border-amber-400 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300"
               >
                 {/* Card Header (Always Visible) */}
                 <div
@@ -496,9 +496,9 @@ export default function MyLogbook({
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      {/* Title (if exists) */}
+                      {/* 💎 PHASE 2: Bolder, Larger Entry Titles */}
                       {hasTitle && (
-                        <h3 className="text-lg font-semibold mb-2" style={{ color: '#F59E0B' }}>
+                        <h3 className="text-xl font-bold mb-2" style={{ color: '#FBBF24' }}>
                           {entry.title}
                         </h3>
                       )}
@@ -515,8 +515,8 @@ export default function MyLogbook({
                             e.stopPropagation();
                             toggleEntry(entry.id);
                           }}
-                          className="hover:text-amber-300 text-sm flex items-center gap-1 transition-colors font-semibold"
-                          style={{ color: '#F59E0B' }}
+                          className="hover:text-amber-200 text-sm flex items-center gap-1 transition-colors font-bold"
+                          style={{ color: '#FBBF24' }}
                         >
                           {isExpanded ? (
                             <>
@@ -551,8 +551,8 @@ export default function MyLogbook({
                       {entry.tags.map(tag => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-amber-300 text-xs font-semibold rounded-full border border-amber-500/30"
-                          style={{ backgroundColor: 'rgba(245, 158, 11, 0.2)' }}
+                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full border border-amber-400/50"
+                          style={{ backgroundColor: 'rgba(251, 191, 36, 0.15)', color: '#FBBF24' }}
                         >
                           <Tag className="w-3 h-3" />
                           {tag}
@@ -563,7 +563,8 @@ export default function MyLogbook({
                   
                   {/* Footer: Date & Actions */}
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/50">
-                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                    {/* 💎 PHASE 2: Amber/Gold Timestamps! */}
+                    <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: '#FBBF24' }}>
                       <Calendar className="w-3 h-3" />
                       {formatDate(entry.createdAt)}
                       {entry.updatedAt && entry.updatedAt !== entry.createdAt && (
@@ -612,33 +613,33 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* Interactive Stats Footer - COLORFUL! */}
+      {/* 💎 PHASE 3: STATS BAR - Celebrate with Amber Numbers! */}
       {entries.length > 0 && (
-        <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-6 border border-purple-500/20">
-          <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-xl p-8 border border-amber-500/30 shadow-lg">
+          <div className="grid grid-cols-3 gap-6 text-center">
             <div>
-              <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{totalEntries}</div>
-              <div className="text-purple-300 text-sm font-medium">Total Entries</div>
+              <div className="text-5xl font-black mb-2" style={{ color: '#FBBF24' }}>{totalEntries}</div>
+              <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Total Entries</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">{totalTags}</div>
-              <div className="text-blue-300 text-sm font-medium">Unique Tags</div>
+              <div className="text-5xl font-black mb-2" style={{ color: '#FBBF24' }}>{totalTags}</div>
+              <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Unique Tags</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{entriesWithTags}</div>
-              <div className="text-indigo-300 text-sm font-medium">Tagged Entries</div>
+              <div className="text-5xl font-black mb-2" style={{ color: '#FBBF24' }}>{entriesWithTags}</div>
+              <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Tagged Entries</div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Add/Edit Entry Modal */}
+      {/* 💎 Add/Edit Entry Modal - Premium Gold! */}
       {showAddEntryModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-purple-500/30 shadow-2xl">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-amber-500/30 shadow-2xl">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-purple-700/30 bg-gradient-to-r from-purple-900/30 to-blue-900/30">
-              <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-blue-300">
+            <div className="flex items-center justify-between p-6 border-b border-amber-700/30 bg-gradient-to-r from-amber-900/30 to-yellow-900/30">
+              <h3 className="text-2xl font-black" style={{ color: '#FBBF24' }}>
                 {editingEntry ? '✏️ Edit Entry' : '✨ Add New Entry'}
               </h3>
               <button
@@ -661,7 +662,7 @@ export default function MyLogbook({
                   placeholder="Give your entry a title..."
                   value={entryTitle}
                   onChange={(e) => setEntryTitle(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
                   autoFocus
                 />
               </div>
@@ -677,7 +678,7 @@ export default function MyLogbook({
                   type="date"
                   value={entryDate}
                   onChange={(e) => setEntryDate(e.target.value)}
-                  className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
                   style={{ maxWidth: '100%' }}
                 />
                 <p className="text-xs text-gray-500 mt-2">
@@ -709,7 +710,7 @@ export default function MyLogbook({
                   placeholder="work, motivation, travel, goals..."
                   value={entryTags}
                   onChange={(e) => handleTagInput(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
                 />
                 
                 {/* Tag Suggestions */}
@@ -720,7 +721,8 @@ export default function MyLogbook({
                       <button
                         key={tag}
                         onClick={() => applyTagSuggestion(tag)}
-                        className="px-2 py-1 bg-blue-600/20 text-blue-300 text-xs rounded-full border border-blue-500/30 hover:bg-blue-600/30 transition-colors"
+                        className="px-2 py-1 text-xs rounded-full border hover:bg-amber-600/30 transition-colors font-semibold"
+                        style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)', color: '#FBBF24', borderColor: 'rgba(251, 191, 36, 0.3)' }}
                       >
                         {tag}
                       </button>
@@ -746,7 +748,8 @@ export default function MyLogbook({
               <button
                 onClick={saveEntry}
                 disabled={!entryContent.trim()}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="disabled:bg-gray-600 disabled:opacity-50 text-gray-900 px-8 py-3 rounded-lg font-black transition-all flex items-center gap-2 shadow-2xl hover:shadow-3xl transform hover:scale-110"
+                style={!entryContent.trim() ? {} : { backgroundColor: '#FBBF24' }}
               >
                 <Save className="w-5 h-5" />
                 {editingEntry ? 'Save Changes' : 'Add Entry'}
