@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Search, Tag, Calendar, Copy, Edit3, Trash2, ChevronDown, ChevronUp, X, Save, Filter, BookOpen, Download } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { createBackup } from '../utils/dataSafetyUtils';
 
 export default function MyLogbook({ 
   data, 
@@ -191,6 +192,24 @@ export default function MyLogbook({
   const saveEntry = async () => {
     if (!entryContent.trim() || !userId) return;
     
+    // 🛡️ SAFETY CHECK 1: Prevent data loss on edit!
+    if (editingEntry) {
+      const hasFieldNotes = data.fieldNotes && data.fieldNotes.length > 0;
+      const hasQuickJournal = data.quickJournalEntries && data.quickJournalEntries.length > 0;
+      
+      if (editingEntry.source === 'fieldNotes' && !hasFieldNotes) {
+        showNotification('⚠️ Data error detected. Please refresh and try again.', 'error');
+        console.error('🚨 CRITICAL: Attempting to edit when fieldNotes array is empty!');
+        return;
+      }
+      
+      if (editingEntry.source === 'quickJournal' && !hasQuickJournal) {
+        showNotification('⚠️ Data error detected. Please refresh and try again.', 'error');
+        console.error('🚨 CRITICAL: Attempting to edit when quickJournal array is empty!');
+        return;
+      }
+    }
+    
     const parsedTags = entryTags
       .split(',')
       .map(t => t.trim())
@@ -219,6 +238,21 @@ export default function MyLogbook({
               }
             : note
         );
+        
+        // 🛡️ SAFETY CHECK 2: Verify update succeeded
+        const updated = updatedFieldNotes.find(note => note.id === editingEntry.id);
+        if (!updated) {
+          showNotification('⚠️ Update failed. Entry not found.', 'error');
+          console.error('🚨 CRITICAL: Entry to update not found in fieldNotes!');
+          return;
+        }
+        
+        // 🛡️ SAFETY CHECK 3: Prevent mass deletion
+        if (updatedFieldNotes.length === 0) {
+          showNotification('⚠️ Cannot save - this would delete all entries!', 'error');
+          console.error('🚨 CRITICAL: Save blocked - would delete all fieldNotes!');
+          return;
+        }
       } else {
         updatedQuickJournal = updatedQuickJournal.map(entry =>
           entry.id === editingEntry.id
@@ -232,6 +266,21 @@ export default function MyLogbook({
               }
             : entry
         );
+        
+        // 🛡️ SAFETY CHECK 2: Verify update succeeded
+        const updated = updatedQuickJournal.find(entry => entry.id === editingEntry.id);
+        if (!updated) {
+          showNotification('⚠️ Update failed. Entry not found.', 'error');
+          console.error('🚨 CRITICAL: Entry to update not found in quickJournal!');
+          return;
+        }
+        
+        // 🛡️ SAFETY CHECK 3: Prevent mass deletion
+        if (updatedQuickJournal.length === 0) {
+          showNotification('⚠️ Cannot save - this would delete all entries!', 'error');
+          console.error('🚨 CRITICAL: Save blocked - would delete all quickJournal!');
+          return;
+        }
       }
       showNotification('✏️ Entry updated!', 'success');
     } else {
@@ -281,14 +330,22 @@ export default function MyLogbook({
       }
     }
     
-    // Save to Firebase
-    const updatedData = {
+    // 🛡️ SAFETY CHECK 4: Deep clone to prevent reference issues
+    const updatedData = JSON.parse(JSON.stringify({
       ...data,
       fieldNotes: updatedFieldNotes,
       quickJournalEntries: updatedQuickJournal
-    };
+    }));
     
     try {
+      // 🛡️ SAFETY CHECK 5: Create backup BEFORE saving (if data exists)
+      const hasData = (data.fieldNotes && data.fieldNotes.length > 0) || 
+                      (data.quickJournalEntries && data.quickJournalEntries.length > 0);
+      
+      if (hasData) {
+        await createBackup(userId, data, 'before-logbook-save');
+      }
+      
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       onUpdateData(updatedData);
       closeAddEntryModal();

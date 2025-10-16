@@ -11562,6 +11562,36 @@ function App() {
     return () => unsubscribe();
   }, [processRecurringExpenses, showNotification]);
   
+  // 🛡️ DAILY AUTO-BACKUP - Creates automatic backup every 24 hours
+  useEffect(() => {
+    if (!userId || !data) return;
+
+    const checkAndCreateDailyBackup = async () => {
+      const lastBackupKey = `lastAutoBackup_${userId}`;
+      const lastBackup = localStorage.getItem(lastBackupKey);
+      const now = Date.now();
+      
+      // Check if 24 hours have passed since last backup (or no backup exists)
+      if (!lastBackup || (now - parseInt(lastBackup)) > 24 * 60 * 60 * 1000) {
+        try {
+          console.log('🛡️ Creating daily auto-backup...');
+          await createBackup(userId, data, 'daily-auto');
+          localStorage.setItem(lastBackupKey, now.toString());
+          console.log('✅ Daily auto-backup created successfully');
+        } catch (error) {
+          console.error('❌ Daily auto-backup failed:', error);
+        }
+      }
+    };
+
+    checkAndCreateDailyBackup();
+    
+    // Check every hour (in case user keeps app open for long periods)
+    const interval = setInterval(checkAndCreateDailyBackup, 60 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, [userId, data]);
+  
   // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -13073,6 +13103,86 @@ function App() {
         <header className="mb-8">
           {/* Mission Status Banner */}
           <MissionStatusBanner userId={userId} refreshTrigger={xpRefreshTrigger} />
+          
+          {/* 🛡️ Data Safety & Export Reminder Widget */}
+          {data && userId && (() => {
+            const lastBackupKey = `lastAutoBackup_${userId}`;
+            const lastExportKey = `lastExport_${userId}`;
+            const lastBackup = localStorage.getItem(lastBackupKey);
+            const lastExport = localStorage.getItem(lastExportKey);
+            const now = Date.now();
+            
+            const backupAge = lastBackup ? Math.floor((now - parseInt(lastBackup)) / (1000 * 60 * 60)) : null; // hours
+            const exportAge = lastExport ? Math.floor((now - parseInt(lastExport)) / (1000 * 60 * 60 * 24)) : null; // days
+            const showExportReminder = !lastExport || exportAge > 7;
+            
+            return (
+              <div className="mb-4 flex flex-col sm:flex-row gap-3">
+                {/* Backup Status Widget */}
+                <div className="flex-1 bg-green-900/20 rounded-lg p-3 border border-green-500/30">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-green-400 font-semibold text-sm">🛡️ Data Protected</p>
+                        <p className="text-green-200 text-xs">
+                          {backupAge !== null 
+                            ? `Last backup: ${backupAge < 1 ? 'Less than 1 hour ago' : `${backupAge} hour${backupAge > 1 ? 's' : ''} ago`}`
+                            : 'Creating first backup...'}
+                        </p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        loadDataSafetyInfo();
+                        setShowDataRecoveryModal(true);
+                      }}
+                      className="text-green-400 hover:text-green-300 text-xs font-medium px-3 py-1 rounded bg-green-600/20 hover:bg-green-600/30 transition-colors"
+                    >
+                      View →
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Export Reminder (only if > 7 days) */}
+                {showExportReminder && (
+                  <div className="flex-1 bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center">
+                          <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-blue-400 font-semibold text-sm">💾 Export Recommended</p>
+                          <p className="text-blue-200 text-xs">
+                            {exportAge !== null 
+                              ? `Last export: ${exportAge} day${exportAge > 1 ? 's' : ''} ago`
+                              : 'Export your data weekly for extra safety!'}
+                          </p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={async () => {
+                          await handleDataExport();
+                          localStorage.setItem(lastExportKey, Date.now().toString());
+                        }}
+                        className="text-blue-400 hover:text-blue-300 text-xs font-medium px-3 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
+                      >
+                        Export →
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+          
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
               <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
@@ -13300,6 +13410,34 @@ function App() {
                           <div>
                             <p className="font-medium">Recover Data</p>
                             <p className="text-xs text-gray-500">Restore from backup</p>
+                          </div>
+                        </button>
+                        
+                        {/* Manual Backup - NEW! */}
+                        <button
+                          onClick={async () => {
+                            setShowUserMenu(false);
+                            if (!data || !userId) {
+                              showNotification('No data to backup', 'error');
+                              return;
+                            }
+                            try {
+                              showNotification('💾 Creating backup...', 'info');
+                              await createBackup(userId, data, 'manual-backup');
+                              showNotification('✅ Backup created successfully!', 'success');
+                            } catch (error) {
+                              console.error('Manual backup failed:', error);
+                              showNotification('Backup failed', 'error');
+                            }
+                          }}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-purple-400"
+                        >
+                          <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                          </svg>
+                          <div>
+                            <p className="font-medium">Create Backup Now</p>
+                            <p className="text-xs text-gray-500">Snapshot your data</p>
                           </div>
                         </button>
                         
