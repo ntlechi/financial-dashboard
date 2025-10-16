@@ -8274,6 +8274,11 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showRunwayModal, setShowRunwayModal] = useState(false);
   const [showRunwayCalculator, setShowRunwayCalculator] = useState(false); // NEW: Toggle for runway calculator
   const [hoveredCountry, setHoveredCountry] = useState(null);
+  
+  // 💫 NEW: Moment Modal States
+  const [showMomentModal, setShowMomentModal] = useState(false);
+  const [momentText, setMomentText] = useState('');
+  const [momentTrip, setMomentTrip] = useState(null);
   const [runwaySettings, setRunwaySettings] = useState({
     totalSavings: data.travel?.totalSavings || 0,
     homeCurrency: data.travel?.homeCurrency || 'CAD',
@@ -8703,6 +8708,79 @@ const TravelTab = ({ data, setData, userId }) => {
      setData(updatedData);
    } catch (error) {
      console.error('Error deleting expense:', error);
+   }
+ };
+
+ // 💫 NEW: ADD MOMENT TO TRIP HANDLER
+ const handleAddMomentToTrip = async () => {
+   if (!momentText.trim() || !momentTrip) return;
+
+   const newMoment = {
+     id: Date.now(),
+     title: `${momentTrip.name} - Moment`,
+     story: momentText.trim(),
+     timestamp: new Date().toISOString(),
+     location: momentTrip.countries?.[0] || momentTrip.name,
+     tripId: momentTrip.id,
+     tripName: momentTrip.name,
+     isTravel: true,
+     photos: []
+   };
+
+   // Add to moments array
+   const updatedMoments = [...(data.moments || []), newMoment];
+   
+   // Also add to trip's moments array
+   const updatedTrips = (data.travel?.trips || []).map(trip => {
+     if (trip.id === momentTrip.id) {
+       return {
+         ...trip,
+         moments: [...(trip.moments || []), newMoment]
+       };
+     }
+     return trip;
+   });
+
+   const updatedTravel = { ...data.travel, trips: updatedTrips };
+   const updatedData = { ...data, travel: updatedTravel, moments: updatedMoments };
+
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+     setMomentText('');
+     setMomentTrip(null);
+     setShowMomentModal(false);
+   } catch (error) {
+     console.error('Error adding moment:', error);
+   }
+ };
+
+ // 💫 DELETE MOMENT FROM TRIP HANDLER
+ const handleDeleteTripMoment = async (tripId, momentId) => {
+   if (!window.confirm('Delete this moment?')) return;
+
+   // Remove from trip's moments
+   const updatedTrips = (data.travel?.trips || []).map(trip => {
+     if (trip.id === tripId) {
+       return {
+         ...trip,
+         moments: (trip.moments || []).filter(m => m.id !== momentId)
+       };
+     }
+     return trip;
+   });
+
+   // Remove from global moments
+   const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
+
+   const updatedTravel = { ...data.travel, trips: updatedTrips };
+   const updatedData = { ...data, travel: updatedTravel, moments: updatedMoments };
+
+   try {
+     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+     setData(updatedData);
+   } catch (error) {
+     console.error('Error deleting moment:', error);
    }
  };
 
@@ -9429,14 +9507,18 @@ const TravelTab = ({ data, setData, userId }) => {
                   >
                     Add Expense
                   </button>
-                  {/* TODO: Fix journal button scope issue */}
-                  {/* <button
-                    onClick={() => handleOpenJournal(trip)}
+                  {/* 💫 NEW: Add Moment Button */}
+                  <button
+                    onClick={() => {
+                      setMomentTrip(trip);
+                      setShowMomentModal(true);
+                    }}
                     className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
-                    title="Add Journal Entry"
+                    style={{ backgroundColor: '#F59E0B' }}
+                    title="Add Travel Moment"
                   >
-                    📓 Journal
-                  </button> */}
+                    💫 Moment
+                  </button>
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
                     className="text-blue-400 hover:text-blue-300 p-1"
@@ -9530,40 +9612,40 @@ const TravelTab = ({ data, setData, userId }) => {
                   </div>
                 )}
 
-                {/* 📓 Freedom Journal Entries */}
-                {trip.journalEntries && trip.journalEntries.length > 0 && (
+                {/* 💫 NEW: Quick Moments */}
+                {trip.moments && trip.moments.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-medium text-amber-300 mb-2 flex items-center gap-1">
-                      📓 Journal Entries ({trip.journalEntries.length})
+                    <h4 className="text-sm font-medium mb-2 flex items-center gap-1" style={{ color: '#F59E0B' }}>
+                      💫 Travel Moments ({trip.moments.length})
                     </h4>
                     <div className="space-y-2 max-h-32 overflow-y-auto">
-                      {trip.journalEntries.slice(0, 2).map(entry => (
-                        <div key={entry.entryID} className="bg-amber-900/20 rounded-lg p-3 border border-amber-600/30">
-                          <div className="text-xs text-amber-200 mb-1">
-                            {new Date(entry.timestamp).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                      {trip.moments.slice(0, 2).map(moment => (
+                        <div key={moment.id} className="bg-amber-900/20 rounded-lg p-3 border border-amber-600/30 group">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="text-xs text-amber-200">
+                              {new Date(moment.timestamp).toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </div>
+                            <button
+                              onClick={() => handleDeleteTripMoment(trip.id, moment.id)}
+                              className="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Delete moment"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
                           <p className="text-amber-100 text-xs leading-relaxed">
-                            {entry.text.length > 100 ? entry.text.substring(0, 100) + '...' : entry.text}
+                            {moment.story.length > 100 ? moment.story.substring(0, 100) + '...' : moment.story}
                           </p>
-                          {entry.photoURL && (
-                            <div className="mt-2">
-                              <img
-                                src={entry.photoURL}
-                                alt="Journal photo"
-                                className="w-16 h-12 object-cover rounded border border-amber-500/30"
-                              />
-                            </div>
-                          )}
                         </div>
                       ))}
-                      {trip.journalEntries.length > 2 && (
+                      {trip.moments.length > 2 && (
                         <div className="text-xs text-amber-400 text-center">
-                          +{trip.journalEntries.length - 2} more entries
+                          +{trip.moments.length - 2} more moments
                         </div>
                       )}
                     </div>
@@ -9883,6 +9965,78 @@ const TravelTab = ({ data, setData, userId }) => {
               >
                                  <Plus className="w-4 h-4" />
                  Add Expense
+               </button>
+             </div>
+           </Card>
+         </div>
+       )}
+
+       {/* 💫 NEW: Add Moment Modal */}
+       {showMomentModal && momentTrip && (
+         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+           <Card className="w-full max-w-lg border-amber-500/30">
+             <div className="flex justify-between items-center mb-4">
+               <div>
+                 <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>💫 Add Travel Moment</h3>
+                 <p className="text-sm text-gray-400">{momentTrip.name}</p>
+               </div>
+               <button
+                 onClick={() => {
+                   setShowMomentModal(false);
+                   setMomentTrip(null);
+                   setMomentText('');
+                 }}
+                 className="text-gray-400 hover:text-white"
+               >
+                 <X className="w-5 h-5" />
+               </button>
+             </div>
+             
+             <div className="space-y-4">
+               {/* Inspiring Message */}
+               <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
+                 <p className="text-amber-200 text-sm italic text-center">
+                   ✨ "You didn't work for money. You worked for moments like this."
+                 </p>
+               </div>
+
+               <div>
+                 <label className="block text-sm text-gray-300 mb-2">
+                   Your Story <span className="text-red-400">*</span>
+                 </label>
+                 <textarea
+                   placeholder="What made this moment special? Capture the feeling, the scene, the memory..."
+                   value={momentText}
+                   onChange={(e) => setMomentText(e.target.value)}
+                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 min-h-[150px] resize-none"
+                   rows="6"
+                   autoFocus
+                 />
+                 <p className="text-xs text-gray-500 mt-2">
+                   💡 Pro tip: Write about the emotions, the people, the unexpected surprises. These stories are your treasure!
+                 </p>
+               </div>
+             </div>
+             
+             <div className="mt-6 flex justify-end gap-3">
+               <button
+                 onClick={() => {
+                   setShowMomentModal(false);
+                   setMomentTrip(null);
+                   setMomentText('');
+                 }}
+                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+               >
+                 Cancel
+               </button>
+               <button
+                 onClick={handleAddMomentToTrip}
+                 disabled={!momentText.trim()}
+                 className="bg-amber-600 hover:bg-amber-700 disabled:bg-amber-800 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 transform hover:scale-105"
+                 style={momentText.trim() ? { backgroundColor: '#F59E0B' } : {}}
+               >
+                 <Plus className="w-4 h-4" />
+                 Save Moment
                </button>
              </div>
            </Card>

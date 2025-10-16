@@ -2,12 +2,13 @@
 // 💫 MOMENTS FEED - Emotional Timeline Component
 
 import React, { useState, useEffect } from 'react';
-import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2 } from 'lucide-react';
+import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search } from 'lucide-react';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
   const [filter, setFilter] = useState('all'); // 'all', 'travel', 'achievements', 'expenses'
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(''); // NEW: Search functionality
 
   useEffect(() => {
     // Simulate fetching moments from data or Firebase
@@ -52,11 +53,20 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
   }, [data]);
 
   const filteredMoments = moments.filter(moment => {
-    if (filter === 'all') return true;
-    if (filter === 'travel' && moment.location) return true;
-    if (filter === 'achievements' && moment.isAchievement) return true;
-    if (filter === 'expenses' && moment.expenseLink) return true;
-    return false;
+    // Search filter
+    const matchesSearch = searchQuery === '' ||
+      moment.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      moment.story.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (moment.location && moment.location.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    // Category filter
+    const matchesFilter = 
+      filter === 'all' ||
+      (filter === 'travel' && moment.isTravel) ||
+      (filter === 'achievements' && moment.isAchievement) ||
+      (filter === 'expenses' && moment.expenseLink);
+    
+    return matchesSearch && matchesFilter;
   });
 
   const totalMoments = moments.length;
@@ -83,10 +93,32 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold text-white mb-6">💫 Your Moments</h2>
-      <p className="text-gray-400 mb-8">
-        "Where money meets meaning." Capture the stories behind your financial journey.
-      </p>
+      {/* 💫 INSPIRING TAGLINE */}
+      <div className="bg-gradient-to-r from-amber-900/30 to-yellow-900/30 rounded-xl p-8 border border-amber-500/20 mb-8 text-center">
+        <h2 className="text-4xl font-bold mb-3" style={{ color: '#F59E0B' }}>💫 Your Moments</h2>
+        <p className="text-xl text-amber-200 italic font-medium">
+          "You didn't work for money. You worked for moments like this."
+        </p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search your moments by story, location, or title..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-gray-700/50 text-white pl-10 pr-4 py-3 rounded-lg border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+          />
+        </div>
+        {searchQuery && (
+          <div className="mt-2 text-sm text-gray-400">
+            Showing {filteredMoments.length} of {totalMoments} moments
+          </div>
+        )}
+      </div>
 
       {/* Stats Dashboard - Text-only for launch! */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
