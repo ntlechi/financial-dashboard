@@ -2,7 +2,7 @@
 // Project: Freedom Journal Transformation
 
 import React, { useState, useEffect } from 'react';
-import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp } from 'lucide-react';
+import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp, Copy } from 'lucide-react';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
@@ -10,6 +10,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedMoments, setExpandedMoments] = useState(new Set()); // NEW: Collapsible state
+  const [copyNotification, setCopyNotification] = useState(false); // Copy feedback
 
   useEffect(() => {
     // Simulate fetching moments from data or Firebase
@@ -90,6 +91,16 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
     return text.substring(0, maxLength) + '...';
   };
 
+  // Copy to clipboard
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopyNotification(true);
+      setTimeout(() => setCopyNotification(false), 2000);
+    }).catch(() => {
+      alert('Failed to copy to clipboard');
+    });
+  };
+
   const getMomentSourceBadge = (moment) => {
     if (moment.isTravel) return <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><MapPin className="w-3 h-3"/>Travel</span>;
     if (moment.isAchievement) return <span className="bg-green-600/20 text-green-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Award className="w-3 h-3"/>Achievement</span>;
@@ -99,6 +110,14 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
+      {/* Copy Notification */}
+      {copyNotification && (
+        <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-2 animate-fade-in">
+          <Copy className="w-5 h-5" />
+          <span className="font-semibold">Copied to clipboard!</span>
+        </div>
+      )}
+
       {/* 💎 PREMIUM HEADER - Inspiring & Elegant - MOBILE RESPONSIVE! */}
       <div className="bg-gradient-to-br from-amber-900/30 via-purple-900/20 to-gray-900/40 rounded-2xl p-6 sm:p-10 border border-amber-500/30 mb-6 sm:mb-8 text-center shadow-2xl">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4" style={{ color: '#FBBF24' }}>
@@ -178,7 +197,8 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         {/* 💎 PRIMARY CTA - Vibrant Purple - MOBILE RESPONSIVE! */}
         <button
           onClick={() => onEditMoment(null)}
-          className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 sm:gap-3 text-base font-bold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all"
+          className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 sm:gap-3 text-base font-bold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all"
+          style={{ color: '#111827' }}
         >
           <Plus className="w-4 h-4 sm:w-5 sm:h-5"/> Add New Moment
         </button>
@@ -305,6 +325,16 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                   
                   {/* Footer: Actions */}
                   <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-700/50 opacity-100 sm:opacity-0 hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        copyToClipboard(moment.story); 
+                      }} 
+                      className="text-gray-400 hover:text-green-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Copy to clipboard"
+                    >
+                      <Copy className="w-4 h-4"/>
+                    </button>
                     <button 
                       onClick={(e) => { e.stopPropagation(); onEditMoment(moment); }} 
                       className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
