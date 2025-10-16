@@ -178,7 +178,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         {/* 💎 PRIMARY CTA - Vibrant Purple - MOBILE RESPONSIVE! */}
         <button
           onClick={() => onEditMoment(null)}
-          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 sm:gap-3 text-base font-bold shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
+          className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 sm:gap-3 text-base font-bold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all"
         >
           <Plus className="w-4 h-4 sm:w-5 sm:h-5"/> Add New Moment
         </button>
@@ -193,7 +193,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
             <p className="text-gray-400 mb-6">Start capturing your story!</p>
             <button
               onClick={() => onEditMoment(null)}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl inline-flex items-center gap-3 text-base font-bold shadow-2xl transform hover:scale-105 transition-all"
+              className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-8 py-4 rounded-xl inline-flex items-center gap-3 text-base font-bold shadow-2xl transform hover:scale-105 transition-all"
             >
               <Plus className="w-5 h-5"/> Add Your First Moment
             </button>

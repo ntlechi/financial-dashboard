@@ -477,8 +477,7 @@ export default function MyLogbook({
               </p>
               <button
                 onClick={openAddEntryModal}
-                className="text-gray-900 px-10 py-5 rounded-lg font-black text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-110 hover:rotate-1"
-                style={{ backgroundColor: '#FBBF24' }}
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-10 py-5 rounded-lg font-black text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-110 hover:rotate-1"
               >
                 <Plus className="w-6 h-6" />
                 Add Your First Entry
