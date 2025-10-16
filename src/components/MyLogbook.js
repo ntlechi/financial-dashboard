@@ -406,8 +406,7 @@ export default function MyLogbook({
           {/* Primary Action - Add Entry (Right) - SMALLER! */}
           <button
             onClick={openAddEntryModal}
-            className="w-full sm:w-auto text-gray-900 px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
-            style={{ backgroundColor: '#FBBF24' }}
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             Add New Entry
@@ -523,7 +522,7 @@ export default function MyLogbook({
                     <div className="flex-1 min-w-0">
                       {/* 💎 PHASE 2: Bolder, Larger Entry Titles */}
                       {hasTitle && (
-                        <h3 className="text-xl font-bold text-blue-400 mb-2">
+                        <h3 className="text-xl font-bold text-amber-400 mb-2">
                           {entry.title}
                         </h3>
                       )}
