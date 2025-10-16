@@ -21,6 +21,7 @@ import FreedomJournal from './components/FreedomJournal';
 import ReflectionsPage from './components/ReflectionsPage';
 import FirstClimbProtocol from './components/FirstClimbProtocol';
 import SupplyCrateSystem from './components/SupplyCrateSystem';
+import MissionControl from './components/MissionControl';
 import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
@@ -13267,6 +13268,10 @@ function App() {
                   <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
+                  <button onClick={() => handleTabClick('mission-control')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'mission-control' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                    <Target className="w-4 h-4 mr-2"/>Mission Control
+                    {!checkFeatureAccess('goal-tracking') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
+                  </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <BookOpen className="w-4 h-4 mr-2"/>Field Notes
                   </button>
@@ -13600,6 +13605,63 @@ function App() {
                     Upgrade to Operator
                   </button>
                 </div>
+              </div>
+            )
+          )}
+
+          {/* 🎯 MISSION CONTROL - The Heart of The Compass (CLIMBER+ Feature) */}
+          {activeTab === 'mission-control' && (
+            checkFeatureAccess('goal-tracking') ? (
+              <FinancialErrorBoundary componentName="Mission Control">
+                <MissionControl
+                  data={data}
+                  userId={userId}
+                  onUpdateData={setData}
+                  awardXp={awardXp}
+                  setXpRefreshTrigger={setXpRefreshTrigger}
+                />
+              </FinancialErrorBoundary>
+            ) : (
+              <div className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-purple-900/30 to-gray-900/50 rounded-2xl p-12 border border-purple-500/30 text-center">
+                <div className="inline-block bg-purple-500/20 rounded-full p-8 mb-6">
+                  <Target className="w-20 h-20 text-purple-400" />
+                </div>
+                <h2 className="text-4xl font-black text-white mb-4">
+                  🎯 Mission Control
+                </h2>
+                <p className="text-xl text-purple-200 mb-6 max-w-2xl mx-auto">
+                  Your strategic flight plan. Connect your daily actions to your ultimate life goals.
+                </p>
+                <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-500/30 mb-8 max-w-2xl mx-auto">
+                  <div className="text-lg text-blue-200 space-y-3 text-left">
+                    <p className="flex items-start gap-3">
+                      <span className="text-2xl">⭐</span>
+                      <span><strong>North Star:</strong> Set your ultimate life goal and track progress</span>
+                    </p>
+                    <p className="flex items-start gap-3">
+                      <span className="text-2xl">🎯</span>
+                      <span><strong>Active Missions:</strong> See all your sub-goals in one strategic view</span>
+                    </p>
+                    <p className="flex items-start gap-3">
+                      <span className="text-2xl">🧭</span>
+                      <span><strong>Your "Why":</strong> Write your personal mission statement</span>
+                    </p>
+                    <p className="flex items-start gap-3">
+                      <span className="text-2xl">📅</span>
+                      <span><strong>Projected Freedom Date:</strong> See when you'll reach your North Star</span>
+                    </p>
+                  </div>
+                </div>
+                <p className="text-gray-400 mb-8 italic">
+                  "The most powerful financial tool is a clear purpose."
+                </p>
+                <button
+                  onClick={() => setShowPricingModal(true)}
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-10 py-5 rounded-xl font-black text-lg transition-all flex items-center gap-3 mx-auto shadow-2xl transform hover:scale-105"
+                >
+                  <Crown className="w-6 h-6" />
+                  Unlock Mission Control
+                </button>
               </div>
             )
           )}
