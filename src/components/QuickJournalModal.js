@@ -32,9 +32,9 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
       title="Quick Journal"
       description="Capture your thoughts instantly!"
       size="md"
-      headerClassName="bg-gradient-to-r from-amber-900/30 to-yellow-900/30 border-b border-amber-700/30"
+      headerClassName="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border-b border-blue-700/30"
     >
-      <div className="space-y-4 bg-gradient-to-br from-amber-900/10 to-yellow-900/10 rounded-lg p-4 border border-amber-500/20">
+      <div className="space-y-4 bg-gradient-to-br from-blue-900/10 to-cyan-900/10 rounded-lg p-4 border border-blue-500/20">
         <div>
           <label className="block text-sm text-gray-300 mb-2">
             What's on your mind?

@@ -270,8 +270,8 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                 </div>
                 </div>
 
-                {/* 💎 STORY - Collapsible! */}
-                <p className="text-gray-300 leading-relaxed mb-2 text-base">
+                {/* 💎 STORY - Collapsible! - MOBILE FIX: word-break! */}
+                <p className="text-gray-300 leading-relaxed mb-2 text-base break-words overflow-wrap-anywhere">
                   {isExpanded ? moment.story : excerpt}
                 </p>
                 

@@ -57,56 +57,70 @@
         window.addEventListener('orientationchange', setVH);
         
         // 🎯 NEW: ENHANCED Visual Viewport API for ultra-smooth keyboard handling
-        // This fixes the "bottom gap" issue when keyboard closes
+        // 🔥 ULTRA-AGGRESSIVE KEYBOARD FIX - Works everywhere!
         if (window.visualViewport) {
           let previousHeight = window.visualViewport.height;
+          let keyboardCloseTimeout;
           
           window.visualViewport.addEventListener('resize', () => {
             const currentHeight = window.visualViewport.height;
             const heightDifference = currentHeight - previousHeight;
             
+            // Clear any pending keyboard close handlers
+            if (keyboardCloseTimeout) {
+              clearTimeout(keyboardCloseTimeout);
+            }
+            
             // Keyboard is CLOSING (viewport getting bigger)
-            if (heightDifference > 100) {
-              // ENHANCED: Shorter delay for snappier response
-              setTimeout(() => {
-                // Get current scroll position
+            if (heightDifference > 50) { // ULTRA: 50px threshold (was 100px)
+              keyboardCloseTimeout = setTimeout(() => {
+                // ULTRA: Triple reflow + viewport restore
                 const currentScroll = window.scrollY || document.documentElement.scrollTop;
                 
-                // Only adjust if we're not at the very top
-                // This prevents unwanted scroll-to-top
-                if (currentScroll > 0) {
-                  // ENHANCED: Double reflow trigger for better gap fix
-                  // First adjustment - triggers initial reflow
-                  window.scrollTo({
-                    top: currentScroll - 1,
-                    behavior: 'auto'
-                  });
-                  
-                  // Force immediate reflow
+                // Force multiple reflows to eliminate gap
+                for (let i = 0; i < 3; i++) {
                   document.body.offsetHeight;
-                  
-                  // Second adjustment - ensures complete layout
+                  void document.body.offsetWidth;
+                }
+                
+                // Restore scroll position
+                if (currentScroll > 0) {
                   window.scrollTo({
                     top: currentScroll,
                     behavior: 'auto'
                   });
-                  
-                  // Force another reflow for stubborn browsers
-                  void document.body.offsetWidth;
-                  
-                  // Final viewport recalculation
-                  requestAnimationFrame(() => {
-                    setVH();
-                  });
-                } else {
-                  // Even at top, update viewport height
-                  setVH();
                 }
-              }, 80); // ENHANCED: 80ms instead of 100ms for snappier feel
+                
+                // Update viewport height
+                setVH();
+                
+                // Final reflow in next frame
+                requestAnimationFrame(() => {
+                  document.body.offsetHeight;
+                  setVH();
+                });
+              }, 50); // ULTRA: 50ms (was 80ms)
+            }
+            // ULTRA: Also trigger on ANY height change after short delay
+            else if (Math.abs(heightDifference) > 10) {
+              keyboardCloseTimeout = setTimeout(() => {
+                setVH();
+                document.body.offsetHeight;
+              }, 100);
             }
             
             previousHeight = currentHeight;
           });
+          
+          // ULTRA: Also listen for blur events on inputs
+          document.addEventListener('focusout', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+              setTimeout(() => {
+                setVH();
+                document.body.offsetHeight;
+              }, 150);
+            }
+          }, true);
         }
         
         // 🛡️ Fallback for older browsers

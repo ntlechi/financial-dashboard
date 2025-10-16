@@ -374,20 +374,8 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* 💎 UNIFIED HEADER - One Container! */}
-      <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-2xl p-6 sm:p-8 border border-amber-500/30 mb-6 shadow-xl">
-        {/* Header Text - Centered */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3 flex items-center justify-center gap-2 sm:gap-3">
-            <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-amber-400" />
-            Your Mission Logbook
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-300 font-medium px-4">
-            Your thoughts are the blueprint for your freedom. Capture them here.
-          </p>
-        </div>
-
-        {/* 💎 ACTION BUTTONS - Mobile Responsive! */}
+      {/* 💎 ACTION BUTTONS ONLY - Moved header to ReflectionsPage! */}
+      <div className="bg-gray-800/40 rounded-lg p-4 border border-gray-700/50 mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
           {/* Secondary Action - Export (Left) */}
           {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
