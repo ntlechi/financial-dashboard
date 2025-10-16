@@ -253,6 +253,40 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                   <p className="text-xs text-gray-400">Complete all 4 Week 1 missions for bonus!</p>
                 </div>
 
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-purple-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-purple-400 font-semibold">Write Your "Why" Statement</span>
+                    <span className="bg-purple-600/20 text-purple-300 px-2 py-1 rounded text-sm font-bold">+50 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Mission Control: First personal mission statement</p>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-amber-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-amber-400 font-semibold">Set North Star Goal</span>
+                    <span className="bg-amber-600/20 text-amber-300 px-2 py-1 rounded text-sm font-bold">+100 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Mission Control: Choose your ultimate life goal</p>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-cyan-600/30">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-cyan-400 font-semibold">Complete Active Mission</span>
+                    <span className="bg-cyan-600/20 text-cyan-300 px-2 py-1 rounded text-sm font-bold">+150 XP</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Mission Control: Finish any sub-goal at 100%</p>
+                </div>
+
+                <div className="bg-gradient-to-r from-amber-900/40 to-yellow-900/40 rounded-lg p-4 border-2 border-yellow-600/50 shadow-xl">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-yellow-300 font-bold flex items-center gap-2">
+                      ⭐ Achieve North Star Goal
+                    </span>
+                    <span className="bg-yellow-600/30 text-yellow-200 px-3 py-1 rounded text-sm font-black shadow-lg">+1000 XP!</span>
+                  </div>
+                  <p className="text-xs text-yellow-200/80 font-semibold">🎯 Mission Control: Reach your ultimate life goal!</p>
+                </div>
+
                 <div className="bg-gray-800/50 rounded-lg p-4 border border-blue-600/30">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-blue-400 font-semibold">The Trail - Complete Mission</span>
@@ -477,23 +511,27 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-purple-400 font-bold">3.</span>
-                  <span><strong>Pay off debt!</strong> Each debt you eliminate gives you +50 XP and improves your net worth.</span>
+                  <span><strong>Use Mission Control!</strong> Write your "Why" (+50 XP), set your North Star (+100 XP), and track progress toward your ultimate goal!</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-400 font-bold">4.</span>
+                  <span><strong>Pay off debt!</strong> Each debt you eliminate gives you +50 XP and improves your net worth.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 font-bold">5.</span>
                   <span><strong>Build side hustles!</strong> Track your business income to increase passive income and earn XP.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-pink-400 font-bold">5.</span>
+                  <span className="text-pink-400 font-bold">6.</span>
                   <span><strong>Capture moments!</strong> Document your financial wins to stay motivated and earn +10 XP.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-400 font-bold">6.</span>
-                  <span><strong>Share your story!</strong> When you hit milestones, complete the Dispatch Mission for +150 XP and "The Storyteller" badge!</span>
+                  <span className="text-cyan-400 font-bold">7.</span>
+                  <span><strong>Complete Field Notes milestones!</strong> Your 1st, 5th, 10th, and 25th entries earn bonus XP!</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold">7.</span>
-                  <span><strong>Aim for 100% Freedom Ratio!</strong> Build passive income streams to unlock all milestones.</span>
+                  <span className="text-amber-400 font-bold">8.</span>
+                  <span><strong>Aim for 100% Freedom Ratio!</strong> Build passive income streams to unlock all milestones and the ultimate +1000 XP North Star bonus!</span>
                 </li>
               </ul>
             </div>
