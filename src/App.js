@@ -1211,20 +1211,10 @@ const CreditScoreCard = ({ data, onEdit }) => {
   );
 };
 
-// Goals Card - CLIMBER+ Feature (Unlimited Goals)
+// 🎯 Goals Card - CLIMBER+ Feature (Unlimited Goals)
 const GoalsCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
-  if (!data || !Array.isArray(data)) {
-    return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6">
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <Calendar className="w-6 h-6 mr-3 text-amber-400" />
-          Financial Goals
-        </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
-      </Card>
-    );
-  }
+  // Ensure data is always an array
+  const goals = Array.isArray(data) ? data : [];
 
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -1234,59 +1224,93 @@ const GoalsCard = ({ data, onEdit }) => {
           Financial Goals
         </h2>
         <button
-          onClick={() => onEdit('goals', data)}
+          onClick={() => onEdit('goals', goals)}
           className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          title="Edit Goals"
         >
           <Edit className="w-4 h-4" />
         </button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {data.map(goal => {
-          const progressPercentage = (goal.currentAmount / goal.targetAmount) * 100;
-          const remaining = goal.targetAmount - goal.currentAmount;
-          
-          return (
-            <div key={goal.id} className="bg-gray-700/30 rounded-xl p-4">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="font-semibold text-white">{goal.name}</h3>
-                <span className="text-amber-400 text-sm font-semibold">
-                  {progressPercentage.toFixed(0)}%
-                </span>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-sm text-gray-300 mb-1">
-                    <span>${goal.currentAmount.toLocaleString()}</span>
-                    <span>${goal.targetAmount.toLocaleString()}</span>
-                  </div>
-                  <ProgressBar 
-                    value={goal.currentAmount} 
-                    maxValue={goal.targetAmount} 
-                    color="bg-amber-500"
-                  />
+      {goals.length === 0 ? (
+        // Empty State
+        <div className="text-center py-12">
+          <div className="inline-block bg-amber-500/10 rounded-full p-6 mb-4">
+            <Target className="w-12 h-12 text-amber-400 mx-auto" />
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-2">No Goals Yet</h3>
+          <p className="text-gray-400 mb-6">
+            Set your financial goals and track your progress!
+          </p>
+          <button
+            onClick={() => onEdit('goals', goals)}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            Add Your First Goal
+          </button>
+        </div>
+      ) : (
+        // Goals Grid
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {goals.map(goal => {
+            const progressPercentage = Math.min(100, (goal.currentAmount / goal.targetAmount) * 100);
+            const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
+            const isComplete = progressPercentage >= 100;
+            
+            return (
+              <div 
+                key={goal.id} 
+                className={`bg-gray-700/30 rounded-xl p-4 border transition-all ${
+                  isComplete ? 'border-green-500/30' : 'border-amber-500/20'
+                }`}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="font-semibold text-white flex-1 pr-2">{goal.name}</h3>
+                  <span className={`text-sm font-semibold ${
+                    isComplete ? 'text-green-400' : 'text-amber-400'
+                  }`}>
+                    {progressPercentage.toFixed(0)}%
+                  </span>
                 </div>
                 
-                <div className="text-center">
-                  <div className="text-lg font-bold text-white">
-                    ${remaining.toLocaleString()}
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-300 mb-1">
+                      <span>${goal.currentAmount?.toLocaleString() || '0'}</span>
+                      <span>${goal.targetAmount?.toLocaleString() || '0'}</span>
+                    </div>
+                    <ProgressBar 
+                      value={goal.currentAmount || 0} 
+                      maxValue={goal.targetAmount || 1} 
+                      color={isComplete ? "bg-green-500" : "bg-amber-500"}
+                    />
                   </div>
-                  <div className="text-xs text-gray-400">remaining</div>
-                </div>
-                
-                <div className="text-center text-xs text-gray-400">
-                  Target: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
+                  
+                  <div className="text-center">
+                    <div className={`text-lg font-bold ${isComplete ? 'text-green-400' : 'text-white'}`}>
+                      {isComplete ? '🎉 Complete!' : `$${remaining.toLocaleString()}`}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {isComplete ? 'Goal achieved!' : 'remaining'}
+                    </div>
+                  </div>
+                  
+                  {goal.targetDate && (
+                    <div className="text-center text-xs text-gray-400">
+                      Target: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </Card>
   );
 };
