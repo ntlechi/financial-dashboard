@@ -415,8 +415,8 @@ export default function MyLogbook({
         </div>
       </div>
 
-      {/* Search & Filter Bar - BRAND GOLD! */}
-      <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/20 space-y-3">
+      {/* Search & Filter Bar - BRIGHT BLUE! */}
+      <div className="bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg p-4 border border-blue-500/20 space-y-3">
         {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -425,7 +425,7 @@ export default function MyLogbook({
             placeholder="Search entries by title or content..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-700/50 text-white pl-10 pr-4 py-3 rounded-lg border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+            className="w-full bg-gray-700/50 text-white pl-10 pr-4 py-3 rounded-lg border border-blue-500/30 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
           />
         </div>
 
@@ -440,10 +440,9 @@ export default function MyLogbook({
                 onClick={() => toggleTagFilter(tag)}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all transform hover:scale-105 ${
                   selectedTags.includes(tag)
-                    ? 'text-gray-900 shadow-lg'
+                    ? 'bg-blue-500 text-white shadow-lg'
                     : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 border border-gray-600/50'
                 }`}
-                style={selectedTags.includes(tag) ? { backgroundColor: '#FBBF24' } : {}}
               >
                 {tag}
               </button>
@@ -469,7 +468,7 @@ export default function MyLogbook({
 
       {/* Entries Feed */}
       {filteredEntries.length === 0 ? (
-        <div className="bg-gradient-to-br from-amber-900/10 to-yellow-900/10 rounded-lg p-12 border border-amber-500/20 text-center">
+        <div className="bg-gradient-to-br from-blue-900/10 to-cyan-900/10 rounded-lg p-12 border border-blue-500/20 text-center">
           {entries.length === 0 ? (
             <>
               <Edit3 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
@@ -513,7 +512,7 @@ export default function MyLogbook({
             return (
               <div
                 key={entry.id}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-amber-500/10 overflow-hidden hover:border-amber-400 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300"
+                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-blue-500/10 overflow-hidden hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300"
               >
                 {/* Card Header (Always Visible) */}
                 <div
@@ -524,7 +523,7 @@ export default function MyLogbook({
                     <div className="flex-1 min-w-0">
                       {/* 💎 PHASE 2: Bolder, Larger Entry Titles */}
                       {hasTitle && (
-                        <h3 className="text-xl font-bold mb-2" style={{ color: '#FBBF24' }}>
+                        <h3 className="text-xl font-bold text-blue-400 mb-2">
                           {entry.title}
                         </h3>
                       )}
@@ -541,8 +540,7 @@ export default function MyLogbook({
                             e.stopPropagation();
                             toggleEntry(entry.id);
                           }}
-                          className="hover:text-amber-200 text-sm flex items-center gap-1 transition-colors font-bold"
-                          style={{ color: '#FBBF24' }}
+                          className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1 transition-colors font-bold"
                         >
                           {isExpanded ? (
                             <>
@@ -577,8 +575,7 @@ export default function MyLogbook({
                       {entry.tags.map(tag => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full border border-amber-400/50"
-                          style={{ backgroundColor: 'rgba(251, 191, 36, 0.15)', color: '#FBBF24' }}
+                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full bg-blue-500/15 text-blue-400 border border-blue-400/50"
                         >
                           <Tag className="w-3 h-3" />
                           {tag}
@@ -589,8 +586,8 @@ export default function MyLogbook({
                   
                   {/* Footer: Date & Actions */}
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/50">
-                    {/* 💎 PHASE 2: Amber/Gold Timestamps! */}
-                    <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: '#FBBF24' }}>
+                    {/* 💎 PHASE 2: Bright Blue Timestamps! */}
+                    <div className="flex items-center gap-1 text-xs font-semibold text-blue-400">
                       <Calendar className="w-3 h-3" />
                       {formatDate(entry.createdAt)}
                       {entry.updatedAt && entry.updatedAt !== entry.createdAt && (
@@ -704,7 +701,7 @@ export default function MyLogbook({
                   type="date"
                   value={entryDate}
                   onChange={(e) => setEntryDate(e.target.value)}
-                  className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                  className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
                   style={{ maxWidth: '100%' }}
                 />
                 <p className="text-xs text-gray-500 mt-2">
@@ -721,7 +718,7 @@ export default function MyLogbook({
                   placeholder="What's on your mind? Ideas, reflections, goals, insights..."
                   value={entryContent}
                   onChange={(e) => setEntryContent(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 min-h-[200px] resize-none"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[200px] resize-none"
                   rows="8"
                 />
               </div>
@@ -736,7 +733,7 @@ export default function MyLogbook({
                   placeholder="work, motivation, travel, goals..."
                   value={entryTags}
                   onChange={(e) => handleTagInput(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
                 />
                 
                 {/* Tag Suggestions */}

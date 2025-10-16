@@ -209,7 +209,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
             return (
               <div 
                 key={moment.id} 
-                className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group"
+                className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group overflow-hidden"
               >
                 {/* Card Header - MOBILE RESPONSIVE! */}
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0 mb-4">
