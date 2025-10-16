@@ -685,7 +685,7 @@ export default function MyLogbook({
                   placeholder="Give your entry a title..."
                   value={entryTitle}
                   onChange={(e) => setEntryTitle(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+                  className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-3 rounded-xl border-2 border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-blue-500/50"
                   autoFocus
                 />
               </div>
@@ -718,7 +718,7 @@ export default function MyLogbook({
                   placeholder="What's on your mind? Ideas, reflections, goals, insights..."
                   value={entryContent}
                   onChange={(e) => setEntryContent(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[200px] resize-none"
+                  className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-4 rounded-xl border-2 border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-blue-500/50 min-h-[200px] resize-none leading-relaxed"
                   rows="8"
                 />
               </div>
@@ -733,7 +733,7 @@ export default function MyLogbook({
                   placeholder="work, motivation, travel, goals..."
                   value={entryTags}
                   onChange={(e) => handleTagInput(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+                  className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-3 rounded-xl border-2 border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-blue-500/50"
                 />
                 
                 {/* Tag Suggestions */}

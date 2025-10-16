@@ -203,7 +203,7 @@ const MissionControl = ({
       {/* 🌟 PAGE HEADER */}
       <div className="bg-gradient-to-br from-blue-900/40 via-purple-900/30 to-gray-900/40 rounded-2xl p-8 border border-blue-500/30 text-center shadow-2xl">
         <h1 className="text-4xl sm:text-5xl font-black mb-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
-          🎯 Mission Control
+          Mission Control
         </h1>
         <p className="text-xl text-blue-200 font-semibold mb-2">
           Your Strategic Flight Plan

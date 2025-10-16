@@ -13868,7 +13868,7 @@ function App() {
                       placeholder="e.g., First Debt Payment, Emergency Fund Milestone..."
                       value={newMoment.title}
                       onChange={(e) => setNewMoment({...newMoment, title: e.target.value})}
-                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-3 rounded-xl border-2 border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-amber-500/50"
                       autoFocus
                     />
                   </div>
@@ -13883,7 +13883,7 @@ function App() {
                       value={newMoment.story}
                       onChange={(e) => setNewMoment({...newMoment, story: e.target.value})}
                       rows={5}
-                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none resize-none"
+                      className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-4 rounded-xl border-2 border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-amber-500/50 resize-none leading-relaxed"
                     />
                     <p className="text-xs text-gray-400 mt-1">
                       💡 Tip: Be specific! Future you will love reading this.
