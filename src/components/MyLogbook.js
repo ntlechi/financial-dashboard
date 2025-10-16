@@ -636,20 +636,20 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* 💎 PHASE 3: STATS BAR - Celebrate with Amber Numbers! */}
+      {/* 💎 PHASE 3: STATS BAR - BLUE THEME with WHITE Numbers! */}
       {entries.length > 0 && (
-        <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-xl p-8 border border-amber-500/30 shadow-lg">
+        <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl p-8 border border-blue-500/30 shadow-lg">
           <div className="grid grid-cols-3 gap-6 text-center">
             <div>
-              <div className="text-5xl font-black mb-2" style={{ color: '#FBBF24' }}>{totalEntries}</div>
+              <div className="text-5xl font-black text-white mb-2">{totalEntries}</div>
               <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Total Entries</div>
             </div>
             <div>
-              <div className="text-5xl font-black mb-2" style={{ color: '#FBBF24' }}>{totalTags}</div>
+              <div className="text-5xl font-black text-white mb-2">{totalTags}</div>
               <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Unique Tags</div>
             </div>
             <div>
-              <div className="text-5xl font-black mb-2" style={{ color: '#FBBF24' }}>{entriesWithTags}</div>
+              <div className="text-5xl font-black text-white mb-2">{entriesWithTags}</div>
               <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Tagged Entries</div>
             </div>
           </div>

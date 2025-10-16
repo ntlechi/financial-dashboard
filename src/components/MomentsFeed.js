@@ -98,8 +98,8 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
-      {/* 💎 PHASE 1: PREMIUM HEADER - Inspiring & Elegant - MOBILE RESPONSIVE! */}
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* 💎 PREMIUM HEADER - Inspiring & Elegant - MOBILE RESPONSIVE! */}
       <div className="bg-gradient-to-br from-amber-900/30 via-purple-900/20 to-gray-900/40 rounded-2xl p-6 sm:p-10 border border-amber-500/30 mb-6 sm:mb-8 text-center shadow-2xl">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4" style={{ color: '#FBBF24' }}>
           💫 Your Moments
@@ -112,23 +112,23 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         </p>
       </div>
 
-      {/* 💎 PHASE 1: ELEGANT STATS BAR - MOBILE RESPONSIVE! */}
-      <div className="bg-gradient-to-r from-gray-800/60 to-gray-900/60 rounded-xl p-4 sm:p-6 border border-amber-500/20 mb-6 sm:mb-8 shadow-lg">
+      {/* 💎 STATS BAR - BLUE THEME with WHITE Numbers! */}
+      <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl p-4 sm:p-6 border border-blue-500/30 mb-6 sm:mb-8 shadow-lg">
         <div className="flex flex-col sm:flex-row justify-around items-center gap-6 sm:gap-0">
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
-              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
-              <span className="text-4xl sm:text-5xl font-black" style={{ color: '#FBBF24' }}>{totalMoments}</span>
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
+              <span className="text-4xl sm:text-5xl font-black text-white">{totalMoments}</span>
             </div>
             <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">Total Moments</p>
           </div>
           
-          <div className="hidden sm:block h-16 w-px bg-amber-500/20"></div>
-          <div className="sm:hidden w-full h-px bg-amber-500/20"></div>
+          <div className="hidden sm:block h-16 w-px bg-blue-500/20"></div>
+          <div className="sm:hidden w-full h-px bg-blue-500/20"></div>
           
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
-              <Link className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+              <Link className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
               <span className="text-4xl sm:text-5xl font-black text-white">{totalExpensesLinked}</span>
             </div>
             <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">Expenses Linked</p>
@@ -184,7 +184,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         </button>
       </div>
 
-      {/* 💎 PREMIUM MOMENTS FEED - Simple & Usable! */}
+      {/* 💎 MOMENTS FEED - EXACT Logbook Structure! */}
       {filteredMoments.length === 0 ? (
         <div className="text-center py-16">
           <div className="inline-block bg-gradient-to-br from-amber-900/20 to-purple-900/20 rounded-2xl p-12 border border-amber-500/20">
@@ -200,107 +200,144 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
           </div>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-3">
           {filteredMoments.map((moment) => {
             const isExpanded = expandedMoments.has(moment.id);
-            const excerpt = getExcerpt(moment.story, 150);
-            const showReadMore = moment.story.length > 150;
+            const excerpt = getExcerpt(moment.story, 120);
+            const showReadMore = moment.story.length > 120;
             
             return (
               <div 
                 key={moment.id} 
-                className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group overflow-hidden"
+                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-amber-500/10 overflow-hidden hover:border-amber-400 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300"
               >
-                {/* Card Header - MOBILE RESPONSIVE! */}
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0 mb-4">
-                  <div className="flex-1 w-full">
-                    {/* 💎 HERO TITLE - Large, Bold, White - MOBILE RESPONSIVE! */}
-                    <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3 group-hover:text-amber-100 transition-colors break-words">
-                      {moment.title || 'Untitled Moment'}
-                    </h3>
-                    
-                    {/* 💎 DATE & LOCATION - Amber/Gold - MOBILE RESPONSIVE! */}
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4"/> 
-                        {new Date(moment.timestamp).toLocaleDateString('en-US', { 
-                          month: 'long', 
-                          day: 'numeric', 
-                          year: 'numeric' 
-                        })}
-                      </span>
-                      {moment.location && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4"/> {moment.location}
-                        </span>
+                {/* Card - Click to Expand (EXACT Logbook Structure!) */}
+                <div
+                  onClick={() => showReadMore && toggleMoment(moment.id)}
+                  className={`p-4 ${showReadMore ? 'cursor-pointer' : ''}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      {/* 💎 TITLE - Amber/Gold */}
+                      <h3 className="text-xl font-bold mb-2" style={{ color: '#FBBF24' }}>
+                        {moment.title || 'Untitled Moment'}
+                      </h3>
+                      
+                      {/* Content Preview */}
+                      <p className="text-gray-300 leading-relaxed mb-2">
+                        {isExpanded ? moment.story : excerpt}
+                      </p>
+                      
+                      {/* Read More Toggle - Amber/Gold */}
+                      {showReadMore && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleMoment(moment.id);
+                          }}
+                          className="hover:text-amber-200 text-sm flex items-center gap-1 transition-colors font-bold"
+                          style={{ color: '#FBBF24' }}
+                        >
+                          {isExpanded ? (
+                            <>
+                              <ChevronUp className="w-4 h-4" />
+                              Show Less
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="w-4 h-4" />
+                              Read More
+                            </>
+                          )}
+                        </button>
                       )}
                     </div>
                     
-                    {/* Source Badge - Now shows Achievement badge properly! */}
-                    <div className="mb-3">
-                      {getMomentSourceBadge(moment)}
-                    </div>
+                    {/* Expand Icon */}
+                    {showReadMore && (
+                      <div className="text-gray-500">
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5" />
+                        )}
+                      </div>
+                    )}
                   </div>
                   
-                {/* Action Buttons - MOBILE: Always visible! */}
-                <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                  <button 
-                    onClick={() => onEditMoment(moment)} 
-                    className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                    title="Edit moment"
-                  >
-                    <Edit className="w-4 h-4"/>
-                  </button>
-                  <button 
-                    onClick={() => onShareMoment(moment)} 
-                    className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                    title="Share moment"
-                  >
-                    <Share2 className="w-4 h-4"/>
-                  </button>
-                  {onDeleteMoment && (
-                    <button 
-                      onClick={() => onDeleteMoment(moment.id)} 
-                      className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Delete moment"
-                    >
-                      <Trash2 className="w-4 h-4"/>
-                    </button>
-                  )}
-                </div>
-                </div>
-
-                {/* 💎 STORY - Collapsible! - MOBILE FIX: word-break! */}
-                <p className="text-gray-300 leading-relaxed mb-2 text-base break-words overflow-wrap-anywhere">
-                  {isExpanded ? moment.story : excerpt}
-                </p>
-                
-                {/* Read More Toggle */}
-                {showReadMore && (
-                  <button
-                    onClick={() => toggleMoment(moment.id)}
-                    className="hover:text-amber-200 text-sm flex items-center gap-1 transition-colors font-bold mb-4"
-                    style={{ color: '#FBBF24' }}
-                  >
-                    {isExpanded ? (
-                      <>
-                        <ChevronUp className="w-4 h-4" />
-                        Show Less
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-4 h-4" />
-                        Read More
-                      </>
+                  {/* 💎 DATE & LOCATION - Amber/Gold */}
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold mt-3" style={{ color: '#FBBF24' }}>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3"/> 
+                      {new Date(moment.timestamp).toLocaleDateString('en-US', { 
+                        month: 'long', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                    </span>
+                    {moment.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3"/> {moment.location}
+                      </span>
                     )}
-                  </button>
-                )}
-
+                  </div>
+                  
+                  {/* Source Badge - Amber/Gold */}
+                  <div className="mt-2">
+                    {getMomentSourceBadge(moment)}
+                  </div>
+                  
+                  {/* Tags - Amber/Gold */}
+                  {moment.tags && moment.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {moment.tags.map(tag => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full border border-amber-400/50"
+                          style={{ backgroundColor: 'rgba(251, 191, 36, 0.15)', color: '#FBBF24' }}
+                        >
+                          <Tag className="w-3 h-3" />
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Footer: Actions */}
+                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-700/50 opacity-100 sm:opacity-0 hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); onEditMoment(moment); }} 
+                      className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Edit moment"
+                    >
+                      <Edit className="w-4 h-4"/>
+                    </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); onShareMoment(moment); }} 
+                      className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Share moment"
+                    >
+                      <Share2 className="w-4 h-4"/>
+                    </button>
+                    {onDeleteMoment && (
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); onDeleteMoment(moment.id); }} 
+                        className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                        title="Delete moment"
+                      >
+                        <Trash2 className="w-4 h-4"/>
+                      </button>
+                    )}
+                  </div>
+                </div>
+                
                 {/* 💎 LINKED EXPENSE - Premium Pill Button */}
                 {moment.expenseLink && (
-                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
-                    <DollarSign className="w-4 h-4"/> 
-                    {moment.expenseLink.description} • ${moment.expenseLink.amount}
+                  <div className="px-4 pb-4">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
+                      <DollarSign className="w-4 h-4"/> 
+                      {moment.expenseLink.description} • ${moment.expenseLink.amount}
+                    </div>
                   </div>
                 )}
               </div>
