@@ -11001,6 +11001,13 @@ function App() {
       return;
     }
 
+    // 🛡️ SAFETY CHECK: Prevent data loss!
+    if (editingMoment && (!data.moments || data.moments.length === 0)) {
+      showNotification('⚠️ Data error detected. Please refresh and try again.', 'error');
+      console.error('🚨 CRITICAL: Attempting to edit when moments array is empty!');
+      return;
+    }
+
     const moment = {
       id: editingMoment ? editingMoment.id : Date.now(),
       ...newMoment,
@@ -11012,17 +11019,38 @@ function App() {
     if (editingMoment) {
       // Update existing moment
       updatedMoments = (data.moments || []).map(m => m.id === editingMoment.id ? moment : m);
+      
+      // 🛡️ SAFETY: Verify moment was actually updated
+      const updated = updatedMoments.find(m => m.id === editingMoment.id);
+      if (!updated) {
+        showNotification('⚠️ Update failed. Moment not found.', 'error');
+        console.error('🚨 CRITICAL: Moment to update not found!');
+        return;
+      }
+
+      // 🛡️ SAFETY: Never save if this would delete all moments
+      if (updatedMoments.length === 0) {
+        showNotification('⚠️ Cannot save - this would delete all moments!', 'error');
+        console.error('🚨 CRITICAL: Save blocked - would delete all moments!');
+        return;
+      }
     } else {
       // Add new moment
       updatedMoments = [moment, ...(data.moments || [])];
     }
 
-    const updatedData = {
+    // 🛡️ Deep clone to prevent reference issues
+    const updatedData = JSON.parse(JSON.stringify({
       ...data,
       moments: updatedMoments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-    };
+    }));
 
     try {
+      // 🛡️ CREATE BACKUP BEFORE SAVE!
+      if (data.moments && data.moments.length > 0) {
+        await createBackup(userId, data, 'before-moment-save');
+      }
+
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setShowMomentModal(false);
