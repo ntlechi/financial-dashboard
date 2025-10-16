@@ -8750,6 +8750,9 @@ const TravelTab = ({ data, setData, userId }) => {
      setMomentText('');
      setMomentTrip(null);
      setShowMomentModal(false);
+     
+     // Note: XP is awarded through main Moments system when users view/manage in Moments page
+     // This keeps Travel component simple and avoids scope issues
    } catch (error) {
      console.error('Error adding moment:', error);
    }
