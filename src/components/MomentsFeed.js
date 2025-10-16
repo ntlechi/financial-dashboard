@@ -165,7 +165,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         </button>
       </div>
 
-      {/* 💎 PHASE 2: VERTICAL TIMELINE LAYOUT - The Transformation! */}
+      {/* 💎 PREMIUM MOMENTS FEED - Simple & Usable! */}
       {filteredMoments.length === 0 ? (
         <div className="text-center py-16">
           <div className="inline-block bg-gradient-to-br from-amber-900/20 to-purple-900/20 rounded-2xl p-12 border border-amber-500/20">
@@ -181,108 +181,85 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
           </div>
         </div>
       ) : (
-        <div className="relative">
-          {/* Central Timeline Line */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-amber-500/50 via-purple-500/50 to-amber-500/50"></div>
-          
-          {/* Timeline Moments */}
-          <div className="space-y-12">
-            {filteredMoments.map((moment, index) => {
-              const isLeft = index % 2 === 0;
-              
-              return (
-                <div key={moment.id} className={`relative flex ${isLeft ? 'justify-end' : 'justify-start'}`}>
-                  {/* Timeline Dot */}
-                  <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-4 border-amber-500 z-10 ${
-                    moment.isAchievement ? 'bg-green-500' : 
-                    moment.isTravel ? 'bg-blue-500' : 
-                    moment.expenseLink ? 'bg-red-500' : 
-                    'bg-purple-500'
-                  } shadow-lg`}></div>
+        <div className="space-y-6">
+          {filteredMoments.map((moment) => (
+            <div 
+              key={moment.id} 
+              className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group"
+            >
+              {/* Card Header */}
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  {/* 💎 HERO TITLE - Large, Bold, White */}
+                  <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-100 transition-colors">
+                    {moment.title || 'Untitled Moment'}
+                  </h3>
                   
-                  {/* Connecting Line to Card */}
-                  <div className={`absolute top-8 ${isLeft ? 'right-1/2 mr-3' : 'left-1/2 ml-3'} w-12 h-1 bg-gradient-to-${isLeft ? 'l' : 'r'} from-amber-500/50 to-transparent`}></div>
+                  {/* 💎 DATE & LOCATION - Amber/Gold */}
+                  <div className="flex flex-wrap items-center gap-3 text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4"/> 
+                      {new Date(moment.timestamp).toLocaleDateString('en-US', { 
+                        month: 'long', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                    </span>
+                    {moment.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4"/> {moment.location}
+                      </span>
+                    )}
+                  </div>
                   
-                  {/* Moment Card */}
-                  <div className={`w-5/12 ${isLeft ? 'pr-16' : 'pl-16'}`}>
-                    <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group">
-                      {/* Card Header */}
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex-1">
-                          {/* 💎 HERO TITLE - Large, Bold, White */}
-                          <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-100 transition-colors">
-                            {moment.title || 'Untitled Moment'}
-                          </h3>
-                          
-                          {/* 💎 DATE & LOCATION - Amber/Gold */}
-                          <div className="flex flex-wrap items-center gap-3 text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-4 h-4"/> 
-                              {new Date(moment.timestamp).toLocaleDateString('en-US', { 
-                                month: 'long', 
-                                day: 'numeric', 
-                                year: 'numeric' 
-                              })}
-                            </span>
-                            {moment.location && (
-                              <span className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4"/> {moment.location}
-                              </span>
-                            )}
-                          </div>
-                          
-                          {/* Source Badge */}
-                          <div className="mb-3">
-                            {getMomentSourceBadge(moment)}
-                          </div>
-                        </div>
-                        
-                        {/* Action Buttons */}
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button 
-                            onClick={() => onEditMoment(moment)} 
-                            className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                            title="Edit moment"
-                          >
-                            <Edit className="w-4 h-4"/>
-                          </button>
-                          <button 
-                            onClick={() => onShareMoment(moment)} 
-                            className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                            title="Share moment"
-                          >
-                            <Share2 className="w-4 h-4"/>
-                          </button>
-                          {onDeleteMoment && (
-                            <button 
-                              onClick={() => onDeleteMoment(moment.id)} 
-                              className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                              title="Delete moment"
-                            >
-                              <Trash2 className="w-4 h-4"/>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* 💎 STORY - Soft Gray */}
-                      <p className="text-gray-300 leading-relaxed mb-4 text-base">
-                        {moment.story}
-                      </p>
-
-                      {/* 💎 LINKED EXPENSE - Premium Pill Button */}
-                      {moment.expenseLink && (
-                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
-                          <DollarSign className="w-4 h-4"/> 
-                          {moment.expenseLink.description} • ${moment.expenseLink.amount}
-                        </div>
-                      )}
-                    </div>
+                  {/* Source Badge */}
+                  <div className="mb-3">
+                    {getMomentSourceBadge(moment)}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+                
+                {/* Action Buttons */}
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => onEditMoment(moment)} 
+                    className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                    title="Edit moment"
+                  >
+                    <Edit className="w-4 h-4"/>
+                  </button>
+                  <button 
+                    onClick={() => onShareMoment(moment)} 
+                    className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                    title="Share moment"
+                  >
+                    <Share2 className="w-4 h-4"/>
+                  </button>
+                  {onDeleteMoment && (
+                    <button 
+                      onClick={() => onDeleteMoment(moment.id)} 
+                      className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Delete moment"
+                    >
+                      <Trash2 className="w-4 h-4"/>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* 💎 STORY - Soft Gray */}
+              <p className="text-gray-300 leading-relaxed mb-4 text-base">
+                {moment.story}
+              </p>
+
+              {/* 💎 LINKED EXPENSE - Premium Pill Button */}
+              {moment.expenseLink && (
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
+                  <DollarSign className="w-4 h-4"/> 
+                  {moment.expenseLink.description} • ${moment.expenseLink.amount}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
