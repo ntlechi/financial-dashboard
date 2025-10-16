@@ -12471,29 +12471,43 @@ function App() {
     }
     
     try {
-      // Show loading notification
+      // 📦 Try ZIP export via Cloud Function first (premium experience)
       showNotification('📦 Preparing your complete archive...', 'info');
       
-      // Call Firebase Cloud Function to generate .zip
-      const exportFunction = httpsCallable(functions, 'exportUserData');
-      const result = await exportFunction();
-      
-      if (result.data.success) {
-        // Automatically download the .zip file
-        const link = document.createElement('a');
-        link.href = result.data.downloadURL;
-        link.download = result.data.fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      try {
+        const exportFunction = httpsCallable(functions, 'exportUserData');
+        const result = await exportFunction();
         
-        showNotification(`✅ Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} files)`, 'success');
-      } else {
-        showNotification('Export failed. Please try again.', 'error');
+        if (result.data.success) {
+          // Download the .zip file
+          const link = document.createElement('a');
+          link.href = result.data.downloadURL;
+          link.download = result.data.fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          showNotification(`✅ Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
+          
+          // Track last export for reminder widget
+          localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
+          return;
+        }
+      } catch (cloudError) {
+        console.warn('Cloud Function export unavailable, using JSON fallback:', cloudError);
       }
+      
+      // 💾 Fallback to JSON export (always works, no dependencies)
+      console.log('📥 Using JSON export fallback...');
+      exportUserData(data);
+      showNotification('✅ Backup downloaded as JSON!', 'success');
+      
+      // Track last export for reminder widget
+      localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
+      
     } catch (error) {
       console.error('Export error:', error);
-      showNotification(`❌ Export failed: ${error.message}`, 'error');
+      showNotification('❌ Export failed. Please try again.', 'error');
     }
   };
 
