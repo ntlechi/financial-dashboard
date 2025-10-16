@@ -661,10 +661,10 @@ export default function MyLogbook({
       {/* 💎 Add/Edit Entry Modal - Premium Gold! */}
       {showAddEntryModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-amber-500/30 shadow-2xl">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-blue-500/30 shadow-2xl">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-amber-700/30 bg-gradient-to-r from-amber-900/30 to-yellow-900/30">
-              <h3 className="text-2xl font-black" style={{ color: '#FBBF24' }}>
+            <div className="flex items-center justify-between p-6 border-b border-blue-700/30 bg-gradient-to-r from-blue-900/30 to-cyan-900/30">
+              <h3 className="text-2xl font-black text-white">
                 {editingEntry ? '✏️ Edit Entry' : '✨ Add New Entry'}
               </h3>
               <button
@@ -687,7 +687,7 @@ export default function MyLogbook({
                   placeholder="Give your entry a title..."
                   value={entryTitle}
                   onChange={(e) => setEntryTitle(e.target.value)}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
                   autoFocus
                 />
               </div>
@@ -746,8 +746,8 @@ export default function MyLogbook({
                       <button
                         key={tag}
                         onClick={() => applyTagSuggestion(tag)}
-                        className="px-2 py-1 text-xs rounded-full border hover:bg-amber-600/30 transition-colors font-semibold"
-                        style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)', color: '#FBBF24', borderColor: 'rgba(251, 191, 36, 0.3)' }}
+                        className="px-2 py-1 text-xs rounded-full border hover:bg-blue-600/30 transition-colors font-semibold"
+                        style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60A5FA', borderColor: 'rgba(59, 130, 246, 0.3)' }}
                       >
                         {tag}
                       </button>
@@ -773,8 +773,7 @@ export default function MyLogbook({
               <button
                 onClick={saveEntry}
                 disabled={!entryContent.trim()}
-                className="disabled:bg-gray-600 disabled:opacity-50 text-gray-900 px-8 py-3 rounded-lg font-black transition-all flex items-center gap-2 shadow-2xl hover:shadow-3xl transform hover:scale-110"
-                style={!entryContent.trim() ? {} : { backgroundColor: '#FBBF24' }}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:opacity-50 text-white px-8 py-3 rounded-lg font-black transition-all flex items-center gap-2 shadow-2xl hover:shadow-3xl transform hover:scale-110"
               >
                 <Save className="w-5 h-5" />
                 {editingEntry ? 'Save Changes' : 'Add Entry'}
