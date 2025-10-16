@@ -87,7 +87,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
           💫 Your Moments
         </h2>
         <p className="text-2xl text-amber-100 italic font-semibold mb-3">
-          "You didn't work for money. You worked for moments like this."
+          Every milestone. Every sacrifice. Every win — remembered forever.
         </p>
         <p className="text-base text-amber-200/70 font-medium">
           ✨ Because numbers fade, but moments don't.
