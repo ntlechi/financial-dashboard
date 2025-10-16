@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -10812,6 +10812,11 @@ function App() {
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
   
+  // 🖱️ Desktop Tab Scroll
+  const tabContainerRef = useRef(null);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightScroll, setShowRightScroll] = useState(false);
+  
   // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
   const ADMIN_EMAILS = [
     'janara.nguon@gmail.com',
@@ -11289,6 +11294,33 @@ function App() {
       );
     }
   }, [user, showNotification]);
+
+  // 🖱️ Desktop Tab Scroll Functions
+  const scrollTabs = (direction) => {
+    if (tabContainerRef.current) {
+      const scrollAmount = 200;
+      tabContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Check scroll position to show/hide arrows
+  const checkScrollPosition = () => {
+    if (tabContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = tabContainerRef.current;
+      setShowLeftScroll(scrollLeft > 0);
+      setShowRightScroll(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  // Update scroll arrows on mount and resize
+  React.useEffect(() => {
+    checkScrollPosition();
+    window.addEventListener('resize', checkScrollPosition);
+    return () => window.removeEventListener('resize', checkScrollPosition);
+  }, []);
 
   const handleTabClick = useCallback((tab) => {
     // Check if user has access to the tab
@@ -13301,8 +13333,34 @@ function App() {
               </div>
             )}
             
-            <div className="bg-gray-800 rounded-full p-1 overflow-hidden">
-              <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
+            <div className="bg-gray-800 rounded-full p-1 overflow-hidden relative">
+              {/* 🖱️ Desktop-Only Left Scroll Arrow */}
+              {showLeftScroll && (
+                <button
+                  onClick={() => scrollTabs('left')}
+                  className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full p-1 shadow-lg transition-all"
+                  aria-label="Scroll tabs left"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+              )}
+
+              {/* 🖱️ Desktop-Only Right Scroll Arrow */}
+              {showRightScroll && (
+                <button
+                  onClick={() => scrollTabs('right')}
+                  className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full p-1 shadow-lg transition-all"
+                  aria-label="Scroll tabs right"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              )}
+
+              <div 
+                ref={tabContainerRef}
+                onScroll={checkScrollPosition}
+                className="flex items-center space-x-1 overflow-x-auto scrollbar-hide md:scrollbar-thin md:scrollbar-thumb-gray-600 md:scrollbar-track-transparent"
+              >
                 <div className="flex space-x-1 min-w-max">
                   <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
