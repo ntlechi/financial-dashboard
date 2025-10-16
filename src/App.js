@@ -12977,10 +12977,10 @@ function App() {
               {userPlan === SUBSCRIPTION_TIERS.FREE && (
                 <button
                   onClick={() => setShowPricingModal(true)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-medium"
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white p-2 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                  title="Upgrade to Premium"
                 >
-                  <Crown className="w-4 h-4" />
-                  <span className="hidden sm:inline">{isFoundersCircleAvailable() ? 'Join Founder\'s Circle' : 'Upgrade'}</span>
+                  <Crown className="w-5 h-5" />
                 </button>
               )}
               

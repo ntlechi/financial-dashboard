@@ -174,10 +174,10 @@ export const getTierDisplayName = (tier) => {
  */
 export const isFoundersCircleAvailable = (foundersCount = 0, launchDate = new Date('2024-01-01T00:00:00.000Z')) => {
   const now = new Date();
-  // For testing: Make Founder's Circle available for the next 30 days
-  const testEndDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days from now
+  // Founder's Circle ends October 26, 2025
+  const foundersEndDate = new Date('2025-10-26T23:59:59.999Z');
   
-  return now >= launchDate && now <= testEndDate && foundersCount < 100;
+  return now >= launchDate && now <= foundersEndDate && foundersCount < 100;
 };
 
 /**
