@@ -1,14 +1,14 @@
-// src/components/MomentsFeed.js
-// 💫 MOMENTS FEED - Emotional Timeline Component
+// 💫 MOMENTS FEED - Premium Freedom Journal with Timeline
+// Project: Freedom Journal Transformation
 
 import React, { useState, useEffect } from 'react';
-import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search } from 'lucide-react';
+import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link } from 'lucide-react';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
   const [filter, setFilter] = useState('all'); // 'all', 'travel', 'achievements', 'expenses'
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(''); // NEW: Search functionality
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     // Simulate fetching moments from data or Firebase
@@ -70,7 +70,6 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
   });
 
   const totalMoments = moments.length;
-  const totalPhotos = moments.reduce((sum, moment) => sum + (moment.photos?.length || 0), 0);
   const totalExpensesLinked = moments.filter(moment => moment.expenseLink).length;
 
   const getMomentSourceBadge = (moment) => {
@@ -80,154 +79,212 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
     return <span className="bg-gray-600/20 text-gray-400 text-xs px-2 py-1 rounded-full flex items-center gap-1"><Tag className="w-3 h-3"/>General</span>;
   };
 
-  const getGamificationBadge = () => {
-    if (totalMoments >= 10) {
-      return (
-        <div className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-lg flex items-center gap-2 text-sm font-semibold">
-          <Award className="w-4 h-4"/> Memory Keeper (10+ Moments)
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-      {/* 💫 INSPIRING TAGLINE */}
-      <div className="bg-gradient-to-r from-amber-900/30 to-yellow-900/30 rounded-xl p-8 border border-amber-500/20 mb-8 text-center">
-        <h2 className="text-4xl font-bold mb-3" style={{ color: '#F59E0B' }}>💫 Your Moments</h2>
-        <p className="text-xl text-amber-200 italic font-medium">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
+      {/* 💎 PHASE 1: PREMIUM HEADER - Inspiring & Elegant */}
+      <div className="bg-gradient-to-br from-amber-900/30 via-purple-900/20 to-gray-900/40 rounded-2xl p-10 border border-amber-500/30 mb-8 text-center shadow-2xl">
+        <h2 className="text-5xl font-black mb-4" style={{ color: '#FBBF24' }}>
+          💫 Your Moments
+        </h2>
+        <p className="text-2xl text-amber-100 italic font-semibold mb-3">
           "You didn't work for money. You worked for moments like this."
+        </p>
+        <p className="text-base text-amber-200/70 font-medium">
+          ✨ Because numbers fade, but moments don't.
         </p>
       </div>
 
-      {/* Search Bar */}
-      <div className="mb-6">
+      {/* 💎 PHASE 1: ELEGANT STATS BAR - Single Unified Bar */}
+      <div className="bg-gradient-to-r from-gray-800/60 to-gray-900/60 rounded-xl p-6 border border-amber-500/20 mb-8 shadow-lg">
+        <div className="flex justify-around items-center">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <BookOpen className="w-6 h-6 text-amber-400" />
+              <span className="text-5xl font-black" style={{ color: '#FBBF24' }}>{totalMoments}</span>
+            </div>
+            <p className="text-sm text-gray-400 uppercase tracking-wide font-medium">Total Moments</p>
+          </div>
+          
+          <div className="h-16 w-px bg-amber-500/20"></div>
+          
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Link className="w-6 h-6 text-amber-400" />
+              <span className="text-5xl font-black" style={{ color: '#FBBF24' }}>{totalExpensesLinked}</span>
+            </div>
+            <p className="text-sm text-gray-400 uppercase tracking-wide font-medium">Expenses Linked</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 💎 PHASE 3: PROMINENT SEARCH BAR */}
+      <div className="mb-8">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-amber-400" />
           <input
             type="text"
-            placeholder="Search your moments by story, location, or title..."
+            placeholder="Search moments by story, location, or title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-700/50 text-white pl-10 pr-4 py-3 rounded-lg border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+            className="w-full bg-gray-800/60 text-white pl-14 pr-4 py-4 rounded-xl border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50 text-lg shadow-lg"
           />
         </div>
         {searchQuery && (
-          <div className="mt-2 text-sm text-gray-400">
-            Showing {filteredMoments.length} of {totalMoments} moments
+          <div className="mt-3 text-sm text-amber-300 font-medium">
+            ✨ Showing {filteredMoments.length} of {totalMoments} moments
           </div>
         )}
       </div>
 
-      {/* Stats Dashboard - Text-only for launch! */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <div className="bg-gray-800 border-purple-500/30 p-4 rounded-lg flex items-center justify-between">
-          <div>
-            <p className="text-sm text-gray-400">Total Moments</p>
-            <p className="text-2xl font-bold text-white">{totalMoments}</p>
-          </div>
-          <Calendar className="w-8 h-8 text-purple-500"/>
-        </div>
-        <div className="bg-gray-800 border-purple-500/30 p-4 rounded-lg flex items-center justify-between">
-          <div>
-            <p className="text-sm text-gray-400">Expenses Linked</p>
-            <p className="text-2xl font-bold text-white">{totalExpensesLinked}</p>
-          </div>
-          <DollarSign className="w-8 h-8 text-purple-500"/>
-        </div>
-      </div>
-
-      {/* Gamification Badge */}
-      {getGamificationBadge() && (
-        <div className="mb-8 text-center">
-          {getGamificationBadge()}
-        </div>
-      )}
-
-      {/* Filters and Add Moment */}
-      <div className="flex justify-between items-center mb-6">
+      {/* 💎 PHASE 3: ACTION BUTTONS - Filter (Secondary) + Add (Primary) */}
+      <div className="flex justify-between items-center mb-10">
         <div className="relative">
           <button
             onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-            className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
+            className="bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 px-5 py-3 rounded-lg flex items-center gap-2 text-sm font-medium border border-gray-600/30 transition-all"
           >
             <Filter className="w-4 h-4"/>
             Filter: {filter.charAt(0).toUpperCase() + filter.slice(1)}
           </button>
           {showFilterDropdown && (
-            <div className="absolute z-10 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg">
-              <button onClick={() => { setFilter('all'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600">All</button>
-              <button onClick={() => { setFilter('travel'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600">Travel</button>
-              <button onClick={() => { setFilter('achievements'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600">Achievements</button>
-              <button onClick={() => { setFilter('expenses'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600">Expenses Linked</button>
+            <div className="absolute z-10 mt-2 w-48 bg-gray-800 rounded-lg shadow-2xl border border-gray-700">
+              <button onClick={() => { setFilter('all'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-t-lg">All</button>
+              <button onClick={() => { setFilter('travel'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">Travel</button>
+              <button onClick={() => { setFilter('achievements'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">Achievements</button>
+              <button onClick={() => { setFilter('expenses'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-b-lg">Expenses Linked</button>
             </div>
           )}
         </div>
+        
+        {/* 💎 PRIMARY CTA - Vibrant Purple */}
         <button
-          onClick={() => onEditMoment(null)} // Pass null for new moment
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
+          onClick={() => onEditMoment(null)}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl flex items-center gap-3 text-base font-bold shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
         >
-          <Plus className="w-4 h-4"/> Add New Moment
+          <Plus className="w-5 h-5"/> Add New Moment
         </button>
       </div>
 
-      {/* Moments Timeline */}
-      <div className="space-y-8">
-        {filteredMoments.length === 0 ? (
-          <p className="text-gray-400 text-center py-8">No moments yet. Start capturing your story!</p>
-        ) : (
-          filteredMoments.map(moment => (
-            <div key={moment.id} className="bg-gray-800 border-purple-500/30 p-6 rounded-lg">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-1">{moment.title || 'Untitled Moment'}</h3>
-                  <p className="text-sm text-gray-400 flex items-center gap-2">
-                    <Calendar className="w-3 h-3"/> {new Date(moment.timestamp).toLocaleDateString()}
-                    {moment.location && <><MapPin className="w-3 h-3"/> {moment.location}</>}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  {getMomentSourceBadge(moment)}
-                  <button 
-                    onClick={() => onEditMoment(moment)} 
-                    className="text-gray-400 hover:text-purple-400 p-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    title="Edit moment"
-                  >
-                    <Edit className="w-4 h-4"/>
-                  </button>
-                  <button 
-                    onClick={() => onShareMoment(moment)} 
-                    className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    title="Share moment"
-                  >
-                    <Share2 className="w-4 h-4"/>
-                  </button>
-                  {onDeleteMoment && (
-                    <button 
-                      onClick={() => onDeleteMoment(moment.id)} 
-                      className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700 transition-colors"
-                      title="Delete moment"
-                    >
-                      <Trash2 className="w-4 h-4"/>
-                    </button>
-                  )}
-                </div>
-              </div>
+      {/* 💎 PHASE 2: VERTICAL TIMELINE LAYOUT - The Transformation! */}
+      {filteredMoments.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="inline-block bg-gradient-to-br from-amber-900/20 to-purple-900/20 rounded-2xl p-12 border border-amber-500/20">
+            <BookOpen className="w-20 h-20 text-amber-400/50 mx-auto mb-4" />
+            <p className="text-2xl font-bold text-amber-200 mb-2">Your Freedom Journal Awaits</p>
+            <p className="text-gray-400 mb-6">Start capturing your story!</p>
+            <button
+              onClick={() => onEditMoment(null)}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl inline-flex items-center gap-3 text-base font-bold shadow-2xl transform hover:scale-105 transition-all"
+            >
+              <Plus className="w-5 h-5"/> Add Your First Moment
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
+          {/* Central Timeline Line */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-amber-500/50 via-purple-500/50 to-amber-500/50"></div>
+          
+          {/* Timeline Moments */}
+          <div className="space-y-12">
+            {filteredMoments.map((moment, index) => {
+              const isLeft = index % 2 === 0;
+              
+              return (
+                <div key={moment.id} className={`relative flex ${isLeft ? 'justify-end' : 'justify-start'}`}>
+                  {/* Timeline Dot */}
+                  <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-4 border-amber-500 z-10 ${
+                    moment.isAchievement ? 'bg-green-500' : 
+                    moment.isTravel ? 'bg-blue-500' : 
+                    moment.expenseLink ? 'bg-red-500' : 
+                    'bg-purple-500'
+                  } shadow-lg`}></div>
+                  
+                  {/* Connecting Line to Card */}
+                  <div className={`absolute top-8 ${isLeft ? 'right-1/2 mr-3' : 'left-1/2 ml-3'} w-12 h-1 bg-gradient-to-${isLeft ? 'l' : 'r'} from-amber-500/50 to-transparent`}></div>
+                  
+                  {/* Moment Card */}
+                  <div className={`w-5/12 ${isLeft ? 'pr-16' : 'pl-16'}`}>
+                    <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group">
+                      {/* Card Header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          {/* 💎 HERO TITLE - Large, Bold, White */}
+                          <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-100 transition-colors">
+                            {moment.title || 'Untitled Moment'}
+                          </h3>
+                          
+                          {/* 💎 DATE & LOCATION - Amber/Gold */}
+                          <div className="flex flex-wrap items-center gap-3 text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-4 h-4"/> 
+                              {new Date(moment.timestamp).toLocaleDateString('en-US', { 
+                                month: 'long', 
+                                day: 'numeric', 
+                                year: 'numeric' 
+                              })}
+                            </span>
+                            {moment.location && (
+                              <span className="flex items-center gap-1">
+                                <MapPin className="w-4 h-4"/> {moment.location}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Source Badge */}
+                          <div className="mb-3">
+                            {getMomentSourceBadge(moment)}
+                          </div>
+                        </div>
+                        
+                        {/* Action Buttons */}
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => onEditMoment(moment)} 
+                            className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                            title="Edit moment"
+                          >
+                            <Edit className="w-4 h-4"/>
+                          </button>
+                          <button 
+                            onClick={() => onShareMoment(moment)} 
+                            className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                            title="Share moment"
+                          >
+                            <Share2 className="w-4 h-4"/>
+                          </button>
+                          {onDeleteMoment && (
+                            <button 
+                              onClick={() => onDeleteMoment(moment.id)} 
+                              className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                              title="Delete moment"
+                            >
+                              <Trash2 className="w-4 h-4"/>
+                            </button>
+                          )}
+                        </div>
+                      </div>
 
-              {/* Photos removed for launch - text-only moments for scalability */}
+                      {/* 💎 STORY - Soft Gray */}
+                      <p className="text-gray-300 leading-relaxed mb-4 text-base">
+                        {moment.story}
+                      </p>
 
-              <p className="text-gray-300 mb-4">{moment.story}</p>
-
-              {moment.expenseLink && (
-                <div className="bg-gray-700/50 border border-red-600/30 text-red-300 text-sm p-3 rounded-lg flex items-center gap-2">
-                  <DollarSign className="w-4 h-4"/> Linked to expense: {moment.expenseLink.description} (${moment.expenseLink.amount})
+                      {/* 💎 LINKED EXPENSE - Premium Pill Button */}
+                      {moment.expenseLink && (
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
+                          <DollarSign className="w-4 h-4"/> 
+                          {moment.expenseLink.description} • ${moment.expenseLink.amount}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
