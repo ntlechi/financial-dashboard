@@ -11896,19 +11896,40 @@ function App() {
   const saveCardData = async () => {
     if (!editingCard || !data) return;
     
-    // 🔧 Convert string values to numbers before saving
-    const convertedData = {};
-    Object.keys(tempCardData).forEach(key => {
-      const value = tempCardData[key];
-      // Convert string numbers to actual numbers
-      if (typeof value === 'string' && value !== '' && !isNaN(value)) {
-        convertedData[key] = Number(value);
-      } else if (value === '' || value === null || value === undefined) {
-        convertedData[key] = 0; // Empty becomes 0
-      } else {
-        convertedData[key] = value; // Keep as-is (objects, arrays, etc)
-      }
-    });
+    let convertedData;
+    
+    // 🎯 Special handling for array-based cards (goals, budgets, etc.)
+    if (Array.isArray(tempCardData)) {
+      // For arrays, convert numbers within each object
+      convertedData = tempCardData.map(item => {
+        const converted = {};
+        Object.keys(item).forEach(key => {
+          const value = item[key];
+          if (typeof value === 'string' && value !== '' && !isNaN(value)) {
+            converted[key] = Number(value);
+          } else if (value === '') {
+            converted[key] = 0;
+          } else {
+            converted[key] = value;
+          }
+        });
+        return converted;
+      });
+    } else {
+      // 🔧 Convert string values to numbers for object-based cards
+      convertedData = {};
+      Object.keys(tempCardData).forEach(key => {
+        const value = tempCardData[key];
+        // Convert string numbers to actual numbers
+        if (typeof value === 'string' && value !== '' && !isNaN(value)) {
+          convertedData[key] = Number(value);
+        } else if (value === '' || value === null || value === undefined) {
+          convertedData[key] = 0; // Empty becomes 0
+        } else {
+          convertedData[key] = value; // Keep as-is (objects, arrays, etc)
+        }
+      });
+    }
     
     let updatedData;
     
@@ -15011,7 +15032,7 @@ function App() {
                           name: '',
                           targetAmount: 0,
                           currentAmount: 0,
-                          deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
+                          targetDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
                         };
                         setTempCardData([...(tempCardData || []), newGoal]);
                       }}
