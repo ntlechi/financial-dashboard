@@ -9380,7 +9380,31 @@ const TravelTab = ({ data, setData, userId }) => {
               </button>
               
               <div className="text-center">
-                <h3 className="text-2xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h3>
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <h3 className="text-2xl font-bold text-white">🌍 Travel Runway Calculator</h3>
+                  {/* 💡 Help Tooltip */}
+                  <div className="group relative">
+                    <button className="text-slate-400 hover:text-amber-400 transition-colors">
+                      <HelpCircle className="w-5 h-5" />
+                    </button>
+                    <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 bg-gray-900 text-white text-sm rounded-lg p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-2xl border border-amber-500/30 z-50">
+                      <div className="font-bold text-amber-400 mb-2">How It Works:</div>
+                      <div className="space-y-2 text-xs text-gray-300">
+                        <p><strong>1. Set Your Travel Savings:</strong> Enter your total travel fund (top right edit button)</p>
+                        <p><strong>2. Plan Your Days:</strong> Allocate days to different cost tiers:
+                          <br />• 🟢 Cheap ($30/day): SE Asia, India, Eastern Europe
+                          <br />• 🟡 Moderate ($100/day): South America, Southern Europe
+                          <br />• 🔴 Expensive ($200/day): Western Europe, Japan, Scandinavia
+                        </p>
+                        <p><strong>3. See Your Runway:</strong> Calculator shows total possible travel days and cost breakdown!</p>
+                        <p className="text-amber-300 font-semibold mt-2">💡 Pro Tip: Mix cheap and expensive destinations to maximize your travel time!</p>
+                      </div>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                        <div className="border-8 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
                 
                 {/* Main Stats */}

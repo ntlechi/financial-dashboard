@@ -58,8 +58,9 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
       title="Quick Expense"
       description="Log a quick expense to your personal cash expenses"
       size="md"
+      headerClassName="bg-gradient-to-r from-red-900/30 to-pink-900/30 border-b border-red-700/30"
     >
-      <div className="space-y-4">
+      <div className="space-y-4 bg-gradient-to-br from-red-900/10 to-pink-900/10 rounded-lg p-4 border border-red-500/20">
         <div>
           <label className="block text-sm text-gray-300 mb-2">
             What did you spend on?

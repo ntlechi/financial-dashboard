@@ -2,13 +2,14 @@
 // Project: Freedom Journal Transformation
 
 import React, { useState, useEffect } from 'react';
-import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link } from 'lucide-react';
+import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp } from 'lucide-react';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
   const [filter, setFilter] = useState('all'); // 'all', 'travel', 'achievements', 'expenses'
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedMoments, setExpandedMoments] = useState(new Set()); // NEW: Collapsible state
 
   useEffect(() => {
     // Simulate fetching moments from data or Firebase
@@ -72,11 +73,28 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
   const totalMoments = moments.length;
   const totalExpensesLinked = moments.filter(moment => moment.expenseLink).length;
 
+  // Toggle moment expansion
+  const toggleMoment = (momentId) => {
+    const newExpanded = new Set(expandedMoments);
+    if (newExpanded.has(momentId)) {
+      newExpanded.delete(momentId);
+    } else {
+      newExpanded.add(momentId);
+    }
+    setExpandedMoments(newExpanded);
+  };
+
+  // Get excerpt for collapsed view
+  const getExcerpt = (text, maxLength = 150) => {
+    if (!text || text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
   const getMomentSourceBadge = (moment) => {
-    if (moment.location) return <span className="bg-blue-600/20 text-blue-400 text-xs px-2 py-1 rounded-full flex items-center gap-1"><MapPin className="w-3 h-3"/>Travel</span>;
-    if (moment.isAchievement) return <span className="bg-green-600/20 text-green-400 text-xs px-2 py-1 rounded-full flex items-center gap-1"><Award className="w-3 h-3"/>Achievement</span>;
-    if (moment.expenseLink) return <span className="bg-red-600/20 text-red-400 text-xs px-2 py-1 rounded-full flex items-center gap-1"><DollarSign className="w-3 h-3"/>Expense</span>;
-    return <span className="bg-gray-600/20 text-gray-400 text-xs px-2 py-1 rounded-full flex items-center gap-1"><Tag className="w-3 h-3"/>General</span>;
+    if (moment.isTravel) return <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><MapPin className="w-3 h-3"/>Travel</span>;
+    if (moment.isAchievement) return <span className="bg-green-600/20 text-green-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Award className="w-3 h-3"/>Achievement</span>;
+    if (moment.expenseLink) return <span className="bg-red-600/20 text-red-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><DollarSign className="w-3 h-3"/>Expense</span>;
+    return <span className="bg-gray-600/20 text-gray-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Tag className="w-3 h-3"/>General</span>;
   };
 
   return (
@@ -182,84 +200,111 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         </div>
       ) : (
         <div className="space-y-6">
-          {filteredMoments.map((moment) => (
-            <div 
-              key={moment.id} 
-              className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group"
-            >
-              {/* Card Header */}
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  {/* 💎 HERO TITLE - Large, Bold, White */}
-                  <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-100 transition-colors">
-                    {moment.title || 'Untitled Moment'}
-                  </h3>
-                  
-                  {/* 💎 DATE & LOCATION - Amber/Gold */}
-                  <div className="flex flex-wrap items-center gap-3 text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4"/> 
-                      {new Date(moment.timestamp).toLocaleDateString('en-US', { 
-                        month: 'long', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                      })}
-                    </span>
-                    {moment.location && (
+          {filteredMoments.map((moment) => {
+            const isExpanded = expandedMoments.has(moment.id);
+            const excerpt = getExcerpt(moment.story, 150);
+            const showReadMore = moment.story.length > 150;
+            
+            return (
+              <div 
+                key={moment.id} 
+                className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-gray-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 group"
+              >
+                {/* Card Header */}
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    {/* 💎 HERO TITLE - Large, Bold, White */}
+                    <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-100 transition-colors">
+                      {moment.title || 'Untitled Moment'}
+                    </h3>
+                    
+                    {/* 💎 DATE & LOCATION - Amber/Gold */}
+                    <div className="flex flex-wrap items-center gap-3 text-sm font-semibold mb-2" style={{ color: '#FBBF24' }}>
                       <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4"/> {moment.location}
+                        <Calendar className="w-4 h-4"/> 
+                        {new Date(moment.timestamp).toLocaleDateString('en-US', { 
+                          month: 'long', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
                       </span>
+                      {moment.location && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4"/> {moment.location}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Source Badge - Now shows Achievement badge properly! */}
+                    <div className="mb-3">
+                      {getMomentSourceBadge(moment)}
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={() => onEditMoment(moment)} 
+                      className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Edit moment"
+                    >
+                      <Edit className="w-4 h-4"/>
+                    </button>
+                    <button 
+                      onClick={() => onShareMoment(moment)} 
+                      className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                      title="Share moment"
+                    >
+                      <Share2 className="w-4 h-4"/>
+                    </button>
+                    {onDeleteMoment && (
+                      <button 
+                        onClick={() => onDeleteMoment(moment.id)} 
+                        className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                        title="Delete moment"
+                      >
+                        <Trash2 className="w-4 h-4"/>
+                      </button>
                     )}
                   </div>
-                  
-                  {/* Source Badge */}
-                  <div className="mb-3">
-                    {getMomentSourceBadge(moment)}
-                  </div>
                 </div>
+
+                {/* 💎 STORY - Collapsible! */}
+                <p className="text-gray-300 leading-relaxed mb-2 text-base">
+                  {isExpanded ? moment.story : excerpt}
+                </p>
                 
-                {/* Action Buttons */}
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button 
-                    onClick={() => onEditMoment(moment)} 
-                    className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                    title="Edit moment"
+                {/* Read More Toggle */}
+                {showReadMore && (
+                  <button
+                    onClick={() => toggleMoment(moment.id)}
+                    className="hover:text-amber-200 text-sm flex items-center gap-1 transition-colors font-bold mb-4"
+                    style={{ color: '#FBBF24' }}
                   >
-                    <Edit className="w-4 h-4"/>
+                    {isExpanded ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" />
+                        Show Less
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" />
+                        Read More
+                      </>
+                    )}
                   </button>
-                  <button 
-                    onClick={() => onShareMoment(moment)} 
-                    className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                    title="Share moment"
-                  >
-                    <Share2 className="w-4 h-4"/>
-                  </button>
-                  {onDeleteMoment && (
-                    <button 
-                      onClick={() => onDeleteMoment(moment.id)} 
-                      className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Delete moment"
-                    >
-                      <Trash2 className="w-4 h-4"/>
-                    </button>
-                  )}
-                </div>
+                )}
+
+                {/* 💎 LINKED EXPENSE - Premium Pill Button */}
+                {moment.expenseLink && (
+                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
+                    <DollarSign className="w-4 h-4"/> 
+                    {moment.expenseLink.description} • ${moment.expenseLink.amount}
+                  </div>
+                )}
               </div>
-
-              {/* 💎 STORY - Soft Gray */}
-              <p className="text-gray-300 leading-relaxed mb-4 text-base">
-                {moment.story}
-              </p>
-
-              {/* 💎 LINKED EXPENSE - Premium Pill Button */}
-              {moment.expenseLink && (
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-900/30 to-pink-900/30 border border-red-500/40 text-red-300 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer hover:border-red-400/60 hover:shadow-lg hover:shadow-red-500/20 transition-all">
-                  <DollarSign className="w-4 h-4"/> 
-                  {moment.expenseLink.description} • ${moment.expenseLink.amount}
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -10,6 +10,7 @@ const FixedModal = ({
   description,
   children,
   className = '',
+  headerClassName = '', // NEW: Allow custom header styling
   size = 'md', // sm, md, lg, xl
   showCloseButton = true,
   closeOnBackdropClick = true,
@@ -60,7 +61,7 @@ const FixedModal = ({
       >
         {/* Modal Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <div className={`flex items-center justify-between p-6 border-b border-gray-700 ${headerClassName}`}>
             <div className="flex-1">
               {title && (
                 <h3 
