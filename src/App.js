@@ -857,7 +857,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             
             {/* Status Legend Tooltip */}
             {showStatusLegend && (
-              <div className="absolute top-full left-0 mt-2 w-64 sm:w-72 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 z-50 p-4">
+              <div className="absolute top-full right-0 sm:left-0 mt-2 w-64 sm:w-72 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 z-50 p-4">
                 <h4 className="text-white font-semibold mb-3 text-sm">Resilience Status Levels</h4>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-2 p-2 bg-teal-900/20 rounded border border-teal-500/30">
@@ -6369,8 +6369,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
         {/* Add Holding Modal */}
         {showAddHolding && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-md border-blue-500/30">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+            <Card className="w-full max-w-md border-blue-500/30 my-8 max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-white">Add New Holding</h3>
                 <button
@@ -6615,8 +6615,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
         {/* Edit Holding Modal */}
         {editingHolding && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-md border-blue-500/30">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+            <Card className="w-full max-w-md border-blue-500/30 my-8 max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-white">Edit {editingHolding.symbol}</h3>
                 <button
@@ -9385,7 +9385,10 @@ const TravelTab = ({ data, setData, userId }) => {
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <h3 className="text-2xl font-bold text-white">🌍 Travel Runway Calculator</h3>
-                  {/* 💡 Help Tooltip */}
+                </div>
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <p className="text-slate-300">Smart destination-based travel planning with cost tiers</p>
+                  {/* 💡 Help Tooltip - Moved to tagline */}
                   <div className="group relative">
                     <button className="text-slate-400 hover:text-amber-400 transition-colors">
                       <HelpCircle className="w-5 h-5" />
@@ -9408,7 +9411,6 @@ const TravelTab = ({ data, setData, userId }) => {
                     </div>
                   </div>
                 </div>
-                <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
                 
                 {/* Main Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

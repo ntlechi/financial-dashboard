@@ -512,7 +512,7 @@ export default function MyLogbook({
             return (
               <div
                 key={entry.id}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-blue-500/10 overflow-hidden hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300"
+                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-blue-500/10 overflow-hidden hover:border-amber-400 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300"
               >
                 {/* Card Header (Always Visible) */}
                 <div
