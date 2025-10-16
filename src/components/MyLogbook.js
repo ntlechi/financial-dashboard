@@ -1,6 +1,6 @@
 // 🎯 MY LOGBOOK - Unified Journal System with Tags, Search & Collapsible Cards
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Tag, Calendar, Copy, Edit3, Trash2, ChevronDown, ChevronUp, X, Save, Filter } from 'lucide-react';
+import { Plus, Search, Tag, Calendar, Copy, Edit3, Trash2, ChevronDown, ChevronUp, X, Save, Filter, BookOpen, Download } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -9,7 +9,10 @@ export default function MyLogbook({
   userId, 
   onUpdateData, 
   awardXp, 
-  setXpRefreshTrigger 
+  setXpRefreshTrigger,
+  checkFeatureAccess,
+  showUpgradePromptForFeature,
+  onExport
 }) {
   // State
   const [entries, setEntries] = useState([]);
@@ -371,22 +374,54 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* 💎 PHASE 1: "CALL TO WRITE" CARD - Premium Invitation! */}
-      <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl p-8 border border-amber-500/30 shadow-2xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-4xl font-black tracking-tight mb-2" style={{ color: '#FBBF24' }}>My Logbook</h2>
-            <p className="text-amber-100 text-base font-medium leading-relaxed">📝 Your thoughts are the blueprint for your freedom. Capture them here.</p>
-          </div>
+      {/* 💎 PHASE 1: MAIN HEADER BANNER - Clean & Inspiring! */}
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-black text-white mb-3 flex items-center justify-center gap-3">
+          <BookOpen className="w-12 h-12 text-amber-400" />
+          Your Mission Logbook
+        </h1>
+        <p className="text-xl text-gray-300 font-medium">
+          Your thoughts are the blueprint for your freedom. Capture them here.
+        </p>
+      </div>
+
+      {/* 💎 PHASE 2: COMMAND BAR - Action-Oriented! */}
+      <div className="flex justify-between items-center p-4 bg-gray-800/40 rounded-lg border border-gray-700/50 mb-6">
+        {/* Secondary Action - Export (Left) */}
+        {checkFeatureAccess && checkFeatureAccess('field-notes-export') ? (
           <button
-            onClick={openAddEntryModal}
-            className="hover:shadow-amber-500/50 text-gray-900 px-10 py-4 rounded-lg font-black text-lg transition-all flex items-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-110 hover:rotate-1"
-            style={{ backgroundColor: '#FBBF24' }}
+            onClick={onExport}
+            className="bg-gray-700 hover:bg-gray-600 text-gray-300 px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 border border-gray-600"
+            title="Export all logbook entries"
           >
-            <Plus className="w-6 h-6" />
-            Add New Entry
+            <Download className="w-5 h-5" />
+            Export Notes
           </button>
-        </div>
+        ) : (
+          <button
+            onClick={() => showUpgradePromptForFeature && showUpgradePromptForFeature('field-notes-export')}
+            className="bg-gray-700 hover:bg-gray-600 text-gray-300 px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 border border-gray-600"
+            title="Upgrade to export notes"
+          >
+            <Download className="w-5 h-5" />
+            <span className="flex items-center gap-2">
+              Export Notes
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              </svg>
+            </span>
+          </button>
+        )}
+
+        {/* Primary Action - Add Entry (Right) */}
+        <button
+          onClick={openAddEntryModal}
+          className="text-gray-900 px-8 py-3 rounded-lg font-black text-base transition-all flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105"
+          style={{ backgroundColor: '#FBBF24' }}
+        >
+          <Plus className="w-5 h-5" />
+          Add New Entry
+        </button>
       </div>
 
       {/* Search & Filter Bar - BRAND GOLD! */}

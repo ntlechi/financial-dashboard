@@ -181,6 +181,9 @@ export default function ReflectionsPage({
           onUpdateData={onUpdateData}
           awardXp={awardXp}
           setXpRefreshTrigger={setXpRefreshTrigger}
+          checkFeatureAccess={checkFeatureAccess}
+          showUpgradePromptForFeature={showUpgradePromptForFeature}
+          onExport={exportMyLogbookToTXT}
         />
       )}
     </div>
