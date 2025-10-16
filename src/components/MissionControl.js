@@ -1,9 +1,8 @@
 // 🎯 MISSION CONTROL - The Heart of The Freedom Compass
 // The strategic flight plan connecting daily actions to ultimate life goals
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, Calendar, Edit, Save, TrendingUp, Award, Rocket, CheckCircle, Circle, DollarSign } from 'lucide-react';
-import * as d3 from 'd3';
 
 const MissionControl = ({ 
   data, 
@@ -12,8 +11,6 @@ const MissionControl = ({
   awardXp,
   setXpRefreshTrigger 
 }) => {
-  const northStarChartRef = useRef(null);
-  
   // State
   const [northStarGoal, setNorthStarGoal] = useState(null);
   const [activeMissions, setActiveMissions] = useState([]);
@@ -62,49 +59,12 @@ const MissionControl = ({
     }
   }, [northStarGoal, data]);
 
-  // D3.js North Star Progress Donut
-  useEffect(() => {
-    if (!northStarChartRef.current || !northStarGoal) return;
+  // Calculate progress percentage
+  const progressPercentage = northStarGoal 
+    ? Math.min(100, (northStarGoal.currentAmount / northStarGoal.targetAmount) * 100)
+    : 0;
 
-    const svg = d3.select(northStarChartRef.current);
-    svg.selectAll("*").remove();
-
-    const width = 320;
-    const height = 320;
-    const radius = Math.min(width, height) / 2;
-
-    const progressPercentage = (northStarGoal.currentAmount / northStarGoal.targetAmount) * 100;
-    const progress = Math.min(100, progressPercentage);
-
-    const chartData = [
-      { label: 'Progress', value: progress, color: '#FBBF24' }, // Amber
-      { label: 'Remaining', value: 100 - progress, color: '#1f2937' } // Dark gray
-    ];
-
-    const pie = d3.pie().value(d => d.value).sort(null);
-    const arc = d3.arc().innerRadius(radius * 0.65).outerRadius(radius);
-
-    const g = svg
-      .attr("width", width)
-      .attr("height", height)
-      .append("g")
-      .attr("transform", `translate(${width/2},${height/2})`);
-
-    // Draw arcs with glow effect
-    g.selectAll(".arc")
-      .data(pie(chartData))
-      .enter()
-      .append("g")
-      .attr("class", "arc")
-      .append("path")
-      .attr("d", arc)
-      .attr("fill", d => d.data.color)
-      .attr("stroke", "#000")
-      .attr("stroke-width", 2)
-      .style("filter", d => d.data.label === 'Progress' ? 'drop-shadow(0 0 12px #FBBF24)' : 'none')
-      .style("opacity", d => d.data.label === 'Progress' ? 1 : 0.3);
-
-  }, [northStarGoal]);
+  const strokeDasharray = `${(progressPercentage / 100) * 691} 691`; // Circumference = 2πr = 2 * π * 110 ≈ 691
 
   // Show notification
   const showNotification = (message, type = 'success') => {
@@ -235,13 +195,73 @@ const MissionControl = ({
             {/* Progress Donut Chart */}
             <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 mb-8">
               {/* Chart */}
-              <div className="relative">
-                <svg ref={northStarChartRef} className="transform"></svg>
+              <div className="relative w-80 h-80 p-8">
+                {/* Mobile-friendly circular gauge with neon effect - "Jedi Effect" from Freedom Ratio! */}
+                <svg 
+                  className="w-full h-full transform -rotate-90" 
+                  viewBox="0 0 256 256" 
+                  style={{ overflow: 'visible' }}
+                >
+                  {/* Background Circle */}
+                  <circle
+                    cx="128"
+                    cy="128"
+                    r="110"
+                    stroke="#1f2937"
+                    strokeWidth="18"
+                    fill="none"
+                  />
+                  
+                  {/* Progress Circle - Layered for Mobile Glow Effect */}
+                  {/* Layer 1: Wide, low opacity for base glow */}
+                  <circle
+                    cx="128"
+                    cy="128"
+                    r="110"
+                    stroke="#FBBF24"
+                    strokeWidth="24"
+                    fill="none"
+                    strokeDasharray={strokeDasharray}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out opacity-30"
+                  />
+                  
+                  {/* Layer 2: Medium width, medium opacity */}
+                  <circle
+                    cx="128"
+                    cy="128"
+                    r="110"
+                    stroke="#FBBF24"
+                    strokeWidth="18"
+                    fill="none"
+                    strokeDasharray={strokeDasharray}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out opacity-60"
+                  />
+                  
+                  {/* Layer 3: Thin with drop-shadow for neon glow */}
+                  <circle
+                    cx="128"
+                    cy="128"
+                    r="110"
+                    stroke="#FBBF24"
+                    strokeWidth="12"
+                    fill="none"
+                    strokeDasharray={strokeDasharray}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out"
+                    style={{
+                      filter: 'drop-shadow(0 0 8px #FBBF24)',
+                      WebkitFilter: 'drop-shadow(0 0 8px #FBBF24)',
+                      willChange: 'filter'
+                    }}
+                  />
+                </svg>
                 
                 {/* Center Text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <div className="text-5xl font-black text-amber-400">
-                    {((northStarGoal.currentAmount / northStarGoal.targetAmount) * 100).toFixed(0)}%
+                    {progressPercentage.toFixed(0)}%
                   </div>
                   <div className="text-sm font-semibold text-gray-400 mt-1">
                     Complete

@@ -22,6 +22,7 @@ import ReflectionsPage from './components/ReflectionsPage';
 import FirstClimbProtocol from './components/FirstClimbProtocol';
 import SupplyCrateSystem from './components/SupplyCrateSystem';
 import MissionControl from './components/MissionControl';
+import MilestoneReviewCard from './components/MilestoneReviewCard';
 import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';

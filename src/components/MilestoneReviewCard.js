@@ -23,22 +23,8 @@ export default function MilestoneReviewCard({
   const [story, setStory] = useState('');
   const [permission, setPermission] = useState(false);
   const [username, setUsername] = useState('');
-  const [videoFile, setVideoFile] = useState(null);
-  const [videoPreview, setVideoPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const handleVideoSelect = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('video/')) {
-      if (file.size > 50 * 1024 * 1024) { // 50MB limit
-        alert('Video must be under 50MB');
-        return;
-      }
-      setVideoFile(file);
-      setVideoPreview(URL.createObjectURL(file));
-    }
-  };
 
   const handleSubmit = async () => {
     if (!rating || !story.trim()) {
@@ -49,15 +35,6 @@ export default function MilestoneReviewCard({
     setUploading(true);
 
     try {
-      let videoUrl = null;
-
-      // Upload video to Firebase Storage if provided
-      if (videoFile) {
-        const videoRef = ref(storage, `testimonial-videos/${userId}/${Date.now()}_${videoFile.name}`);
-        await uploadBytes(videoRef, videoFile);
-        videoUrl = await getDownloadURL(videoRef);
-      }
-
       // Save review to Firestore
       const reviewData = {
         userId,
@@ -68,7 +45,7 @@ export default function MilestoneReviewCard({
         timestamp: new Date().toISOString(),
         permissionToFeature: permission,
         username: username.trim() || 'Anonymous',
-        videoUrl,
+        youtubeUrl: '', // For future: users can add YouTube link on website
         featured: false,
         helpful: 0
       };
@@ -241,51 +218,6 @@ export default function MilestoneReviewCard({
               </div>
             </div>
 
-            {/* Video Upload (Optional) */}
-            <div className="bg-gradient-to-r from-blue-900/30 to-indigo-900/30 rounded-lg p-5 border border-blue-600/30">
-              <h4 className="text-sm font-bold text-blue-300 mb-2 flex items-center gap-2">
-                <Video className="w-4 h-4" />
-                Want to inspire others? Record a 30-second dispatch. (Optional)
-              </h4>
-              <p className="text-xs text-gray-400 mb-3">
-                In your own words, what did it feel like to hit this milestone?
-              </p>
-              
-              {!videoPreview ? (
-                <label className="cursor-pointer">
-                  <input
-                    type="file"
-                    accept="video/*"
-                    capture="user"
-                    onChange={handleVideoSelect}
-                    className="hidden"
-                  />
-                  <div className="bg-blue-700 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors inline-flex items-center gap-2 font-semibold">
-                    <Video className="w-5 h-5" />
-                    Record Video Dispatch
-                  </div>
-                </label>
-              ) : (
-                <div className="space-y-2">
-                  <video
-                    src={videoPreview}
-                    controls
-                    className="w-full rounded-lg border border-blue-600"
-                    style={{ maxHeight: '200px' }}
-                  />
-                  <button
-                    onClick={() => {
-                      setVideoFile(null);
-                      setVideoPreview(null);
-                    }}
-                    className="text-sm text-red-400 hover:text-red-300"
-                  >
-                    Remove Video
-                  </button>
-                </div>
-              )}
-            </div>
-
             {/* Permission & Username */}
             <div className="space-y-3">
               <label className="flex items-start gap-3 cursor-pointer">
@@ -296,7 +228,7 @@ export default function MilestoneReviewCard({
                   className="mt-1 w-5 h-5 rounded border-gray-600 text-amber-600 focus:ring-amber-500"
                 />
                 <span className="text-sm text-gray-300">
-                  I give permission for Survive Backpacking to feature my dispatch on the Wall of Wins
+                  I give permission for Survive Backpacking to feature my dispatch on the Wall of Wins (website)
                 </span>
               </label>
 
