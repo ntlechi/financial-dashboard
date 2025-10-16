@@ -533,14 +533,15 @@ export default function MyLogbook({
                         {isExpanded ? entry.content : excerpt}
                       </p>
                       
-                      {/* Read More Toggle */}
+                      {/* Read More Toggle - AMBER/GOLD for Brand! */}
                       {showReadMore && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleEntry(entry.id);
                           }}
-                          className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1 transition-colors font-bold"
+                          className="hover:text-amber-200 text-sm flex items-center gap-1 transition-colors font-bold"
+                          style={{ color: '#FBBF24' }}
                         >
                           {isExpanded ? (
                             <>
@@ -569,13 +570,14 @@ export default function MyLogbook({
                     )}
                   </div>
                   
-                  {/* Tags */}
+                  {/* Tags - AMBER/GOLD for Brand! */}
                   {entry.tags && entry.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {entry.tags.map(tag => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full bg-blue-500/15 text-blue-400 border border-blue-400/50"
+                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full border border-amber-400/50"
+                          style={{ backgroundColor: 'rgba(251, 191, 36, 0.15)', color: '#FBBF24' }}
                         >
                           <Tag className="w-3 h-3" />
                           {tag}
@@ -586,8 +588,8 @@ export default function MyLogbook({
                   
                   {/* Footer: Date & Actions */}
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/50">
-                    {/* 💎 PHASE 2: Bright Blue Timestamps! */}
-                    <div className="flex items-center gap-1 text-xs font-semibold text-blue-400">
+                    {/* 💎 AMBER/GOLD Timestamps for Brand! */}
+                    <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: '#FBBF24' }}>
                       <Calendar className="w-3 h-3" />
                       {formatDate(entry.createdAt)}
                       {entry.updatedAt && entry.updatedAt !== entry.createdAt && (

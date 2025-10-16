@@ -13504,9 +13504,11 @@ function App() {
           {/* 💫 Moments - OPERATOR+ ONLY */}
           {activeTab === 'moments' && (
             checkFeatureAccess('travel-mode') ? (
-              <FinancialErrorBoundary componentName="Moments Feed">
-                <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} onDeleteMoment={handleDeleteMoment} />
-              </FinancialErrorBoundary>
+              <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                <FinancialErrorBoundary componentName="Moments Feed">
+                  <MomentsFeed data={data} userId={userId} onEditMoment={handleEditMoment} onShareMoment={handleShareMoment} onDeleteMoment={handleDeleteMoment} />
+                </FinancialErrorBoundary>
+              </div>
             ) : (
               <div className="col-span-1 md:col-span-6 lg:col-span-6">
                 <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-gray-700/50 text-center">
