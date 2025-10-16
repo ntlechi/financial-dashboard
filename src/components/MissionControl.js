@@ -2,7 +2,7 @@
 // The strategic flight plan connecting daily actions to ultimate life goals
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Target, Calendar, Edit, Save, Compass, TrendingUp, Award, Rocket, CheckCircle, Circle, DollarSign } from 'lucide-react';
+import { Target, Calendar, Edit, Save, TrendingUp, Award, Rocket, CheckCircle, Circle, DollarSign } from 'lucide-react';
 import * as d3 from 'd3';
 
 const MissionControl = ({ 
@@ -69,8 +69,8 @@ const MissionControl = ({
     const svg = d3.select(northStarChartRef.current);
     svg.selectAll("*").remove();
 
-    const width = 280;
-    const height = 280;
+    const width = 320;
+    const height = 320;
     const radius = Math.min(width, height) / 2;
 
     const progressPercentage = (northStarGoal.currentAmount / northStarGoal.targetAmount) * 100;
