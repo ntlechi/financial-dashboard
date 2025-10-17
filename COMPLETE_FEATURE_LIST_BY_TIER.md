@@ -209,8 +209,10 @@ When FREE users try to access premium features, they see:
 - ✅ **Travel Runway Calculator** - Smart cost tier planning
 - ✅ **Cost Tier System** - Budget, Moderate, Luxury tiers
 - ✅ **Trip Progress Tracking** - See what's spent vs budget
-- ✅ **Add Travel Moments** - Capture trip memories
+- ✅ **Travel Moments** 🆕 - Capture trip memories with photos & notes
+- ✅ **Moments Feed** 🆕 - View all travel moments in beautiful timeline
 - ✅ **Multi-Trip Support** - Track multiple adventures
+- ✅ **+10 XP per Moment** - Earn XP for capturing memories
 
 ### 📄 PREMIUM EXPORTS
 
@@ -551,7 +553,7 @@ When FREE users try to access premium features, they see:
 
 ---
 
-## 🆕 NEW FEATURES ADDED TODAY
+## 🆕 NEW FEATURES & IMPROVEMENTS (Latest)
 
 ### **Mission Control** (CLIMBER+) 🆕
 - North Star goal with progress donut
@@ -561,21 +563,34 @@ When FREE users try to access premium features, they see:
 - One-click North Star selection
 - **The final piece of the puzzle!**
 
-### **Improvements Made:**
-1. ✅ Investment modals now scroll (mobile fix)
-2. ✅ Travel Runway tooltip repositioned
-3. ✅ Field Notes hover color (amber)
-4. ✅ Date inputs sized correctly
-5. ✅ Side Hustle edit button
-6. ✅ Financial Goals locked to Climber+
-7. ✅ Logbook modal blue theme
-8. ✅ Crown upgrade button (icon only)
-9. ✅ Founder's Circle end date (Oct 26)
-10. ✅ Desktop tab scroll arrows
-11. ✅ All button colors consistent
-12. ✅ Gamification guide updated
-13. ✅ Goals saving fixed
-14. ✅ North Star donut bigger
+### **Travel Moments** (OPERATOR+) 🆕
+- ✅ Capture travel memories with photos & notes
+- ✅ Beautiful Moments feed timeline
+- ✅ +10 XP per moment created
+- ✅ Filter by tags and search
+- ✅ Integrated with Travel Mode
+
+### **Dashboard UI Upgrades** 🎨
+1. ✅ **Financial Goals cards brightened** - Pop more from dark background
+2. ✅ **Retirement Accounts** - Mission Logbook blue theme
+3. ✅ **Savings Rate** - Rainy Day blue gradient theme
+4. ✅ **Financial Freedom Goal** - Supply Crate green theme
+5. ✅ **All cards** - Professional, elegant, unified design
+
+### **Critical Fixes** 🔧
+6. ✅ **Survival Runway** - Decimal precision fixed ($432.33 not $432.333)
+7. ✅ **Milestone popups** - Show only once per achievement (not on every visit!)
+8. ✅ **All calculations** - Comprehensive audit completed, 100% working
+9. ✅ **Mobile responsiveness** - Investment modals scroll, date inputs sized
+10. ✅ **NULL safety** - All calculations protected against empty data
+
+### **Other Improvements:**
+11. ✅ Field Notes hover color (amber)
+12. ✅ Side Hustle edit button
+13. ✅ Logbook modal blue theme
+14. ✅ Desktop tab scroll arrows
+15. ✅ All button colors consistent
+16. ✅ Gamification guide updated
 
 ---
 

@@ -1,0 +1,157 @@
+
+> financial-dashboard@1.0.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Compiled with warnings.
+
+[eslint] 
+src/App.js
+  Line 3:319:     'Rocket' is defined but never used                                                                                                                                                                                        no-unused-vars
+  Line 25:8:      'MilestoneReviewCard' is defined but never used                                                                                                                                                                           no-unused-vars
+  Line 29:8:      'TransactionModal' is defined but never used                                                                                                                                                                              no-unused-vars
+  Line 33:8:      'InstallPrompt' is defined but never used                                                                                                                                                                                 no-unused-vars
+  Line 36:10:     'getCurrentPricingPlans' is defined but never used                                                                                                                                                                        no-unused-vars
+  Line 36:34:     'getPricingPhaseInfo' is defined but never used                                                                                                                                                                           no-unused-vars
+  Line 36:55:     'getStripePriceId' is defined but never used                                                                                                                                                                              no-unused-vars
+  Line 37:53:     'getRelativeTime' is defined but never used                                                                                                                                                                               no-unused-vars
+  Line 42:3:      'hasOfflineData' is defined but never used                                                                                                                                                                                no-unused-vars
+  Line 43:3:      'storeTransactionOffline' is defined but never used                                                                                                                                                                       no-unused-vars
+  Line 44:3:      'storeExpenseOffline' is defined but never used                                                                                                                                                                           no-unused-vars
+  Line 45:3:      'storeJournalOffline' is defined but never used                                                                                                                                                                           no-unused-vars
+  Line 46:3:      'getOfflineTransactions' is defined but never used                                                                                                                                                                        no-unused-vars
+  Line 47:3:      'getOfflineExpenses' is defined but never used                                                                                                                                                                            no-unused-vars
+  Line 48:3:      'getOfflineJournal' is defined but never used                                                                                                                                                                             no-unused-vars
+  Line 49:3:      'getPendingSync' is defined but never used                                                                                                                                                                                no-unused-vars
+  Line 50:3:      'clearPendingSync' is defined but never used                                                                                                                                                                              no-unused-vars
+  Line 51:3:      'markAsSynced' is defined but never used                                                                                                                                                                                  no-unused-vars
+  Line 70:3:      'signInAnonymously' is defined but never used                                                                                                                                                                             no-unused-vars
+  Line 720:9:     'getRateColor' is assigned a value but never used                                                                                                                                                                         no-unused-vars
+  Line 1393:6:    React Hook useEffect has a missing dependency: 'data'. Either include it or remove the dependency array                                                                                                                   react-hooks/exhaustive-deps
+  Line 1668:7:    'DebtCard' is assigned a value but never used                                                                                                                                                                             no-unused-vars
+  Line 2565:6:    React Hook useEffect has missing dependencies: 'monthlyExpenses' and 'targetAmount'. Either include them or remove the dependency array                                                                                   react-hooks/exhaustive-deps
+  Line 3651:9:    'totalNetProfit' is assigned a value but never used                                                                                                                                                                       no-unused-vars
+  Line 3788:6:    React Hook useEffect has an unnecessary dependency: 'db'. Either exclude it or remove the dependency array. Outer scope values like 'db' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+  Line 3842:6:    React Hook useEffect has an unnecessary dependency: 'db'. Either exclude it or remove the dependency array. Outer scope values like 'db' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+  Line 4342:6:    React Hook useEffect has a missing dependency: 'processDueRecurringItems'. Either include it or remove the dependency array                                                                                               react-hooks/exhaustive-deps
+  Line 9220:15:   'worldMapCountries' is assigned a value but never used                                                                                                                                                                    no-unused-vars
+  Line 10983:10:  'editingRecurring' is assigned a value but never used                                                                                                                                                                     no-unused-vars
+  Line 10983:28:  'setEditingRecurring' is assigned a value but never used                                                                                                                                                                  no-unused-vars
+  Line 11067:10:  'missions' is assigned a value but never used                                                                                                                                                                             no-unused-vars
+  Line 11067:20:  'setMissions' is assigned a value but never used                                                                                                                                                                          no-unused-vars
+  Line 11081:10:  'quickExpense' is assigned a value but never used                                                                                                                                                                         no-unused-vars
+  Line 11105:10:  'quickJournalNote' is assigned a value but never used                                                                                                                                                                     no-unused-vars
+  Line 11110:10:  'showOfflineIndicator' is assigned a value but never used                                                                                                                                                                 no-unused-vars
+  Line 11116:10:  'dataSafetySummary' is assigned a value but never used                                                                                                                                                                    no-unused-vars
+  Line 11139:10:  'foundersCircleCount' is assigned a value but never used                                                                                                                                                                  no-unused-vars
+  Line 11140:10:  'earlyAdopterCount' is assigned a value but never used                                                                                                                                                                    no-unused-vars
+  Line 12031:6:   React Hook useEffect has a missing dependency: 'checkForCompletedTrips'. Either include it or remove the dependency array                                                                                                 react-hooks/exhaustive-deps
+  Line 12038:6:   React Hook useEffect has a missing dependency: 'checkDebtPaymentNotifications'. Either include it or remove the dependency array                                                                                          react-hooks/exhaustive-deps
+  Line 12956:11:  'updatedData' is assigned a value but never used                                                                                                                                                                          no-unused-vars
+  Line 13018:9:   'openQuickJournal' is assigned a value but never used                                                                                                                                                                     no-unused-vars
+
+src/components/DebtPayoffProgressTracker.js
+  Line 1:17:    'useState' is defined but never used                no-unused-vars
+  Line 1:27:    'useEffect' is defined but never used               no-unused-vars
+  Line 1:38:    'useMemo' is defined but never used                 no-unused-vars
+  Line 2:36:    'Trash2' is defined but never used                  no-unused-vars
+  Line 146:17:  'paymentStatus' is assigned a value but never used  no-unused-vars
+
+src/components/FirstClimbProtocol.js
+  Line 6:23:  'Circle' is defined but never used                                                                                        no-unused-vars
+  Line 23:6:  React Hook useEffect has a missing dependency: 'loadMissionProgress'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+  Line 30:6:  React Hook useEffect has a missing dependency: 'updateMissionProgress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/FreedomJournal.js
+  Line 6:10:    'photoFile' is assigned a value but never used                                                                                                                                                   no-unused-vars
+  Line 27:6:    React Hook useEffect has a missing dependency: 'journalPrompts'. Either include it or remove the dependency array                                                                                react-hooks/exhaustive-deps
+  Line 127:13:  Redundant alt attribute. Screen-readers already announce `img` tags as an image. You don’t need to use the words `image`, `photo,` or `picture` (or any specified custom words) in the alt prop  jsx-a11y/img-redundant-alt
+
+src/components/FreedomMilestones.js
+  Line 43:6:  React Hook useEffect has missing dependencies: 'milestones' and 'onMilestoneUnlock'. Either include them or remove the dependency array. If 'onMilestoneUnlock' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+src/components/MilestoneReviewCard.js
+  Line 6:32:  'Video' is defined but never used           no-unused-vars
+  Line 7:10:  'ref' is defined but never used             no-unused-vars
+  Line 7:15:  'uploadBytes' is defined but never used     no-unused-vars
+  Line 7:28:  'getDownloadURL' is defined but never used  no-unused-vars
+  Line 8:10:  'storage' is defined but never used         no-unused-vars
+
+src/components/MissionControl.js
+  Line 5:88:  'DollarSign' is defined but never used  no-unused-vars
+
+src/components/MomentsFeed.js
+  Line 5:17:   'Camera' is defined but never used     no-unused-vars
+  Line 5:67:   'BarChart2' is defined but never used  no-unused-vars
+  Line 5:88:   'Image' is defined but never used      no-unused-vars
+  Line 5:100:  'X' is defined but never used          no-unused-vars
+
+src/components/MyLogbook.js
+  Line 3:101:  'BookOpen' is defined but never used  no-unused-vars
+
+src/components/PricingModal.js
+  Line 6:10:  'isFoundersCircleAvailable' is defined but never used  no-unused-vars
+  Line 6:37:  'isEarlyAdopterAvailable' is defined but never used    no-unused-vars
+
+src/components/RankMedalsPage.js
+  Line 6:29:  'Award' is defined but never used  no-unused-vars
+  Line 6:36:  'Zap' is defined but never used    no-unused-vars
+
+src/components/ReflectionsPage.js
+  Line 3:20:  'Download' is defined but never used  no-unused-vars
+
+src/components/SupplyCrateSystem.js
+  Line 6:40:   'AlertCircle' is defined but never used         no-unused-vars
+  Line 6:53:   'CheckCircle' is defined but never used         no-unused-vars
+  Line 6:66:   'TrendingDown' is defined but never used        no-unused-vars
+  Line 53:11:  'remaining' is assigned a value but never used  no-unused-vars
+
+src/components/TheTrail.js
+  Line 4:67:   'Tag' is defined but never used                                                                                       no-unused-vars
+  Line 15:10:  'drillCorrect' is assigned a value but never used                                                                     no-unused-vars
+  Line 22:6:   React Hook useEffect has a missing dependency: 'fetchUserProgress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pricing.js
+  Line 367:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+src/utils/dataSafetyUtils.js
+  Line 298:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+src/utils/modalUtils.js
+  Line 348:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+src/utils/offlineUtils.js
+  Line 240:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+src/utils/stripeUtils.js
+  Line 175:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+src/utils/subscriptionUtils.js
+  Line 262:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+src/utils/timezoneUtils.js
+  Line 215:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+File sizes after gzip:
+
+  417.55 kB  build/static/js/main.15cfd7bf.js
+  14.55 kB   build/static/css/main.653937ab.css
+  1.99 kB    build/static/js/804.57f105de.chunk.js
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+---BUILD STATUS---
