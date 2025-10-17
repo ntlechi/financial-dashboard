@@ -1758,6 +1758,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   }
 
   // 📊 CALCULATE AVERAGE MONTHLY EXPENSES (Last 3 Months)
+  // 🔧 CRITICAL FIX: Use same filtering as Monthly Expenses card (t.type === 'expense')
   const calculateAvgMonthlyExpenses = () => {
     if (!transactions || transactions.length === 0) return 0; // 🛡️ FIX: No transactions = no expenses (not $2000!)
     
@@ -1770,10 +1771,12 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       const targetMonth = targetDate.getMonth();
       const targetYear = targetDate.getFullYear();
       
+      // 🔧 CRITICAL FIX: Use t.type === 'expense' instead of t.amount < 0
+      // This matches the Monthly Expenses card calculation exactly!
       const monthExpenses = transactions
         .filter(t => {
           const tDate = new Date(t.date);
-          return t.amount < 0 && tDate.getMonth() === targetMonth && tDate.getFullYear() === targetYear;
+          return t.type === 'expense' && tDate.getMonth() === targetMonth && tDate.getFullYear() === targetYear;
         })
         .reduce((sum, t) => sum + Math.abs(t.amount), 0);
       
