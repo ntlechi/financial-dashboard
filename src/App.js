@@ -4087,11 +4087,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       return business;
     });
 
-    const updatedData = { ...data, businesses: updatedBusinesses };
-
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      
+      setData({ ...data, businesses: updatedBusinesses });
       const today = new Date();
       setNewRecurringItem({
         name: '',
