@@ -1569,7 +1569,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
           return (
-            <div key={account.id} className="bg-slate-800/50 rounded-lg p-5 border-2 border-slate-700/50 hover:border-amber-500/40 transition-all duration-300">
+            <div key={account.id} className="bg-gradient-to-br from-amber-900/20 via-slate-800/30 to-gray-900/30 rounded-lg p-5 border-2 border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 shadow-lg">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h4 className="text-lg font-bold text-amber-400 flex items-center gap-2">
@@ -1584,7 +1584,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
               </div>
               
               <div className="space-y-4">
-                <div className="text-center bg-slate-900/50 rounded-lg p-4 border border-slate-700/30">
+                <div className="text-center bg-amber-900/20 rounded-lg p-4 border border-amber-500/20">
                   <div className="text-3xl font-bold text-white mb-1">
                     ${account.contributed.toLocaleString()}
                   </div>
