@@ -4597,10 +4597,12 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 const updatedBusinesses = data.businesses.map(b => 
                   b.id === editingBusiness.id ? editingBusiness : b
                 );
-                const updatedData = { ...data, businesses: updatedBusinesses };
                 try {
-                  await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-                  setData(updatedData);
+                  // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+                  await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+                    businesses: updatedBusinesses
+                  });
+                  setData({ ...data, businesses: updatedBusinesses });
                   setEditingBusiness(null);
                 } catch (error) {
                   console.error('Error updating business:', error);
@@ -7045,11 +7047,14 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     const updatedRecurring = data.recurringExpenses.map(r =>
       r.id === editingRecurring.id ? convertedRecurring : r
     );
-    const updatedData = { ...data, recurringExpenses: updatedRecurring };
 
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        recurringExpenses: updatedRecurring
+      });
+      
+      setData({ ...data, recurringExpenses: updatedRecurring });
       setEditingRecurring(null);
     } catch (error) {
 
@@ -8611,8 +8616,12 @@ const TravelTab = ({ data, setData, userId }) => {
           }
         }
       };
-        
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        travel: updatedData.travel
+      });
+      
       setData(updatedData);
       setShowRunwayModal(false);
       
@@ -8680,15 +8689,19 @@ const TravelTab = ({ data, setData, userId }) => {
 
      const updatedTravel = { ...data.travel, trips: updatedTrips };
      const updatedTransactions = [mainTransaction, ...data.transactions];
-     const updatedData = { 
-       ...data, 
-       travel: updatedTravel,
-       transactions: updatedTransactions
-     };
 
      try {
-       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
+       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+         travel: updatedTravel,
+         transactions: updatedTransactions
+       });
+       
+       setData({
+         ...data,
+         travel: updatedTravel,
+         transactions: updatedTransactions
+       });
        setNewExpense({
          description: '',
          amount: '',
@@ -8738,11 +8751,14 @@ const TravelTab = ({ data, setData, userId }) => {
      });
 
      const updatedTravel = { ...data.travel, trips: updatedTrips };
-     const updatedData = { ...data, travel: updatedTravel };
 
      try {
-       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
+       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+         travel: updatedTravel
+       });
+       
+       setData({ ...data, travel: updatedTravel });
        setEditingTrip(null);
        
        // Force viewport cleanup after modal close
@@ -12082,7 +12098,11 @@ function App() {
     }
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        [editingCard]: convertedData
+      });
+      
       // Award XP based on card type
       try {
         let xpAmount = 1; // Default for transactions
