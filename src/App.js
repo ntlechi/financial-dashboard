@@ -11493,16 +11493,20 @@ function App() {
     );
     
     if (newTransactions.length > 0) {
-      const updatedData = {
-        ...userData,
-        transactions: [...newTransactions, ...(userData.transactions || [])],
-        recurringExpenses: updatedRecurringExpenses
-      };
+      const updatedTransactions = [...newTransactions, ...(userData.transactions || [])];
       
       try {
         const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
-        await setDoc(docRef, updatedData);
-        setData(updatedData);
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        await updateDoc(docRef, {
+          transactions: updatedTransactions,
+          recurringExpenses: updatedRecurringExpenses
+        });
+        setData({
+          ...userData,
+          transactions: updatedTransactions,
+          recurringExpenses: updatedRecurringExpenses
+        });
         
         // Show notification about processed recurring expenses
         if (newTransactions.length === 1) {
@@ -11511,6 +11515,11 @@ function App() {
           showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
         }
       } catch (error) {
+        console.error('Error processing recurring expenses:', error);
+        showNotification('Error processing recurring transactions', 'error');
+      }
+    }
+  }, [showNotification]);
 
   // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
@@ -11520,11 +11529,6 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-        console.error('Error processing recurring expenses:', error);
-        showNotification('Error processing recurring transactions', 'error');
-      }
-    }
-  }, [showNotification]);
 
     // 🔐 PRODUCTION Authentication Effect
   useEffect(() => {
