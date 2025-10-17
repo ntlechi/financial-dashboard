@@ -696,15 +696,15 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   );
 };
 
-// Savings Rate Card (AMBER - Progress/KPI)
+// Savings Rate Card (SLATE GREEN - Growth/Progress)
 const SavingsRateCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40 border-emerald-500/20">
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
-            <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+            <PiggyBank className="w-6 h-6 mr-3 text-emerald-400" />
             Savings Rate
           </h2>
         </div>
@@ -727,21 +727,21 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40 min-h-[320px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40 border-emerald-500/20 min-h-[320px] flex flex-col">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <PiggyBank className="w-6 h-6 mr-3 text-amber-400" />
+          <PiggyBank className="w-6 h-6 mr-3 text-emerald-400" />
           <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
             Savings Rate
           </Tooltip>
         </h2>
         <div className="flex items-center gap-2">
-          <div className="text-xs text-gray-500 px-2 py-1 bg-gray-700/50 rounded">
+          <div className="text-xs text-emerald-400/60 px-2 py-1 bg-emerald-900/20 rounded border border-emerald-500/20">
             Auto-calculated
           </div>
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
-            className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+            className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Edit target savings rate"
           >
             <Target className="w-4 h-4" />
@@ -749,28 +749,29 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </div>
       </div>
       
-      <div className="space-y-4">
-        <div className="text-center">
-          <div className={`text-4xl font-extrabold ${getRateColor(data.current)}`}>
+      <div className="space-y-6">
+        <div className="text-center bg-green-900/30 rounded-lg p-6 border border-emerald-500/20">
+          <div className={`text-5xl font-extrabold ${getRateColor(data.current)}`}>
             {data.current}%
           </div>
-          <div className="text-gray-400 text-sm">{getRateStatus(data.current)}</div>
+          <div className="text-emerald-400/80 text-sm mt-2 font-semibold">{getRateStatus(data.current)}</div>
         </div>
         
         <div>
-          <div className="flex justify-between text-sm text-gray-300 mb-2">
+          <div className="flex justify-between text-sm text-emerald-400/80 mb-2">
             <span>Current: {data.current}%</span>
             <span>Target: {data.target}%</span>
           </div>
           <ProgressBar 
             value={data.current} 
             maxValue={data.target} 
-            color="bg-blue-500"
+            color="bg-gradient-to-r from-emerald-500 to-green-500"
+            height="h-3"
           />
         </div>
         
-        <div className="text-center text-sm text-gray-300">
-          Saving ${data.monthly.toLocaleString()} of ${data.monthlyIncome.toLocaleString()} monthly income
+        <div className="text-center text-sm text-gray-300 bg-slate-800/30 rounded-lg p-3 border border-emerald-500/10">
+          Saving <span className="text-emerald-400 font-semibold">${data.monthly.toLocaleString()}</span> of <span className="text-white font-semibold">${data.monthlyIncome.toLocaleString()}</span> monthly income
         </div>
       </div>
     </Card>
@@ -784,9 +785,9 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 border-blue-500/20">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <Umbrella className="w-6 h-6 mr-3 text-amber-400" />
+          <Umbrella className="w-6 h-6 mr-3 text-blue-400" />
           Rainy Day Fund
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -836,11 +837,11 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   const resilience = getResilienceStatus(progressPercentage);
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40 min-h-[420px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 border-blue-500/20 min-h-[420px] flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
-            <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-amber-400" />
+            <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-400" />
             Rainy Day Fund
           </h2>
           {/* ℹ️ Status Legend Tooltip */}
@@ -901,7 +902,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
           </span>
           <button
             onClick={() => onEdit('rainyDayFund', data)}
-            className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+            className="text-gray-400 hover:text-blue-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
           >
             <Edit className="w-4 h-4" />
           </button>
