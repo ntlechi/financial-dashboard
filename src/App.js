@@ -1545,19 +1545,18 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%)', border: '1px solid rgba(59, 130, 246, 0.3)'}}>
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30">
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center">
-            <Mountain className="w-7 h-7 mr-3" style={{color: '#FBBF24'}} />
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <Mountain className="w-6 h-6 mr-3 text-blue-400" />
             Retirement Accounts
           </h2>
-          <p className="text-sm mt-2 ml-10" style={{color: 'rgba(255, 255, 255, 0.7)'}}>Building your legacy, one contribution at a time.</p>
+          <p className="text-sm text-blue-200 mt-1 ml-9">Building your legacy, one contribution at a time.</p>
         </div>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
-          className="p-2 rounded-lg transition-colors"
-          style={{color: 'rgba(251, 191, 36, 0.6)', background: 'rgba(255, 255, 255, 0.05)'}} 
+          className="text-blue-400 hover:text-blue-300 p-1 rounded-lg hover:bg-blue-500/10 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -1572,93 +1571,60 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           // 🎨 PROJECT SUMMIT: Unique vibrant gradients per account type!
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
-          // 🎨 MUTED PREMIUM: Slate (cool) + Warm Stone (achievement) - Better contrast with blue background
+          // 🎨 BLUE THEME COMPLEMENT: Sky (TFSA) + Cyan (RRSP) - Clean & Elegant
           const isTFSA = account.name.toUpperCase().includes('TFSA') || account.name.toUpperCase().includes('TAX-FREE');
-          const gradient = isTFSA 
-            ? 'linear-gradient(135deg, #64748B, #475569)' // Muted Slate (cool, professional)
-            : 'linear-gradient(135deg, #78716C, #57534E)'; // Warm Stone (wisdom, achievement)
-          const progressColor = isTFSA ? '#94A3B8' : '#A8A29E'; // Slate-400 or Stone-400
-          const accentGlow = isTFSA ? '#64748B' : '#78716C'; // Horizon glow color
+          const cardBg = isTFSA 
+            ? 'from-sky-900/40 to-blue-900/40' // Sky blue (tax-free clarity)
+            : 'from-cyan-900/40 to-teal-900/40'; // Cyan-teal (growth)
+          const textColor = isTFSA ? 'text-sky-400' : 'text-cyan-400';
+          const bgColor = isTFSA ? 'bg-sky-900/30' : 'bg-cyan-900/30';
+          const borderColor = isTFSA ? 'border-sky-500/30' : 'border-cyan-500/30';
+          const progressColor = isTFSA ? 'bg-sky-500' : 'bg-cyan-500';
           
           return (
-            <div key={account.id} className="rounded-xl p-6 border transition-all duration-300" style={{
-              background: gradient,
-              borderColor: 'rgba(255, 255, 255, 0.15)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              {/* ✨ Horizon Glow - Progress metaphor */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '2px',
-                background: `linear-gradient(90deg, transparent, ${accentGlow}, transparent)`,
-                opacity: 0.6
-              }}></div>
-              <div className="flex justify-between items-start mb-5">
+            <div key={account.id} className={`bg-gradient-to-br ${cardBg} rounded-lg p-5 border ${borderColor}`}>
+              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h4 className="text-lg font-bold flex items-center gap-2" style={{color: '#FEFEFE', letterSpacing: '-0.01em'}}>
+                  <h4 className={`text-lg font-bold ${textColor} flex items-center gap-2`}>
                     {account.name}
                     {isGoalReached && <span className="text-xs">🏆</span>}
                   </h4>
-                  <p className="text-xs mt-1.5" style={{color: 'rgba(255, 255, 255, 0.65)', letterSpacing: '0.01em'}}>{account.description}</p>
+                  <p className="text-xs text-gray-300 mt-1">{account.description}</p>
                 </div>
-                <span className="text-sm font-semibold px-3 py-1.5 rounded-full" style={{
-                  color: '#FEFEFE',
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}>
+                <span className={`text-sm font-semibold ${textColor} px-2 py-1 ${bgColor} rounded border ${borderColor}`}>
                   {progress.toFixed(1)}%
                 </span>
               </div>
               
-              <div className="space-y-5">
-                <div className="text-center rounded-xl p-5" style={{
-                  background: 'rgba(255, 255, 255, 0.12)',
-                  backdropFilter: 'blur(20px)',
-                  boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)'
-                }}>
-                  <div className="text-4xl font-extrabold mb-2" style={{color: '#FEFEFE', letterSpacing: '-0.02em'}}>
+              <div className="space-y-4">
+                <div className={`text-center ${bgColor} rounded-lg p-4 border ${borderColor}`}>
+                  <div className="text-3xl font-bold text-white mb-1">
                     ${account.contributed.toLocaleString()}
                   </div>
-                  <div className="text-sm font-medium" style={{color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '0.02em'}}>Total Contributed</div>
+                  <div className={`text-sm ${textColor}`}>Total Contributed</div>
                 </div>
                 
                 <div>
-                  <div className="flex justify-between text-xs mb-2.5" style={{color: 'rgba(255, 255, 255, 0.65)', fontWeight: '500'}}>
+                  <div className="flex justify-between text-xs text-gray-300 mb-2">
                     <span>Contributed: ${roomUsed.toLocaleString()}</span>
                     <span>Limit: ${account.limit.toLocaleString()}</span>
                   </div>
-                  <div className="w-full rounded-full h-3 relative" style={{
-                    background: 'rgba(0, 0, 0, 0.25)',
-                    boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)'
-                  }}>
-                    <div className="h-3 rounded-full transition-all duration-500" style={{
-                      width: `${progress}%`,
-                      background: `linear-gradient(90deg, ${progressColor}, ${accentGlow})`,
-                      boxShadow: `0 0 8px ${accentGlow}40`
-                    }}></div>
-                  </div>
-                  <div className="text-xs mt-2.5 text-center font-medium" style={{color: 'rgba(255, 255, 255, 0.7)'}}>
+                  <ProgressBar 
+                    value={roomUsed} 
+                    maxValue={account.limit} 
+                    color={progressColor}
+                    height="h-3"
+                  />
+                  <div className={`text-xs ${textColor} mt-2 text-center font-semibold`}>
                     ${roomAvailable.toLocaleString()} room remaining
                   </div>
                 </div>
                 
                 {account.goal && account.goal > 0 && (
-                  <div className="rounded-xl p-3.5 text-center" style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                  }}>
-                    <div className="text-xs mb-1.5 font-medium" style={{color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '0.03em'}}>Annual Goal</div>
-                    <div className="text-lg font-bold" style={{color: '#FEFEFE', letterSpacing: '-0.01em'}}>${account.goal.toLocaleString()}</div>
-                    <div className="text-[10px] mt-1.5 font-medium" style={{color: 'rgba(255, 255, 255, 0.55)'}}>
+                  <div className={`${bgColor} border ${borderColor} rounded-lg p-3 text-center`}>
+                    <div className={`text-xs ${textColor} mb-1`}>Annual Goal</div>
+                    <div className="text-lg font-bold text-white">${account.goal.toLocaleString()}</div>
+                    <div className="text-[10px] text-gray-400 mt-1">
                       {isGoalReached ? '✅ Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
                     </div>
                   </div>
@@ -1670,19 +1636,19 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
       </div>
       
       {accounts.length > 0 && (
-        <div className="mt-6 rounded-xl p-5" style={{background: 'rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.15)'}}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+        <div className="mt-6 bg-blue-900/30 rounded-lg p-4 border border-blue-500/30">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-3xl font-extrabold" style={{color: '#FBBF24'}}>${totalContributed.toLocaleString()}</div>
-              <div className="text-xs font-semibold mt-2" style={{color: '#FFFFFF'}}>Total Contributed</div>
+              <div className="text-2xl font-bold text-blue-400">${totalContributed.toLocaleString()}</div>
+              <div className="text-xs text-gray-300 mt-1">Total Contributed</div>
             </div>
             <div>
-              <div className="text-3xl font-extrabold" style={{color: '#FBBF24'}}>${totalRoom.toLocaleString()}</div>
-              <div className="text-xs font-semibold mt-2" style={{color: '#FFFFFF'}}>Total Room Available</div>
+              <div className="text-2xl font-bold text-white">${totalRoom.toLocaleString()}</div>
+              <div className="text-xs text-gray-300 mt-1">Total Room Available</div>
             </div>
             <div>
-              <div className="text-3xl font-extrabold" style={{color: '#FBBF24'}}>{((totalContributed/totalLimit)*100).toFixed(1)}%</div>
-              <div className="text-xs font-semibold mt-2" style={{color: '#FFFFFF'}}>Contribution Rate</div>
+              <div className="text-2xl font-bold text-blue-400">{((totalContributed/totalLimit)*100).toFixed(1)}%</div>
+              <div className="text-xs text-gray-300 mt-1">Contribution Rate</div>
             </div>
           </div>
         </div>
