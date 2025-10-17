@@ -650,8 +650,8 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 min-h-[380px] flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 flex flex-col">
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Target className="w-6 h-6 mr-3 text-amber-400" />
           Financial Freedom Goal
@@ -665,9 +665,9 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         <span className="text-amber-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
       </div>
       
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div>
-          <div className="flex justify-between text-sm text-gray-300 mb-2">
+          <div className="flex justify-between text-sm text-gray-300 mb-3">
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
             <span>Target: ${data.targetAmount.toLocaleString()}</span>
           </div>
@@ -679,7 +679,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
           />
         </div>
         
-        <div className="grid grid-cols-2 gap-4 text-center mt-8">
+        <div className="grid grid-cols-2 gap-4 text-center">
           <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
             <div className="text-lg font-bold text-white">${data.monthlyContribution.toLocaleString()}</div>
             <div className="text-xs text-amber-400 mt-1">Monthly Contribution</div>
@@ -15320,7 +15320,7 @@ function App() {
               {editingCard === 'registeredAccounts' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-purple-400">Manage Retirement Accounts</h3>
+                    <h3 className="text-lg font-semibold text-amber-400">Manage Retirement Accounts</h3>
                     <button
                       onClick={() => {
                         const newAccount = {
@@ -15328,6 +15328,7 @@ function App() {
                           name: 'New Account',
                           contributed: 0,
                           limit: 0,
+                          goal: 0,
                           type: 'tax-free',
                           description: 'Custom retirement account'
                         };
@@ -15336,7 +15337,7 @@ function App() {
                           accounts: [...(tempCardData.accounts || []), newAccount]
                         });
                       }}
-                      className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
+                      className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
                     >
                       <Plus className="w-4 h-4" />
                       Add Account
@@ -15346,8 +15347,8 @@ function App() {
                   {(!tempCardData.accounts || tempCardData.accounts.length === 0) ? (
                     <div className="text-center py-8 text-gray-400">
                       <div className="mb-4">
-                        <div className="w-16 h-16 bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Wallet className="w-8 h-8 text-purple-400" />
+                        <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500/20">
+                          <Wallet className="w-8 h-8 text-amber-400" />
                         </div>
                         <h4 className="text-lg font-semibold mb-2">No Retirement Accounts</h4>
                         <p className="text-sm">Add your retirement accounts like TFSA, RRSP, 401(k), IRA, etc.</p>
@@ -15363,6 +15364,7 @@ function App() {
                                 name: 'TFSA',
                                 contributed: 45000,
                                 limit: 88000,
+                                goal: 10000,
                                 type: 'tax-free',
                                 description: 'Tax-Free Savings Account'
                               },
@@ -15371,13 +15373,14 @@ function App() {
                                 name: 'RRSP',
                                 contributed: 25000,
                                 limit: 31560,
+                                goal: 5000,
                                 type: 'tax-deferred',
                                 description: 'Registered Retirement Savings Plan'
                               }
                             ]
                           });
                         }}
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+                        className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded"
                       >
                         Add Default Accounts (TFSA & RRSP)
                       </button>
@@ -15385,30 +15388,30 @@ function App() {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {tempCardData.accounts.map((account, index) => {
-                        const colors = [
-                          'green', 'blue', 'orange', 'teal', 'indigo', 'pink'
-                        ];
-                        const color = colors[index % colors.length];
-                        
                         return (
-                          <div key={account.id} className={`bg-${color}-900/20 rounded-lg p-4 border border-${color}-600/30 relative`}>
+                          <div key={account.id} className="bg-slate-800/50 rounded-lg p-4 border-2 border-slate-700/50 hover:border-amber-500/40 transition-all relative">
                             <div className="flex justify-between items-start mb-3">
-                              <input
-                                type="text"
-                                value={account.name}
-                                onChange={(e) => {
-                                  const updated = [...tempCardData.accounts];
-                                  updated[index] = { ...updated[index], name: e.target.value };
-                                  setTempCardData({ ...tempCardData, accounts: updated });
-                                }}
-                                className={`text-lg font-semibold text-${color}-400 bg-transparent border-none outline-none focus:bg-gray-700/50 rounded px-2 py-1`}
-                              />
+                              <div className="flex-1">
+                                <label className="block text-xs text-amber-400/70 mb-1">Account Name (Click to edit)</label>
+                                <input
+                                  type="text"
+                                  value={account.name}
+                                  onChange={(e) => {
+                                    const updated = [...tempCardData.accounts];
+                                    updated[index] = { ...updated[index], name: e.target.value };
+                                    setTempCardData({ ...tempCardData, accounts: updated });
+                                  }}
+                                  placeholder="e.g., TFSA, RRSP, 401(k)..."
+                                  className="text-lg font-semibold text-amber-400 bg-slate-900/50 border border-amber-500/20 outline-none focus:border-amber-500 focus:bg-slate-900 rounded px-3 py-2 w-full transition-all"
+                                />
+                              </div>
                               <button
                                 onClick={() => {
                                   const updated = tempCardData.accounts.filter((_, i) => i !== index);
                                   setTempCardData({ ...tempCardData, accounts: updated });
                                 }}
-                                className="text-red-400 hover:text-red-300 p-1"
+                                className="text-red-400 hover:text-red-300 p-1 ml-2"
+                                title="Delete Account"
                               >
                                 <X className="w-4 h-4" />
                               </button>
@@ -15425,7 +15428,7 @@ function App() {
                                     updated[index] = { ...updated[index], contributed: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                  className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 />
                               </div>
 
@@ -15439,7 +15442,22 @@ function App() {
                                     updated[index] = { ...updated[index], limit: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                  className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-sm text-gray-300 mb-1">Annual Goal (Optional)</label>
+                                <input
+                                  type="number"
+                                  value={account.goal === 0 ? '0' : (account.goal || '')}
+                                  onChange={(e) => {
+                                    const updated = [...tempCardData.accounts];
+                                    updated[index] = { ...updated[index], goal: e.target.value };
+                                    setTempCardData({ ...tempCardData, accounts: updated });
+                                  }}
+                                  placeholder="e.g., 10000"
+                                  className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 />
                               </div>
 
@@ -15452,7 +15470,7 @@ function App() {
                                     updated[index] = { ...updated[index], type: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                  className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 >
                                   <option value="tax-free">Tax-Free</option>
                                   <option value="tax-deferred">Tax-Deferred</option>
@@ -15471,8 +15489,8 @@ function App() {
                                     updated[index] = { ...updated[index], description: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  placeholder="e.g., Tax-Free Savings Account"
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
+                                  placeholder="e.g., Tax-free growth..."
+                                  className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 />
                               </div>
 
@@ -15482,17 +15500,22 @@ function App() {
                                   <span>Contribution Room Used</span>
                                   <span>{Math.round((account.contributed / account.limit) * 100) || 0}%</span>
                                 </div>
-                                <div className="w-full bg-gray-700 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                   <div 
-                                    className={`bg-${color}-500 h-2 rounded-full transition-all duration-300`}
+                                    className="bg-gradient-to-r from-amber-500 to-yellow-500 h-2 rounded-full transition-all duration-300"
                                     style={{ width: `${Math.min((account.contributed / account.limit) * 100, 100) || 0}%` }}
                                   ></div>
                                 </div>
                               </div>
 
                               {/* Account Type Badge */}
-                              <div className={`inline-block px-2 py-1 bg-${color}-600/20 text-${color}-400 text-xs rounded border border-${color}-600/30`}>
-                                {account.type.charAt(0).toUpperCase() + account.type.slice(1).replace('-', ' ')}
+                              <div className="flex justify-center">
+                                <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-600/30 font-semibold">
+                                  {account.type === 'tax-free' && '💰 Tax-Free'}
+                                  {account.type === 'tax-deferred' && '📊 Tax-Deferred'}
+                                  {account.type === 'pension' && '🏛️ Pension'}
+                                  {account.type === 'savings' && '💵 Savings'}
+                                </span>
                               </div>
                             </div>
                           </div>
