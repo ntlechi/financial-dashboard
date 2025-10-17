@@ -1561,7 +1561,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
         </button>
       </div>
 
-      <div className={`grid grid-cols-1 ${accounts.length > 2 ? 'lg:grid-cols-3' : 'md:grid-cols-2'} gap-5`}>
+      <div className={`grid grid-cols-1 ${accounts.length > 2 ? 'lg:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
         {accounts.map((account, index) => {
           const progress = (account.contributed / account.limit) * 100;
           const roomUsed = account.contributed;
@@ -1570,54 +1570,93 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           // 🎨 PROJECT SUMMIT: Unique vibrant gradients per account type!
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
-          // Determine gradient based on account name
+          // 🎨 PREMIUM LEGACY DESIGN: Emerald (growth) + Golden (achievement)
           const isTFSA = account.name.toUpperCase().includes('TFSA') || account.name.toUpperCase().includes('TAX-FREE');
           const gradient = isTFSA 
-            ? 'linear-gradient(135deg, #0D9488, #2563EB)' // Teal to Blue
-            : 'linear-gradient(135deg, #7C3AED, #4F46E5)'; // Purple to Indigo
-          const progressColor = isTFSA ? '#06B6D4' : '#A78BFA'; // Cyan or Lavender
+            ? 'linear-gradient(135deg, #00A676, #004E4E)' // Deep Emerald (growth & stability)
+            : 'linear-gradient(135deg, #F4C95D, #C9961A)'; // Golden Amber (reward & achievement)
+          const progressColor = isTFSA ? '#10B981' : '#F59E0B'; // Emerald-500 or Amber-500
+          const accentGlow = isTFSA ? '#00A676' : '#F4C95D'; // Horizon glow color
           
           return (
-            <div key={account.id} className="rounded-lg p-5 border-2 transition-all duration-300 shadow-xl" style={{background: gradient, borderColor: 'rgba(255, 255, 255, 0.2)'}}>
-              <div className="flex justify-between items-start mb-4">
+            <div key={account.id} className="rounded-xl p-6 border transition-all duration-300" style={{
+              background: gradient,
+              borderColor: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* ✨ Horizon Glow - Progress metaphor */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '2px',
+                background: `linear-gradient(90deg, transparent, ${accentGlow}, transparent)`,
+                opacity: 0.6
+              }}></div>
+              <div className="flex justify-between items-start mb-5">
                 <div>
-                  <h4 className="text-lg font-bold flex items-center gap-2" style={{color: '#FFFFFF'}}>
+                  <h4 className="text-lg font-bold flex items-center gap-2" style={{color: '#FEFEFE', letterSpacing: '-0.01em'}}>
                     {account.name}
                     {isGoalReached && <span className="text-xs">🏆</span>}
                   </h4>
-                  <p className="text-xs mt-1" style={{color: 'rgba(255, 255, 255, 0.7)'}}>{account.description}</p>
+                  <p className="text-xs mt-1.5" style={{color: 'rgba(255, 255, 255, 0.65)', letterSpacing: '0.01em'}}>{account.description}</p>
                 </div>
-                <span className="text-sm font-semibold px-3 py-1 rounded-full" style={{color: '#FFFFFF', background: 'rgba(255, 255, 255, 0.2)'}}>
+                <span className="text-sm font-semibold px-3 py-1.5 rounded-full" style={{
+                  color: '#FEFEFE',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}>
                   {progress.toFixed(1)}%
                 </span>
               </div>
               
-              <div className="space-y-4">
-                <div className="text-center rounded-lg p-5" style={{background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)'}}>
-                  <div className="text-4xl font-extrabold mb-2" style={{color: '#FFFFFF'}}>
+              <div className="space-y-5">
+                <div className="text-center rounded-xl p-5" style={{
+                  background: 'rgba(255, 255, 255, 0.12)',
+                  backdropFilter: 'blur(20px)',
+                  boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)'
+                }}>
+                  <div className="text-4xl font-extrabold mb-2" style={{color: '#FEFEFE', letterSpacing: '-0.02em'}}>
                     ${account.contributed.toLocaleString()}
                   </div>
-                  <div className="text-sm font-semibold" style={{color: 'rgba(255, 255, 255, 0.7)'}}>Total Contributed</div>
+                  <div className="text-sm font-medium" style={{color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '0.02em'}}>Total Contributed</div>
                 </div>
                 
                 <div>
-                  <div className="flex justify-between text-xs mb-2" style={{color: 'rgba(255, 255, 255, 0.8)'}}>
+                  <div className="flex justify-between text-xs mb-2.5" style={{color: 'rgba(255, 255, 255, 0.65)', fontWeight: '500'}}>
                     <span>Contributed: ${roomUsed.toLocaleString()}</span>
                     <span>Limit: ${account.limit.toLocaleString()}</span>
                   </div>
-                  <div className="w-full rounded-full h-3" style={{background: 'rgba(255, 255, 255, 0.2)'}}>
-                    <div className="h-3 rounded-full transition-all" style={{width: `${progress}%`, background: progressColor}}></div>
+                  <div className="w-full rounded-full h-3 relative" style={{
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    <div className="h-3 rounded-full transition-all duration-500" style={{
+                      width: `${progress}%`,
+                      background: `linear-gradient(90deg, ${progressColor}, ${accentGlow})`,
+                      boxShadow: `0 0 8px ${accentGlow}40`
+                    }}></div>
                   </div>
-                  <div className="text-xs mt-2 text-center font-semibold" style={{color: 'rgba(255, 255, 255, 0.9)'}}>
+                  <div className="text-xs mt-2.5 text-center font-medium" style={{color: 'rgba(255, 255, 255, 0.7)'}}>
                     ${roomAvailable.toLocaleString()} room remaining
                   </div>
                 </div>
                 
                 {account.goal && account.goal > 0 && (
-                  <div className="rounded-lg p-3 text-center" style={{background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255, 255, 255, 0.25)'}}>
-                    <div className="text-xs mb-1 font-medium" style={{color: 'rgba(255, 255, 255, 0.7)'}}>Annual Goal</div>
-                    <div className="text-lg font-bold" style={{color: '#FFFFFF'}}>${account.goal.toLocaleString()}</div>
-                    <div className="text-[10px] mt-1 font-medium" style={{color: 'rgba(255, 255, 255, 0.6)'}}>
+                  <div className="rounded-xl p-3.5 text-center" style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                  }}>
+                    <div className="text-xs mb-1.5 font-medium" style={{color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '0.03em'}}>Annual Goal</div>
+                    <div className="text-lg font-bold" style={{color: '#FEFEFE', letterSpacing: '-0.01em'}}>${account.goal.toLocaleString()}</div>
+                    <div className="text-[10px] mt-1.5 font-medium" style={{color: 'rgba(255, 255, 255, 0.55)'}}>
                       {isGoalReached ? '✅ Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
                     </div>
                   </div>
