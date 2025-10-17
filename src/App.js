@@ -733,7 +733,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   }
 
   // 🔧 USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
-  const expensesTotal = expenses?.total || 2000;
+  const expensesTotal = expenses?.total || 0;
   // If in annual mode, divide by 12 to get actual monthly average
   const monthlyExpenses = viewMode === 'annual' ? expensesTotal / 12 : expensesTotal;
   const progressPercentage = (data.total / data.goal) * 100;
@@ -1564,7 +1564,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
 
   // 📊 CALCULATE AVERAGE MONTHLY EXPENSES (Last 3 Months)
   const calculateAvgMonthlyExpenses = () => {
-    if (!transactions || transactions.length === 0) return 2000; // Fallback
+    if (!transactions || transactions.length === 0) return 0; // No transactions = no expenses
     
     const now = new Date();
     const monthsData = [];
@@ -1587,9 +1587,9 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     
     // Calculate average (handle 0 case)
     const total = monthsData.reduce((sum, val) => sum + val, 0);
-    const average = monthsData.length > 0 ? total / monthsData.length : 2000;
+    const average = monthsData.length > 0 ? total / monthsData.length : 0;
     
-    return average > 0 ? average : 2000; // Minimum fallback
+    return average; // Return actual average (including 0)
   };
 
   // 🎯 SURVIVAL RUNWAY CALCULATION
@@ -10820,7 +10820,7 @@ function App() {
         },
         rainyDayFund: {
           total: 0,
-          goal: 30000,
+          goal: 6000,
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
