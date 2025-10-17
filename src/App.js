@@ -650,27 +650,66 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 border-amber-500/20 min-h-[320px] flex flex-col" style={{background: 'radial-gradient(circle, #374151, #1F2937)'}}>
-      <div className="flex justify-between items-start mb-4">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col relative overflow-hidden" style={{
+      background: 'linear-gradient(145deg, #1E293B 0%, #0F172A 50%, rgba(251, 191, 36, 0.15) 100%)',
+      border: '1px solid rgba(251, 191, 36, 0.3)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(251, 191, 36, 0.2)'
+    }}>
+      {/* ✨ Diagonal Light Flare - Rising to Freedom */}
+      <div style={{
+        position: 'absolute',
+        top: '-50%',
+        right: '-10%',
+        width: '150%',
+        height: '200%',
+        background: 'linear-gradient(135deg, transparent 40%, rgba(251, 191, 36, 0.08) 50%, transparent 60%)',
+        transform: 'rotate(-15deg)',
+        pointerEvents: 'none'
+      }}></div>
+      <div className="flex justify-between items-start mb-4 relative z-10">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <Target className="w-6 h-6 mr-3 text-amber-400" />
+          <Target className="w-6 h-6 mr-3" style={{color: '#FBBF24', filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5)'}} />
           Financial Freedom Goal
         </h2>
         <button
           onClick={() => onEdit('financialFreedom', data)}
-          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="p-1 rounded-lg transition-all"
+          style={{
+            color: 'rgba(251, 191, 36, 0.7)',
+            background: 'rgba(251, 191, 36, 0.1)',
+            border: '1px solid rgba(251, 191, 36, 0.2)'
+          }}
           title="Edit financial freedom goal"
         >
           <Target className="w-4 h-4" />
         </button>
       </div>
       
-      <div className="space-y-4">
-        <div className="text-center rounded-lg p-6" style={{background: 'rgba(55, 65, 81, 0.3)', border: '1px solid rgba(251, 191, 36, 0.2)'}}>
-          <div className="text-5xl font-extrabold" style={{color: '#FBBF24'}}>
+      <div className="space-y-4 relative z-10">
+        <div className="text-center rounded-xl p-6 relative" style={{
+          background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1))',
+          border: '1px solid rgba(251, 191, 36, 0.3)',
+          boxShadow: 'inset 0 1px 2px rgba(251, 191, 36, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          {/* Gold glow effect */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '120px',
+            height: '120px',
+            background: 'radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent 70%)',
+            pointerEvents: 'none'
+          }}></div>
+          <div className="text-5xl font-extrabold relative" style={{
+            color: '#FBBF24',
+            textShadow: '0 2px 8px rgba(251, 191, 36, 0.3)'
+          }}>
             {progressPercentage.toFixed(1)}%
           </div>
-          <div className="text-sm mt-2 font-semibold" style={{color: '#FCD34D'}}>
+          <div className="text-sm mt-2 font-semibold relative" style={{color: '#FCD34D'}}>
             {progressPercentage >= 100 ? 'Goal Reached!' : 
              progressPercentage >= 75 ? 'Almost There!' :
              progressPercentage >= 50 ? 'Halfway!' :
@@ -679,21 +718,32 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div>
-          <div className="flex justify-between text-sm mb-2" style={{color: '#FCD34D'}}>
+          <div className="flex justify-between text-sm mb-2" style={{color: '#FFEBC6', fontWeight: '500'}}>
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
             <span>Target: ${data.targetAmount.toLocaleString()}</span>
           </div>
-          <ProgressBar 
-            value={data.currentInvestments} 
-            maxValue={data.targetAmount} 
-            color="bg-[#FBBF24]"
-            height="h-3"
-          />
+          {/* Animated gold gradient progress bar */}
+          <div className="w-full rounded-full h-3 relative" style={{
+            background: 'rgba(0, 0, 0, 0.3)',
+            boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.4)'
+          }}>
+            <div className="h-3 rounded-full transition-all duration-700 gold-shimmer" style={{
+              width: `${Math.min((data.currentInvestments / data.targetAmount) * 100, 100)}%`,
+              background: 'linear-gradient(90deg, #F59E0B 0%, #FBBF24 50%, #FDE68A 100%)',
+              backgroundSize: '200% 100%',
+              boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)'
+            }}></div>
+          </div>
         </div>
         
-        <div className="text-center text-sm rounded-lg p-3" style={{color: 'rgba(255, 255, 255, 0.9)', background: 'rgba(55, 65, 81, 0.3)', border: '1px solid rgba(251, 191, 36, 0.1)'}}>
+        <div className="text-center text-sm rounded-xl p-3" style={{
+          color: 'rgba(255, 235, 198, 0.9)',
+          background: 'rgba(251, 191, 36, 0.08)',
+          border: '1px solid rgba(251, 191, 36, 0.2)',
+          backdropFilter: 'blur(8px)'
+        }}>
           Investing <span className="font-bold" style={{color: '#FBBF24'}}>${data.monthlyContribution.toLocaleString()}</span>/mo • 
-          <span className="font-bold" style={{color: '#FFFFFF'}}> {yearsToGoal}y {remainingMonths}m</span> to goal
+          <span className="font-bold" style={{color: '#FDE68A'}}> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
     </Card>
@@ -705,14 +755,17 @@ const SavingsRateCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 border-emerald-500/20" style={{background: 'radial-gradient(circle, #10B981, #059669)'}}>
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col" style={{
+        background: 'linear-gradient(145deg, #064E3B 0%, #10B981 100%)',
+        border: '1px solid rgba(52, 211, 153, 0.3)'
+      }}>
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
-            <PiggyBank className="w-6 h-6 mr-3 text-white" />
+            <PiggyBank className="w-6 h-6 mr-3" style={{color: '#FFFFFF'}} />
             Savings Rate
           </h2>
         </div>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center py-8" style={{color: 'rgba(255, 255, 255, 0.6)'}}>Loading...</div>
       </Card>
     );
   }
@@ -754,12 +807,34 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </div>
       </div>
       
-      <div className="space-y-6">
-        <div className="text-center rounded-lg p-6" style={{background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255, 255, 255, 0.2)'}}>
-          <div className="text-5xl font-extrabold" style={{color: '#FFFFFF'}}>
+      <div className="space-y-6 relative z-10">
+        <div className="text-center rounded-xl p-6 relative" style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3)',
+          backdropFilter: 'blur(12px)'
+        }}>
+          {/* Mint glow effect */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '140px',
+            height: '140px',
+            background: 'radial-gradient(circle, rgba(167, 243, 208, 0.2), transparent 70%)',
+            pointerEvents: 'none'
+          }}></div>
+          <div className="text-5xl font-extrabold relative" style={{
+            color: '#FFFFFF',
+            textShadow: '0 2px 8px rgba(52, 211, 153, 0.3)'
+          }}>
             {data.current}%
           </div>
-          <div className="text-sm mt-2 font-semibold" style={{color: '#D1FAE5'}}>{getRateStatus(data.current)}</div>
+          <div className="text-sm mt-2 font-semibold relative flex items-center justify-center gap-1" style={{color: '#A7F3D0'}}>
+            {getRateStatus(data.current)}
+            {data.current >= 50 && <span style={{fontSize: '14px'}}>↗</span>}
+          </div>
         </div>
         
         <div>

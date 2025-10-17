@@ -89,3 +89,32 @@ code {
     color: #FBBF24 !important;
   }
 }
+
+/* ✨ PREMIUM PROGRESS BAR ANIMATIONS - Living, Breathing Progress */
+/* Gold shimmer animation for Financial Freedom Goal */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.gold-shimmer {
+  animation: shimmer 3s infinite linear;
+}
+
+/* Emerald flow animation for Savings Rate */
+@keyframes emeraldFlow {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.emerald-flow {
+  animation: emeraldFlow 3s infinite linear;
+}
