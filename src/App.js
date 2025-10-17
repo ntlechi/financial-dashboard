@@ -650,7 +650,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 min-h-[320px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 border-amber-500/20 min-h-[320px] flex flex-col" style={{background: 'radial-gradient(circle, #374151, #1F2937)'}}>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Target className="w-6 h-6 mr-3 text-amber-400" />
@@ -666,11 +666,11 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
       </div>
       
       <div className="space-y-4">
-        <div className="text-center bg-slate-800/50 rounded-lg p-6 border border-amber-500/20">
-          <div className="text-5xl font-extrabold text-amber-400">
+        <div className="text-center rounded-lg p-6" style={{background: 'rgba(55, 65, 81, 0.3)', border: '1px solid rgba(251, 191, 36, 0.2)'}}>
+          <div className="text-5xl font-extrabold" style={{color: '#FBBF24'}}>
             {progressPercentage.toFixed(1)}%
           </div>
-          <div className="text-amber-400/70 text-sm mt-2 font-semibold">
+          <div className="text-sm mt-2 font-semibold" style={{color: '#FCD34D'}}>
             {progressPercentage >= 100 ? 'Goal Reached!' : 
              progressPercentage >= 75 ? 'Almost There!' :
              progressPercentage >= 50 ? 'Halfway!' :
@@ -679,21 +679,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div>
-          <div className="flex justify-between text-sm text-amber-400/80 mb-2">
+          <div className="flex justify-between text-sm mb-2" style={{color: '#FCD34D'}}>
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
             <span>Target: ${data.targetAmount.toLocaleString()}</span>
           </div>
           <ProgressBar 
             value={data.currentInvestments} 
             maxValue={data.targetAmount} 
-            color="bg-gradient-to-r from-amber-500 to-yellow-500"
+            color="bg-[#FBBF24]"
             height="h-3"
           />
         </div>
         
-        <div className="text-center text-sm text-gray-300 bg-slate-800/30 rounded-lg p-3 border border-amber-500/10">
-          Investing <span className="text-amber-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo • 
-          <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
+        <div className="text-center text-sm rounded-lg p-3" style={{color: 'rgba(255, 255, 255, 0.9)', background: 'rgba(55, 65, 81, 0.3)', border: '1px solid rgba(251, 191, 36, 0.1)'}}>
+          Investing <span className="font-bold" style={{color: '#FBBF24'}}>${data.monthlyContribution.toLocaleString()}</span>/mo • 
+          <span className="font-bold" style={{color: '#FFFFFF'}}> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
     </Card>
@@ -705,10 +705,10 @@ const SavingsRateCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40 border-emerald-500/20">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 border-emerald-500/20" style={{background: 'radial-gradient(circle, #10B981, #059669)'}}>
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
-            <PiggyBank className="w-6 h-6 mr-3 text-emerald-400" />
+            <PiggyBank className="w-6 h-6 mr-3 text-white" />
             Savings Rate
           </h2>
         </div>
@@ -731,21 +731,22 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-green-900/40 to-emerald-900/40 border-emerald-500/20 min-h-[320px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 border-white/20 min-h-[320px] flex flex-col" style={{background: 'radial-gradient(circle, #10B981, #059669)'}}>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <PiggyBank className="w-6 h-6 mr-3 text-emerald-400" />
+          <PiggyBank className="w-6 h-6 mr-3 text-white" />
           <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
             Savings Rate
           </Tooltip>
         </h2>
         <div className="flex items-center gap-2">
-          <div className="text-xs text-emerald-400/60 px-2 py-1 bg-emerald-900/20 rounded border border-emerald-500/20">
+          <div className="text-xs px-2 py-1 rounded" style={{color: '#D1FAE5', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)'}}>
             Auto-calculated
           </div>
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
-            className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+            className="text-white/60 hover:text-white p-1 rounded-lg transition-colors"
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
             title="Edit target savings rate"
           >
             <Target className="w-4 h-4" />
@@ -754,28 +755,28 @@ const SavingsRateCard = ({ data, onEdit }) => {
       </div>
       
       <div className="space-y-6">
-        <div className="text-center bg-green-900/30 rounded-lg p-6 border border-emerald-500/20">
-          <div className={`text-5xl font-extrabold ${getRateColor(data.current)}`}>
+        <div className="text-center rounded-lg p-6" style={{background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255, 255, 255, 0.2)'}}>
+          <div className="text-5xl font-extrabold" style={{color: '#FFFFFF'}}>
             {data.current}%
           </div>
-          <div className="text-emerald-400/80 text-sm mt-2 font-semibold">{getRateStatus(data.current)}</div>
+          <div className="text-sm mt-2 font-semibold" style={{color: '#D1FAE5'}}>{getRateStatus(data.current)}</div>
         </div>
         
         <div>
-          <div className="flex justify-between text-sm text-emerald-400/80 mb-2">
+          <div className="flex justify-between text-sm mb-2" style={{color: '#D1FAE5'}}>
             <span>Current: {data.current}%</span>
             <span>Target: {data.target}%</span>
           </div>
           <ProgressBar 
             value={data.current} 
             maxValue={data.target} 
-            color="bg-gradient-to-r from-emerald-500 to-green-500"
+            color="bg-[#34D399]"
             height="h-3"
           />
         </div>
         
-        <div className="text-center text-sm text-gray-300 bg-slate-800/30 rounded-lg p-3 border border-emerald-500/10">
-          Saving <span className="text-emerald-400 font-semibold">${data.monthly.toLocaleString()}</span> of <span className="text-white font-semibold">${data.monthlyIncome.toLocaleString()}</span> monthly income
+        <div className="text-center text-sm rounded-lg p-3" style={{color: 'rgba(255, 255, 255, 0.9)', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.15)'}}>
+          Saving <span className="font-bold" style={{color: '#FFFFFF'}}>${data.monthly.toLocaleString()}</span> of <span className="font-bold" style={{color: '#FFFFFF'}}>${data.monthlyIncome.toLocaleString()}</span> monthly income
         </div>
       </div>
     </Card>
