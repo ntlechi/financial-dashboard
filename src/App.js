@@ -685,31 +685,12 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </button>
       </div>
       
-      <div className="space-y-6 relative z-10">
-        <div className="text-center rounded-xl p-6 relative" style={{
-          background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1))',
-          border: '1px solid rgba(251, 191, 36, 0.3)',
-          boxShadow: 'inset 0 1px 2px rgba(251, 191, 36, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3)',
-          backdropFilter: 'blur(10px)'
-        }}>
-          {/* Gold glow effect */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '120px',
-            height: '120px',
-            background: 'radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent 70%)',
-            pointerEvents: 'none'
-          }}></div>
-          <div className="text-5xl font-extrabold relative" style={{
-            color: '#FBBF24',
-            textShadow: '0 2px 8px rgba(251, 191, 36, 0.3)'
-          }}>
+      <div className="space-y-6">
+        <div className="text-center bg-amber-900/20 rounded-lg p-6 border border-amber-500/30">
+          <div className="text-5xl font-extrabold text-amber-400">
             {progressPercentage.toFixed(1)}%
           </div>
-          <div className="text-sm mt-2 font-semibold relative" style={{color: '#FCD34D'}}>
+          <div className="text-sm mt-2 font-semibold text-amber-200">
             {progressPercentage >= 100 ? 'Goal Reached!' : 
              progressPercentage >= 75 ? 'Almost There!' :
              progressPercentage >= 50 ? 'Halfway!' :
@@ -718,32 +699,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div>
-          <div className="flex justify-between text-sm mb-2" style={{color: '#FFEBC6', fontWeight: '500'}}>
+          <div className="flex justify-between text-sm text-amber-200 mb-2">
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
             <span>Target: ${data.targetAmount.toLocaleString()}</span>
           </div>
-          {/* Animated gold gradient progress bar */}
-          <div className="w-full rounded-full h-3 relative" style={{
-            background: 'rgba(0, 0, 0, 0.3)',
-            boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.4)'
-          }}>
-            <div className="h-3 rounded-full transition-all duration-700 gold-shimmer" style={{
-              width: `${Math.min((data.currentInvestments / data.targetAmount) * 100, 100)}%`,
-              background: 'linear-gradient(90deg, #F59E0B 0%, #FBBF24 50%, #FDE68A 100%)',
-              backgroundSize: '200% 100%',
-              boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)'
-            }}></div>
-          </div>
+          <ProgressBar 
+            value={data.currentInvestments} 
+            maxValue={data.targetAmount} 
+            color="bg-amber-500"
+            height="h-3"
+          />
         </div>
         
-        <div className="text-center text-sm rounded-xl p-3" style={{
-          color: 'rgba(255, 235, 198, 0.9)',
-          background: 'rgba(251, 191, 36, 0.08)',
-          border: '1px solid rgba(251, 191, 36, 0.2)',
-          backdropFilter: 'blur(8px)'
-        }}>
-          Investing <span className="font-bold" style={{color: '#FBBF24'}}>${data.monthlyContribution.toLocaleString()}</span>/mo • 
-          <span className="font-bold" style={{color: '#FDE68A'}}> {yearsToGoal}y {remainingMonths}m</span> to goal
+        <div className="text-center text-sm text-amber-100 bg-amber-900/20 rounded-lg p-3 border border-amber-500/30">
+          Investing <span className="text-amber-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo • 
+          <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
     </Card>
@@ -755,17 +725,14 @@ const SavingsRateCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col" style={{
-        background: 'linear-gradient(145deg, #064E3B 0%, #10B981 100%)',
-        border: '1px solid rgba(52, 211, 153, 0.3)'
-      }}>
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
-            <PiggyBank className="w-6 h-6 mr-3" style={{color: '#FFFFFF'}} />
+            <PiggyBank className="w-6 h-6 mr-3 text-teal-400" />
             Savings Rate
           </h2>
         </div>
-        <div className="text-center py-8" style={{color: 'rgba(255, 255, 255, 0.6)'}}>Loading...</div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
     );
   }
@@ -807,33 +774,13 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </div>
       </div>
       
-      <div className="space-y-6 relative z-10">
-        <div className="text-center rounded-xl p-6 relative" style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3)',
-          backdropFilter: 'blur(12px)'
-        }}>
-          {/* Mint glow effect */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '140px',
-            height: '140px',
-            background: 'radial-gradient(circle, rgba(167, 243, 208, 0.2), transparent 70%)',
-            pointerEvents: 'none'
-          }}></div>
-          <div className="text-5xl font-extrabold relative" style={{
-            color: '#FFFFFF',
-            textShadow: '0 2px 8px rgba(52, 211, 153, 0.3)'
-          }}>
+      <div className="space-y-6">
+        <div className="text-center bg-teal-900/30 rounded-lg p-6 border border-teal-500/30">
+          <div className={`text-5xl font-extrabold ${getRateColor(data.current)}`}>
             {data.current}%
           </div>
-          <div className="text-sm mt-2 font-semibold relative flex items-center justify-center gap-1" style={{color: '#A7F3D0'}}>
+          <div className="text-sm mt-2 font-semibold text-teal-200">
             {getRateStatus(data.current)}
-            {data.current >= 50 && <span style={{fontSize: '14px'}}>↗</span>}
           </div>
         </div>
         
