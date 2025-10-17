@@ -10951,7 +10951,7 @@ function App() {
   // Reset data states
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetStartDate, setResetStartDate] = useState(getTodayLocal());
-  const [resetToSample, setResetToSample] = useState(false);
+  const [resetType, setResetType] = useState('financial-only'); // 'financial-only', 'whole-app', or 'sample-financial'
   
   // Quick expense logging states
   const [showQuickExpense, setShowQuickExpense] = useState(false);
@@ -12241,18 +12241,18 @@ function App() {
   const openResetModal = () => {
     setShowResetModal(true);
     setResetStartDate(new Date().toISOString().split('T')[0]);
-    setResetToSample(false);
+    setResetType('financial-only'); // Default to safest option
   };
 
   const closeResetModal = () => {
     setShowResetModal(false);
-    setResetToSample(false);
+    setResetType('financial-only');
   };
 
   const confirmResetData = async () => {
     debugLog('🔧 Reset Data: Function called');
     debugLog('🔧 Reset Data: userId =', userId);
-    debugLog('🔧 Reset Data: resetToSample =', resetToSample);
+    debugLog('🔧 Reset Data: resetType =', resetType);
     
     if (!userId) {
       console.error('❌ Reset Data: No userId available!');
@@ -12262,19 +12262,25 @@ function App() {
 
     let resetData;
     
-    if (resetToSample) {
-      // Reset to sample data with new start date
-      // 🔧 FIX: Spread transactions across the month (not all on same date!)
+    if (resetType === 'sample-financial') {
+      // 📊 SAMPLE FINANCIAL DATA ONLY (FREE tier safe!)
+      // Only populates transactions & dashboard - no businesses, travel, investments
       const startDate = new Date(resetStartDate);
+      
+      // 🛡️ PRESERVE non-financial data
+      const preservedData = {
+        moments: data.moments || [],
+        logbook: data.logbook || [],
+        quickJournalEntries: data.quickJournalEntries || [],
+        supplies: data.supplies || {}
+      };
+      
       resetData = {
         ...initialData,
-        // Update all dates to spread across the month
         transactions: initialData.transactions.map((t, index) => {
-          // FIX: Spread transactions across the PAST month, not future
-          const daysToSubtract = index * 2; // 0, 2, 4, 6, 8, 10, 12, 14...
+          const daysToSubtract = index * 2;
           const transactionDate = new Date(startDate);
-          transactionDate.setDate(startDate.getDate() - daysToSubtract); // SUBTRACT days to go backwards
-          
+          transactionDate.setDate(startDate.getDate() - daysToSubtract);
           return {
             ...t,
             date: transactionDate.toISOString().split('T')[0]
@@ -12298,14 +12304,96 @@ function App() {
           income: initialData.income.total,
           expenses: initialData.expenses.total,
           cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
-          businessIncome: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalIncome || 0), 0),
-          businessExpenses: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalExpenses || 0), 0),
-          investmentValue: initialData.investments.totalValue || 0,
+          businessIncome: 0, // ✅ No business data in sample
+          businessExpenses: 0,
+          investmentValue: 0, // ✅ No investment data in sample
           savingsRate: initialData.savingsRate.current
-        }]
+        }],
+        
+        // ✅ Override to remove premium features (FREE tier safe!)
+        businesses: [], // No sample businesses
+        investments: { totalValue: 0, totalGainLoss: 0, holdings: [], categories: [], monthlyData: [] },
+        travel: {
+          totalSavings: 0,
+          homeCurrency: 'CAD',
+          exchangeRates: { 'USD': 1.35, 'EUR': 1.47, 'GBP': 1.70, 'THB': 0.037, 'COP': 0.00033 },
+          trips: [],
+          runwayCalculation: { averageDailySpend: 0, totalAvailableFunds: 0, estimatedDaysRemaining: 0, lastUpdated: resetStartDate },
+          tripPlan: { cheap: 90, moderate: 30, expensive: 15 },
+          expenseCategories: [
+            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
+            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
+            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
+          ]
+        },
+        
+        // 🛡️ PRESERVE non-financial data
+        ...preservedData
+      };
+    } else if (resetType === 'financial-only') {
+      // 💰 RESET FINANCIAL DATA ONLY (keep moments, logbook, businesses, travel, etc.)
+      
+      // 🛡️ PRESERVE all non-financial data
+      const preservedData = {
+        moments: data.moments || [],
+        logbook: data.logbook || [],
+        quickJournalEntries: data.quickJournalEntries || [],
+        supplies: data.supplies || {},
+        businesses: data.businesses || [],
+        travel: data.travel || {},
+        investments: data.investments || {}
+      };
+      
+      resetData = {
+        financialFreedom: {
+          targetAmount: 2000000,
+          currentInvestments: 0,
+          monthlyContribution: 0,
+          annualReturn: 7,
+        },
+        creditScore: { current: 0, history: [] },
+        cashOnHand: { total: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] },
+        rainyDayFund: { total: 0, goal: 6000, accounts: [], history: [{ date: resetStartDate, total: 0 }] },
+        debt: {
+          total: 0,
+          accounts: [
+            { id: 1, name: 'Credit Card', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0, dueDate: 15, notificationsEnabled: true, notificationDays: 3 },
+            { id: 2, name: 'Personal Loan', balance: 0, initialDebt: 0, amountPaid: 0, interestRate: 0, minPayment: 0, dueDate: 1, notificationsEnabled: true, notificationDays: 3 }
+          ],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
+        registeredAccounts: {
+          accounts: [
+            { id: 'tfsa', name: 'TFSA', contributed: 0, limit: 88000, goal: 10000, type: 'tax-free', description: 'Tax-free growth and withdrawals' },
+            { id: 'rrsp', name: 'RRSP', contributed: 0, limit: 31560, goal: 5000, type: 'tax-deferred', description: 'Tax-deferred retirement savings' }
+          ]
+        },
+        netWorth: { total: 0, breakdown: [], history: [{ date: resetStartDate, total: 0 }] },
+        income: { total: 0, sources: [], history: [{ date: resetStartDate, total: 0 }] },
+        expenses: { total: 0, categories: [], history: [{ date: resetStartDate, total: 0 }] },
+        cashflow: { total: 0, monthly: 0, history: [{ date: resetStartDate, amount: 0 }] },
+        savingsRate: { current: 0, target: 20, monthly: 0, monthlyIncome: 0, history: [{ date: resetStartDate, rate: 0 }] },
+        goals: [],
+        transactions: [],
+        recurringExpenses: [],
+        monthlyHistory: [{
+          month: resetStartDate.substring(0, 7),
+          netWorth: 0, income: 0, expenses: 0, cashflow: 0,
+          businessIncome: 0, businessExpenses: 0, investmentValue: 0, savingsRate: 0
+        }],
+        budgetSettings: {
+          fiftyThirtyTwenty: { needs: 50, wants: 30, savings: 20 },
+          sixJars: { necessities: 55, education: 10, play: 10, longTermSavings: 10, financial: 10, give: 5 }
+        },
+        
+        // 🛡️ PRESERVE all non-financial data
+        ...preservedData
       };
     } else {
-      // Reset to completely clean data
+      // 🗑️ RESET WHOLE APP (everything goes - nuclear option)
       resetData = {
         financialFreedom: {
           targetAmount: 2000000,
@@ -12458,21 +12546,24 @@ function App() {
 
     try {
       debugLog('🔧 Reset Data: Starting Firebase write...');
-      // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
       debugLog('✅ Reset Data: Firebase write successful');
       
-      // 🎮 CRITICAL FIX: Also reset XP profile to 0!
-      debugLog('🎮 Resetting XP profile to Recruit (0 XP)...');
-      const initialProfile = {
-        xpPoints: 0,
-        rank: 'Recruit',
-        rankLevel: 1,
-        unlockedMilestones: [],
-        createdAt: new Date().toISOString()
-      };
-      await setDoc(doc(db, 'userProfiles', userId), initialProfile);
-      debugLog('✅ XP profile reset successful');
+      // 🎮 Reset XP only for sample-financial and whole-app (not financial-only)
+      if (resetType === 'sample-financial' || resetType === 'whole-app') {
+        debugLog('🎮 Resetting XP profile to Recruit (0 XP)...');
+        const initialProfile = {
+          xpPoints: 0,
+          rank: 'Recruit',
+          rankLevel: 1,
+          unlockedMilestones: [],
+          createdAt: new Date().toISOString()
+        };
+        await setDoc(doc(db, 'userProfiles', userId), initialProfile);
+        debugLog('✅ XP profile reset successful');
+      } else {
+        debugLog('ℹ️ Financial-only reset - XP preserved');
+      }
       
       setData(resetData);
       debugLog('✅ Reset Data: Local state updated');
@@ -12481,10 +12572,15 @@ function App() {
       setXpRefreshTrigger(prev => prev + 1);
       
       setShowResetModal(false);
-      setResetToSample(false);
+      setResetType('financial-only');
       debugLog('✅ Reset Data: Modal closed');
       
-      showNotification('✅ Data reset successfully! XP reset to 0.', 'success');
+      const resetTypeMessages = {
+        'financial-only': '✅ Financial data reset successfully!',
+        'sample-financial': '✅ Sample financial data loaded! XP reset to 0.',
+        'whole-app': '✅ All data reset successfully! XP reset to 0.'
+      };
+      showNotification(resetTypeMessages[resetType] || '✅ Data reset successfully!', 'success');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -15584,18 +15680,21 @@ function App() {
                 <h5 className="text-white font-medium">Reset Options:</h5>
                 
                 <div className="space-y-2">
-                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50">
+                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50 border-2 border-transparent data-[checked=true]:border-blue-500">
                     <input
                       type="radio"
                       name="resetType"
-                      checked={!resetToSample}
-                      onChange={() => setResetToSample(false)}
-                      className="mt-1 text-red-400"
+                      checked={resetType === 'financial-only'}
+                      onChange={() => setResetType('financial-only')}
+                      className="mt-1 text-blue-400"
                     />
                     <div>
-                      <div className="text-white font-medium">Fresh Start (Blank Data)</div>
-                      <div className="text-xs text-gray-400">
-                        Clear everything and start with empty dashboard
+                      <div className="text-white font-medium flex items-center gap-2">
+                        💰 Financial Data Only
+                        <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Recommended</span>
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        Reset transactions & dashboard only. Keep your moments, logbook, businesses, travel data.
                       </div>
                     </div>
                   </label>
@@ -15604,14 +15703,33 @@ function App() {
                     <input
                       type="radio"
                       name="resetType"
-                      checked={resetToSample}
-                      onChange={() => setResetToSample(true)}
+                      checked={resetType === 'sample-financial'}
+                      onChange={() => setResetType('sample-financial')}
+                      className="mt-1 text-amber-400"
+                    />
+                    <div>
+                      <div className="text-white font-medium">📊 Sample Financial Data (FREE tier safe)</div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        Example transactions & dashboard only. No phantom data. Perfect for learning!
+                      </div>
+                    </div>
+                  </label>
+                  
+                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50">
+                    <input
+                      type="radio"
+                      name="resetType"
+                      checked={resetType === 'whole-app'}
+                      onChange={() => setResetType('whole-app')}
                       className="mt-1 text-red-400"
                     />
                     <div>
-                      <div className="text-white font-medium">Sample Data</div>
-                      <div className="text-xs text-gray-400">
-                        Reset with example data for learning/demo purposes
+                      <div className="text-white font-medium flex items-center gap-2">
+                        🗑️ Reset Whole App
+                        <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Nuclear</span>
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        Clear EVERYTHING - all data, moments, businesses, travel, logbook. Complete fresh start.
                       </div>
                     </div>
                   </label>
@@ -15635,13 +15753,42 @@ function App() {
               </div>
 
               <div className="bg-gray-700/30 rounded-lg p-3">
-                <h5 className="text-white font-medium mb-2">What will be reset:</h5>
+                <h5 className="text-white font-medium mb-2">
+                  {resetType === 'financial-only' && '💰 Will Reset:'}
+                  {resetType === 'sample-financial' && '📊 Will Load:'}
+                  {resetType === 'whole-app' && '🗑️ Will Delete:'}
+                </h5>
                 <div className="text-sm space-y-1 text-gray-300">
-                  <div>• All transactions and financial data</div>
-                  <div>• Investment portfolio and holdings</div>
-                  <div>• Business income/expense records</div>
-                  <div>• Dashboard metrics and history</div>
-                  <div>• Goals and savings targets</div>
+                  {resetType === 'financial-only' && (
+                    <>
+                      <div>• Transactions & recurring expenses</div>
+                      <div>• Dashboard cards (cash, debt, goals)</div>
+                      <div>• Financial metrics & history</div>
+                      <div className="text-green-400 mt-2">✅ KEEPS: Moments, logbook, businesses, travel, investments</div>
+                      <div className="text-green-400">✅ KEEPS: Your XP and rank!</div>
+                    </>
+                  )}
+                  {resetType === 'sample-financial' && (
+                    <>
+                      <div>• Sample transactions (last month)</div>
+                      <div>• Sample dashboard data</div>
+                      <div>• Example financial metrics</div>
+                      <div className="text-green-400 mt-2">✅ KEEPS: Moments, logbook</div>
+                      <div className="text-amber-400">⚠️ RESETS: XP to 0</div>
+                    </>
+                  )}
+                  {resetType === 'whole-app' && (
+                    <>
+                      <div>• All transactions & financial data</div>
+                      <div>• Investment portfolio & holdings</div>
+                      <div>• Business income/expense records</div>
+                      <div>• All moments & logbook entries</div>
+                      <div>• Travel plans & journal</div>
+                      <div>• Dashboard metrics & history</div>
+                      <div className="text-red-400 mt-2">⚠️ DELETES: EVERYTHING!</div>
+                      <div className="text-red-400">⚠️ RESETS: XP to 0</div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
