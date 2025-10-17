@@ -3762,11 +3762,35 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [unlockedMilestones, setUnlockedMilestones] = useState([]);
   const [showMilestoneCelebration, setShowMilestoneCelebration] = useState(false);
   const [celebratingMilestone, setCelebratingMilestone] = useState(null);
+  const [milestonesLoaded, setMilestonesLoaded] = useState(false);
 
-  // Check for milestone unlocks when freedom ratio changes
+  // 🔧 FIX: Load previously unlocked milestones on mount (ONE-TIME)
+  useEffect(() => {
+    const loadUnlockedMilestones = async () => {
+      if (userId && db) {
+        try {
+          const profileRef = doc(db, 'userProfiles', userId);
+          const profileSnap = await getDoc(profileRef);
+          
+          if (profileSnap.exists()) {
+            const profile = profileSnap.data();
+            setUnlockedMilestones(profile.unlockedMilestones || []);
+          }
+          setMilestonesLoaded(true);
+        } catch (error) {
+          console.error('Error loading unlocked milestones:', error);
+          setMilestonesLoaded(true); // Still mark as loaded even on error
+        }
+      }
+    };
+    
+    loadUnlockedMilestones();
+  }, [userId, db]); // Only run once on mount
+
+  // Check for milestone unlocks when freedom ratio changes (ONLY after milestones are loaded)
   useEffect(() => {
     const checkMilestones = async () => {
-      if (userId && db && freedomMetrics.freedomRatio >= 0) {
+      if (userId && db && freedomMetrics.freedomRatio >= 0 && milestonesLoaded) {
         try {
           const { newMilestones, updatedMilestones } = await checkMilestoneUnlocks(
             db, 
@@ -3815,7 +3839,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     };
 
     checkMilestones();
-  }, [freedomMetrics.freedomRatio, userId, db, unlockedMilestones]);
+  }, [freedomMetrics.freedomRatio, userId, db, unlockedMilestones, milestonesLoaded]);
 
   const handleAddBusiness = async () => {
     if (!newBusiness.name) return;
