@@ -1537,73 +1537,80 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-sky-900/40 to-blue-900/40 border-sky-600/30">
-      <div className="flex justify-between items-start mb-4">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <ShieldCheck className="w-6 h-6 mr-3 text-sky-400" />
-          Retirement Accounts
-        </h2>
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 min-h-[400px]">
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <ShieldCheck className="w-6 h-6 mr-3 text-amber-400" />
+            Retirement Accounts
+          </h2>
+          <p className="text-sm text-amber-400/70 mt-1 ml-9">Building your future, one contribution at a time 🌟</p>
+        </div>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
-          className="text-gray-400 hover:text-sky-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
       </div>
 
-      <div className={`grid grid-cols-1 ${accounts.length > 2 ? 'lg:grid-cols-3' : 'md:grid-cols-2'} gap-4`}>
+      <div className={`grid grid-cols-1 ${accounts.length > 2 ? 'lg:grid-cols-3' : 'md:grid-cols-2'} gap-5`}>
         {accounts.map((account, index) => {
           const progress = (account.contributed / account.limit) * 100;
           const roomUsed = account.contributed;
           const roomAvailable = account.limit - account.contributed;
           
-          // Color themes for different account types
-          const colors = [
-            { bg: 'bg-green-900/20', border: 'border-green-600/30', text: 'text-green-400', progress: 'bg-green-500' },
-            { bg: 'bg-blue-900/20', border: 'border-blue-600/30', text: 'text-blue-400', progress: 'bg-blue-500' },
-            { bg: 'bg-orange-900/20', border: 'border-orange-600/30', text: 'text-orange-400', progress: 'bg-orange-500' },
-            { bg: 'bg-teal-900/20', border: 'border-teal-600/30', text: 'text-teal-400', progress: 'bg-teal-500' }
-          ];
-          const color = colors[index % colors.length];
+          // 🎨 UNIFIED PREMIUM DESIGN: All accounts use same slate + gold theme
+          const isGoalReached = account.goal && account.contributed >= account.goal;
           
           return (
-            <div key={account.id} className={`${color.bg} rounded-lg p-4 border ${color.border}`}>
-              <div className="flex justify-between items-center mb-3">
-                <h4 className={`text-lg font-bold ${color.text}`}>{account.name}</h4>
-                <span className={`${color.text.replace('400', '300')} text-sm font-semibold`}>
-                  {progress.toFixed(1)}% Used
+            <div key={account.id} className="bg-slate-800/50 rounded-lg p-5 border-2 border-slate-700/50 hover:border-amber-500/40 transition-all duration-300">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h4 className="text-lg font-bold text-amber-400 flex items-center gap-2">
+                    {account.name}
+                    {isGoalReached && <span className="text-xs">🏆</span>}
+                  </h4>
+                  <p className="text-xs text-gray-400 mt-1">{account.description}</p>
+                </div>
+                <span className="text-amber-400/80 text-sm font-semibold bg-amber-500/10 px-2 py-1 rounded">
+                  {progress.toFixed(1)}%
                 </span>
               </div>
               
-              <div className="space-y-3">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-white mb-1">
+              <div className="space-y-4">
+                <div className="text-center bg-slate-900/50 rounded-lg p-4 border border-slate-700/30">
+                  <div className="text-3xl font-bold text-white mb-1">
                     ${account.contributed.toLocaleString()}
                   </div>
-                  <div className="text-sm text-gray-300">Contributed</div>
+                  <div className="text-sm text-amber-400/70">Total Contributed</div>
                 </div>
                 
                 <div>
-                  <div className="flex justify-between text-xs text-gray-300 mb-1">
-                    <span>Used: ${roomUsed.toLocaleString()}</span>
+                  <div className="flex justify-between text-xs text-gray-300 mb-2">
+                    <span>Contributed: ${roomUsed.toLocaleString()}</span>
                     <span>Limit: ${account.limit.toLocaleString()}</span>
                   </div>
                   <ProgressBar 
                     value={roomUsed} 
                     maxValue={account.limit} 
-                    color={color.progress}
+                    color="bg-gradient-to-r from-amber-500 to-yellow-500"
+                    height="h-3"
                   />
-                  <div className={`text-xs ${color.text} mt-1`}>
-                    Room: ${roomAvailable.toLocaleString()}
+                  <div className="text-xs text-amber-400/80 mt-2 text-center font-semibold">
+                    ${roomAvailable.toLocaleString()} room remaining
                   </div>
                 </div>
                 
-                <div className="bg-gray-700/50 rounded p-2 text-xs text-center">
-                  <div className="text-gray-300">{account.type}</div>
-                  <div className={`${color.text} font-semibold text-[10px] mt-1`}>
-                    {account.description}
+                {account.goal && account.goal > 0 && (
+                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-center">
+                    <div className="text-xs text-amber-400/70 mb-1">Annual Goal</div>
+                    <div className="text-lg font-bold text-amber-400">${account.goal.toLocaleString()}</div>
+                    <div className="text-[10px] text-gray-400 mt-1">
+                      {isGoalReached ? '✅ Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           );
@@ -1611,10 +1618,20 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
       </div>
       
       {accounts.length > 0 && (
-        <div className="mt-4 text-center">
-          <div className="text-sm text-gray-400">
-            Total Contributed: ${totalContributed.toLocaleString()} • 
-            Total Room: ${totalRoom.toLocaleString()} ({((totalContributed/totalLimit)*100).toFixed(1)}% used)
+        <div className="mt-6 bg-slate-800/30 rounded-lg p-4 border border-slate-700/50">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold text-amber-400">${totalContributed.toLocaleString()}</div>
+              <div className="text-xs text-gray-400 mt-1">Total Contributed</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-white">${totalRoom.toLocaleString()}</div>
+              <div className="text-xs text-gray-400 mt-1">Total Room Available</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-amber-400">{((totalContributed/totalLimit)*100).toFixed(1)}%</div>
+              <div className="text-xs text-gray-400 mt-1">Contribution Rate</div>
+            </div>
           </div>
         </div>
       )}
