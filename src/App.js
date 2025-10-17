@@ -4133,12 +4133,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       return business;
     });
 
-    const updatedData = { ...data, businesses: updatedBusinesses };
-
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ USE updateDoc to prevent data loss
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      setData({ ...data, businesses: updatedBusinesses });
     } catch (error) {
+      console.error('Error toggling recurring item:', error);
+    }
+  };
 
   // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
@@ -4148,9 +4152,6 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('Error toggling recurring item:', error);
-    }
-  };
 
   // 🔄 DELETE RECURRING ITEM
   const handleDeleteRecurringItem = async (businessId, itemId) => {
@@ -4166,12 +4167,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       return business;
     });
 
-    const updatedData = { ...data, businesses: updatedBusinesses };
-
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ USE updateDoc to prevent data loss
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      setData({ ...data, businesses: updatedBusinesses });
     } catch (error) {
+      console.error('Error deleting recurring item:', error);
+    }
+  };
 
   // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
@@ -4181,9 +4186,6 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('Error deleting recurring item:', error);
-    }
-  };
 
   // 🔄 PROCESS DUE RECURRING ITEMS - Automation Engine
   const processDueRecurringItems = () => {
@@ -7088,15 +7090,17 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       } : t
     );
     
-    const updatedData = { 
-      ...data, 
-      transactions: updatedTransactions,
-      recentTransactions: updatedRecentTransactions
-    };
-    
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ USE updateDoc to prevent data loss
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        transactions: updatedTransactions,
+        recentTransactions: updatedRecentTransactions
+      });
+      setData({ 
+        ...data, 
+        transactions: updatedTransactions,
+        recentTransactions: updatedRecentTransactions
+      });
       setEditingTransaction(null);
       infoLog('✅ Transaction updated successfully');
     } catch (error) {
@@ -7849,11 +7853,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       const updatedRecurring = data.recurringExpenses.map(r => 
                         r.id === recurring.id ? { ...r, isActive: !r.isActive } : r
                       );
-                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
                       try {
-                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-                        setData(updatedData);
+                        // 🛡️ USE updateDoc to prevent data loss
+                        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+                          recurringExpenses: updatedRecurring
+                        });
+                        setData({ ...data, recurringExpenses: updatedRecurring });
                       } catch (error) {
+                        console.error('Error updating recurring expense:', error);
+                      }
 
   // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
@@ -7863,8 +7871,6 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-                        console.error('Error updating recurring expense:', error);
-                      }
                     }}
                     className={`flex-1 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
                       recurring.isActive
@@ -8803,11 +8809,13 @@ const TravelTab = ({ data, setData, userId }) => {
 
    const updatedTrips = [...(data.travel?.trips || []), trip];
    const updatedTravel = { ...data.travel, trips: updatedTrips };
-   const updatedData = { ...data, travel: updatedTravel };
 
    try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
+     // 🛡️ USE updateDoc to prevent data loss
+     await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+       travel: updatedTravel
+     });
+     setData({ ...data, travel: updatedTravel });
      setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [], countryInput: '' });
      setShowAddTrip(false);
      
@@ -8831,11 +8839,13 @@ const TravelTab = ({ data, setData, userId }) => {
 
    const updatedTrips = (data.travel?.trips || []).filter(trip => trip.id !== tripId);
    const updatedTravel = { ...data.travel, trips: updatedTrips };
-   const updatedData = { ...data, travel: updatedTravel };
 
    try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
+     // 🛡️ USE updateDoc to prevent data loss
+     await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+       travel: updatedTravel
+     });
+     setData({ ...data, travel: updatedTravel });
    } catch (error) {
      console.error('Error deleting trip:', error);
    }
@@ -8858,11 +8868,13 @@ const TravelTab = ({ data, setData, userId }) => {
    });
 
    const updatedTravel = { ...data.travel, trips: updatedTrips };
-   const updatedData = { ...data, travel: updatedTravel };
 
    try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
+     // 🛡️ USE updateDoc to prevent data loss
+     await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+       travel: updatedTravel
+     });
+     setData({ ...data, travel: updatedTravel });
    } catch (error) {
      console.error('Error deleting expense:', error);
    }
@@ -8899,11 +8911,14 @@ const TravelTab = ({ data, setData, userId }) => {
    });
 
    const updatedTravel = { ...data.travel, trips: updatedTrips };
-   const updatedData = { ...data, travel: updatedTravel, moments: updatedMoments };
 
    try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
+     // 🛡️ USE updateDoc to prevent data loss
+     await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+       travel: updatedTravel,
+       moments: updatedMoments
+     });
+     setData({ ...data, travel: updatedTravel, moments: updatedMoments });
      setMomentText('');
      setMomentTrip(null);
      setShowMomentModal(false);
@@ -8934,11 +8949,14 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
 
    const updatedTravel = { ...data.travel, trips: updatedTrips };
-   const updatedData = { ...data, travel: updatedTravel, moments: updatedMoments };
 
    try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
+     // 🛡️ USE updateDoc to prevent data loss
+     await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+       travel: updatedTravel,
+       moments: updatedMoments
+     });
+     setData({ ...data, travel: updatedTravel, moments: updatedMoments });
    } catch (error) {
      console.error('Error deleting moment:', error);
    }
@@ -11116,7 +11134,10 @@ function App() {
         await createBackup(userId, data, 'before-moment-save');
       }
 
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // 🛡️ USE updateDoc to prevent data loss
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        moments: updatedData.moments
+      });
       setData(updatedData);
       setShowMomentModal(false);
       setEditingMoment(null);
@@ -11244,11 +11265,13 @@ function App() {
     });
 
     const updatedTravel = { ...data.travel, trips: updatedTrips };
-    const updatedData = { ...data, travel: updatedTravel };
 
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ USE updateDoc to prevent data loss
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        travel: updatedTravel
+      });
+      setData({ ...data, travel: updatedTravel });
       showNotification('Journal entry saved! 📓', 'success');
       
       // Award XP for journaling
