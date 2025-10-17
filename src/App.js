@@ -72,7 +72,7 @@ import {
   onAuthStateChanged,
   updateProfile 
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 
 // Firebase App ID available if needed
@@ -7069,7 +7069,11 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     };
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        transactions: updatedTransactions,
+        recentTransactions: updatedRecentTransactions
+      });
       setData(updatedData);
       infoLog('✅ Transaction deleted successfully');
     } catch (error) {
