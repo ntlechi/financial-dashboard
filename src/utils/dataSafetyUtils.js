@@ -74,8 +74,18 @@ export const restoreFromBackup = async (userId, backupId) => {
     const backupData = backupDoc.data();
     const { backupId: _, backupDate, backupType, version, userAgent, timestamp, ...restoredData } = backupData;
 
-    // Create a new backup before restoring (safety first!)
-    await createBackup(userId, restoredData, 'pre-restore');
+    // 🛡️ CRITICAL FIX: Backup CURRENT data before restoring (not the backup data!)
+    try {
+      const currentDataDoc = await getDoc(doc(db, `users/${userId}/financials`, 'data'));
+      if (currentDataDoc.exists()) {
+        const currentData = currentDataDoc.data();
+        await createBackup(userId, currentData, 'pre-restore');
+        console.log('🛡️ Current data backed up before restore');
+      }
+    } catch (backupError) {
+      console.error('🛡️ Failed to backup current data:', backupError);
+      // Continue with restore even if backup fails (user explicitly wants to restore)
+    }
 
     // Restore the data
     await setDoc(doc(db, `users/${userId}/financials`, 'data'), restoredData);
