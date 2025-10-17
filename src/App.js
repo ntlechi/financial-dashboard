@@ -625,15 +625,15 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
   );
 };
 
-// Financial Freedom Goal Card (VIOLET - Aspirational)
+// Financial Freedom Goal Card (SLATE - Premium)
 const FinancialFreedomCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.targetAmount) {
     return (
-      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40">
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
-            <Target className="w-6 h-6 mr-3 text-violet-400" />
+            <Target className="w-6 h-6 mr-3 text-amber-400" />
             Financial Freedom Goal
           </h2>
         </div>
@@ -650,22 +650,22 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-violet-900/40 to-purple-900/40 min-h-[320px] flex flex-col">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 min-h-[380px] flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <Target className="w-6 h-6 mr-3 text-violet-400" />
+          <Target className="w-6 h-6 mr-3 text-amber-400" />
           Financial Freedom Goal
         </h2>
         <button
           onClick={() => onEdit('financialFreedom', data)}
-          className="text-gray-400 hover:text-violet-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
         >
           <Edit className="w-4 h-4" />
         </button>
-        <span className="text-violet-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
+        <span className="text-amber-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div>
           <div className="flex justify-between text-sm text-gray-300 mb-2">
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
@@ -674,21 +674,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
           <ProgressBar 
             value={data.currentInvestments} 
             maxValue={data.targetAmount} 
-            color="bg-violet-500"
+            color="bg-gradient-to-r from-amber-500 to-yellow-500"
             height="h-3"
           />
         </div>
         
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-violet-900/30 rounded-lg p-3">
+        <div className="grid grid-cols-2 gap-4 text-center mt-8">
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
             <div className="text-lg font-bold text-white">${data.monthlyContribution.toLocaleString()}</div>
-            <div className="text-xs text-violet-400">Monthly Contribution</div>
+            <div className="text-xs text-amber-400 mt-1">Monthly Contribution</div>
           </div>
-          <div className="bg-violet-900/30 rounded-lg p-3">
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
             <div className="text-lg font-bold text-white">
               {yearsToGoal}y {remainingMonths}m
             </div>
-            <div className="text-xs text-violet-400">Time to Goal</div>
+            <div className="text-xs text-amber-400 mt-1">Time to Goal</div>
           </div>
         </div>
       </div>
