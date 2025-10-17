@@ -731,22 +731,21 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 border-white/20 min-h-[320px] flex flex-col" style={{background: 'radial-gradient(circle, #10B981, #059669)'}}>
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 border-blue-500/20 min-h-[320px] flex flex-col">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <PiggyBank className="w-6 h-6 mr-3 text-white" />
+          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
           <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
             Savings Rate
           </Tooltip>
         </h2>
         <div className="flex items-center gap-2">
-          <div className="text-xs px-2 py-1 rounded" style={{color: '#D1FAE5', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)'}}>
+          <div className="text-xs px-2 py-1 rounded bg-blue-900/30 border border-blue-500/30 text-blue-200">
             Auto-calculated
           </div>
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
-            className="text-white/60 hover:text-white p-1 rounded-lg transition-colors"
-            style={{background: 'rgba(255, 255, 255, 0.1)'}}
+            className="text-blue-400 hover:text-blue-300 p-1 rounded-lg hover:bg-blue-500/10 transition-colors"
             title="Edit target savings rate"
           >
             <Target className="w-4 h-4" />
@@ -755,30 +754,30 @@ const SavingsRateCard = ({ data, onEdit }) => {
       </div>
       
       <div className="space-y-6">
-        <div className="text-center bg-teal-900/30 rounded-lg p-6 border border-teal-500/30">
-          <div className={`text-5xl font-extrabold ${getRateColor(data.current)}`}>
+        <div className="text-center bg-blue-900/30 rounded-lg p-6 border border-blue-500/30">
+          <div className="text-5xl font-extrabold text-white">
             {data.current}%
           </div>
-          <div className="text-sm mt-2 font-semibold text-teal-200">
+          <div className="text-sm mt-2 font-semibold text-blue-200">
             {getRateStatus(data.current)}
           </div>
         </div>
         
         <div>
-          <div className="flex justify-between text-sm mb-2" style={{color: '#D1FAE5'}}>
+          <div className="flex justify-between text-sm text-white mb-2">
             <span>Current: {data.current}%</span>
             <span>Target: {data.target}%</span>
           </div>
           <ProgressBar 
             value={data.current} 
             maxValue={data.target} 
-            color="bg-[#34D399]"
+            color="bg-blue-500"
             height="h-3"
           />
         </div>
         
-        <div className="text-center text-sm rounded-lg p-3" style={{color: 'rgba(255, 255, 255, 0.9)', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.15)'}}>
-          Saving <span className="font-bold" style={{color: '#FFFFFF'}}>${data.monthly.toLocaleString()}</span> of <span className="font-bold" style={{color: '#FFFFFF'}}>${data.monthlyIncome.toLocaleString()}</span> monthly income
+        <div className="text-center text-sm text-white rounded-lg p-3 bg-blue-900/30 border border-blue-500/30">
+          Saving <span className="font-bold">${data.monthly.toLocaleString()}</span> of <span className="font-bold">${data.monthlyIncome.toLocaleString()}</span> monthly income
         </div>
       </div>
     </Card>
