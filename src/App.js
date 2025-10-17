@@ -1544,7 +1544,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30">
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 border-blue-500/30">
       <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center">
