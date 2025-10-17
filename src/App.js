@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -1525,12 +1525,12 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/30 to-indigo-900/30">
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'radial-gradient(circle at top, rgba(251, 191, 36, 0.15), rgba(15, 23, 42, 0.95))'}}>
+        <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
+          <Mountain className="w-7 h-7 mr-3" style={{color: '#FBBF24'}} />
           Retirement Accounts
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center py-8" style={{color: 'rgba(255, 255, 255, 0.6)'}}>Loading...</div>
       </Card>
     );
   }
@@ -1543,18 +1543,19 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 min-h-[400px]">
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'radial-gradient(circle at top, rgba(251, 191, 36, 0.15), rgba(15, 23, 42, 0.95))'}}>
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center">
-            <ShieldCheck className="w-6 h-6 mr-3 text-amber-400" />
+          <h2 className="text-2xl font-bold text-white flex items-center">
+            <Mountain className="w-7 h-7 mr-3" style={{color: '#FBBF24'}} />
             Retirement Accounts
           </h2>
-          <p className="text-sm text-amber-400/70 mt-1 ml-9">Building your future, one contribution at a time 🌟</p>
+          <p className="text-sm mt-2 ml-10" style={{color: 'rgba(255, 255, 255, 0.7)'}}>Building your legacy, one contribution at a time.</p>
         </div>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
-          className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          className="p-2 rounded-lg transition-colors"
+          style={{color: 'rgba(251, 191, 36, 0.6)', background: 'rgba(255, 255, 255, 0.05)'}} 
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -1566,53 +1567,57 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           const roomUsed = account.contributed;
           const roomAvailable = account.limit - account.contributed;
           
-          // 🎨 UNIFIED PREMIUM DESIGN: All accounts use same slate + gold theme
+          // 🎨 PROJECT SUMMIT: Unique vibrant gradients per account type!
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
+          // Determine gradient based on account name
+          const isTFSA = account.name.toUpperCase().includes('TFSA') || account.name.toUpperCase().includes('TAX-FREE');
+          const gradient = isTFSA 
+            ? 'linear-gradient(135deg, #0D9488, #2563EB)' // Teal to Blue
+            : 'linear-gradient(135deg, #7C3AED, #4F46E5)'; // Purple to Indigo
+          const progressColor = isTFSA ? '#06B6D4' : '#A78BFA'; // Cyan or Lavender
+          
           return (
-            <div key={account.id} className="bg-gradient-to-br from-amber-900/20 via-slate-800/30 to-gray-900/30 rounded-lg p-5 border-2 border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 shadow-lg">
+            <div key={account.id} className="rounded-lg p-5 border-2 transition-all duration-300 shadow-xl" style={{background: gradient, borderColor: 'rgba(255, 255, 255, 0.2)'}}>
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h4 className="text-lg font-bold text-amber-400 flex items-center gap-2">
+                  <h4 className="text-lg font-bold flex items-center gap-2" style={{color: '#FFFFFF'}}>
                     {account.name}
                     {isGoalReached && <span className="text-xs">🏆</span>}
                   </h4>
-                  <p className="text-xs text-gray-400 mt-1">{account.description}</p>
+                  <p className="text-xs mt-1" style={{color: 'rgba(255, 255, 255, 0.7)'}}>{account.description}</p>
                 </div>
-                <span className="text-amber-400/80 text-sm font-semibold bg-amber-500/10 px-2 py-1 rounded">
+                <span className="text-sm font-semibold px-3 py-1 rounded-full" style={{color: '#FFFFFF', background: 'rgba(255, 255, 255, 0.2)'}}>
                   {progress.toFixed(1)}%
                 </span>
               </div>
               
               <div className="space-y-4">
-                <div className="text-center bg-amber-900/20 rounded-lg p-4 border border-amber-500/20">
-                  <div className="text-3xl font-bold text-white mb-1">
+                <div className="text-center rounded-lg p-5" style={{background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)'}}>
+                  <div className="text-4xl font-extrabold mb-2" style={{color: '#FFFFFF'}}>
                     ${account.contributed.toLocaleString()}
                   </div>
-                  <div className="text-sm text-amber-400/70">Total Contributed</div>
+                  <div className="text-sm font-semibold" style={{color: 'rgba(255, 255, 255, 0.7)'}}>Total Contributed</div>
                 </div>
                 
                 <div>
-                  <div className="flex justify-between text-xs text-gray-300 mb-2">
+                  <div className="flex justify-between text-xs mb-2" style={{color: 'rgba(255, 255, 255, 0.8)'}}>
                     <span>Contributed: ${roomUsed.toLocaleString()}</span>
                     <span>Limit: ${account.limit.toLocaleString()}</span>
                   </div>
-                  <ProgressBar 
-                    value={roomUsed} 
-                    maxValue={account.limit} 
-                    color="bg-gradient-to-r from-amber-500 to-yellow-500"
-                    height="h-3"
-                  />
-                  <div className="text-xs text-amber-400/80 mt-2 text-center font-semibold">
+                  <div className="w-full rounded-full h-3" style={{background: 'rgba(255, 255, 255, 0.2)'}}>
+                    <div className="h-3 rounded-full transition-all" style={{width: `${progress}%`, background: progressColor}}></div>
+                  </div>
+                  <div className="text-xs mt-2 text-center font-semibold" style={{color: 'rgba(255, 255, 255, 0.9)'}}>
                     ${roomAvailable.toLocaleString()} room remaining
                   </div>
                 </div>
                 
                 {account.goal && account.goal > 0 && (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-center">
-                    <div className="text-xs text-amber-400/70 mb-1">Annual Goal</div>
-                    <div className="text-lg font-bold text-amber-400">${account.goal.toLocaleString()}</div>
-                    <div className="text-[10px] text-gray-400 mt-1">
+                  <div className="rounded-lg p-3 text-center" style={{background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255, 255, 255, 0.25)'}}>
+                    <div className="text-xs mb-1 font-medium" style={{color: 'rgba(255, 255, 255, 0.7)'}}>Annual Goal</div>
+                    <div className="text-lg font-bold" style={{color: '#FFFFFF'}}>${account.goal.toLocaleString()}</div>
+                    <div className="text-[10px] mt-1 font-medium" style={{color: 'rgba(255, 255, 255, 0.6)'}}>
                       {isGoalReached ? '✅ Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
                     </div>
                   </div>
@@ -1624,19 +1629,19 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
       </div>
       
       {accounts.length > 0 && (
-        <div className="mt-6 bg-slate-800/30 rounded-lg p-4 border border-slate-700/50">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+        <div className="mt-6 rounded-xl p-5" style={{background: 'rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.15)'}}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
-              <div className="text-2xl font-bold text-amber-400">${totalContributed.toLocaleString()}</div>
-              <div className="text-xs text-gray-400 mt-1">Total Contributed</div>
+              <div className="text-3xl font-extrabold" style={{color: '#FBBF24'}}>${totalContributed.toLocaleString()}</div>
+              <div className="text-xs font-semibold mt-2" style={{color: '#FFFFFF'}}>Total Contributed</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">${totalRoom.toLocaleString()}</div>
-              <div className="text-xs text-gray-400 mt-1">Total Room Available</div>
+              <div className="text-3xl font-extrabold" style={{color: '#FBBF24'}}>${totalRoom.toLocaleString()}</div>
+              <div className="text-xs font-semibold mt-2" style={{color: '#FFFFFF'}}>Total Room Available</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-amber-400">{((totalContributed/totalLimit)*100).toFixed(1)}%</div>
-              <div className="text-xs text-gray-400 mt-1">Contribution Rate</div>
+              <div className="text-3xl font-extrabold" style={{color: '#FBBF24'}}>{((totalContributed/totalLimit)*100).toFixed(1)}%</div>
+              <div className="text-xs font-semibold mt-2" style={{color: '#FFFFFF'}}>Contribution Rate</div>
             </div>
           </div>
         </div>
