@@ -7879,10 +7879,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onClick={async () => {
                       if (!window.confirm('Delete this recurring expense?')) return;
                       const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
-                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
                       try {
-                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-                        setData(updatedData);
+                        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+                        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+                          recurringExpenses: updatedRecurring
+                        });
+                        
+                        setData({ ...data, recurringExpenses: updatedRecurring });
                       } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -11150,11 +11153,13 @@ function App() {
     if (!window.confirm('Delete this moment?\\n\\n⚠️ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
 
     const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
-    const updatedData = { ...data, moments: updatedMoments };
-
-    try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+     try {
+       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+         moments: updatedMoments
+       });
+       
+       setData({ ...data, moments: updatedMoments });
       
       // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting moment
       try {
