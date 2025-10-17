@@ -650,35 +650,15 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col relative overflow-hidden" style={{
-      background: 'linear-gradient(145deg, #1E293B 0%, #0F172A 50%, rgba(251, 191, 36, 0.15) 100%)',
-      border: '1px solid rgba(251, 191, 36, 0.3)',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(251, 191, 36, 0.2)'
-    }}>
-      {/* ✨ Diagonal Light Flare - Rising to Freedom */}
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        right: '-10%',
-        width: '150%',
-        height: '200%',
-        background: 'linear-gradient(135deg, transparent 40%, rgba(251, 191, 36, 0.08) 50%, transparent 60%)',
-        transform: 'rotate(-15deg)',
-        pointerEvents: 'none'
-      }}></div>
-      <div className="flex justify-between items-start mb-4 relative z-10">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col bg-gradient-to-br from-green-900/40 to-emerald-900/40">
+      <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
-          <Target className="w-6 h-6 mr-3" style={{color: '#FBBF24', filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5)'}} />
+          <Target className="w-6 h-6 mr-3 text-green-400" />
           Financial Freedom Goal
         </h2>
         <button
           onClick={() => onEdit('financialFreedom', data)}
-          className="p-1 rounded-lg transition-all"
-          style={{
-            color: 'rgba(251, 191, 36, 0.7)',
-            background: 'rgba(251, 191, 36, 0.1)',
-            border: '1px solid rgba(251, 191, 36, 0.2)'
-          }}
+          className="text-green-400 hover:text-green-300 p-1 rounded-lg hover:bg-green-500/10 transition-colors"
           title="Edit financial freedom goal"
         >
           <Target className="w-4 h-4" />
@@ -686,11 +666,11 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
       </div>
       
       <div className="space-y-6">
-        <div className="text-center bg-amber-900/20 rounded-lg p-6 border border-amber-500/30">
-          <div className="text-5xl font-extrabold text-amber-400">
+        <div className="text-center bg-green-900/30 rounded-lg p-6 border border-green-500/30">
+          <div className="text-5xl font-extrabold text-green-400">
             {progressPercentage.toFixed(1)}%
           </div>
-          <div className="text-sm mt-2 font-semibold text-amber-200">
+          <div className="text-sm mt-2 font-semibold text-green-200">
             {progressPercentage >= 100 ? 'Goal Reached!' : 
              progressPercentage >= 75 ? 'Almost There!' :
              progressPercentage >= 50 ? 'Halfway!' :
@@ -699,20 +679,20 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div>
-          <div className="flex justify-between text-sm text-amber-200 mb-2">
+          <div className="flex justify-between text-sm text-green-200 mb-2">
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
             <span>Target: ${data.targetAmount.toLocaleString()}</span>
           </div>
           <ProgressBar 
             value={data.currentInvestments} 
             maxValue={data.targetAmount} 
-            color="bg-amber-500"
+            color="bg-green-500"
             height="h-3"
           />
         </div>
         
-        <div className="text-center text-sm text-amber-100 bg-amber-900/20 rounded-lg p-3 border border-amber-500/30">
-          Investing <span className="text-amber-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo • 
+        <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
+          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo • 
           <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
