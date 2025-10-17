@@ -685,7 +685,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </button>
       </div>
       
-      <div className="space-y-4 relative z-10">
+      <div className="space-y-6 relative z-10">
         <div className="text-center rounded-xl p-6 relative" style={{
           background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1))',
           border: '1px solid rgba(251, 191, 36, 0.3)',
@@ -1618,7 +1618,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
   const totalRoom = totalLimit - totalContributed;
 
   return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'radial-gradient(circle at top, rgba(251, 191, 36, 0.15), rgba(15, 23, 42, 0.95))'}}>
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%)', border: '1px solid rgba(59, 130, 246, 0.3)'}}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center">
@@ -1645,13 +1645,13 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           // 🎨 PROJECT SUMMIT: Unique vibrant gradients per account type!
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
-          // 🎨 PREMIUM LEGACY DESIGN: Emerald (growth) + Golden (achievement)
+          // 🎨 MUTED PREMIUM: Slate (cool) + Warm Stone (achievement) - Better contrast with blue background
           const isTFSA = account.name.toUpperCase().includes('TFSA') || account.name.toUpperCase().includes('TAX-FREE');
           const gradient = isTFSA 
-            ? 'linear-gradient(135deg, #00A676, #004E4E)' // Deep Emerald (growth & stability)
-            : 'linear-gradient(135deg, #F4C95D, #C9961A)'; // Golden Amber (reward & achievement)
-          const progressColor = isTFSA ? '#10B981' : '#F59E0B'; // Emerald-500 or Amber-500
-          const accentGlow = isTFSA ? '#00A676' : '#F4C95D'; // Horizon glow color
+            ? 'linear-gradient(135deg, #64748B, #475569)' // Muted Slate (cool, professional)
+            : 'linear-gradient(135deg, #78716C, #57534E)'; // Warm Stone (wisdom, achievement)
+          const progressColor = isTFSA ? '#94A3B8' : '#A8A29E'; // Slate-400 or Stone-400
+          const accentGlow = isTFSA ? '#64748B' : '#78716C'; // Horizon glow color
           
           return (
             <div key={account.id} className="rounded-xl p-6 border transition-all duration-300" style={{
