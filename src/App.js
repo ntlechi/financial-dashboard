@@ -4337,6 +4337,70 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <h3 className="text-sm font-semibold text-amber-200 mb-2 flex items-center">
             <DollarSign className="w-4 h-4 mr-2" />
             Passive Income
+            {/* 🎯 OPERATOR'S INTEL TOOLTIP */}
+            <div className="tooltip-container" style={{position: 'relative', display: 'inline-block', marginLeft: '6px'}}>
+              <span 
+                className="tooltip-icon"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(251, 191, 36, 0.6)',
+                  color: 'rgba(251, 191, 36, 0.8)',
+                  fontSize: '10px',
+                  fontWeight: 'bold',
+                  cursor: 'help',
+                  transition: 'all 0.2s'
+                }}
+              >
+                ⓘ
+              </span>
+              <div 
+                className="tooltip-content"
+                style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  marginBottom: '8px',
+                  width: '280px',
+                  padding: '12px',
+                  backgroundColor: '#1F2937',
+                  border: '1px solid #4B5563',
+                  borderRadius: '8px',
+                  color: '#F3F4F6',
+                  fontSize: '11px',
+                  lineHeight: '1.5',
+                  zIndex: 1000,
+                  visibility: 'hidden',
+                  opacity: 0,
+                  transition: 'opacity 0.2s, visibility 0.2s',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                  whiteSpace: 'normal'
+                }}
+              >
+                <div style={{marginBottom: '4px', fontWeight: '600', color: '#FBBF24', fontSize: '10px', letterSpacing: '0.5px'}}>
+                  📡 OPERATOR'S INTEL
+                </div>
+                This is your total gross income from all passive and side hustle sources. It's used to calculate your Freedom Ratio against your personal monthly expenses. Your business's net profit is calculated in the Side Hustle Management section below.
+                {/* Tooltip arrow */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-5px',
+                  left: '50%',
+                  width: '10px',
+                  height: '10px',
+                  backgroundColor: '#1F2937',
+                  border: '1px solid #4B5563',
+                  borderTop: 'none',
+                  borderLeft: 'none',
+                  transform: 'translateX(-50%) rotate(45deg)'
+                }}></div>
+              </div>
+            </div>
           </h3>
           <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.totalPassiveIncome.toLocaleString()}</p>
           <p className="text-xs text-amber-300 mt-1">Last 30 Days</p>
