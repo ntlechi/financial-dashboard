@@ -12648,7 +12648,25 @@ function App() {
     try {
       const success = await restoreFromBackup(userId, backupId);
       if (success) {
-        showNotification('🛡️ Data recovered successfully!', 'success');
+        showNotification('🛡️ Data recovered successfully! Reloading...', 'success');
+        
+        // 🛡️ CRITICAL FIX: Reload the actual financial data from Firebase!
+        try {
+          const docRef = doc(db, `users/${userId}/financials`, 'data');
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            const restoredData = docSnap.data();
+            setData(restoredData); // ✅ Update React state with restored data!
+            showNotification('✅ Data restored and loaded successfully!', 'success');
+          } else {
+            showNotification('⚠️ Data restored but reload failed. Please refresh page.', 'warning');
+          }
+        } catch (reloadError) {
+          console.error('Error reloading data after recovery:', reloadError);
+          showNotification('⚠️ Data restored but reload failed. Please refresh page.', 'warning');
+        }
+        
         setShowDataRecoveryModal(false);
         // Reload data safety info
         loadDataSafetyInfo();
@@ -12656,6 +12674,10 @@ function App() {
         showNotification('Recovery failed', 'error');
       }
     } catch (error) {
+      console.error('🛡️ Data recovery failed:', error);
+      showNotification('Recovery failed', 'error');
+    }
+  };
 
   // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
@@ -12665,10 +12687,6 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('🛡️ Data recovery failed:', error);
-      showNotification('Recovery failed', 'error');
-    }
-  };
 
   // ⚡ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
   const confirmQuickExpense = async (expense) => {
