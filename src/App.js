@@ -3796,10 +3796,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     };
     
     const updatedBusinesses = [...data.businesses, business];
-    const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      
+      // Update local state
+      setData({ ...data, businesses: updatedBusinesses });
+      
       // Award XP (+50) for creating a new business and trigger rank-up UI if applicable
       try {
         const result = await awardXp(db, userId, 50);
@@ -3813,7 +3819,6 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         }
       } catch (e) { console.warn('XP award failed (new business)', e); }
-      setData(updatedData);
       // FIX: Use local date instead of UTC
       const today = new Date();
       const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -3862,10 +3867,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       return business;
     });
     
-    const updatedData = { ...data, businesses: updatedBusinesses };
-    
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      
+      setData({ ...data, businesses: updatedBusinesses });
+      
       // Award XP for business item (income: +5, expense: +1)
       try {
         const amountXp = itemType === 'income' ? 5 : 1;
@@ -3880,7 +3889,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         }
       } catch (e) { console.warn('XP award failed (business item)', e); }
-      setData(updatedData);
+      
       const today = new Date();
       setNewItem({ description: '', amount: '', date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`, isPassive: false });
       setShowAddItem(false);
@@ -3912,11 +3921,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     if (!businessToDelete) return;
 
     const updatedBusinesses = data.businesses.filter(business => business.id !== businessToDelete.id);
-    const updatedData = { ...data, businesses: updatedBusinesses };
 
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      
+      setData({ ...data, businesses: updatedBusinesses });
       
       // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting business
       try {
@@ -3963,11 +3975,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       return business;
     });
     
-    const updatedData = { ...data, businesses: updatedBusinesses };
-    
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      
+      setData({ ...data, businesses: updatedBusinesses });
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -4024,11 +4038,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       return business;
     });
     
-    const updatedData = { ...data, businesses: updatedBusinesses };
-    
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        businesses: updatedBusinesses
+      });
+      
+      setData({ ...data, businesses: updatedBusinesses });
       setEditingItem(null);
     } catch (error) {
 
@@ -5756,7 +5772,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+          investments: updatedData.investments
+        });
         // Award XP (+50) for adding a new investment holding
         try {
           const result = await awardXp(db, userId, 50);
@@ -5803,7 +5822,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+          investments: updatedData.investments
+        });
       } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -5836,7 +5858,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+          investments: updatedData.investments
+        });
       } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -5889,7 +5914,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+          investments: updatedData.investments
+        });
       } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -6948,7 +6976,19 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      const fieldsToUpdate = {
+        transactions: updatedData.transactions,
+        recentTransactions: updatedData.recentTransactions
+      };
+      
+      // Add recurring expenses if they were added
+      if (updatedData.recurringExpenses && updatedData.recurringExpenses !== data.recurringExpenses) {
+        fieldsToUpdate.recurringExpenses = updatedData.recurringExpenses;
+      }
+      
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), fieldsToUpdate);
+      
       // Award XP (+1) for logging a transaction
       try {
         const result = await awardXp(db, userId, 1);
@@ -8437,8 +8477,8 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), {
-        ...data,
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
       setData({ ...data, travel: updatedTravel });
@@ -8466,8 +8506,8 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), {
-        ...data,
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
       setData({ ...data, travel: updatedTravel });
@@ -12632,14 +12672,26 @@ function App() {
     try {
       debugLog('🔍 DEBUG: Quick Expense Transaction:', transaction);
       debugLog('🔍 DEBUG: Updated transactions array length:', updatedTransactions.length);
-      debugLog('🔍 DEBUG: Updated recentTransactions array length:', updatedData.recentTransactions.length);
-      debugLog('🔍 DEBUG: First item in recentTransactions:', updatedData.recentTransactions[0]);
+      debugLog('🔍 DEBUG: Updated recentTransactions array length:', updatedTransactions.length);
+      debugLog('🔍 DEBUG: First item in recentTransactions:', updatedTransactions[0]);
       
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        transactions: updatedTransactions,
+        expenses: updatedExpenses,
+        recentTransactions: updatedTransactions
+      });
+      
+      // Update local state
+      setData({
+        ...data,
+        transactions: updatedTransactions,
+        expenses: updatedExpenses,
+        recentTransactions: updatedTransactions
+      });
       
       debugLog('✅ DEBUG: Data saved to Firebase and state updated');
-      debugLog('🔍 DEBUG: Current data.recentTransactions:', updatedData.recentTransactions.slice(0, 3));
+      debugLog('🔍 DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
       
       showNotification('⚡ Quick expense logged!', 'success');
       
@@ -12693,14 +12745,18 @@ function App() {
     };
     
     // Add to data structure
-    const updatedData = {
-      ...data,
-      quickJournalEntries: [...(data.quickJournalEntries || []), journalEntry]
-    };
+    const updatedQuickJournal = [...(data.quickJournalEntries || []), journalEntry];
     
     try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
+        quickJournalEntries: updatedQuickJournal
+      });
+      
+      setData({
+        ...data,
+        quickJournalEntries: updatedQuickJournal
+      });
       closeQuickJournal();
       showNotification('📝 Quick note saved!', 'success');
       
