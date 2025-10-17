@@ -650,8 +650,8 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
   const remainingMonths = monthsToGoal % 12;
 
   return (
-    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 flex flex-col">
-      <div className="flex items-center justify-between mb-6">
+    <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20 min-h-[320px] flex flex-col">
+      <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Target className="w-6 h-6 mr-3 text-amber-400" />
           Financial Freedom Goal
@@ -659,15 +659,27 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         <button
           onClick={() => onEdit('financialFreedom', data)}
           className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
+          title="Edit financial freedom goal"
         >
-          <Edit className="w-4 h-4" />
+          <Target className="w-4 h-4" />
         </button>
-        <span className="text-amber-400 font-semibold">{progressPercentage.toFixed(1)}%</span>
       </div>
       
-      <div className="space-y-8">
+      <div className="space-y-4">
+        <div className="text-center bg-slate-800/50 rounded-lg p-6 border border-amber-500/20">
+          <div className="text-5xl font-extrabold text-amber-400">
+            {progressPercentage.toFixed(1)}%
+          </div>
+          <div className="text-amber-400/70 text-sm mt-2 font-semibold">
+            {progressPercentage >= 100 ? 'Goal Reached!' : 
+             progressPercentage >= 75 ? 'Almost There!' :
+             progressPercentage >= 50 ? 'Halfway!' :
+             progressPercentage >= 25 ? 'Good Progress' : 'Getting Started'}
+          </div>
+        </div>
+        
         <div>
-          <div className="flex justify-between text-sm text-gray-300 mb-3">
+          <div className="flex justify-between text-sm text-amber-400/80 mb-2">
             <span>Current: ${data.currentInvestments.toLocaleString()}</span>
             <span>Target: ${data.targetAmount.toLocaleString()}</span>
           </div>
@@ -679,17 +691,9 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
           />
         </div>
         
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-            <div className="text-lg font-bold text-white">${data.monthlyContribution.toLocaleString()}</div>
-            <div className="text-xs text-amber-400 mt-1">Monthly Contribution</div>
-          </div>
-          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-            <div className="text-lg font-bold text-white">
-              {yearsToGoal}y {remainingMonths}m
-            </div>
-            <div className="text-xs text-amber-400 mt-1">Time to Goal</div>
-          </div>
+        <div className="text-center text-sm text-gray-300 bg-slate-800/30 rounded-lg p-3 border border-amber-500/10">
+          Investing <span className="text-amber-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo • 
+          <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
     </Card>
