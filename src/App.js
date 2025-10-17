@@ -4669,7 +4669,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 };
 
 // Investment Portfolio Component with Charts
-const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal }) => {
+const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, showNotification }) => {
   const pieChartRef = useRef(null);
   const lineChartRef = useRef(null);
   const [showAddHolding, setShowAddHolding] = useState(false);
@@ -5159,19 +5159,20 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     
     const updatedData = { ...data, investments: updatedInvestments };
     
-    // Update local state immediately
-    setData(updatedData);
-    setNewHolding({ 
-      symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
-      dripEnabled: true, accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable', isUSStock: false, withholdingTax: 0, currency: 'CAD',
-      category: 'US Stocks' // Reset to default category
-    });
-    setShowAddHolding(false);
-    
-    // Save to Firebase
+    // Save to Firebase FIRST, then update local state
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        
+        // Update local state AFTER successful Firebase save
+        setData(updatedData);
+        setNewHolding({ 
+          symbol: '', name: '', shares: '', avgCost: '', currentPrice: '', dividendYield: '', 
+          dripEnabled: true, accountType: data.registeredAccounts?.accounts?.[0]?.name || 'Taxable', isUSStock: false, withholdingTax: 0, currency: 'CAD',
+          category: 'US Stocks' // Reset to default category
+        });
+        setShowAddHolding(false);
+        
         // Award XP (+50) for adding a new investment holding
         try {
           const result = await awardXp(db, userId, 50);
@@ -5186,6 +5187,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
         console.error('Error saving to Firebase:', error);
+        showNotification('❌ Failed to save investment. Please try again.', 'error');
       }
     }
   };
@@ -5202,15 +5204,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     
     const updatedData = { ...data, investments: updatedInvestments };
     
-    // Update local state immediately
-    setData(updatedData);
-    
-    // Save to Firebase
+    // Save to Firebase FIRST, then update local state
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // Update local state AFTER successful Firebase save
+        setData(updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
+        showNotification('❌ Failed to delete investment. Please try again.', 'error');
       }
     }
   };
@@ -5226,15 +5228,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     const updatedInvestments = { ...data.investments, holdings: updatedHoldings };
     const updatedData = { ...data, investments: updatedInvestments };
     
-    // Update local state immediately
-    setData(updatedData);
-    
-    // Save to Firebase
+    // Save to Firebase FIRST, then update local state
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // Update local state AFTER successful Firebase save
+        setData(updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
+        showNotification('❌ Failed to toggle DRIP. Please try again.', 'error');
       }
     }
   };
@@ -5269,16 +5271,16 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     
     const updatedData = { ...data, investments: updatedInvestments };
     
-    // Update local state immediately
-    setData(updatedData);
-    setEditingHolding(null);
-    
-    // Save to Firebase
+    // Save to Firebase FIRST, then update local state
     if (userId && db) {
       try {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+        // Update local state AFTER successful Firebase save
+        setData(updatedData);
+        setEditingHolding(null);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
+        showNotification('❌ Failed to update investment. Please try again.', 'error');
       }
     }
   };
@@ -11910,7 +11912,7 @@ function App() {
           
           {activeTab === 'investment' && (
             <FinancialErrorBoundary componentName="Investment Portfolio">
-              <InvestmentTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} />
+              <InvestmentTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} showNotification={showNotification} />
             </FinancialErrorBoundary>
           )}
           
