@@ -1750,7 +1750,8 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     const total = monthsData.reduce((sum, val) => sum + val, 0);
     const average = monthsData.length > 0 ? total / monthsData.length : 0; // 🛡️ FIX: Return actual average, not $2000
     
-    return average; // 🛡️ FIX: Return actual average (including 0), no phantom fallback
+    // 🛡️ FIX: Round to 2 decimal places for display (e.g., $432.33 not $432.333)
+    return Math.round(average * 100) / 100;
   };
 
   // 🎯 SURVIVAL RUNWAY CALCULATION
@@ -12360,7 +12361,7 @@ function App() {
         },
         creditScore: { current: 0, history: [] },
         cashOnHand: { total: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] },
-        rainyDayFund: { total: 0, goal: 6000, accounts: [], history: [{ date: resetStartDate, total: 0 }] },
+        rainyDayFund: { total: 0, goal: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] }, // 🛡️ FIX: Start at 0, let users set their own goal!
         debt: {
           total: 0,
           accounts: [
@@ -12416,7 +12417,7 @@ function App() {
         },
         rainyDayFund: {
           total: 0,
-          goal: 30000,
+          goal: 0, // 🛡️ FIX: Start at 0, let users set their own goal!
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
