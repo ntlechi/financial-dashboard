@@ -11838,7 +11838,7 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // 🌊 FLOW LIKE WATER: Simple signup (pre-detection handles existing users)
+      // 🌊 FLOW LIKE WATER: Try signup first (handles Firebase Auth inconsistency)
       console.log('🌊 Creating new account for:', authForm.email);
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
@@ -11847,11 +11847,24 @@ function App() {
       setAuthForm({ email: '', password: '', name: '' });
     } catch (error) {
       console.error('Signup error:', error);
-      let errorMessage = 'Failed to create account';
       
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email is already registered. Please sign in instead.';
-      } else if (error.code === 'auth/weak-password') {
+        // 🌊 FLOW LIKE WATER: Email exists (webhook created user), show password setup
+        console.log('🌊 Email already exists - webhook created user, showing set password option');
+        setExistingUserWithPayment({
+          email: authForm.email,
+          name: authForm.name,
+          userId: 'webhook-created', // We'll get the real ID after sign-in
+          subscription: { status: 'active', tier: 'founders-circle' } // Assume Founder's Circle for Payment Links
+        });
+        setShowSetPassword(true);
+        setAuthLoading(false);
+        return;
+      }
+      
+      // Handle other errors normally
+      let errorMessage = 'Failed to create account';
+      if (error.code === 'auth/weak-password') {
         errorMessage = 'Password should be at least 6 characters';
       } else if (error.code === 'auth/invalid-email') {
         errorMessage = 'Please enter a valid email address';
