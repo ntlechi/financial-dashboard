@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, Rocket, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -22,33 +22,21 @@ import ReflectionsPage from './components/ReflectionsPage';
 import FirstClimbProtocol from './components/FirstClimbProtocol';
 import SupplyCrateSystem from './components/SupplyCrateSystem';
 import MissionControl from './components/MissionControl';
-import MilestoneReviewCard from './components/MilestoneReviewCard';
 import MissionCompleteModal from './components/MissionCompleteModal';
 import QuickExpenseModal from './components/QuickExpenseModal';
 import QuickJournalModal from './components/QuickJournalModal';
-import TransactionModal from './components/TransactionModal';
 import FixedModal from './components/FixedModal';
 // import MomentsModal from './components/MomentsModal'; // TODO: Create MomentsModal component
 import MomentsFeed from './components/MomentsFeed';
 import InstallPrompt from './components/FixedModal';
 import QuickStartGuide from './components/QuickStartGuide';
+import LoadingScreen from './components/LoadingScreen';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
-import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from './pricing';
-import { formatDateForUser, getTodayInUserTimezone, getRelativeTime, getTimezoneInfo } from './utils/timezoneUtils';
+import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
 import { 
   isOnline, 
-  getOfflineSummary, 
-  hasOfflineData, 
-  storeTransactionOffline, 
-  storeExpenseOffline, 
-  storeJournalOffline,
-  getOfflineTransactions,
-  getOfflineExpenses,
-  getOfflineJournal,
-  getPendingSync,
-  clearPendingSync,
-  markAsSynced
+  getOfflineSummary
 } from './utils/offlineUtils';
 import { 
   createBackup, 
@@ -10815,6 +10803,9 @@ const TravelTab = ({ data, setData, userId }) => {
  };
 
 function App() {
+  // Loading state for initial app load
+  const [isLoading, setIsLoading] = useState(true);
+
   // Add CSS for scrollbar hiding and mobile viewport fixes
   React.useEffect(() => {
     const style = document.createElement('style');
@@ -11656,6 +11647,7 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       debugLog('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
       setAuthLoading(true);
+      setIsLoading(true);
       
       if (firebaseUser) {
         // User is signed in
@@ -11763,6 +11755,7 @@ function App() {
       }
       
       setAuthLoading(false);
+      setIsLoading(false);
       // setLoading(false); // Removed - using authLoading instead
     });
 
@@ -13302,6 +13295,11 @@ function App() {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
+
+  // Show loading screen while app is initializing
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
