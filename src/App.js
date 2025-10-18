@@ -10982,6 +10982,7 @@ function App() {
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
+  const [landingRedirect, setLandingRedirect] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   
   
@@ -12058,6 +12059,27 @@ function App() {
     };
 
     loadPricingPhaseData();
+  }, []);
+
+  // 🎯 HANDLE LANDING PAGE REDIRECTS
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const upgradePlan = urlParams.get('upgrade');
+    const signup = urlParams.get('signup');
+    const plan = urlParams.get('plan');
+
+    if (upgradePlan) {
+      // User came from landing page and wants to upgrade
+      setLandingRedirect({ type: 'upgrade', plan: upgradePlan });
+      setShowPricingModal(true);
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (signup && plan) {
+      // User came from landing page and needs to signup
+      setLandingRedirect({ type: 'signup', plan: plan });
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   // Close calendar when clicking outside
