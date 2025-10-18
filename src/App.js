@@ -11838,35 +11838,8 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // 🎯 SMART SIGNUP FLOW: Check if email already exists
-      console.log('🔍 Starting smart signup flow for email:', authForm.email, 'v2.1');
-      
-      // FIRST: Check Firebase Auth for existing users (webhook creates these)
-      try {
-        const signInMethods = await fetchSignInMethodsForEmail(auth, authForm.email);
-        console.log('📧 Sign-in methods found:', signInMethods);
-        
-        if (signInMethods.length > 0) {
-          // Email exists in Firebase Auth - this means webhook created the user
-          console.log('✅ Email exists in Firebase Auth - webhook created user, showing set password option');
-          setExistingUserWithPayment({
-            email: authForm.email,
-            name: authForm.name,
-            userId: 'webhook-created', // We'll get the real ID after sign-in
-            subscription: { status: 'active', tier: 'founders-circle' } // Assume Founder's Circle for Payment Links
-          });
-          setShowSetPassword(true);
-          setAuthLoading(false);
-          return;
-        } else {
-          console.log('✅ Email does not exist in Firebase Auth, proceeding with normal signup');
-        }
-      } catch (signInMethodsError) {
-        console.error('❌ Error checking sign-in methods:', signInMethodsError);
-        console.log('⚠️ Could not check Firebase Auth, proceeding with normal signup');
-      }
-      
-      // Email doesn't exist - proceed with normal signup
+      // 🌊 FLOW LIKE WATER: Simple signup (pre-detection handles existing users)
+      console.log('🌊 Creating new account for:', authForm.email);
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
@@ -11877,7 +11850,7 @@ function App() {
       let errorMessage = 'Failed to create account';
       
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'An account with this email already exists';
+        errorMessage = 'This email is already registered. Please sign in instead.';
       } else if (error.code === 'auth/weak-password') {
         errorMessage = 'Password should be at least 6 characters';
       } else if (error.code === 'auth/invalid-email') {
@@ -12174,6 +12147,57 @@ function App() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [authLoading, user]); // Run when loading state or user changes
+
+  // 🌊 FLOW LIKE WATER: Pre-detect user status on signup page load
+  useEffect(() => {
+    // Only run on signup page when not authenticated
+    if (authLoading || user || !showAuth || authMode !== 'signup') return;
+    
+    // Check if we have an email in the URL or form
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailFromUrl = urlParams.get('email');
+    const emailToCheck = emailFromUrl || authForm.email;
+    
+    if (emailToCheck) {
+      console.log('🌊 Pre-detecting user status for:', emailToCheck);
+      
+      // Check if this email exists in Firebase Auth (webhook-created user)
+      fetchSignInMethodsForEmail(auth, emailToCheck)
+        .then(signInMethods => {
+          console.log('🌊 Pre-detection result:', signInMethods);
+          
+          if (signInMethods.length > 0) {
+            // Email exists - this is a webhook-created user, show password setup immediately
+            console.log('🌊 User exists - showing password setup flow immediately');
+            setExistingUserWithPayment({
+              email: emailToCheck,
+              name: authForm.name || '',
+              userId: 'webhook-created',
+              subscription: { status: 'active', tier: 'founders-circle' }
+            });
+            setShowSetPassword(true);
+            
+            // Pre-fill the email in the form
+            if (emailFromUrl) {
+              setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
+            }
+          } else {
+            console.log('🌊 New user - showing normal signup form');
+            // Pre-fill email from URL if available
+            if (emailFromUrl) {
+              setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
+            }
+          }
+        })
+        .catch(error => {
+          console.log('🌊 Pre-detection failed, showing normal signup:', error);
+          // Pre-fill email from URL if available
+          if (emailFromUrl) {
+            setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
+          }
+        });
+    }
+  }, [authLoading, user, showAuth, authMode, authForm.email]);
 
   // Close calendar when clicking outside
   useEffect(() => {
