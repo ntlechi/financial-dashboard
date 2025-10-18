@@ -12070,7 +12070,7 @@ function App() {
   // 🎯 HANDLE LANDING PAGE REDIRECTS (Simplified - Optional)
   useEffect(() => {
     // Only run after user authentication is complete
-    if (loading || !user) return;
+    if (authLoading || !user) return;
 
     const urlParams = new URLSearchParams(window.location.search);
     const upgradePlan = urlParams.get('upgrade');
@@ -12097,7 +12097,7 @@ function App() {
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [loading, user]); // Run when loading state or user changes
+  }, [authLoading, user]); // Run when loading state or user changes
 
   // Close calendar when clicking outside
   useEffect(() => {
