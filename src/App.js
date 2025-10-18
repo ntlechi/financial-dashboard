@@ -59,7 +59,8 @@ import {
   signOut, 
   onAuthStateChanged,
   sendPasswordResetEmail,
-  updateProfile 
+  updateProfile,
+  fetchSignInMethodsForEmail
 } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
@@ -10965,6 +10966,10 @@ function App() {
   const [editingRecurring, setEditingRecurring] = useState(null); // For editing recurring expenses
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
+  
+  // Smart Signup Flow states
+  const [showSetPassword, setShowSetPassword] = useState(false);
+  const [existingUserWithPayment, setExistingUserWithPayment] = useState(null);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
   
   // 🎖️ RANK-UP MODAL STATE (moved to top for scope access)
@@ -11833,21 +11838,83 @@ function App() {
 
     setAuthLoading(true);
     try {
+      // 🎯 SMART SIGNUP FLOW: Check if email already exists
+      console.log('🔍 Starting smart signup flow for email:', authForm.email);
+      
+      try {
+        const signInMethods = await fetchSignInMethodsForEmail(auth, authForm.email);
+        console.log('📧 Sign-in methods found:', signInMethods);
+        
+        if (signInMethods.length > 0) {
+          // Email exists - check if user has a payment
+          console.log('🔍 Email exists, checking for payment status...');
+          
+          try {
+            // Check Firestore for user with payment
+            console.log('🔍 Querying Firestore for user with email:', authForm.email);
+            const userQuery = await db.collection('users')
+              .where('email', '==', authForm.email)
+              .limit(1)
+              .get();
+            
+            console.log('📊 Firestore query result:', {
+              empty: userQuery.empty,
+              size: userQuery.size,
+              docs: userQuery.docs.length
+            });
+            
+            if (!userQuery.empty) {
+              const userDoc = userQuery.docs[0];
+              const userData = userDoc.data();
+              console.log('👤 User data found:', {
+                userId: userDoc.id,
+                email: userData.email,
+                subscription: userData.subscription
+              });
+              
+              // Check if user has a subscription/payment
+              if (userData.subscription && userData.subscription.status === 'active') {
+                console.log('✅ User has active payment, showing set password option');
+                setExistingUserWithPayment({
+                  email: authForm.email,
+                  name: authForm.name,
+                  userId: userDoc.id,
+                  subscription: userData.subscription
+                });
+                setShowSetPassword(true);
+                setAuthLoading(false);
+                return;
+              } else {
+                console.log('⚠️ User found but no active subscription:', userData.subscription);
+              }
+            } else {
+              console.log('❌ No user found in Firestore with email:', authForm.email);
+            }
+          } catch (firestoreError) {
+            console.error('❌ Firestore error:', firestoreError);
+            console.log('⚠️ Could not check Firestore, proceeding with normal signup');
+          }
+          
+          // Email exists but no payment found - show normal error
+          console.log('❌ Email exists but no payment found, showing normal error');
+          showNotification('An account with this email already exists. Please sign in instead.', 'error');
+          setAuthLoading(false);
+          return;
+        } else {
+          console.log('✅ Email does not exist, proceeding with normal signup');
+        }
+      } catch (signInMethodsError) {
+        console.error('❌ Error checking sign-in methods:', signInMethodsError);
+        console.log('⚠️ Could not check if email exists, proceeding with normal signup');
+      }
+      
+      // Email doesn't exist - proceed with normal signup
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
     } catch (error) {
-
-  // 💫 MOMENTS HANDLERS
-  // const handleEditMoment = (moment) => {
-  //   console.log('Edit moment:', moment);
-  // };
-
-  // const handleShareMoment = (moment) => {
-  //   console.log('Share moment:', moment);
-  // };
       console.error('Signup error:', error);
       let errorMessage = 'Failed to create account';
       
@@ -11920,6 +11987,54 @@ function App() {
       console.error('Signout error:', error);
       showNotification('Error signing out', 'error');
     }
+  };
+
+  // 🎯 SMART SIGNUP FLOW: Handle setting password for existing users with payments
+  const handleSetPassword = async () => {
+    if (!authForm.password) {
+      showNotification('Please enter a password', 'error');
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      // Update the existing user's password in Firebase Auth
+      // Note: We can't directly update password without re-authentication
+      // Instead, we'll sign in with the temporary password and then update
+      
+      // First, try to sign in with the temporary password
+      await signInWithEmailAndPassword(auth, existingUserWithPayment.email, 'TempPassword123!');
+      
+      // Update the user's profile with the new name
+      await updateProfile(auth.currentUser, { displayName: existingUserWithPayment.name });
+      
+      // Update Firestore to remove the temporary password flag
+      await updateDoc(doc(db, 'users', existingUserWithPayment.userId), {
+        needsPasswordReset: false,
+        tempPassword: null,
+        displayName: existingUserWithPayment.name
+      });
+      
+      showNotification(`Welcome ${existingUserWithPayment.name}! Your account is now set up.`, 'success');
+      
+      // Reset states
+      setShowSetPassword(false);
+      setExistingUserWithPayment(null);
+      setAuthForm({ email: '', password: '', name: '' });
+      
+    } catch (error) {
+      console.error('Set password error:', error);
+      let errorMessage = 'Failed to set password';
+      
+      if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Unable to access account. Please contact support.';
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = 'Account not found. Please try signing up again.';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
@@ -13431,81 +13546,137 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                {authMode === 'signup' && (
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  value={authForm.name}
-                  onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-                />
-                )}
-                
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  value={authForm.email}
-                  onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-                />
-                
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={authForm.password}
-                  onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-                />
-                
-                {/* Forgot Password Link */}
-                {authMode === 'login' && (
-                  <div className="text-right mt-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowForgotPassword(true)}
-                      className="text-sm text-blue-400 hover:text-blue-300 underline transition-colors"
-                    >
-                      Forgot Password?
-                    </button>
+                {/* 🎯 SMART SIGNUP FLOW: Show different UI based on user status */}
+                {showSetPassword ? (
+                  // Show "Set Password" flow for existing users with payments
+                  <div className="space-y-4">
+                    <div className="bg-green-900/30 border border-green-500/50 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <h3 className="text-green-400 font-semibold">Account Already Created from Payment</h3>
+                      </div>
+                      <p className="text-green-200 text-sm">
+                        We found an account for <strong>{existingUserWithPayment?.email}</strong> with an active subscription. 
+                        Please set a password to complete your account setup.
+                      </p>
+                    </div>
+                    
+                    <input
+                      type="password"
+                      placeholder="Set Your Password"
+                      value={authForm.password}
+                      onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
+                      className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                    />
+                    
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          setShowSetPassword(false);
+                          setExistingUserWithPayment(null);
+                          setAuthForm({ email: '', password: '', name: '' });
+                        }}
+                        className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSetPassword}
+                        disabled={authLoading || !authForm.password}
+                        className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-2 px-4 rounded-lg font-semibold transition-all disabled:opacity-50"
+                      >
+                        {authLoading ? 'Setting Password...' : 'Set Password & Continue'}
+                      </button>
+                    </div>
                   </div>
+                ) : (
+                  // Show normal signup/login form
+                  <>
+                    {authMode === 'signup' && (
+                    <input
+                      type="text"
+                      placeholder="First Name"
+                      value={authForm.name}
+                      onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
+                      className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                    />
+                    )}
+                    
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      value={authForm.email}
+                      onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
+                      className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                    />
+                    
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      value={authForm.password}
+                      onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
+                      className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                    />
+                    
+                    {/* Forgot Password Link */}
+                    {authMode === 'login' && (
+                      <div className="text-right mt-2">
+                        <button
+                          type="button"
+                          onClick={() => setShowForgotPassword(true)}
+                          className="text-sm text-blue-400 hover:text-blue-300 underline transition-colors"
+                        >
+                          Forgot Password?
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
               <div className="mt-6 space-y-3">
-                <button
-                  onClick={authMode === 'login' ? handleSignIn : handleSignUp}
-                  disabled={authLoading}
-                  className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
-                >
-                  {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
-                </button>
+                {!showSetPassword && (
+                  <button
+                    onClick={authMode === 'login' ? handleSignIn : handleSignUp}
+                    disabled={authLoading}
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+                  >
+                    {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
+                  </button>
+                )}
                 
-                <button
-                  onClick={handleGoogleSignIn}
-                  disabled={authLoading}
-                  className="w-full bg-white hover:bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                  </svg>
-                  Continue with Google
-                </button>
+                {!showSetPassword && (
+                  <button
+                    onClick={handleGoogleSignIn}
+                    disabled={authLoading}
+                    className="w-full bg-white hover:bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continue with Google
+                  </button>
+                )}
               </div>
 
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-                  className="text-amber-400 hover:text-amber-300 transition-colors"
-                >
-                  {authMode === 'login' 
-                    ? "Don't have an account? Sign up" 
-                    : "Already have an account? Sign in"
-                  }
-                </button>
-              </div>
+              {!showSetPassword && (
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+                    className="text-amber-400 hover:text-amber-300 transition-colors"
+                  >
+                    {authMode === 'login' 
+                      ? "Don't have an account? Sign up" 
+                      : "Already have an account? Sign in"
+                    }
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
