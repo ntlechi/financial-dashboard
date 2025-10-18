@@ -590,11 +590,54 @@ async function handleSubscriptionCancelled(subscription) {
 // Handle successful payment
 async function handlePaymentSucceeded(invoice) {
   console.log('💰 Invoice payment succeeded:', invoice.id);
+  console.log('📋 Invoice details:', {
+    id: invoice.id,
+    customer: invoice.customer,
+    subscription: invoice.subscription,
+    amount_paid: invoice.amount_paid,
+    currency: invoice.currency
+  });
   
   const subscriptionId = invoice.subscription;
   
   if (!subscriptionId) {
-    console.log('⚠️ Invoice has no subscription - skipping payment success handler');
+    console.log('⚠️ Invoice has no subscription - trying to find user by customer email');
+    
+    // Try to find user by customer email for invoices without subscriptions
+    if (invoice.customer) {
+      try {
+        const customer = await stripe.customers.retrieve(invoice.customer);
+        console.log('📧 Customer email:', customer.email);
+        
+        if (customer.email) {
+          // Find user by email
+          try {
+            const authUser = await admin.auth().getUserByEmail(customer.email);
+            const userId = authUser.uid;
+            
+            console.log('✅ Found user by email:', userId);
+            
+            // Update last payment date
+            await updateUserSubscription(userId, {
+              lastPaymentDate: new Date().toISOString(),
+              lastUpdated: new Date().toISOString()
+            });
+
+            console.log(`✅ Payment succeeded for user ${userId} (found by email)`);
+            
+            // Send payment success email
+            await sendEmail(userId, 'payment_succeeded');
+            return;
+          } catch (authError) {
+            console.log('❌ No user found in Firebase Auth:', authError.message);
+          }
+        }
+      } catch (customerError) {
+        console.error('❌ Error retrieving customer:', customerError);
+      }
+    }
+    
+    console.log('⚠️ Could not process payment - no subscription and no user found');
     return;
   }
   
