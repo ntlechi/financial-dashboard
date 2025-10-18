@@ -228,15 +228,30 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   let userId = null;
   let customer = null;
   
-  // First, get customer details
-  if (paymentIntent.customer) {
-    try {
-      customer = await stripe.customers.retrieve(paymentIntent.customer);
-      console.log('📧 Customer email:', customer.email);
-    } catch (error) {
-      console.error('❌ Error retrieving customer:', error);
-    }
-  }
+      // First, get customer details
+      if (paymentIntent.customer) {
+        try {
+          customer = await stripe.customers.retrieve(paymentIntent.customer);
+          console.log('📧 Customer email:', customer.email);
+          console.log('📧 Customer details:', {
+            id: customer.id,
+            email: customer.email,
+            name: customer.name,
+            metadata: customer.metadata
+          });
+        } catch (error) {
+          console.error('❌ Error retrieving customer:', error);
+        }
+      }
+      
+      // If no customer email, try to get it from payment intent receipt_email
+      if (!customer?.email && paymentIntent.receipt_email) {
+        console.log('📧 Using receipt email from payment intent:', paymentIntent.receipt_email);
+        customer = {
+          id: paymentIntent.customer,
+          email: paymentIntent.receipt_email
+        };
+      }
   
   // Method 1: Try to get subscription from payment intent metadata
   const subscriptionId = paymentIntent.metadata?.subscription_id;
@@ -382,25 +397,56 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
     }
   }
   
-  // If we still don't have a subscription, try to find it by looking at recent subscriptions
-  if (!subscription && paymentIntent.customer) {
-    console.log('🔍 Looking for recent subscriptions (including incomplete ones)');
-    
-    try {
-      const subscriptions = await stripe.subscriptions.list({
-        customer: paymentIntent.customer,
-        limit: 5 // Get more recent subscriptions
-      });
-      
-      // Look for the most recent subscription
-      if (subscriptions.data.length > 0) {
-        subscription = subscriptions.data[0];
-        console.log('✅ Found recent subscription:', subscription.id, 'Status:', subscription.status);
+      // If we still don't have a subscription, try to find it by looking at recent subscriptions
+      if (!subscription && paymentIntent.customer) {
+        console.log('🔍 Looking for recent subscriptions (including incomplete ones)');
+        
+        try {
+          const subscriptions = await stripe.subscriptions.list({
+            customer: paymentIntent.customer,
+            limit: 10 // Get more recent subscriptions
+          });
+          
+          console.log('📊 Found subscriptions:', subscriptions.data.length);
+          
+          // Look for the most recent subscription
+          if (subscriptions.data.length > 0) {
+            subscription = subscriptions.data[0];
+            console.log('✅ Found recent subscription:', subscription.id, 'Status:', subscription.status);
+            console.log('📋 Subscription details:', {
+              id: subscription.id,
+              status: subscription.status,
+              items: subscription.items?.data?.length || 0,
+              priceId: subscription.items?.data?.[0]?.price?.id
+            });
+          }
+        } catch (error) {
+          console.log('❌ Error listing recent subscriptions:', error.message);
+        }
       }
-    } catch (error) {
-      console.log('❌ Error listing recent subscriptions:', error.message);
-    }
-  }
+      
+      // For Payment Links, also check if this is a one-time payment that should create a subscription
+      if (!subscription && paymentIntent.customer && paymentIntent.amount > 0) {
+        console.log('🔍 Payment Link detected - checking for subscription creation');
+        
+        // Look for any subscription created around the same time as this payment
+        try {
+          const subscriptions = await stripe.subscriptions.list({
+            customer: paymentIntent.customer,
+            created: {
+              gte: Math.floor((Date.now() - 60000) / 1000) // Last minute
+            },
+            limit: 5
+          });
+          
+          if (subscriptions.data.length > 0) {
+            subscription = subscriptions.data[0];
+            console.log('✅ Found newly created subscription:', subscription.id);
+          }
+        } catch (error) {
+          console.log('❌ Error checking for new subscriptions:', error.message);
+        }
+      }
   
   if (!userId) {
     console.error('❌ No userId found for payment intent:', paymentIntent.id);
