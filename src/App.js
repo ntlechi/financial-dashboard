@@ -11942,22 +11942,30 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // Update the existing user's password in Firebase Auth
-      // Note: We can't directly update password without re-authentication
-      // Instead, we'll sign in with the temporary password and then update
+      // 🌊 FLOW LIKE WATER: Use our API to update the password
+      console.log('🌊 Updating password for webhook-created user:', existingUserWithPayment.email);
       
-      // First, try to sign in with the temporary password
-      await signInWithEmailAndPassword(auth, existingUserWithPayment.email, 'TempPassword123!');
-      
-      // Update the user's profile with the new name
-      await updateProfile(auth.currentUser, { displayName: existingUserWithPayment.name });
-      
-      // Update Firestore to remove the temporary password flag
-      await updateDoc(doc(db, 'users', existingUserWithPayment.userId), {
-        needsPasswordReset: false,
-        tempPassword: null,
-        displayName: existingUserWithPayment.name
+      const response = await fetch('/api/update-user-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: existingUserWithPayment.email,
+          newPassword: authForm.password,
+          displayName: existingUserWithPayment.name
+        })
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to update password');
+      }
+
+      const result = await response.json();
+      console.log('✅ Password updated successfully:', result);
+      
+      // Now sign in with the new password
+      await signInWithEmailAndPassword(auth, existingUserWithPayment.email, authForm.password);
       
       showNotification(`Welcome ${existingUserWithPayment.name}! Your account is now set up.`, 'success');
       
