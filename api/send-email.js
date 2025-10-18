@@ -211,6 +211,8 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
       subscription_tier: subscriptionTier,
       trigger_event: trigger,
       product_name: productName || subscriptionTier, // Send product name for ConvertKit
+      product: productName || subscriptionTier, // Alternative field name
+      stripe_product: productName || subscriptionTier, // Stripe-specific field
       signup_date: new Date().toISOString()
     }
   };
@@ -225,6 +227,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   }
 
   try {
+    // First, subscribe the user
     const response = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
       method: 'POST',
       headers: {
@@ -240,10 +243,60 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
 
     const result = await response.json();
     console.log('✅ ConvertKit subscription successful:', result);
+    
+    // If this is a subscription creation, also record it as a purchase
+    if (trigger === 'subscription_created' && productName) {
+      await recordPurchaseInConvertKit(email, productName, subscriptionTier);
+    }
+    
     return result;
   } catch (error) {
     console.error('Error sending to ConvertKit:', error);
     throw error;
+  }
+}
+
+// Record purchase in ConvertKit for proper product tracking
+async function recordPurchaseInConvertKit(email, productName, subscriptionTier) {
+  const CONVERTKIT_API_KEY = process.env.CONVERTKIT_API_KEY;
+  
+  if (!CONVERTKIT_API_KEY) {
+    console.log('ConvertKit API key not configured, skipping purchase recording');
+    return;
+  }
+
+  try {
+    // Use ConvertKit's purchase API
+    const purchasePayload = {
+      api_key: CONVERTKIT_API_KEY,
+      email: email,
+      product_name: productName,
+      product_id: subscriptionTier, // Use tier as product ID
+      purchase_amount: 0.75, // Your test amount
+      currency: 'USD',
+      transaction_id: `test_${Date.now()}`,
+      purchase_date: new Date().toISOString()
+    };
+
+    const response = await fetch('https://api.convertkit.com/v3/purchases', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(purchasePayload)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('ConvertKit purchase recording error:', errorData);
+      return;
+    }
+
+    const result = await response.json();
+    console.log('✅ ConvertKit purchase recorded:', result);
+    return result;
+  } catch (error) {
+    console.error('Error recording purchase in ConvertKit:', error);
   }
 }
 
