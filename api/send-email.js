@@ -205,18 +205,18 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     return;
   }
 
-  // Form ID mapping based on subscription tier
-  const formMapping = {
-    'recon': process.env.CONVERTKIT_RECON_FORM_ID,
-    'climber': process.env.CONVERTKIT_CLIMBER_FORM_ID,
-    'operator': process.env.CONVERTKIT_OPERATOR_FORM_ID,
-    'founders-circle': process.env.CONVERTKIT_FOUNDERS_FORM_ID,
+  // Tag mapping based on subscription tier (for email sequences)
+  const tagMapping = {
+    'recon': 'recon-user',
+    'climber': 'climber-subscriber', 
+    'operator': 'operator-subscriber',
+    'founders-circle': 'founders-circle-subscriber',
   };
 
-  const formId = formMapping[subscriptionTier];
+  const tag = tagMapping[subscriptionTier];
   
-  if (!formId) {
-    console.error('No ConvertKit form ID found for tier:', subscriptionTier);
+  if (!tag) {
+    console.error('No ConvertKit tag found for tier:', subscriptionTier);
     return;
   }
 
@@ -227,25 +227,17 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     fields: {
       subscription_tier: subscriptionTier,
       trigger_event: trigger,
-      product_name: productName || subscriptionTier, // Send product name for ConvertKit
-      product: productName || subscriptionTier, // Alternative field name
-      stripe_product: productName || subscriptionTier, // Stripe-specific field
+      product_name: productName || subscriptionTier,
+      product: productName || subscriptionTier,
+      stripe_product: productName || subscriptionTier,
       signup_date: new Date().toISOString()
-    }
+    },
+    tags: [tag] // Use the mapped tag for the subscription tier
   };
 
-  // Add tags based on trigger
-  if (trigger === 'subscription_created') {
-    payload.tags = [`${subscriptionTier}-subscriber`, 'active-subscriber'];
-  } else if (trigger === 'subscription_cancelled') {
-    payload.tags = ['cancelled-subscriber'];
-  } else if (trigger === 'free_user_signup') {
-    payload.tags = ['recon-user', 'free-user'];
-  }
-
   try {
-    // First, subscribe the user
-    const response = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
+    // Add subscriber to ConvertKit (will be tagged automatically)
+    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
