@@ -269,67 +269,77 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
         
         // Fallback: Try to find user in Firestore
         console.log('🔍 Searching Firestore for user with email:', customer.email);
-        const usersSnapshot = await db.collection('users')
-          .where('email', '==', customer.email)
-          .limit(1)
-          .get();
-        
-        console.log('📊 Firestore query result:', {
-          empty: usersSnapshot.empty,
-          size: usersSnapshot.size,
-          docs: usersSnapshot.docs.length
-        });
-        
-        if (!usersSnapshot.empty) {
-          const userDoc = usersSnapshot.docs[0];
-          userId = userDoc.id;
-          console.log('✅ Found user by email in Firestore:', userId);
-        } else {
-          console.log('❌ No user found with email in Firestore:', customer.email);
+        try {
+          const usersSnapshot = await db.collection('users')
+            .where('email', '==', customer.email)
+            .limit(1)
+            .get();
           
-          // User paid but doesn't have an account yet - create one
-          console.log('🆕 Creating new user account for paid customer:', customer.email);
-          try {
-            // Create Firebase Auth user
-            console.log('🔄 Creating Firebase Auth user...');
-            const newUser = await admin.auth().createUser({
-              email: customer.email,
-              emailVerified: true, // Trust Stripe's email verification
-              disabled: false
-            });
+          console.log('📊 Firestore query result:', {
+            empty: usersSnapshot.empty,
+            size: usersSnapshot.size,
+            docs: usersSnapshot.docs.length
+          });
+          
+          if (!usersSnapshot.empty) {
+            const userDoc = usersSnapshot.docs[0];
+            userId = userDoc.id;
+            console.log('✅ Found user by email in Firestore:', userId);
+          } else {
+            console.log('❌ No user found with email in Firestore:', customer.email);
             
-            userId = newUser.uid;
-            console.log('✅ Created new Firebase Auth user:', userId);
-            
-            // Create Firestore user document with basic subscription info
-            console.log('🔄 Creating Firestore user document...');
-            await db.collection('users').doc(userId).set({
-              email: customer.email,
-              subscription: {
-                tier: 'founders-circle', // Default to Founder's Circle for Payment Links
-                status: 'active',
-                planName: 'Founder\'s Circle',
-                billingCycle: 'monthly',
-                startDate: new Date().toISOString(),
-                lastUpdated: new Date().toISOString(),
-                stripeCustomerId: customer.id,
-                createdFromPayment: true // Flag to indicate account was created from payment
-              },
-              createdAt: new Date().toISOString(),
-              createdFromPayment: true
-            });
-            
-            console.log('✅ Created Firestore user document for:', userId);
-            
-          } catch (createError) {
-            console.error('❌ Error creating user account:', createError);
-            console.error('Create error details:', {
-              email: customer.email,
-              error: createError.message,
-              stack: createError.stack
-            });
-            // Continue without userId - will be handled below
+            // User paid but doesn't have an account yet - create one
+            console.log('🆕 Creating new user account for paid customer:', customer.email);
+            try {
+              // Create Firebase Auth user
+              console.log('🔄 Creating Firebase Auth user...');
+              const newUser = await admin.auth().createUser({
+                email: customer.email,
+                emailVerified: true, // Trust Stripe's email verification
+                disabled: false
+              });
+              
+              userId = newUser.uid;
+              console.log('✅ Created new Firebase Auth user:', userId);
+              
+              // Create Firestore user document with basic subscription info
+              console.log('🔄 Creating Firestore user document...');
+              await db.collection('users').doc(userId).set({
+                email: customer.email,
+                subscription: {
+                  tier: 'founders-circle', // Default to Founder's Circle for Payment Links
+                  status: 'active',
+                  planName: 'Founder\'s Circle',
+                  billingCycle: 'monthly',
+                  startDate: new Date().toISOString(),
+                  lastUpdated: new Date().toISOString(),
+                  stripeCustomerId: customer.id,
+                  createdFromPayment: true // Flag to indicate account was created from payment
+                },
+                createdAt: new Date().toISOString(),
+                createdFromPayment: true
+              });
+              
+              console.log('✅ Created Firestore user document for:', userId);
+              
+            } catch (createError) {
+              console.error('❌ Error creating user account:', createError);
+              console.error('Create error details:', {
+                email: customer.email,
+                error: createError.message,
+                stack: createError.stack
+              });
+              // Continue without userId - will be handled below
+            }
           }
+        } catch (firestoreError) {
+          console.error('❌ Error querying Firestore:', firestoreError);
+          console.error('Firestore error details:', {
+            email: customer.email,
+            error: firestoreError.message,
+            stack: firestoreError.stack
+          });
+          // Continue without userId - will be handled below
         }
       }
     } catch (error) {
