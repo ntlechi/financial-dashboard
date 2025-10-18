@@ -258,7 +258,7 @@ async function sendViaConvertKitWithTag(email, name, trigger, tag, productName) 
   }
 
   try {
-    const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`, {
+    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -271,7 +271,8 @@ async function sendViaConvertKitWithTag(email, name, trigger, tag, productName) 
           subscription_tier: 'recon',
           trigger_event: trigger,
           product_name: productName || 'Unknown'
-        }
+        },
+        tags: [tag] // Use the specific tag
       })
     });
 
@@ -282,11 +283,6 @@ async function sendViaConvertKitWithTag(email, name, trigger, tag, productName) 
 
     const result = await response.json();
     console.log('✅ ConvertKit subscription successful with default tag:', result);
-    
-    // Add the tag to the subscriber
-    if (result.subscription && result.subscription.subscriber_id) {
-      await addTagToSubscriber(result.subscription.subscriber_id, tag);
-    }
     
     return result;
   } catch (error) {
@@ -318,30 +314,17 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     console.error('No ConvertKit tag found for tier:', subscriptionTier);
     console.log('Available tiers:', Object.keys(tagMapping));
     console.log('Using default tag for undefined tier');
-    // Use a default tag for undefined tiers
+    // Use default tag for undefined tiers
     const defaultTag = 'Status - Recruit (Free)';
     console.log('Using default tag:', defaultTag);
     return sendViaConvertKitWithTag(email, name, trigger, defaultTag, productName);
   }
 
-  const payload = {
-    api_key: CONVERTKIT_API_KEY,
-    email: email,
-    first_name: name,
-    fields: {
-      subscription_tier: subscriptionTier,
-      trigger_event: trigger,
-      product_name: productName || subscriptionTier,
-      product: productName || subscriptionTier,
-      stripe_product: productName || subscriptionTier,
-      signup_date: new Date().toISOString()
-    },
-    tags: [tag] // Use the mapped tag for the subscription tier
-  };
+  console.log(`📧 Sending to ConvertKit with tag "${tag}" for tier: ${subscriptionTier}`);
 
   try {
-    // Use ConvertKit's basic subscriber creation (most reliable)
-    const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`, {
+    // Use ConvertKit's basic subscriber creation with tags
+    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -354,7 +337,8 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
           subscription_tier: subscriptionTier,
           trigger_event: trigger,
           product_name: productName || subscriptionTier
-        }
+        },
+        tags: [tag] // Use the mapped tag for the subscription tier
       })
     });
 
@@ -365,16 +349,6 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
 
     const result = await response.json();
     console.log('✅ ConvertKit subscription successful:', result);
-    
-    // Add the tag to the subscriber
-    if (result.subscriber && result.subscriber.id) {
-      await addTagToSubscriber(result.subscriber.id, tag);
-    }
-    
-    // If this is a subscription creation, also record it as a purchase
-    if (trigger === 'subscription_created' && productName) {
-      await recordPurchaseInConvertKit(email, productName, subscriptionTier);
-    }
     
     return result;
   } catch (error) {
