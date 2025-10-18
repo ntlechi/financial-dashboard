@@ -268,6 +268,44 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
             console.log('✅ Found user by email in Firestore:', userId);
           } else {
             console.log('❌ No user found with email in Firestore:', customer.email);
+            
+            // User paid but doesn't have an account yet - create one
+            console.log('🆕 Creating new user account for paid customer:', customer.email);
+            try {
+              // Create Firebase Auth user
+              const newUser = await admin.auth().createUser({
+                email: customer.email,
+                emailVerified: true, // Trust Stripe's email verification
+                disabled: false
+              });
+              
+              userId = newUser.uid;
+              console.log('✅ Created new Firebase Auth user:', userId);
+              
+              // Create Firestore user document
+              await db.collection('users').doc(userId).set({
+                email: customer.email,
+                subscription: {
+                  tier: 'founders-circle', // Will be updated below with full details
+                  status: 'active',
+                  planName: 'Founder\'s Circle',
+                  billingCycle: 'monthly',
+                  startDate: new Date().toISOString(),
+                  lastUpdated: new Date().toISOString(),
+                  stripeCustomerId: customer.id,
+                  stripeSubscriptionId: subscription.id,
+                  createdFromPayment: true // Flag to indicate account was created from payment
+                },
+                createdAt: new Date().toISOString(),
+                createdFromPayment: true
+              });
+              
+              console.log('✅ Created Firestore user document for:', userId);
+              
+            } catch (createError) {
+              console.error('❌ Error creating user account:', createError);
+              // Continue without userId - will be handled below
+            }
           }
         }
       } else {
