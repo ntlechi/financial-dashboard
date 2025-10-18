@@ -207,10 +207,10 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
 
   // Tag mapping based on subscription tier (for email sequences)
   const tagMapping = {
-    'recon': 'recon-user',
-    'climber': 'climber-subscriber', 
-    'operator': 'operator-subscriber',
-    'founders-circle': 'founders-circle-subscriber',
+    'recon': 'Status - Recruit (Free)',
+    'climber': 'Status - Climber', 
+    'operator': 'Status - Operator',
+    'founders-circle': 'Status - Founder',
   };
 
   const tag = tagMapping[subscriptionTier];
