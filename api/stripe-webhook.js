@@ -104,13 +104,28 @@ module.exports = async (req, res) => {
   let event;
 
   try {
-    // Get raw body as string for signature verification
-    const rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    // Get the raw body - Vercel may have already parsed it
+    let rawBody;
+    
+    if (typeof req.body === 'string') {
+      // Body is already raw string
+      rawBody = req.body;
+    } else if (req.body && typeof req.body === 'object') {
+      // Body was parsed by Vercel, reconstruct it
+      rawBody = JSON.stringify(req.body);
+    } else {
+      throw new Error('Invalid request body format');
+    }
+    
+    console.log('Raw body length:', rawBody.length);
+    console.log('Signature present:', !!sig);
+    console.log('Endpoint secret present:', !!endpointSecret);
     
     // Verify webhook signature
     event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
+    console.error('Error details:', err);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
