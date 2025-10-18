@@ -184,21 +184,67 @@ module.exports = async (req, res) => {
 // Handle successful payment intent (for Payment Links)
 async function handlePaymentIntentSucceeded(paymentIntent) {
   console.log('💳 Payment Intent succeeded:', paymentIntent.id);
+  console.log('📋 Payment Intent metadata:', paymentIntent.metadata);
+  console.log('👤 Payment Intent customer:', paymentIntent.customer);
   
-  // Get the subscription from the payment intent
+  let subscription = null;
+  let userId = null;
+  
+  // Method 1: Try to get subscription from payment intent metadata
   const subscriptionId = paymentIntent.metadata?.subscription_id;
   
-  if (!subscriptionId) {
-    console.error('No subscription ID found in payment intent metadata');
+  if (subscriptionId) {
+    console.log('✅ Found subscription_id in metadata:', subscriptionId);
+    subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    userId = subscription.metadata?.userId;
+  }
+  
+  // Method 2: If no subscription_id in metadata, find customer's active subscription
+  if (!subscription && paymentIntent.customer) {
+    console.log('🔍 Looking for active subscription for customer:', paymentIntent.customer);
+    
+    const subscriptions = await stripe.subscriptions.list({
+      customer: paymentIntent.customer,
+      status: 'active',
+      limit: 1
+    });
+    
+    if (subscriptions.data.length > 0) {
+      subscription = subscriptions.data[0];
+      userId = subscription.metadata?.userId;
+      console.log('✅ Found active subscription:', subscription.id);
+    }
+  }
+  
+  // Method 3: If still no userId, try to find user by email
+  if (!userId && paymentIntent.customer) {
+    console.log('🔍 Looking for user by customer email');
+    
+    const customer = await stripe.customers.retrieve(paymentIntent.customer);
+    console.log('📧 Customer email:', customer.email);
+    
+    if (customer.email) {
+      // Try to find user in Firebase by email
+      const usersSnapshot = await db.collection('users')
+        .where('email', '==', customer.email)
+        .limit(1)
+        .get();
+      
+      if (!usersSnapshot.empty) {
+        const userDoc = usersSnapshot.docs[0];
+        userId = userDoc.id;
+        console.log('✅ Found user by email:', userId);
+      }
+    }
+  }
+  
+  if (!subscription) {
+    console.error('❌ No subscription found for payment intent:', paymentIntent.id);
     return;
   }
   
-  // Get subscription details from Stripe
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const userId = subscription.metadata?.userId;
-  
   if (!userId) {
-    console.error('No userId found in subscription metadata');
+    console.error('❌ No userId found for payment intent:', paymentIntent.id);
     return;
   }
   
@@ -207,9 +253,16 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   const subscriptionTier = PLAN_MAPPING[priceId];
   
   if (!subscriptionTier) {
-    console.error('Unknown price ID:', priceId);
+    console.error('❌ Unknown price ID:', priceId);
     return;
   }
+  
+  console.log('🎯 Updating user subscription:', {
+    userId,
+    subscriptionTier,
+    priceId,
+    subscriptionId: subscription.id
+  });
   
   // Update user's subscription in Firebase
   await updateUserSubscription(userId, {
