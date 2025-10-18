@@ -222,7 +222,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   console.log('💳 Payment Intent succeeded:', paymentIntent.id);
   console.log('📋 Payment Intent metadata:', paymentIntent.metadata);
   console.log('👤 Payment Intent customer:', paymentIntent.customer);
-  console.log('🚀 Webhook version: v2.4 - IMPROVED USER LOOKUP - Payment Links optimized');
+  console.log('🚀 Webhook version: v2.5 - CRITICAL FIX: Added subscription.plan field for app compatibility');
   
   let subscription = null;
   let userId = null;
