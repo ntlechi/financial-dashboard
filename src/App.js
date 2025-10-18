@@ -16083,6 +16083,17 @@ function App() {
         />
       )}
 
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <ForgotPassword
+          onClose={() => setShowForgotPassword(false)}
+          onSuccess={(message) => {
+            setShowForgotPassword(false);
+            showNotification(message, 'success');
+          }}
+        />
+      )}
+
       {/* Upgrade Prompt Modal */}
       {showUpgradePrompt && (
         <UpgradePrompt
