@@ -8,8 +8,7 @@ const admin = require('firebase-admin');
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault(),
-    // Or use service account key
-    // credential: admin.credential.cert(require('./path/to/serviceAccountKey.json')),
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'freedom-compass-prod',
   });
 }
 
@@ -256,9 +255,19 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
         if (!usersSnapshot.empty) {
           const userDoc = usersSnapshot.docs[0];
           userId = userDoc.id;
-          console.log('✅ Found user by email:', userId);
+          console.log('✅ Found user by email in Firestore:', userId);
         } else {
-          console.log('❌ No user found with email:', customer.email);
+          console.log('❌ No user found with email in Firestore:', customer.email);
+          
+          // Fallback: Try to find user in Firebase Auth
+          try {
+            console.log('🔍 Trying to find user in Firebase Auth by email');
+            const authUser = await admin.auth().getUserByEmail(customer.email);
+            userId = authUser.uid;
+            console.log('✅ Found user by email in Firebase Auth:', userId);
+          } catch (authError) {
+            console.log('❌ No user found in Firebase Auth either:', authError.message);
+          }
         }
       } else {
         console.log('❌ Customer has no email address');
