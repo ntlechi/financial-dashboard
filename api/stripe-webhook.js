@@ -132,6 +132,10 @@ module.exports = async (req, res) => {
         await handleCheckoutCompleted(event.data.object);
         break;
       
+      case 'payment_intent.succeeded':
+        await handlePaymentIntentSucceeded(event.data.object);
+        break;
+      
       case 'customer.subscription.created':
         await handleSubscriptionCreated(event.data.object);
         break;
@@ -162,6 +166,57 @@ module.exports = async (req, res) => {
     res.status(500).json({ error: 'Webhook processing failed' });
   }
 };
+
+// Handle successful payment intent (for Payment Links)
+async function handlePaymentIntentSucceeded(paymentIntent) {
+  console.log('💳 Payment Intent succeeded:', paymentIntent.id);
+  
+  // Get the subscription from the payment intent
+  const subscriptionId = paymentIntent.metadata?.subscription_id;
+  
+  if (!subscriptionId) {
+    console.error('No subscription ID found in payment intent metadata');
+    return;
+  }
+  
+  // Get subscription details from Stripe
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const userId = subscription.metadata?.userId;
+  
+  if (!userId) {
+    console.error('No userId found in subscription metadata');
+    return;
+  }
+  
+  // Map Stripe price ID to subscription tier
+  const priceId = subscription.items.data[0]?.price.id;
+  const subscriptionTier = PLAN_MAPPING[priceId];
+  
+  if (!subscriptionTier) {
+    console.error('Unknown price ID:', priceId);
+    return;
+  }
+  
+  // Update user's subscription in Firebase
+  await updateUserSubscription(userId, {
+    tier: subscriptionTier,
+    stripeCustomerId: subscription.customer,
+    stripeSubscriptionId: subscription.id,
+    status: 'active',
+    planName: subscription.metadata?.planName || 'Founder\'s Circle',
+    billingCycle: subscription.metadata?.billingCycle || 'monthly',
+    startDate: new Date().toISOString(),
+    lastUpdated: new Date().toISOString()
+  });
+
+  console.log(`✅ User ${userId} upgraded to ${subscriptionTier} via Payment Intent`);
+  
+  // Send welcome email
+  await sendEmail(userId, 'subscription_created', {
+    subscriptionTier,
+    planName: subscription.metadata?.planName || 'Founder\'s Circle'
+  });
+}
 
 // Handle successful checkout completion
 async function handleCheckoutCompleted(session) {
