@@ -348,6 +348,14 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
               
               console.log('✅ Created Firestore user document for:', userId);
               
+              // Send welcome email with temporary password
+              await sendEmail(userId, 'welcome_with_temp_password', {
+                subscriptionTier: 'founders-circle',
+                planName: 'Founder\'s Circle',
+                tempPassword: 'TempPassword123!',
+                customerEmail: customer.email
+              });
+              
             } catch (createError) {
               console.error('❌ Error creating user account:', createError);
               console.error('Create error details:', {

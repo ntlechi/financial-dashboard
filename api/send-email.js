@@ -177,6 +177,38 @@ async function sendEmailByTrigger(emailData) {
           <p>Best regards,<br>The Freedom Compass Team</p>
         </div>
       `
+    },
+    'welcome_with_temp_password': {
+      subject: 'Welcome to The Freedom Compass! Your account is ready 🎉',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1 style="color: #f59e0b;">Welcome to The Freedom Compass!</h1>
+          <p>Hi ${name},</p>
+          <p>Your account has been created and you're now a <strong>Founder</strong>! 🎉</p>
+          <p><strong>Your login credentials:</strong></p>
+          <ul>
+            <li><strong>Email:</strong> ${email}</li>
+            <li><strong>Temporary Password:</strong> <code style="background: #f3f4f6; padding: 2px 4px; border-radius: 3px;">TempPassword123!</code></li>
+          </ul>
+          <p><strong>Next Steps:</strong></p>
+          <ol>
+            <li>Log in to your account using the credentials above</li>
+            <li>Change your password to something secure</li>
+            <li>Start exploring your Founder features!</li>
+          </ol>
+          <p>🎯 <strong>You now have access to:</strong></p>
+          <ul>
+            <li>Complete dashboard with all features</li>
+            <li>Advanced financial calculators</li>
+            <li>Goal tracking and projections</li>
+            <li>Investment portfolio management</li>
+            <li>Travel planning tools</li>
+          </ul>
+          <p>Ready to start your journey? <a href="https://app.survivebackpacking.com" style="color: #3b82f6;">Log in now</a></p>
+          <p>Best regards,<br>The Freedom Compass Team</p>
+          <p><small>P.S. For security, please change your password after your first login.</small></p>
+        </div>
+      `
     }
   };
 

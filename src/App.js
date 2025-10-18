@@ -30,6 +30,7 @@ import FixedModal from './components/FixedModal';
 import MomentsFeed from './components/MomentsFeed';
 import InstallPrompt from './components/FixedModal';
 import QuickStartGuide from './components/QuickStartGuide';
+import ForgotPassword from './components/ForgotPassword';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
@@ -57,6 +58,7 @@ import {
   signInAnonymously,
   signOut, 
   onAuthStateChanged,
+  sendPasswordResetEmail,
   updateProfile 
 } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
@@ -10980,6 +10982,7 @@ function App() {
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [forceShowQuickStart, setForceShowQuickStart] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
   const [landingRedirect, setLandingRedirect] = useState(null);
