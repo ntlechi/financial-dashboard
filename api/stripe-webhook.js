@@ -200,116 +200,130 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   console.log('💳 Payment Intent succeeded:', paymentIntent.id);
   console.log('📋 Payment Intent metadata:', paymentIntent.metadata);
   console.log('👤 Payment Intent customer:', paymentIntent.customer);
-  console.log('🚀 Webhook version: v2.3 - FORCE DEPLOY - User creation enabled');
+  console.log('🚀 Webhook version: v2.4 - IMPROVED USER LOOKUP - Payment Links optimized');
   
   let subscription = null;
   let userId = null;
+  let customer = null;
+  
+  // First, get customer details
+  if (paymentIntent.customer) {
+    try {
+      customer = await stripe.customers.retrieve(paymentIntent.customer);
+      console.log('📧 Customer email:', customer.email);
+    } catch (error) {
+      console.error('❌ Error retrieving customer:', error);
+    }
+  }
   
   // Method 1: Try to get subscription from payment intent metadata
   const subscriptionId = paymentIntent.metadata?.subscription_id;
   
   if (subscriptionId) {
     console.log('✅ Found subscription_id in metadata:', subscriptionId);
-    subscription = await stripe.subscriptions.retrieve(subscriptionId);
-    userId = subscription.metadata?.userId;
+    try {
+      subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      userId = subscription.metadata?.userId;
+      console.log('✅ Retrieved subscription from metadata:', subscription.id);
+    } catch (error) {
+      console.log('❌ Error retrieving subscription from metadata:', error.message);
+    }
   }
   
   // Method 2: If no subscription_id in metadata, find customer's active subscription
   if (!subscription && paymentIntent.customer) {
     console.log('🔍 Looking for active subscription for customer:', paymentIntent.customer);
     
-    const subscriptions = await stripe.subscriptions.list({
-      customer: paymentIntent.customer,
-      status: 'active',
-      limit: 1
-    });
-    
-    if (subscriptions.data.length > 0) {
-      subscription = subscriptions.data[0];
-      userId = subscription.metadata?.userId;
-      console.log('✅ Found active subscription:', subscription.id);
+    try {
+      const subscriptions = await stripe.subscriptions.list({
+        customer: paymentIntent.customer,
+        status: 'active',
+        limit: 1
+      });
+      
+      if (subscriptions.data.length > 0) {
+        subscription = subscriptions.data[0];
+        userId = subscription.metadata?.userId;
+        console.log('✅ Found active subscription:', subscription.id);
+      } else {
+        console.log('❌ No active subscription found for customer');
+      }
+    } catch (error) {
+      console.log('❌ Error listing subscriptions:', error.message);
     }
   }
   
   // Method 3: Find user by email (PRIMARY METHOD for Payment Links)
-  if (!userId && paymentIntent.customer) {
-    console.log('🔍 Looking for user by customer email');
+  if (!userId && customer && customer.email) {
+    console.log('🔍 Looking for user by customer email:', customer.email);
     
     try {
-      const customer = await stripe.customers.retrieve(paymentIntent.customer);
-      console.log('📧 Customer email:', customer.email);
-      
-      if (customer.email) {
-        // Try to find user in Firebase Auth first (most reliable)
-        try {
-          console.log('🔍 Searching Firebase Auth for user with email:', customer.email);
-          const authUser = await admin.auth().getUserByEmail(customer.email);
-          userId = authUser.uid;
-          console.log('✅ Found user by email in Firebase Auth:', userId);
-        } catch (authError) {
-          console.log('❌ No user found in Firebase Auth:', authError.message);
+      // Try to find user in Firebase Auth first (most reliable)
+      try {
+        console.log('🔍 Searching Firebase Auth for user with email:', customer.email);
+        const authUser = await admin.auth().getUserByEmail(customer.email);
+        userId = authUser.uid;
+        console.log('✅ Found user by email in Firebase Auth:', userId);
+      } catch (authError) {
+        console.log('❌ No user found in Firebase Auth:', authError.message);
+        
+        // Fallback: Try to find user in Firestore
+        console.log('🔍 Searching Firestore for user with email:', customer.email);
+        const usersSnapshot = await db.collection('users')
+          .where('email', '==', customer.email)
+          .limit(1)
+          .get();
+        
+        console.log('📊 Firestore query result:', {
+          empty: usersSnapshot.empty,
+          size: usersSnapshot.size,
+          docs: usersSnapshot.docs.length
+        });
+        
+        if (!usersSnapshot.empty) {
+          const userDoc = usersSnapshot.docs[0];
+          userId = userDoc.id;
+          console.log('✅ Found user by email in Firestore:', userId);
+        } else {
+          console.log('❌ No user found with email in Firestore:', customer.email);
           
-          // Fallback: Try to find user in Firestore
-          console.log('🔍 Searching Firestore for user with email:', customer.email);
-          const usersSnapshot = await db.collection('users')
-            .where('email', '==', customer.email)
-            .limit(1)
-            .get();
-          
-          console.log('📊 Firestore query result:', {
-            empty: usersSnapshot.empty,
-            size: usersSnapshot.size,
-            docs: usersSnapshot.docs.length
-          });
-          
-          if (!usersSnapshot.empty) {
-            const userDoc = usersSnapshot.docs[0];
-            userId = userDoc.id;
-            console.log('✅ Found user by email in Firestore:', userId);
-          } else {
-            console.log('❌ No user found with email in Firestore:', customer.email);
+          // User paid but doesn't have an account yet - create one
+          console.log('🆕 Creating new user account for paid customer:', customer.email);
+          try {
+            // Create Firebase Auth user
+            const newUser = await admin.auth().createUser({
+              email: customer.email,
+              emailVerified: true, // Trust Stripe's email verification
+              disabled: false
+            });
             
-            // User paid but doesn't have an account yet - create one
-            console.log('🆕 Creating new user account for paid customer:', customer.email);
-            try {
-              // Create Firebase Auth user
-              const newUser = await admin.auth().createUser({
-                email: customer.email,
-                emailVerified: true, // Trust Stripe's email verification
-                disabled: false
-              });
-              
-              userId = newUser.uid;
-              console.log('✅ Created new Firebase Auth user:', userId);
-              
-              // Create Firestore user document
-              await db.collection('users').doc(userId).set({
-                email: customer.email,
-                subscription: {
-                  tier: 'founders-circle', // Will be updated below with full details
-                  status: 'active',
-                  planName: 'Founder\'s Circle',
-                  billingCycle: 'monthly',
-                  startDate: new Date().toISOString(),
-                  lastUpdated: new Date().toISOString(),
-                  stripeCustomerId: customer.id,
-                  stripeSubscriptionId: subscription.id,
-                  createdFromPayment: true // Flag to indicate account was created from payment
-                },
-                createdAt: new Date().toISOString(),
-                createdFromPayment: true
-              });
-              
-              console.log('✅ Created Firestore user document for:', userId);
-              
-            } catch (createError) {
-              console.error('❌ Error creating user account:', createError);
-              // Continue without userId - will be handled below
-            }
+            userId = newUser.uid;
+            console.log('✅ Created new Firebase Auth user:', userId);
+            
+            // Create Firestore user document with basic subscription info
+            await db.collection('users').doc(userId).set({
+              email: customer.email,
+              subscription: {
+                tier: 'founders-circle', // Default to Founder's Circle for Payment Links
+                status: 'active',
+                planName: 'Founder\'s Circle',
+                billingCycle: 'monthly',
+                startDate: new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                stripeCustomerId: customer.id,
+                createdFromPayment: true // Flag to indicate account was created from payment
+              },
+              createdAt: new Date().toISOString(),
+              createdFromPayment: true
+            });
+            
+            console.log('✅ Created Firestore user document for:', userId);
+            
+          } catch (createError) {
+            console.error('❌ Error creating user account:', createError);
+            // Continue without userId - will be handled below
           }
         }
-      } else {
-        console.log('❌ Customer has no email address');
       }
     } catch (error) {
       console.error('❌ Error finding user by email:', error);
@@ -317,42 +331,65 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
     }
   }
   
-  if (!subscription) {
-    console.error('❌ No subscription found for payment intent:', paymentIntent.id);
-    return;
+  // If we still don't have a subscription, try to find it by looking at recent subscriptions
+  if (!subscription && paymentIntent.customer) {
+    console.log('🔍 Looking for recent subscriptions (including incomplete ones)');
+    
+    try {
+      const subscriptions = await stripe.subscriptions.list({
+        customer: paymentIntent.customer,
+        limit: 5 // Get more recent subscriptions
+      });
+      
+      // Look for the most recent subscription
+      if (subscriptions.data.length > 0) {
+        subscription = subscriptions.data[0];
+        console.log('✅ Found recent subscription:', subscription.id, 'Status:', subscription.status);
+      }
+    } catch (error) {
+      console.log('❌ Error listing recent subscriptions:', error.message);
+    }
   }
   
   if (!userId) {
     console.error('❌ No userId found for payment intent:', paymentIntent.id);
+    console.error('Customer email:', customer?.email);
+    console.error('Customer ID:', paymentIntent.customer);
     return;
   }
   
-  // Map Stripe price ID to subscription tier
-  const priceId = subscription.items.data[0]?.price.id;
-  const subscriptionTier = PLAN_MAPPING[priceId];
+  // Determine subscription tier - if no subscription found, default to Founder's Circle for Payment Links
+  let subscriptionTier = 'founders-circle'; // Default for Payment Links
+  let priceId = null;
   
-  if (!subscriptionTier) {
-    console.error('❌ Unknown price ID:', priceId);
-    return;
+  if (subscription && subscription.items && subscription.items.data.length > 0) {
+    priceId = subscription.items.data[0]?.price.id;
+    subscriptionTier = PLAN_MAPPING[priceId] || 'founders-circle';
+    console.log('✅ Using subscription tier from subscription:', subscriptionTier);
+  } else {
+    console.log('⚠️ No subscription found, defaulting to Founder\'s Circle for Payment Link');
   }
   
   console.log('🎯 Updating user subscription:', {
     userId,
     subscriptionTier,
     priceId,
-    subscriptionId: subscription.id
+    subscriptionId: subscription?.id || 'payment-link-default',
+    customerEmail: customer?.email
   });
   
   // Update user's subscription in Firebase
   await updateUserSubscription(userId, {
     tier: subscriptionTier,
-    stripeCustomerId: subscription.customer,
-    stripeSubscriptionId: subscription.id,
+    stripeCustomerId: paymentIntent.customer,
+    stripeSubscriptionId: subscription?.id || null,
     status: 'active',
-    planName: subscription.metadata?.planName || 'Founder\'s Circle',
-    billingCycle: subscription.metadata?.billingCycle || 'monthly',
+    planName: 'Founder\'s Circle',
+    billingCycle: 'monthly',
     startDate: new Date().toISOString(),
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
+    paymentIntentId: paymentIntent.id,
+    createdFromPaymentLink: true
   });
 
   console.log(`✅ User ${userId} upgraded to ${subscriptionTier} via Payment Intent`);
@@ -363,9 +400,9 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   // Send welcome email with proper product information
   await sendEmail(userId, 'subscription_created', {
     subscriptionTier,
-    planName: subscription.metadata?.planName || productName,
+    planName: 'Founder\'s Circle',
     productName: productName,
-    priceId: priceId
+    priceId: priceId || 'payment-link-default'
   });
 }
 
