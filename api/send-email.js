@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
 
 // Send email based on trigger type
 async function sendEmailByTrigger(emailData) {
-  const { email, name, trigger, subscriptionTier } = emailData;
+  const { email, name, trigger, subscriptionTier, productName } = emailData;
 
   // Email templates (you can customize these)
   const emailTemplates = {
@@ -166,7 +166,7 @@ async function sendEmailByTrigger(emailData) {
 
   // Send via ConvertKit (recommended)
   if (process.env.CONVERTKIT_API_KEY) {
-    await sendViaConvertKit(email, name, trigger, subscriptionTier);
+    await sendViaConvertKit(email, name, trigger, subscriptionTier, productName);
   } else {
     // Fallback: just log the email
     console.log('📧 Email to send:', {
@@ -180,7 +180,7 @@ async function sendEmailByTrigger(emailData) {
 }
 
 // ConvertKit Integration
-async function sendViaConvertKit(email, name, trigger, subscriptionTier) {
+async function sendViaConvertKit(email, name, trigger, subscriptionTier, productName) {
   const CONVERTKIT_API_KEY = process.env.CONVERTKIT_API_KEY;
   
   if (!CONVERTKIT_API_KEY) {
@@ -210,6 +210,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier) {
     fields: {
       subscription_tier: subscriptionTier,
       trigger_event: trigger,
+      product_name: productName || subscriptionTier, // Send product name for ConvertKit
       signup_date: new Date().toISOString()
     }
   };
