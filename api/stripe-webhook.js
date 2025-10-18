@@ -667,6 +667,12 @@ async function handlePaymentSucceeded(invoice) {
         console.log('📧 Customer email:', customer.email);
         console.log('🔍 Full customer object:', JSON.stringify(customer, null, 2));
         
+        // Check if customer is deleted
+        if (customer.deleted) {
+          console.log('⚠️ Customer has been deleted in Stripe - cannot process payment');
+          return;
+        }
+        
         if (customer.email) {
           // Find user by email
           try {
