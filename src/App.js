@@ -11841,71 +11841,70 @@ function App() {
       // 🎯 SMART SIGNUP FLOW: Check if email already exists
       console.log('🔍 Starting smart signup flow for email:', authForm.email);
       
+      // FIRST: Check Firestore for user with payment (more reliable for webhook-created users)
+      try {
+        console.log('🔍 Querying Firestore for user with email:', authForm.email);
+        const userQuery = await db.collection('users')
+          .where('email', '==', authForm.email)
+          .limit(1)
+          .get();
+        
+        console.log('📊 Firestore query result:', {
+          empty: userQuery.empty,
+          size: userQuery.size,
+          docs: userQuery.docs.length
+        });
+        
+        if (!userQuery.empty) {
+          const userDoc = userQuery.docs[0];
+          const userData = userDoc.data();
+          console.log('👤 User data found:', {
+            userId: userDoc.id,
+            email: userData.email,
+            subscription: userData.subscription,
+            createdFromPayment: userData.createdFromPayment
+          });
+          
+          // Check if user has a subscription/payment OR was created from payment
+          if ((userData.subscription && userData.subscription.status === 'active') || userData.createdFromPayment) {
+            console.log('✅ User has active payment or was created from payment, showing set password option');
+            setExistingUserWithPayment({
+              email: authForm.email,
+              name: authForm.name,
+              userId: userDoc.id,
+              subscription: userData.subscription
+            });
+            setShowSetPassword(true);
+            setAuthLoading(false);
+            return;
+          } else {
+            console.log('⚠️ User found but no active subscription or payment flag:', userData.subscription);
+          }
+        } else {
+          console.log('❌ No user found in Firestore with email:', authForm.email);
+        }
+      } catch (firestoreError) {
+        console.error('❌ Firestore error:', firestoreError);
+        console.log('⚠️ Could not check Firestore, proceeding with Firebase Auth check');
+      }
+      
+      // SECOND: Check Firebase Auth for existing users (fallback)
       try {
         const signInMethods = await fetchSignInMethodsForEmail(auth, authForm.email);
         console.log('📧 Sign-in methods found:', signInMethods);
         
         if (signInMethods.length > 0) {
-          // Email exists - check if user has a payment
-          console.log('🔍 Email exists, checking for payment status...');
-          
-          try {
-            // Check Firestore for user with payment
-            console.log('🔍 Querying Firestore for user with email:', authForm.email);
-            const userQuery = await db.collection('users')
-              .where('email', '==', authForm.email)
-              .limit(1)
-              .get();
-            
-            console.log('📊 Firestore query result:', {
-              empty: userQuery.empty,
-              size: userQuery.size,
-              docs: userQuery.docs.length
-            });
-            
-            if (!userQuery.empty) {
-              const userDoc = userQuery.docs[0];
-              const userData = userDoc.data();
-              console.log('👤 User data found:', {
-                userId: userDoc.id,
-                email: userData.email,
-                subscription: userData.subscription
-              });
-              
-              // Check if user has a subscription/payment
-              if (userData.subscription && userData.subscription.status === 'active') {
-                console.log('✅ User has active payment, showing set password option');
-                setExistingUserWithPayment({
-                  email: authForm.email,
-                  name: authForm.name,
-                  userId: userDoc.id,
-                  subscription: userData.subscription
-                });
-                setShowSetPassword(true);
-                setAuthLoading(false);
-                return;
-              } else {
-                console.log('⚠️ User found but no active subscription:', userData.subscription);
-              }
-            } else {
-              console.log('❌ No user found in Firestore with email:', authForm.email);
-            }
-          } catch (firestoreError) {
-            console.error('❌ Firestore error:', firestoreError);
-            console.log('⚠️ Could not check Firestore, proceeding with normal signup');
-          }
-          
-          // Email exists but no payment found - show normal error
-          console.log('❌ Email exists but no payment found, showing normal error');
+          // Email exists in Firebase Auth but no payment found in Firestore
+          console.log('❌ Email exists in Firebase Auth but no payment found, showing normal error');
           showNotification('An account with this email already exists. Please sign in instead.', 'error');
           setAuthLoading(false);
           return;
         } else {
-          console.log('✅ Email does not exist, proceeding with normal signup');
+          console.log('✅ Email does not exist in Firebase Auth, proceeding with normal signup');
         }
       } catch (signInMethodsError) {
         console.error('❌ Error checking sign-in methods:', signInMethodsError);
-        console.log('⚠️ Could not check if email exists, proceeding with normal signup');
+        console.log('⚠️ Could not check Firebase Auth, proceeding with normal signup');
       }
       
       // Email doesn't exist - proceed with normal signup
