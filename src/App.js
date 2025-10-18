@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
@@ -70,12 +70,12 @@ import { httpsCallable } from "firebase/functions";
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
-// 🧹 PRODUCTION-READY LOGGING: Only log in development, silent in production
+// ðŸ§¹ PRODUCTION-READY LOGGING: Only log in development, silent in production
 const isDevelopment = process.env.NODE_ENV === 'development';
 const debugLog = isDevelopment ? console.log.bind(console) : () => {};
 const infoLog = isDevelopment ? console.log.bind(console) : () => {};
 
-// 🤖 Smart Expense Categorization System
+// ðŸ¤– Smart Expense Categorization System
 const expenseCategorizationRules = {
   housing: [
     'rent', 'mortgage', 'property tax', 'home insurance', 'hoa', 'utilities', 'electricity', 'gas bill', 
@@ -107,7 +107,7 @@ const expenseCategorizationRules = {
   ]
 };
 
-// 🎯 Auto-categorize expense based on description
+// ðŸŽ¯ Auto-categorize expense based on description
 const categorizeExpense = (description) => {
   const desc = description.toLowerCase();
   
@@ -127,7 +127,7 @@ const categorizeExpense = (description) => {
   };
 };
 
-// 💰 Auto-categorize INCOME transactions
+// ðŸ’° Auto-categorize INCOME transactions
 const categorizeIncome = (description) => {
   const desc = description.toLowerCase();
   
@@ -158,14 +158,14 @@ const categorizeIncome = (description) => {
   };
 };
 
-// 📅 Recurring Expense Utilities
+// ðŸ“… Recurring Expense Utilities
 const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, lastProcessed) => {
   const lastDate = new Date(lastProcessed);
   let nextDate = new Date(lastDate);
   
   switch (frequency) {
     case 'weekly':
-      // 🔧 ENHANCED: Calculate next occurrence of the specified day of week
+      // ðŸ”§ ENHANCED: Calculate next occurrence of the specified day of week
       const currentDay = lastDate.getDay();
       const targetDay = parseInt(dayOfWeek) || 0; // 0=Sunday, 1=Monday, ..., 6=Saturday
       let daysToAdd = targetDay - currentDay;
@@ -174,7 +174,7 @@ const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, las
       break;
       
     case 'bi-weekly':
-      // 🆕 NEW: Bi-weekly on specific day (e.g., "every other Thursday")
+      // ðŸ†• NEW: Bi-weekly on specific day (e.g., "every other Thursday")
       const currentDayBiWeekly = lastDate.getDay();
       const targetDayBiWeekly = parseInt(dayOfWeek) || 0;
       let daysToAddBiWeekly = targetDayBiWeekly - currentDayBiWeekly;
@@ -201,7 +201,7 @@ const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, las
   return nextDate.toISOString().split('T')[0];
 };
 
-// 🔄 Process Due Recurring Expenses
+// ðŸ”„ Process Due Recurring Expenses
 const processDueRecurringExpenses = (recurringExpenses, existingTransactions) => {
   const today = new Date();
   const newTransactions = [];
@@ -258,7 +258,7 @@ const processDueRecurringExpenses = (recurringExpenses, existingTransactions) =>
   };
 };
 
-// 🎯 REALISTIC BEGINNER SAMPLE DATA
+// ðŸŽ¯ REALISTIC BEGINNER SAMPLE DATA
 // Designed for someone just starting their financial journey
 const initialData = {
   financialFreedom: {
@@ -336,7 +336,7 @@ const initialData = {
     { id: 2, name: 'Pay Off Credit Card', targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
     { id: 3, name: 'Vacation Fund', targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
   ],
-  // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
+  // ðŸ”§ FIX: No businesses in sample data (Side Hustle is Operator-only feature)
   // FREE tier users shouldn't have phantom businesses affecting their calculations
   businesses: [],
   investments: {
@@ -367,7 +367,7 @@ const initialData = {
     ]
   },
   transactions: [
-    // 🔧 FIX: Use relative dates (days ago from today) so sample data is ALWAYS in the past!
+    // ðŸ”§ FIX: Use relative dates (days ago from today) so sample data is ALWAYS in the past!
     { id: 1, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
     { id: 2, date: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
     { id: 3, date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
@@ -429,7 +429,7 @@ const initialData = {
       tags: ['insurance', 'essential']
     }
   ],
-  // 🔧 FIX: Monthly history updated to match realistic beginner sample data
+  // ðŸ”§ FIX: Monthly history updated to match realistic beginner sample data
   monthlyHistory: [
     { 
       month: '2025-01', 
@@ -498,7 +498,7 @@ const initialData = {
       savingsRate: 29
     }
   ],
-  // 🔧 FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
+  // ðŸ”§ FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
   // FREE tier users shouldn't have phantom travel data, consistent with businesses fix
   travel: {
     totalSavings: 0,  // Just starting out - building travel fund
@@ -521,14 +521,14 @@ const initialData = {
       lastUpdated: "2025-01-15"
     },
     expenseCategories: [
-      { name: "accommodation", color: "bg-blue-500", icon: "🏨" },
-      { name: "food", color: "bg-green-500", icon: "🍽️" },
-      { name: "transport", color: "bg-yellow-500", icon: "🚌" },
-      { name: "activities", color: "bg-purple-500", icon: "🎯" },
-      { name: "shopping", color: "bg-pink-500", icon: "🛍️" },
-      { name: "insurance", color: "bg-red-500", icon: "🛡️" },
-      { name: "visa", color: "bg-orange-500", icon: "📋" },
-      { name: "other", color: "bg-gray-500", icon: "💫" }
+      { name: "accommodation", color: "bg-blue-500", icon: "ðŸ¨" },
+      { name: "food", color: "bg-green-500", icon: "ðŸ½ï¸" },
+      { name: "transport", color: "bg-yellow-500", icon: "ðŸšŒ" },
+      { name: "activities", color: "bg-purple-500", icon: "ðŸŽ¯" },
+      { name: "shopping", color: "bg-pink-500", icon: "ðŸ›ï¸" },
+      { name: "insurance", color: "bg-red-500", icon: "ðŸ›¡ï¸" },
+      { name: "visa", color: "bg-orange-500", icon: "ðŸ“‹" },
+      { name: "other", color: "bg-gray-500", icon: "ðŸ’«" }
     ]
   },
   budgetSettings: {
@@ -554,7 +554,7 @@ const Card = ({ children, className = '' }) => (
   </div>
 );
 
-// 🔒 Locked Card Component - Shows upgrade prompt for locked dashboard cards
+// ðŸ”’ Locked Card Component - Shows upgrade prompt for locked dashboard cards
 const LockedCard = ({ cardName, requiredTier, onUpgrade }) => (
   <div className="bg-gray-800/50 backdrop-blur-sm border-2 border-amber-500/30 rounded-2xl shadow-lg p-6 relative overflow-hidden col-span-1 md:col-span-2 lg:col-span-2">
     {/* Blur overlay */}
@@ -617,7 +617,7 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 
 // Financial Freedom Goal Card (SLATE - Premium)
 const FinancialFreedomCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
+  // ðŸ›¡ï¸ NULL SAFETY CHECK
   if (!data || !data.targetAmount) {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20">
@@ -682,7 +682,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
-          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo • 
+          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo â€¢ 
           <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
@@ -692,7 +692,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
 
 // Savings Rate Card (SLATE GREEN - Growth/Progress)
 const SavingsRateCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
+  // ðŸ›¡ï¸ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -774,11 +774,11 @@ const SavingsRateCard = ({ data, onEdit }) => {
   );
 };
 
-// Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status 🎯
+// Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status ðŸŽ¯
 const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   const [showStatusLegend, setShowStatusLegend] = useState(false);
 
-  // 🛡️ NULL SAFETY CHECK
+  // ðŸ›¡ï¸ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 border-blue-500/20">
@@ -791,14 +791,14 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
     );
   }
 
-  // 🔧 USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
-  const expensesTotal = expenses?.total || 0; // 🛡️ FIX: No expenses = 0 (not $2000!)
+  // ðŸ”§ USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
+  const expensesTotal = expenses?.total || 0; // ðŸ›¡ï¸ FIX: No expenses = 0 (not $2000!)
   // If in annual mode, divide by 12 to get actual monthly average
   const monthlyExpenses = viewMode === 'annual' ? expensesTotal / 12 : expensesTotal;
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = monthlyExpenses > 0 ? data.total / monthlyExpenses : 0;
   
-  // 🎮 GAMIFIED RESILIENCE STATUS LOGIC (Color-coded by completion %)
+  // ðŸŽ® GAMIFIED RESILIENCE STATUS LOGIC (Color-coded by completion %)
   const getResilienceStatus = (percentage) => {
     if (percentage > 90) return { 
       status: 'Secure', 
@@ -840,7 +840,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-400" />
             Rainy Day Fund
           </h2>
-          {/* ℹ️ Status Legend Tooltip */}
+          {/* â„¹ï¸ Status Legend Tooltip */}
           <div className="relative">
             <button
               onMouseEnter={() => setShowStatusLegend(true)}
@@ -910,7 +910,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
           <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2 stealth-target">
             ${data.total.toLocaleString()}
           </div>
-          {/* 🎯 DYNAMIC STATUS INDICATOR */}
+          {/* ðŸŽ¯ DYNAMIC STATUS INDICATOR */}
           <div className={`text-base sm:text-lg font-bold ${resilience.textColor} mb-1`} style={{ color: resilience.color }}>
             {resilience.status}
           </div>
@@ -924,7 +924,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             <span>Current: <span className="stealth-target">${data.total.toLocaleString()}</span></span>
             <span>Goal: <span className="stealth-target">${data.goal.toLocaleString()}</span></span>
           </div>
-          {/* 🎨 DYNAMIC COLOR PROGRESS BAR */}
+          {/* ðŸŽ¨ DYNAMIC COLOR PROGRESS BAR */}
           <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
             <div 
               className={`h-3 rounded-full transition-all duration-500 ${resilience.bgColor}`}
@@ -975,7 +975,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
   // const getScoreProgress = (score) => (score / 850) * 100;
 
   // Create line chart for credit score history
-  // 🛡️ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
+  // ðŸ›¡ï¸ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
   useEffect(() => {
     if (!data || !data.history || data.history.length === 0 || !svgRef.current) return;
 
@@ -1121,7 +1121,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
   }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 🛡️ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
+  // ðŸ›¡ï¸ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
   if (!data || typeof data.current === 'undefined') {
     return (
       <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
@@ -1171,7 +1171,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
               <div className={`text-xs font-semibold flex items-center ${
                 scoreChange > 0 ? 'text-green-400' : scoreChange < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
-                {scoreChange > 0 ? '↗' : scoreChange < 0 ? '↘' : '→'} {Math.abs(scoreChange)}
+                {scoreChange > 0 ? 'â†—' : scoreChange < 0 ? 'â†˜' : 'â†’'} {Math.abs(scoreChange)}
               </div>
             )}
           </div>
@@ -1180,7 +1180,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
         {/* Credit Score History Chart */}
         {data.history && data.history.length > 0 && (
           <div className="bg-gray-800/30 rounded-lg p-3">
-            <div className="text-sm text-gray-300 mb-2 font-semibold">📈 Score History</div>
+            <div className="text-sm text-gray-300 mb-2 font-semibold">ðŸ“ˆ Score History</div>
             <svg ref={svgRef}></svg>
           </div>
         )}
@@ -1209,7 +1209,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
   );
 };
 
-// 🎯 Goals Card - CLIMBER+ Feature (Unlimited Goals)
+// ðŸŽ¯ Goals Card - CLIMBER+ Feature (Unlimited Goals)
 const GoalsCard = ({ data, onEdit }) => {
   // Ensure data is always an array
   const goals = Array.isArray(data) ? data : [];
@@ -1287,7 +1287,7 @@ const GoalsCard = ({ data, onEdit }) => {
                   
                   <div className="text-center">
                     <div className={`text-lg font-bold ${isComplete ? 'text-green-400' : 'text-white'}`}>
-                      {isComplete ? '🎉 Complete!' : `$${remaining.toLocaleString()}`}
+                      {isComplete ? 'ðŸŽ‰ Complete!' : `$${remaining.toLocaleString()}`}
                     </div>
                     <div className="text-xs text-gray-400">
                       {isComplete ? 'Goal achieved!' : 'remaining'}
@@ -1313,7 +1313,7 @@ const GoalsCard = ({ data, onEdit }) => {
   );
 };
 
-// 🎯 COMMAND CENTER: Net Worth Card with Donut Chart
+// ðŸŽ¯ COMMAND CENTER: Net Worth Card with Donut Chart
 const NetWorthCard = ({ data, onEdit }) => {
   const netWorthChartRef = useRef(null);
   const [showAllAssets, setShowAllAssets] = useState(false);
@@ -1324,7 +1324,7 @@ const NetWorthCard = ({ data, onEdit }) => {
   const totalAssets = data?.breakdown?.filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0) || 0;
   const totalLiabilities = Math.abs(data?.breakdown?.filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0) || 0);
 
-  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
+  // ðŸ“Š D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (netWorthChartRef.current && data && (totalAssets > 0 || totalLiabilities > 0)) {
       const svg = d3.select(netWorthChartRef.current);
@@ -1439,7 +1439,7 @@ const NetWorthCard = ({ data, onEdit }) => {
       </div>
     </div>
     
-    {/* 📋 NET WORTH BREAKDOWN - Side by Side Layout */}
+    {/* ðŸ“‹ NET WORTH BREAKDOWN - Side by Side Layout */}
     {data.breakdown && data.breakdown.length > 0 && (
       <div className="border-t border-sky-800/50 pt-4 mt-4">
         <h3 className="text-xs sm:text-sm font-semibold text-sky-300 uppercase tracking-wide mb-3">Breakdown</h3>
@@ -1448,7 +1448,7 @@ const NetWorthCard = ({ data, onEdit }) => {
           {/* Assets Section - Left Column */}
           {data.breakdown.filter(item => item.type === 'asset').length > 0 && (
             <div>
-              <h4 className="text-xs text-green-400 font-semibold mb-2">💰 Assets</h4>
+              <h4 className="text-xs text-green-400 font-semibold mb-2">ðŸ’° Assets</h4>
               <div className="space-y-2">
                 {(showAllAssets 
                   ? data.breakdown.filter(item => item.type === 'asset')
@@ -1478,7 +1478,7 @@ const NetWorthCard = ({ data, onEdit }) => {
           {/* Liabilities Section - Right Column */}
           {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
             <div>
-              <h4 className="text-xs text-red-400 font-semibold mb-2">💳 Liabilities</h4>
+              <h4 className="text-xs text-red-400 font-semibold mb-2">ðŸ’³ Liabilities</h4>
               <div className="space-y-2">
                 {(showAllLiabilities 
                   ? data.breakdown.filter(item => item.type === 'liability')
@@ -1513,7 +1513,7 @@ const NetWorthCard = ({ data, onEdit }) => {
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
+  // ðŸ›¡ï¸ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
       <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'radial-gradient(circle at top, rgba(251, 191, 36, 0.15), rgba(15, 23, 42, 0.95))'}}>
@@ -1557,10 +1557,10 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           const roomUsed = account.contributed;
           const roomAvailable = account.limit - account.contributed;
           
-          // 🎨 PROJECT SUMMIT: Unique vibrant gradients per account type!
+          // ðŸŽ¨ PROJECT SUMMIT: Unique vibrant gradients per account type!
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
-          // 🎨 BLUE THEME COMPLEMENT: Sky (TFSA) + Cyan (RRSP) - Clean & Elegant
+          // ðŸŽ¨ BLUE THEME COMPLEMENT: Sky (TFSA) + Cyan (RRSP) - Clean & Elegant
           const isTFSA = account.name.toUpperCase().includes('TFSA') || account.name.toUpperCase().includes('TAX-FREE');
           const cardBg = isTFSA 
             ? 'from-sky-900/40 to-blue-900/40' // Sky blue (tax-free clarity)
@@ -1576,7 +1576,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                 <div>
                   <h4 className={`text-lg font-bold ${textColor} flex items-center gap-2`}>
                     {account.name}
-                    {isGoalReached && <span className="text-xs">🏆</span>}
+                    {isGoalReached && <span className="text-xs">ðŸ†</span>}
                   </h4>
                   <p className="text-xs text-gray-300 mt-1">{account.description}</p>
                 </div>
@@ -1614,7 +1614,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     <div className={`text-xs ${textColor} mb-1`}>Annual Goal</div>
                     <div className="text-lg font-bold text-white">${account.goal.toLocaleString()}</div>
                     <div className="text-[10px] text-gray-400 mt-1">
-                      {isGoalReached ? '✅ Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
+                      {isGoalReached ? 'âœ… Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
                     </div>
                   </div>
                 )}
@@ -1656,7 +1656,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
 
 // Debt Management Card
 const DebtCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
+  // ðŸ›¡ï¸ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
       <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
@@ -1712,7 +1712,7 @@ const DebtCard = ({ data, onEdit }) => {
               <div>
                 <span className="text-white font-medium">{account.name}</span>
                 <div className="text-gray-400 text-xs">
-                  {account.interestRate}% APR • Min: ${account.minPayment}
+                  {account.interestRate}% APR â€¢ Min: ${account.minPayment}
                 </div>
               </div>
               <span className="text-red-400 font-semibold">${account.balance.toLocaleString()}</span>
@@ -1729,12 +1729,12 @@ const DebtCard = ({ data, onEdit }) => {
   );
 };
 
-// Cash on Hand Card - PREMIUM UPGRADE: Survival Runway Calculator 🎯
+// Cash on Hand Card - PREMIUM UPGRADE: Survival Runway Calculator ðŸŽ¯
 const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   const [showAllAccounts, setShowAllAccounts] = useState(false);
   const maxVisibleAccounts = 3;
   
-  // 🛡️ NULL SAFETY CHECK
+  // ðŸ›¡ï¸ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
@@ -1747,8 +1747,8 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     );
   }
 
-  // 📊 CALCULATE CURRENT MONTHLY EXPENSES (Same as Monthly Expenses Card!)
-  // 🔧 CRITICAL FIX: Use CURRENT MONTH, not 3-month average!
+  // ðŸ“Š CALCULATE CURRENT MONTHLY EXPENSES (Same as Monthly Expenses Card!)
+  // ðŸ”§ CRITICAL FIX: Use CURRENT MONTH, not 3-month average!
   const calculateCurrentMonthlyExpenses = () => {
     if (!transactions || transactions.length === 0) return 0;
     
@@ -1756,7 +1756,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
     
-    // 🔧 CRITICAL FIX: Get CURRENT MONTH expenses only (matches Monthly Expenses card!)
+    // ðŸ”§ CRITICAL FIX: Get CURRENT MONTH expenses only (matches Monthly Expenses card!)
     const currentMonthExpenses = transactions
       .filter(t => {
         const tDate = new Date(t.date);
@@ -1764,15 +1764,15 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       })
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
-    // 🛡️ FIX: Round to 2 decimal places for display (e.g., $1,559.35)
+    // ðŸ›¡ï¸ FIX: Round to 2 decimal places for display (e.g., $1,559.35)
     return Math.round(currentMonthExpenses * 100) / 100;
   };
 
-  // 🎯 SURVIVAL RUNWAY CALCULATION (Using CURRENT month burn rate)
+  // ðŸŽ¯ SURVIVAL RUNWAY CALCULATION (Using CURRENT month burn rate)
   const avgMonthlyExpenses = calculateCurrentMonthlyExpenses();
   const runwayMonths = avgMonthlyExpenses > 0 ? data.total / avgMonthlyExpenses : 0;
   
-  // 🚨 STATUS INDICATOR LOGIC
+  // ðŸš¨ STATUS INDICATOR LOGIC
   const getRunwayStatus = (months) => {
     if (months >= 6) return { label: 'Secure', color: '#14B8A6', bgColor: 'bg-teal-500', textColor: 'text-teal-400' };
     if (months >= 3) return { label: 'Good', color: '#38BDF8', bgColor: 'bg-sky-500', textColor: 'text-sky-400' };
@@ -1782,7 +1782,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   
   const status = getRunwayStatus(runwayMonths);
   
-  // 📊 PROGRESS BAR CALCULATION (against Rainy Day Fund goal)
+  // ðŸ“Š PROGRESS BAR CALCULATION (against Rainy Day Fund goal)
   const goalMonths = rainyDayGoal || 6; // Default to 6 months if no goal
   const progressPercent = Math.min((runwayMonths / goalMonths) * 100, 100);
 
@@ -1801,7 +1801,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </button>
     </div>
     
-    {/* 🎯 HERO METRIC: Runway Time */}
+    {/* ðŸŽ¯ HERO METRIC: Runway Time */}
     <div className="mb-2">
       <p className={`text-4xl sm:text-5xl font-extrabold ${status.textColor} mb-1`}>
         <span className="stealth-target">{runwayMonths.toFixed(1)}</span> <span className="text-2xl sm:text-3xl">months</span>
@@ -1811,12 +1811,12 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </p>
     </div>
     
-    {/* 💰 Cash Amount (Secondary) */}
+    {/* ðŸ’° Cash Amount (Secondary) */}
     <p className="text-lg text-gray-300 mb-4 stealth-target">
       ${data.total.toLocaleString()} cash on hand
     </p>
     
-    {/* 📊 RUNWAY PROGRESS BAR */}
+    {/* ðŸ“Š RUNWAY PROGRESS BAR */}
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2 text-xs sm:text-sm">
         <span className="text-gray-400">Runway Progress</span>
@@ -1836,7 +1836,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </div>
     </div>
     
-    {/* 📋 ACCOUNT BREAKDOWN */}
+    {/* ðŸ“‹ ACCOUNT BREAKDOWN */}
     <div className="border-t border-teal-800/50 pt-4">
       <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide mb-3">Account Breakdown</h3>
       <div className="space-y-2 mb-3">
@@ -1864,7 +1864,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </div>
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
-        <span>•</span>
+        <span>â€¢</span>
         <span>Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
       </div>
     </div>
@@ -1872,13 +1872,13 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   );
 };
 
-// 🎯 COMMAND CENTER: Income Card with Donut Chart
+// ðŸŽ¯ COMMAND CENTER: Income Card with Donut Chart
 const IncomeCard = ({ data, viewMode }) => {
   const incomeChartRef = useRef(null);
   const [showAllSources, setShowAllSources] = useState(false);
   const maxVisibleItems = 3;
   
-  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
+  // ðŸ“Š D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (incomeChartRef.current && data.sources && data.sources.length > 0) {
       const svg = d3.select(incomeChartRef.current);
@@ -1938,7 +1938,7 @@ const IncomeCard = ({ data, viewMode }) => {
     }
   }, [data]);
 
-  // 🛡️ NULL SAFETY CHECK (after hooks)
+  // ðŸ›¡ï¸ NULL SAFETY CHECK (after hooks)
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -1995,13 +1995,13 @@ const IncomeCard = ({ data, viewMode }) => {
   );
 };
 
-// 🎯 COMMAND CENTER: Expenses Card with Donut Chart
+// ðŸŽ¯ COMMAND CENTER: Expenses Card with Donut Chart
 const ExpensesCard = ({ data, viewMode }) => {
   const expensesChartRef = useRef(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const maxVisibleItems = 3;
   
-  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
+  // ðŸ“Š D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (expensesChartRef.current && data.categories && data.categories.length > 0) {
       const svg = d3.select(expensesChartRef.current);
@@ -2061,7 +2061,7 @@ const ExpensesCard = ({ data, viewMode }) => {
     }
   }, [data]);
 
-  // 🛡️ NULL SAFETY CHECK (after hooks)
+  // ðŸ›¡ï¸ NULL SAFETY CHECK (after hooks)
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
@@ -2118,13 +2118,13 @@ const ExpensesCard = ({ data, viewMode }) => {
   );
 };
 
-// Cash Flow Card (TEAL - Positive Growth) - PREMIUM UPGRADE 🎯
+// Cash Flow Card (TEAL - Positive Growth) - PREMIUM UPGRADE ðŸŽ¯
 const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const chartRef = useRef(null);
   const tooltipRef = useRef(null); // DOM ref for tooltip (no React state!)
   const [chartKey, setChartKey] = useState(0); // For forcing re-render on resize
 
-  // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
+  // ðŸ“Š CALCULATE 3-MONTH HISTORICAL CASH FLOW
   const calculate3MonthTrend = () => {
     if (!transactions || transactions.length === 0) return [];
     const now = new Date();
@@ -2167,7 +2167,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   
   const trendData = calculate3MonthTrend();
 
-  // 📱 Handle window resize for mobile responsiveness
+  // ðŸ“± Handle window resize for mobile responsiveness
   useEffect(() => {
     let resizeTimer;
     const handleResize = () => {
@@ -2189,7 +2189,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
     };
   }, [trendData]);
 
-  // 🎨 D3.js Mini Bar Chart - Mobile Responsive
+  // ðŸŽ¨ D3.js Mini Bar Chart - Mobile Responsive
   useEffect(() => {
     if (!chartRef.current || trendData.length === 0) return;
 
@@ -2294,7 +2294,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
 
   }, [trendData, chartKey]); // Re-render on data change or manual resize trigger
 
-  // 🛡️ NULL SAFETY CHECK - After hooks
+  // ðŸ›¡ï¸ NULL SAFETY CHECK - After hooks
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -2327,7 +2327,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         <span className="stealth-target">{isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}</span>
       </p>
       
-      {/* 💰 COMPONENT BREAKDOWN - Strategic Intelligence */}
+      {/* ðŸ’° COMPONENT BREAKDOWN - Strategic Intelligence */}
       <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-6 mb-4 text-xs sm:text-sm">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
@@ -2341,7 +2341,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         </div>
       </div>
       
-      {/* 📈 3-MONTH TREND CHART */}
+      {/* ðŸ“ˆ 3-MONTH TREND CHART */}
       <div className="mt-4 border-t border-teal-800/50 pt-4">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
@@ -2559,16 +2559,16 @@ const FinancialFreedomCalculator = () => {
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>📊 Enter Your Info:</strong> Input your current age, savings, and monthly contribution.</p>
-                <p><strong>🎯 Set Your Target:</strong> How much do you need to be financially free?</p>
-                <p><strong>📈 Expected Return:</strong> Average annual investment return (7% is typical for stocks).</p>
-                <p><strong>🔮 See Your Timeline:</strong> The chart shows when you'll reach financial freedom!</p>
-                <p className="text-blue-400 mt-2">💡 Tip: The higher your monthly contribution and return rate, the faster you reach freedom!</p>
+                <p><strong>ðŸ“Š Enter Your Info:</strong> Input your current age, savings, and monthly contribution.</p>
+                <p><strong>ðŸŽ¯ Set Your Target:</strong> How much do you need to be financially free?</p>
+                <p><strong>ðŸ“ˆ Expected Return:</strong> Average annual investment return (7% is typical for stocks).</p>
+                <p><strong>ðŸ”® See Your Timeline:</strong> The chart shows when you'll reach financial freedom!</p>
+                <p className="text-blue-400 mt-2">ðŸ’¡ Tip: The higher your monthly contribution and return rate, the faster you reach freedom!</p>
               </div>
             </div>
           </div>
           </h3>
-          <p className="text-emerald-300/80 text-sm ml-9">🏔️ Calculate your trail to financial independence</p>
+          <p className="text-emerald-300/80 text-sm ml-9">ðŸ”ï¸ Calculate your trail to financial independence</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -2649,7 +2649,7 @@ const FinancialFreedomCalculator = () => {
                   ></div>
                 </div>
                 <div className="text-xs text-emerald-300 mt-1">
-                  {((savings / target) * 100).toFixed(1)}% to FI Basecamp 🏕️
+                  {((savings / target) * 100).toFixed(1)}% to FI Basecamp ðŸ•ï¸
                 </div>
               </div>
             </div>
@@ -2660,11 +2660,11 @@ const FinancialFreedomCalculator = () => {
         <div className="bg-gradient-to-r from-emerald-900/30 to-green-900/30 rounded-lg p-4 border border-emerald-500/30 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <div className="text-emerald-400 font-semibold mb-1">🎯 ETA to Freedom</div>
+              <div className="text-emerald-400 font-semibold mb-1">ðŸŽ¯ ETA to Freedom</div>
               <div className="text-2xl font-bold text-white">{yearsToFI} years (Age {targetAge})</div>
             </div>
             <div className="text-sm text-gray-300 max-w-md">
-              ⚡ Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
+              âš¡ Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
             </div>
           </div>
         </div>
@@ -2883,14 +2883,14 @@ const DebtPayoffCalculator = () => {
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>💳 Add Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
-                <p><strong>💰 Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
-                <p><strong>🏔️ Choose Strategy:</strong></p>
+                <p><strong>ðŸ’³ Add Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
+                <p><strong>ðŸ’° Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
+                <p><strong>ðŸ”ï¸ Choose Strategy:</strong></p>
                 <ul className="ml-4 space-y-1">
-                  <li>• <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
-                  <li>• <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
+                  <li>â€¢ <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
+                  <li>â€¢ <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
                 </ul>
-                <p className="text-blue-400 mt-2">💡 Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
+                <p className="text-blue-400 mt-2">ðŸ’¡ Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
               </div>
             </div>
           </div>
@@ -2899,7 +2899,7 @@ const DebtPayoffCalculator = () => {
           {currentResult.payoffOrder.length > 0 && (
             <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 rounded-lg p-4 border border-red-500/30">
               <div className="flex items-center gap-3">
-                <div className="text-3xl">🔥</div>
+                <div className="text-3xl">ðŸ”¥</div>
                 <div>
                   <div className="text-red-400 font-semibold">Debt Liberation Countdown</div>
                   <div className="text-white text-sm">
@@ -2920,7 +2920,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'snowball' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              🏔️ Debt Snowball (Smallest First)
+              ðŸ”ï¸ Debt Snowball (Smallest First)
             </button>
             <button
               onClick={() => setStrategy('avalanche')}
@@ -2928,7 +2928,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ⚡ Debt Avalanche (Highest Interest)
+              âš¡ Debt Avalanche (Highest Interest)
             </button>
           </div>
           
@@ -2940,19 +2940,19 @@ const DebtPayoffCalculator = () => {
                 onClick={() => loadTemplate('credit-cards')}
                 className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
               >
-                💳 Credit Cards
+                ðŸ’³ Credit Cards
               </button>
               <button
                 onClick={() => loadTemplate('student-loans')}
                 className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
               >
-                🎓 Student Loans
+                ðŸŽ“ Student Loans
               </button>
               <button
                 onClick={() => loadTemplate('mixed')}
                 className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded transition-colors"
               >
-                🔄 Mixed Debts
+                ðŸ”„ Mixed Debts
               </button>
             </div>
           </div>
@@ -3101,7 +3101,7 @@ const DebtPayoffCalculator = () => {
           {/* Results */}
           <div>
             <h4 className="font-semibold text-white mb-3">
-              {strategy === 'snowball' ? '🏔️ Snowball' : '⚡ Avalanche'} Results
+              {strategy === 'snowball' ? 'ðŸ”ï¸ Snowball' : 'âš¡ Avalanche'} Results
             </h4>
             
             <div className="space-y-4">
@@ -3130,10 +3130,10 @@ const DebtPayoffCalculator = () => {
 
               {/* Milestone Badges */}
               <div className="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg p-4 border border-orange-500/30">
-                <h5 className="text-orange-400 font-semibold mb-3">🏆 Liberation Milestones</h5>
+                <h5 className="text-orange-400 font-semibold mb-3">ðŸ† Liberation Milestones</h5>
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">💥</div>
+                    <div className="text-2xl">ðŸ’¥</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">First Debt Cleared</div>
                       <div className="text-gray-400 text-xs">
@@ -3144,7 +3144,7 @@ const DebtPayoffCalculator = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">⚡</div>
+                    <div className="text-2xl">âš¡</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">50% Debt Reduction</div>
                       <div className="text-gray-400 text-xs">
@@ -3153,7 +3153,7 @@ const DebtPayoffCalculator = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">🕊️</div>
+                    <div className="text-2xl">ðŸ•Šï¸</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">All Debts Paid - You're Free</div>
                       <div className="text-emerald-400 text-xs font-semibold">
@@ -3169,14 +3169,14 @@ const DebtPayoffCalculator = () => {
                 <h5 className="text-white font-semibold mb-3">Strategy Comparison</h5>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-blue-400">🏔️ Snowball:</span>
+                    <span className="text-blue-400">ðŸ”ï¸ Snowball:</span>
                     <span className="text-white">
                       {snowballResult.totalYears}y {snowballResult.remainingMonths}m 
                       (${Math.round(snowballResult.totalInterestPaid).toLocaleString()} interest)
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-400">⚡ Avalanche:</span>
+                    <span className="text-purple-400">âš¡ Avalanche:</span>
                     <span className="text-white">
                       {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
                       (${Math.round(avalancheResult.totalInterestPaid).toLocaleString()} interest)
@@ -3184,7 +3184,7 @@ const DebtPayoffCalculator = () => {
                   </div>
                   <div className="border-t border-gray-600 pt-2 mt-2">
                     <div className="text-emerald-400 font-semibold">
-                      💰 Avalanche saves: ${Math.round(snowballResult.totalInterestPaid - avalancheResult.totalInterestPaid).toLocaleString()}
+                      ðŸ’° Avalanche saves: ${Math.round(snowballResult.totalInterestPaid - avalancheResult.totalInterestPaid).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -3415,7 +3415,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-green-900/30 rounded-xl p-6 border-2 border-green-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-green-400">💡 Needs</h3>
+              <h3 className="text-2xl font-bold text-green-400">ðŸ’¡ Needs</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3433,7 +3433,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-yellow-900/30 rounded-xl p-6 border-2 border-yellow-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-yellow-400">🎯 Wants</h3>
+              <h3 className="text-2xl font-bold text-yellow-400">ðŸŽ¯ Wants</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3451,7 +3451,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-blue-400">💰 Savings</h3>
+              <h3 className="text-2xl font-bold text-blue-400">ðŸ’° Savings</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3473,7 +3473,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
       {budgetType === '6-jars' && (
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="bg-green-900/30 rounded-xl p-4 border-2 border-green-800/40 text-center">
-            <h4 className="text-sm font-bold text-green-400 mb-2">🏠 Necessities</h4>
+            <h4 className="text-sm font-bold text-green-400 mb-2">ðŸ  Necessities</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.necessities.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3488,7 +3488,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-purple-900/30 rounded-xl p-4 border-2 border-purple-800/40 text-center">
-            <h4 className="text-sm font-bold text-purple-400 mb-2">🚀 Freedom</h4>
+            <h4 className="text-sm font-bold text-purple-400 mb-2">ðŸš€ Freedom</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.financialFreedom.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3503,7 +3503,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-4 border-2 border-blue-800/40 text-center">
-            <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 Savings</h4>
+            <h4 className="text-sm font-bold text-blue-400 mb-2">ðŸŽ¯ Savings</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.longTermSavings.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3518,7 +3518,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-amber-900/30 rounded-xl p-4 border-2 border-amber-800/40 text-center">
-            <h4 className="text-sm font-bold text-amber-400 mb-2">📚 Education</h4>
+            <h4 className="text-sm font-bold text-amber-400 mb-2">ðŸ“š Education</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.education.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3533,7 +3533,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-pink-900/30 rounded-xl p-4 border-2 border-pink-800/40 text-center">
-            <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 Play</h4>
+            <h4 className="text-sm font-bold text-pink-400 mb-2">ðŸŽ‰ Play</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.play.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3548,7 +3548,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-teal-900/30 rounded-xl p-4 border-2 border-teal-800/40 text-center">
-            <h4 className="text-sm font-bold text-teal-400 mb-2">❤️ Give</h4>
+            <h4 className="text-sm font-bold text-teal-400 mb-2">â¤ï¸ Give</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.give.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3583,13 +3583,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
   
-  // ✏️ EDIT ITEM - New Feature!
+  // âœï¸ EDIT ITEM - New Feature!
   const [editingItem, setEditingItem] = useState(null);
   
-  // ✏️ EDIT BUSINESS - New Feature!
+  // âœï¸ EDIT BUSINESS - New Feature!
   const [editingBusiness, setEditingBusiness] = useState(null);
   
-  // 🔄 RECURRING ITEMS - New Feature!
+  // ðŸ”„ RECURRING ITEMS - New Feature!
   const [showAddRecurring, setShowAddRecurring] = useState(false);
   const [recurringType, setRecurringType] = useState('income');
   
@@ -3608,7 +3608,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       description: '',
       amount: '',
       date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-      isPassive: false // 🏔️ NEW: Passive income flag
+      isPassive: false // ðŸ”ï¸ NEW: Passive income flag
     };
   });
 
@@ -3619,18 +3619,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       amount: '',
       isPassive: false,
       frequency: 'monthly',
-      dayOfWeek: 1, // 🆕 For weekly/bi-weekly: 0=Sunday, 1=Monday, etc.
+      dayOfWeek: 1, // ðŸ†• For weekly/bi-weekly: 0=Sunday, 1=Monday, etc.
       startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
       category: ''
     };
   });
 
-  // 🔧 EDGE CASE FIX: Null safety for empty businesses array
+  // ðŸ”§ EDGE CASE FIX: Null safety for empty businesses array
   const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
   const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
-  // 🏔️ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
+  // ðŸ”ï¸ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
   const calculateFreedomMetrics = () => {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
@@ -3738,13 +3738,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   
   const freedomMetrics = calculateFreedomMetrics();
   
-  // 🏆 FREEDOM MILESTONES STATE
+  // ðŸ† FREEDOM MILESTONES STATE
   const [unlockedMilestones, setUnlockedMilestones] = useState([]);
   const [showMilestoneCelebration, setShowMilestoneCelebration] = useState(false);
   const [celebratingMilestone, setCelebratingMilestone] = useState(null);
   const [milestonesLoaded, setMilestonesLoaded] = useState(false);
 
-  // 🔧 FIX: Load previously unlocked milestones on mount (ONE-TIME)
+  // ðŸ”§ FIX: Load previously unlocked milestones on mount (ONE-TIME)
   useEffect(() => {
     const loadUnlockedMilestones = async () => {
       if (userId && db) {
@@ -3805,7 +3805,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -3837,7 +3837,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     const updatedBusinesses = [...data.businesses, business];
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -3865,7 +3865,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setShowAddBusiness(false);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -3907,7 +3907,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -3934,7 +3934,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setShowAddItem(false);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -3962,14 +3962,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     const updatedBusinesses = data.businesses.filter(business => business.id !== businessToDelete.id);
 
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
       
       setData({ ...data, businesses: updatedBusinesses });
       
-      // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting business
+      // ðŸ›¡ï¸ ANTI-EXPLOIT: Deduct XP for deleting business
       try {
         await deductXp(db, userId, 50);
         setXpRefreshTrigger(prev => prev + 1);
@@ -3981,7 +3981,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setShowDeleteConfirm(false);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4015,7 +4015,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4023,7 +4023,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setData({ ...data, businesses: updatedBusinesses });
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4035,7 +4035,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ✏️ EDIT ITEM HANDLER
+  // âœï¸ EDIT ITEM HANDLER
   const handleEditItem = async () => {
     if (!editingItem) return;
 
@@ -4078,7 +4078,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4087,7 +4087,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setEditingItem(null);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4099,7 +4099,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // 🔄 ADD RECURRING ITEM HANDLER
+  // ðŸ”„ ADD RECURRING ITEM HANDLER
   const handleAddRecurringItem = async () => {
     if (!newRecurringItem.name || !newRecurringItem.amount || !selectedBusiness) return;
 
@@ -4127,7 +4127,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
 
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4139,14 +4139,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         amount: '',
         isPassive: false,
         frequency: 'monthly',
-        dayOfWeek: 1, // 🆕 Reset day of week
+        dayOfWeek: 1, // ðŸ†• Reset day of week
         startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
         category: ''
       });
       setShowAddRecurring(false);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4158,7 +4158,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // 🔄 TOGGLE RECURRING ITEM ACTIVE/PAUSED
+  // ðŸ”„ TOGGLE RECURRING ITEM ACTIVE/PAUSED
   const handleToggleRecurringItem = async (businessId, itemId) => {
     const updatedBusinesses = data.businesses.map(business => {
       if (business.id === businessId) {
@@ -4173,7 +4173,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
 
     try {
-      // 🛡️ USE updateDoc to prevent data loss
+      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4183,7 +4183,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4192,7 +4192,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   //   console.log('Share moment:', moment);
   // };
 
-  // 🔄 DELETE RECURRING ITEM
+  // ðŸ”„ DELETE RECURRING ITEM
   const handleDeleteRecurringItem = async (businessId, itemId) => {
     if (!window.confirm('Delete this recurring item?')) return;
 
@@ -4207,7 +4207,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
 
     try {
-      // 🛡️ USE updateDoc to prevent data loss
+      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4217,7 +4217,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4226,7 +4226,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   //   console.log('Share moment:', moment);
   // };
 
-  // 🔄 PROCESS DUE RECURRING ITEMS - Automation Engine
+  // ðŸ”„ PROCESS DUE RECURRING ITEMS - Automation Engine
   const processDueRecurringItems = () => {
     const today = new Date();
     let hasUpdates = false;
@@ -4323,7 +4323,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* 🏔️ FREEDOM COMMAND CENTER - 4-Card Dashboard Header */}
+      {/* ðŸ”ï¸ FREEDOM COMMAND CENTER - 4-Card Dashboard Header */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-teal-900/40 to-emerald-900/40 border-teal-500/30">
           <h3 className="text-sm font-semibold text-teal-200 mb-2 flex items-center">
@@ -4347,7 +4347,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <h3 className="text-sm font-semibold text-amber-200 mb-2 flex items-center">
             <DollarSign className="w-4 h-4 mr-2" />
             Passive Income
-            {/* 🎯 OPERATOR'S INTEL TOOLTIP */}
+            {/* ðŸŽ¯ OPERATOR'S INTEL TOOLTIP */}
             <div className="tooltip-container" style={{position: 'relative', display: 'inline-block', marginLeft: '6px'}}>
               <span 
                 className="tooltip-icon"
@@ -4366,7 +4366,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   transition: 'all 0.2s'
                 }}
               >
-                ⓘ
+                â“˜
               </span>
               <div 
                 className="tooltip-content"
@@ -4393,7 +4393,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 }}
               >
                 <div style={{marginBottom: '4px', fontWeight: '600', color: '#FBBF24', fontSize: '10px', letterSpacing: '0.5px'}}>
-                  📡 OPERATOR'S INTEL
+                  ðŸ“¡ OPERATOR'S INTEL
                 </div>
                 This is your total gross income from all passive and side hustle sources. It's used to calculate your Freedom Ratio against your personal monthly expenses. Your business's net profit is calculated in the Side Hustle Management section below.
                 {/* Tooltip arrow */}
@@ -4426,11 +4426,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </Card>
       </div>
 
-      {/* 🏔️ FREEDOM RATIO CENTERPIECE CARD */}
+      {/* ðŸ”ï¸ FREEDOM RATIO CENTERPIECE CARD */}
       <Card className="bg-gradient-to-br from-slate-900 to-gray-900 border-2" style={{ borderColor: freedomMetrics.progressColor }}>
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            🏔️ Freedom Ratio
+            ðŸ”ï¸ Freedom Ratio
           </h2>
           <p className="text-gray-400">Your passive income vs. monthly expenses</p>
         </div>
@@ -4518,7 +4518,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 text-center">
           <p className="text-gray-300 italic">
             {freedomMetrics.actualRatio >= 100 
-              ? "🎉 Congratulations! You've reached the summit. Your passive income covers your lifestyle!"
+              ? "ðŸŽ‰ Congratulations! You've reached the summit. Your passive income covers your lifestyle!"
               : freedomMetrics.actualRatio >= 75
               ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. You're almost there! Keep climbing.`
               : freedomMetrics.actualRatio >= 50
@@ -4533,11 +4533,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           </p>
         </div>
 
-        {/* 🔮 Freedom Forecast */}
+        {/* ðŸ”® Freedom Forecast */}
         {freedomMetrics.actualRatio < 100 && freedomMetrics.totalPassiveIncome > 0 && (
           <div className="mt-6 bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
             <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
-              🔮 Freedom Forecast
+              ðŸ”® Freedom Forecast
             </h3>
             <p className="text-gray-300 text-sm">
               {(() => {
@@ -4568,7 +4568,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         )}
       </Card>
 
-      {/* 🏆 FREEDOM MILESTONES */}
+      {/* ðŸ† FREEDOM MILESTONES */}
       <FreedomMilestones 
         freedomRatio={freedomMetrics.freedomRatio}
         unlockedMilestones={unlockedMilestones}
@@ -4653,7 +4653,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </Card>
       )}
 
-      {/* ✏️ EDIT BUSINESS MODAL */}
+      {/* âœï¸ EDIT BUSINESS MODAL */}
       {editingBusiness && (
         <Card className="border-amber-500/30">
           <div className="flex justify-between items-center mb-4">
@@ -4705,7 +4705,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   b.id === editingBusiness.id ? editingBusiness : b
                 );
                 try {
-                  // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+                  // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
                   await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
                     businesses: updatedBusinesses
                   });
@@ -4844,7 +4844,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </div>
             </div>
 
-            {/* 🔄 RECURRING ITEMS SECTION - NEW! */}
+            {/* ðŸ”„ RECURRING ITEMS SECTION - NEW! */}
             {business.recurringItems && business.recurringItems.length > 0 && (
               <div className="space-y-2 border-t border-gray-700 pt-4">
                 <h4 className="font-semibold text-blue-300 flex items-center gap-2">
@@ -4870,7 +4870,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                           </div>
                           <div className="flex items-center gap-3 text-xs text-gray-400">
                             <span className="capitalize">{recurring.frequency}</span>
-                            <span>•</span>
+                            <span>â€¢</span>
                             <span>Next: {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -4971,7 +4971,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 style={{ maxWidth: '100%' }}
               />
               
-              {/* 🏔️ PASSIVE INCOME CHECKBOX - Freedom Ratio Feature! */}
+              {/* ðŸ”ï¸ PASSIVE INCOME CHECKBOX - Freedom Ratio Feature! */}
               {itemType === 'income' && (
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -4984,7 +4984,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <span className="text-white font-semibold">Passive Income</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
+                        ðŸ’¡ Passive income counts toward your Freedom Ratio (income you earn without active work)
                       </p>
                     </div>
                   </label>
@@ -5010,7 +5010,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* ✏️ Edit Item Modal */}
+      {/* âœï¸ Edit Item Modal */}
       {editingItem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-md border-blue-500/30">
@@ -5029,7 +5029,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <div className="space-y-4">
               <div className="bg-gray-700/30 rounded-lg p-3 text-center">
                 <span className={`text-sm font-semibold ${editingItem.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
-                  {editingItem.type === 'income' ? '📈 Income Item' : '📉 Expense Item'}
+                  {editingItem.type === 'income' ? 'ðŸ“ˆ Income Item' : 'ðŸ“‰ Expense Item'}
                 </span>
               </div>
               
@@ -5057,7 +5057,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 style={{ maxWidth: '100%' }}
               />
               
-              {/* 🏔️ PASSIVE INCOME CHECKBOX - Only for Income Items */}
+              {/* ðŸ”ï¸ PASSIVE INCOME CHECKBOX - Only for Income Items */}
               {editingItem.type === 'income' && (
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -5070,7 +5070,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <span className="text-white font-semibold">Passive Income</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        💡 Passive income counts toward your Freedom Ratio
+                        ðŸ’¡ Passive income counts toward your Freedom Ratio
                       </p>
                     </div>
                   </label>
@@ -5096,7 +5096,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* 🔄 Add Recurring Item Modal */}
+      {/* ðŸ”„ Add Recurring Item Modal */}
       {showAddRecurring && selectedBusiness && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-2xl border-blue-500/30">
@@ -5175,16 +5175,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     onChange={(e) => setNewRecurringItem({...newRecurringItem, frequency: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="weekly">📅 Weekly</option>
-                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
-                    <option value="monthly">🗓️ Monthly</option>
-                    <option value="quarterly">📊 Quarterly</option>
-                    <option value="annually">📆 Annually</option>
+                    <option value="weekly">ðŸ“… Weekly</option>
+                    <option value="bi-weekly">ðŸ“…ðŸ“… Bi-weekly (Every 2 Weeks)</option>
+                    <option value="monthly">ðŸ—“ï¸ Monthly</option>
+                    <option value="quarterly">ðŸ“Š Quarterly</option>
+                    <option value="annually">ðŸ“† Annually</option>
                   </select>
                 </div>
               </div>
 
-              {/* 🆕 Day of Week Selector (for weekly/bi-weekly) */}
+              {/* ðŸ†• Day of Week Selector (for weekly/bi-weekly) */}
               {(newRecurringItem.frequency === 'weekly' || newRecurringItem.frequency === 'bi-weekly') && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
@@ -5204,7 +5204,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <option value={6}>Saturday</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 {newRecurringItem.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                    ðŸ’¡ {newRecurringItem.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
                   </p>
                 </div>
               )}
@@ -5237,7 +5237,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </div>
               </div>
 
-              {/* 🏔️ Passive Income Checkbox - Only for Income */}
+              {/* ðŸ”ï¸ Passive Income Checkbox - Only for Income */}
               {recurringType === 'income' && (
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -5250,7 +5250,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <span className="text-white font-semibold">Passive Income</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
+                        ðŸ’¡ Passive income counts toward your Freedom Ratio (income you earn without active work)
                       </p>
                     </div>
                   </label>
@@ -5259,7 +5259,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
               <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
                 <p className="text-xs text-blue-200">
-                  🔄 This item will be automatically added to your business on schedule. You can pause or delete it anytime.
+                  ðŸ”„ This item will be automatically added to your business on schedule. You can pause or delete it anytime.
                 </p>
               </div>
             </div>
@@ -5361,7 +5361,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* 🎉 MILESTONE CELEBRATION OVERLAY */}
+      {/* ðŸŽ‰ MILESTONE CELEBRATION OVERLAY */}
       {showMilestoneCelebration && celebratingMilestone && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 pointer-events-none">
           <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-8 shadow-2xl transform animate-bounce">
@@ -5387,7 +5387,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [allocationView, setAllocationView] = useState('ticker'); // 'ticker' or 'category'
   const [hoveredInfo, setHoveredInfo] = useState(null);
 
-  // ℹ️ Info Tooltip Component - Beginner-friendly explanations
+  // â„¹ï¸ Info Tooltip Component - Beginner-friendly explanations
   const InfoTooltip = ({ id, text, children }) => (
     <span className="relative inline-flex items-center gap-1 group">
       {children}
@@ -5425,7 +5425,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     category: 'US Stocks' // Default category
   });
 
-  // 🔧 EDGE CASE FIX: Null safety for empty holdings array
+  // ðŸ”§ EDGE CASE FIX: Null safety for empty holdings array
   const actualTotalValue = (data.investments?.holdings || []).reduce((sum, holding) => {
     return sum + ((holding.shares || 0) * (holding.currentPrice || 0));
   }, 0);
@@ -5434,7 +5434,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
-  // 📊 Calculate portfolio allocation by TICKER
+  // ðŸ“Š Calculate portfolio allocation by TICKER
   const calculateAllocationByTicker = () => {
     if (!data.investments?.holdings || data.investments.holdings.length === 0) {
       return [];
@@ -5468,7 +5468,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     return allocation.sort((a, b) => b.percentageNum - a.percentageNum);
   };
 
-  // 📊 Calculate portfolio allocation by CATEGORY
+  // ðŸ“Š Calculate portfolio allocation by CATEGORY
   const calculateAllocationByCategory = () => {
     if (!data.investments?.holdings || data.investments.holdings.length === 0) {
       return [];
@@ -5881,7 +5881,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
@@ -5900,7 +5900,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -5931,13 +5931,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
       } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -5967,13 +5967,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
       } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -6023,13 +6023,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
       } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -6187,7 +6187,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <Card style={{ backgroundColor: '#18212F' }} className="border-amber-500/30">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
             <Repeat className="w-6 h-6 mr-3 text-amber-400" />
-            💰 Dividend Income Tracker
+            ðŸ’° Dividend Income Tracker
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -6225,7 +6225,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       {/* Upcoming Dividends */}
             <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
               <h4 className="text-lg font-semibold text-amber-200 mb-3 flex items-center">
-                📅 Upcoming Dividends
+                ðŸ“… Upcoming Dividends
               </h4>
             <div className="space-y-3">
               {data.investments.holdings
@@ -6255,7 +6255,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           {/* DRIP Status */}
           <div style={{ backgroundColor: '#141F3B' }} className="rounded-lg p-4 border border-blue-500/30">
             <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-              🔄 DRIP Status
+              ðŸ”„ DRIP Status
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
@@ -6275,7 +6275,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         <Tooltip 
                           text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
                         >
-                          {holding.dripEnabled ? '🔄 DRIP ON' : '💵 CASH'}
+                          {holding.dripEnabled ? 'ðŸ”„ DRIP ON' : 'ðŸ’µ CASH'}
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
@@ -6294,7 +6294,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       <div className="mt-6" style={{ backgroundColor: '#141F3B' }}>
         <div className="rounded-lg p-4 border border-blue-500/30">
         <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-          📊 Dividend Breakdown by Holding
+          ðŸ“Š Dividend Breakdown by Holding
         </h4>
           <div className="space-y-2">
             {data.investments.holdings
@@ -6329,12 +6329,12 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           
                       <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
               <div className="text-sm text-purple-200 mb-2">
-                💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
+                ðŸ’¡ <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
-                in passive income - perfect for travel funding! 🌍
+                in passive income - perfect for travel funding! ðŸŒ
               </div>
               <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
-                📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
+                ðŸ“… <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
                 Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
               </div>
             </div>
@@ -6360,7 +6360,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 {/* Getting Started Guide */}
                 <div className="text-center mb-8">
                   <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-white mb-2">💼 Getting Started with Investing</h3>
+                  <h3 className="text-3xl font-bold text-white mb-2">ðŸ’¼ Getting Started with Investing</h3>
                   <p className="text-gray-300 text-lg">
                     New to investing? Don't worry! Here's everything you need to know.
                   </p>
@@ -6370,45 +6370,45 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 <div className="grid md:grid-cols-3 gap-4 mb-8">
                   {/* Step 1 */}
                   <div className="bg-gradient-to-br from-violet-900/40 to-violet-800/20 rounded-lg p-6 border border-violet-600/30">
-                    <div className="text-3xl mb-3">1️⃣</div>
+                    <div className="text-3xl mb-3">1ï¸âƒ£</div>
                     <h4 className="text-lg font-bold text-white mb-2">Add Your Investment</h4>
                     <p className="text-sm text-gray-300 mb-3">
                       Click "Add Investment" and enter your stock info:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>• <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
-                      <li>• <strong>Shares:</strong> How many you own</li>
-                      <li>• <strong>Price:</strong> What you paid per share</li>
+                      <li>â€¢ <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
+                      <li>â€¢ <strong>Shares:</strong> How many you own</li>
+                      <li>â€¢ <strong>Price:</strong> What you paid per share</li>
                     </ul>
                   </div>
 
                   {/* Step 2 */}
                   <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-lg p-6 border border-blue-600/30">
-                    <div className="text-3xl mb-3">2️⃣</div>
+                    <div className="text-3xl mb-3">2ï¸âƒ£</div>
                     <h4 className="text-lg font-bold text-white mb-2">Track Your Growth</h4>
                     <p className="text-sm text-gray-300 mb-3">
                       Watch your portfolio come to life:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>• See real-time value</li>
-                      <li>• Track gains & losses</li>
-                      <li>• View allocation charts</li>
-                      <li>• Monitor dividends</li>
+                      <li>â€¢ See real-time value</li>
+                      <li>â€¢ Track gains & losses</li>
+                      <li>â€¢ View allocation charts</li>
+                      <li>â€¢ Monitor dividends</li>
                     </ul>
                   </div>
 
                   {/* Step 3 */}
                   <div className="bg-gradient-to-br from-green-900/40 to-green-800/20 rounded-lg p-6 border border-green-600/30">
-                    <div className="text-3xl mb-3">3️⃣</div>
+                    <div className="text-3xl mb-3">3ï¸âƒ£</div>
                     <h4 className="text-lg font-bold text-white mb-2">Build Wealth</h4>
                     <p className="text-sm text-gray-300 mb-3">
                       Enable DRIP to grow faster:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>• Auto-reinvest dividends</li>
-                      <li>• Compound your returns</li>
-                      <li>• Build wealth passively</li>
-                      <li>• Track your progress</li>
+                      <li>â€¢ Auto-reinvest dividends</li>
+                      <li>â€¢ Compound your returns</li>
+                      <li>â€¢ Build wealth passively</li>
+                      <li>â€¢ Track your progress</li>
                     </ul>
                   </div>
                 </div>
@@ -6424,22 +6424,22 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">💡 Start Small:</strong> You don't need thousands to start. Even one share counts!
+                        <strong className="text-white">ðŸ’¡ Start Small:</strong> You don't need thousands to start. Even one share counts!
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">📚 Learn As You Go:</strong> Each investment teaches you something new.
+                        <strong className="text-white">ðŸ“š Learn As You Go:</strong> Each investment teaches you something new.
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">🎯 Diversify:</strong> Don't put all eggs in one basket. Spread your investments.
+                        <strong className="text-white">ðŸŽ¯ Diversify:</strong> Don't put all eggs in one basket. Spread your investments.
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">⏳ Think Long-Term:</strong> Wealth builds over time. Be patient!
+                        <strong className="text-white">â³ Think Long-Term:</strong> Wealth builds over time. Be patient!
                       </p>
                     </div>
                   </div>
@@ -6455,7 +6455,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     Add Your First Investment
                   </button>
                   <p className="text-sm text-gray-400 mt-3">
-                    Ready to start? Click above to add your first investment! 🚀
+                    Ready to start? Click above to add your first investment! ðŸš€
                   </p>
                 </div>
               </div>
@@ -6514,7 +6514,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <div className="text-lg font-bold text-white">${holding.totalValue.toLocaleString()}</div>
                   <InfoTooltip 
                     id={`total-value-${holding.id}`}
-                    text="Total Value = Shares × Current Price. This is what your investment is worth right now."
+                    text="Total Value = Shares Ã— Current Price. This is what your investment is worth right now."
                   >
                     <div className="text-xs text-gray-400">Total Value</div>
                   </InfoTooltip>
@@ -6661,7 +6661,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <option value="Other">Other</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 Group similar holdings for category view
+                    ðŸ’¡ Group similar holdings for category view
                   </p>
                 </div>
                 
@@ -6688,7 +6688,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                       <InfoTooltip 
                         id="avg-cost-info"
-                        text="Average Cost = The price you paid per share. If you bought at different times, calculate the average: Total Invested ÷ Total Shares."
+                        text="Average Cost = The price you paid per share. If you bought at different times, calculate the average: Total Invested Ã· Total Shares."
                       >
                         <span>Avg Cost per Share</span>
                       </InfoTooltip>
@@ -6815,7 +6815,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 {/* Auto-Generated Dividend Date Info */}
                 {parseFloat(newHolding.dividendYield) > 0 && (
                   <div className="p-3 bg-green-900/20 rounded-lg border border-green-600/30">
-                    <div className="text-green-400 font-semibold text-sm mb-1">📅 Auto-Generated Dividend Date</div>
+                    <div className="text-green-400 font-semibold text-sm mb-1">ðŸ“… Auto-Generated Dividend Date</div>
                     <div className="text-xs text-gray-300">
                       Next dividend date will be automatically estimated based on common payment schedules for {newHolding.symbol || 'this symbol'}. 
                       Major ETFs typically pay quarterly (Mar/Jun/Sep/Dec), while monthly dividend stocks use the 10th of each month.
@@ -6993,7 +6993,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   const [sortBy, setSortBy] = useState('date');
   const [showTransactionHistory, setShowTransactionHistory] = useState(false);
   
-  // 🔍 UPGRADE 2: Advanced Search & Filter System
+  // ðŸ” UPGRADE 2: Advanced Search & Filter System
   const [searchKeyword, setSearchKeyword] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState(['income', 'expense', 'transfer']);
@@ -7008,7 +7008,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     subcategory: '',
     date: getTodayInUserTimezone(),
     isRecurring: false,
-    isPassive: false, // 🏔️ Freedom Ratio: Passive income flag
+    isPassive: false, // ðŸ”ï¸ Freedom Ratio: Passive income flag
     frequency: 'monthly',
     dayOfMonth: 1,
     dayOfWeek: 1,
@@ -7032,7 +7032,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     // Auto-categorize if subcategory is empty
     let finalTransaction = { ...newTransaction };
     if (!finalTransaction.subcategory || finalTransaction.subcategory === '') {
-      // 🔧 BUG FIX: Use correct categorization function based on transaction type
+      // ðŸ”§ BUG FIX: Use correct categorization function based on transaction type
       const autoCategory = finalTransaction.type === 'income' 
         ? categorizeIncome(finalTransaction.description)
         : categorizeExpense(finalTransaction.description);
@@ -7085,7 +7085,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       const fieldsToUpdate = {
         transactions: updatedData.transactions,
         recentTransactions: updatedData.recentTransactions
@@ -7120,7 +7120,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         subcategory: '',
         date: new Date().toISOString().split('T')[0],
         isRecurring: false,
-        isPassive: false, // 🏔️ Freedom Ratio: Reset passive income flag
+        isPassive: false, // ðŸ”ï¸ Freedom Ratio: Reset passive income flag
         frequency: 'monthly',
         dayOfMonth: 1,
         dayOfWeek: 1,
@@ -7129,7 +7129,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setShowAddForm(false);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7141,7 +7141,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
   };
 
-  // ✏️ EDIT RECURRING EXPENSE HANDLER
+  // âœï¸ EDIT RECURRING EXPENSE HANDLER
   const handleEditRecurringExpense = async () => {
     if (!editingRecurring) return;
 
@@ -7156,7 +7156,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     );
 
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         recurringExpenses: updatedRecurring
       });
@@ -7165,7 +7165,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setEditingRecurring(null);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7194,7 +7194,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     );
     
     try {
-      // 🛡️ USE updateDoc to prevent data loss
+      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         transactions: updatedTransactions,
         recentTransactions: updatedRecentTransactions
@@ -7205,7 +7205,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         recentTransactions: updatedRecentTransactions
       });
       setEditingTransaction(null);
-      infoLog('✅ Transaction updated successfully');
+      infoLog('âœ… Transaction updated successfully');
     } catch (error) {
       console.error('Error updating transaction:', error);
     }
@@ -7223,16 +7223,16 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     };
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         transactions: updatedTransactions,
         recentTransactions: updatedRecentTransactions
       });
       setData(updatedData);
-      infoLog('✅ Transaction deleted successfully');
+      infoLog('âœ… Transaction deleted successfully');
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7245,10 +7245,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
   };
 
-  // 🔍 UPGRADE 2: Advanced Filtering Logic with Search
-  debugLog('🔍 DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
-  debugLog('🔍 DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
-  debugLog('🔍 DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
+  // ðŸ” UPGRADE 2: Advanced Filtering Logic with Search
+  debugLog('ðŸ” DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
+  debugLog('ðŸ” DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
+  debugLog('ðŸ” DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
   
   const filteredTransactions = (data.recentTransactions || data.transactions || [])
     // Keyword search (description)
@@ -7286,7 +7286,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       return new Date(b.date) - new Date(a.date); // default
     });
 
-  // 📊 UPGRADE 1: Calculate Spending by Category (Current Month)
+  // ðŸ“Š UPGRADE 1: Calculate Spending by Category (Current Month)
   const calculateSpendingByCategory = () => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -7353,13 +7353,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     .filter(t => t.amount < 0 && t.category === 'business')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-  // 📊 UPGRADE 1: D3.js Donut Chart for Spending by Category (Mobile Optimized)
+  // ðŸ“Š UPGRADE 1: D3.js Donut Chart for Spending by Category (Mobile Optimized)
   useEffect(() => {
     if (spendingChartRef.current && spendingByCategory && spendingByCategory.length > 0) {
       const svg = d3.select(spendingChartRef.current);
       svg.selectAll("*").remove();
       
-      // 📱 Mobile-responsive sizing
+      // ðŸ“± Mobile-responsive sizing
       const isMobile = window.innerWidth <= 768;
       const width = isMobile ? Math.min(window.innerWidth - 40, 280) : 300;
       const height = isMobile ? Math.min(window.innerWidth - 40, 280) : 300;
@@ -7661,8 +7661,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="expense">💸 Expense</option>
-                <option value="income">💰 Income</option>
+                <option value="expense">ðŸ’¸ Expense</option>
+                <option value="income">ðŸ’° Income</option>
               </select>
               
               <select
@@ -7670,8 +7670,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="personal">👤 Personal</option>
-                <option value="business">🏢 Business</option>
+                <option value="personal">ðŸ‘¤ Personal</option>
+                <option value="business">ðŸ¢ Business</option>
               </select>
               
               <select
@@ -7679,7 +7679,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="">🤖 Auto-categorize</option>
+                <option value="">ðŸ¤– Auto-categorize</option>
                 {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
                   <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                 ))}
@@ -7694,7 +7694,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               />
             </div>
 
-            {/* 🔄 Recurring Expense Section */}
+            {/* ðŸ”„ Recurring Expense Section */}
             <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
               <div className="flex items-center gap-3 mb-3">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -7704,7 +7704,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setNewTransaction({...newTransaction, isRecurring: e.target.checked})}
                     className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
                   />
-                  <span className="text-white font-semibold">🔄 Make this a recurring {newTransaction.type}</span>
+                  <span className="text-white font-semibold">ðŸ”„ Make this a recurring {newTransaction.type}</span>
                 </label>
               </div>
               
@@ -7715,10 +7715,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setNewTransaction({...newTransaction, frequency: e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                   >
-                    <option value="weekly">📅 Weekly</option>
-                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
-                    <option value="monthly">🗓️ Monthly</option>
-                    <option value="yearly">📆 Yearly</option>
+                    <option value="weekly">ðŸ“… Weekly</option>
+                    <option value="bi-weekly">ðŸ“…ðŸ“… Bi-weekly (Every 2 Weeks)</option>
+                    <option value="monthly">ðŸ—“ï¸ Monthly</option>
+                    <option value="yearly">ðŸ“† Yearly</option>
                   </select>
                   
                   {(newTransaction.frequency === 'weekly' || newTransaction.frequency === 'bi-weekly') && (
@@ -7818,12 +7818,12 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           </div>
       </FixedModal>
 
-      {/* 📊 UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
+      {/* ðŸ“Š UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-indigo-900/40 to-blue-900/40 border-blue-500/30">
         <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex flex-wrap items-center gap-2">
           <div className="flex items-center">
             <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
-            💰 Spending by Category
+            ðŸ’° Spending by Category
           </div>
           <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
         </h3>
@@ -7957,7 +7957,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         r.id === recurring.id ? { ...r, isActive: !r.isActive } : r
                       );
                       try {
-                        // 🛡️ USE updateDoc to prevent data loss
+                        // ðŸ›¡ï¸ USE updateDoc to prevent data loss
                         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
                           recurringExpenses: updatedRecurring
                         });
@@ -7966,7 +7966,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         console.error('Error updating recurring expense:', error);
                       }
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7989,7 +7989,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       if (!window.confirm('Delete this recurring expense?')) return;
                       const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
                       try {
-                        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+                        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
                         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
                           recurringExpenses: updatedRecurring
                         });
@@ -7997,7 +7997,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         setData({ ...data, recurringExpenses: updatedRecurring });
                       } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8019,7 +8019,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </Card>
       )}
 
-      {/* ✏️ EDIT RECURRING EXPENSE MODAL */}
+      {/* âœï¸ EDIT RECURRING EXPENSE MODAL */}
       {editingRecurring && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 rounded-lg max-w-2xl w-full border border-purple-500/30">
@@ -8090,14 +8090,14 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingRecurring({...editingRecurring, frequency: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                 >
-                  <option value="weekly">📅 Weekly</option>
-                  <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
-                  <option value="monthly">🗓️ Monthly</option>
-                  <option value="yearly">📆 Yearly</option>
+                  <option value="weekly">ðŸ“… Weekly</option>
+                  <option value="bi-weekly">ðŸ“…ðŸ“… Bi-weekly (Every 2 Weeks)</option>
+                  <option value="monthly">ðŸ—“ï¸ Monthly</option>
+                  <option value="yearly">ðŸ“† Yearly</option>
                 </select>
               </div>
               
-              {/* 🆕 Day of Week Selector (for weekly/bi-weekly) */}
+              {/* ðŸ†• Day of Week Selector (for weekly/bi-weekly) */}
               {(editingRecurring.frequency === 'weekly' || editingRecurring.frequency === 'bi-weekly') && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
@@ -8117,7 +8117,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     <option value={6}>Saturday</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 {editingRecurring.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                    ðŸ’¡ {editingRecurring.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
                   </p>
                 </div>
               )}
@@ -8133,8 +8133,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value, subcategory: ''})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="personal">👤 Personal</option>
-                    <option value="business">🏢 Business</option>
+                    <option value="personal">ðŸ‘¤ Personal</option>
+                    <option value="business">ðŸ¢ Business</option>
                   </select>
                 </div>
                 <div>
@@ -8146,13 +8146,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setEditingRecurring({...editingRecurring, subcategory: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="">🤖 Auto-categorize</option>
+                    <option value="">ðŸ¤– Auto-categorize</option>
                     {subcategoryOptions[editingRecurring.category || 'personal']?.[editingRecurring.type || 'expense']?.map(sub => (
                       <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                     ))}
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 Categorize for better tracking
+                    ðŸ’¡ Categorize for better tracking
                   </p>
                 </div>
               </div>
@@ -8206,7 +8206,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </div>
       )}
 
-      {/* 🔍 UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
+      {/* ðŸ” UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-slate-900/40 to-gray-900/40">
         <div className="space-y-4">
           {/* Search Bar & Filters Button - Mobile optimized */}
@@ -8215,13 +8215,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="🔍 Search transactions..."
+                placeholder="ðŸ” Search transactions..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className="w-full bg-gray-700/50 text-white px-4 py-4 md:py-3 pl-12 md:pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
               />
               <div className="absolute left-3 md:left-3 top-4 md:top-3.5 text-gray-400 text-lg md:text-base">
-                🔍
+                ðŸ”
               </div>
             </div>
             
@@ -8346,10 +8346,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
                   >
-                    <option value="date-desc">📅 Date (Newest First)</option>
-                    <option value="date-asc">📅 Date (Oldest First)</option>
-                    <option value="amount-desc">💰 Amount (High to Low)</option>
-                    <option value="amount-asc">💰 Amount (Low to High)</option>
+                    <option value="date-desc">ðŸ“… Date (Newest First)</option>
+                    <option value="date-asc">ðŸ“… Date (Oldest First)</option>
+                    <option value="amount-desc">ðŸ’° Amount (High to Low)</option>
+                    <option value="amount-asc">ðŸ’° Amount (Low to High)</option>
                   </select>
                 </div>
               </div>
@@ -8385,11 +8385,11 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     <h4 className="font-semibold text-white">{transaction.description}</h4>
                     <div className="text-sm text-gray-400">
-                      {formatDateForUser(transaction.date)} • 
+                      {formatDateForUser(transaction.date)} â€¢ 
                       <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
                         {transaction.category}
                       </span>
-                      {transaction.subcategory && ` • ${transaction.subcategory}`}
+                      {transaction.subcategory && ` â€¢ ${transaction.subcategory}`}
                     </div>
                   </div>
                 </div>
@@ -8465,8 +8465,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value, subcategory: ''})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
                 >
-                  <option value="expense">💸 Expense</option>
-                  <option value="income">💰 Income</option>
+                  <option value="expense">ðŸ’¸ Expense</option>
+                  <option value="income">ðŸ’° Income</option>
                 </select>
                 
                 <select
@@ -8474,8 +8474,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value, subcategory: ''})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
                 >
-                  <option value="personal">👤 Personal</option>
-                  <option value="business">🏢 Business</option>
+                  <option value="personal">ðŸ‘¤ Personal</option>
+                  <option value="business">ðŸ¢ Business</option>
                 </select>
               </div>
               
@@ -8484,7 +8484,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setEditingTransaction({...editingTransaction, subcategory: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="">🤖 Auto-categorize</option>
+                <option value="">ðŸ¤– Auto-categorize</option>
                 {subcategoryOptions[editingTransaction.category]?.[editingTransaction.type]?.map(sub => (
                   <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                 ))}
@@ -8530,7 +8530,7 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showRunwayCalculator, setShowRunwayCalculator] = useState(false); // NEW: Toggle for runway calculator
   const [hoveredCountry, setHoveredCountry] = useState(null);
   
-  // 💫 NEW: Moment Modal States
+  // ðŸ’« NEW: Moment Modal States
   const [showMomentModal, setShowMomentModal] = useState(false);
   const [momentText, setMomentText] = useState('');
   const [momentTrip, setMomentTrip] = useState(null);
@@ -8555,7 +8555,7 @@ const TravelTab = ({ data, setData, userId }) => {
     countryInput: ''
   });
 
-  // 🌍 Wishlist editing states
+  // ðŸŒ Wishlist editing states
   const [showAddWishlistCountry, setShowAddWishlistCountry] = useState(false);
   const [wishlistCountryInput, setWishlistCountryInput] = useState('');
 
@@ -8573,13 +8573,13 @@ const TravelTab = ({ data, setData, userId }) => {
     date: getTodayLocal() // FIX: Use local date instead of UTC
   });
 
-  // 🔤 Auto-capitalize first letter of country name
+  // ðŸ”¤ Auto-capitalize first letter of country name
   const capitalizeCountryName = (name) => {
     if (!name) return '';
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
-  // 🌍 Add country to wishlist
+  // ðŸŒ Add country to wishlist
   const handleAddWishlistCountry = async () => {
     if (!wishlistCountryInput.trim()) return;
     
@@ -8596,7 +8596,7 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
@@ -8605,7 +8605,7 @@ const TravelTab = ({ data, setData, userId }) => {
       setShowAddWishlistCountry(false);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8618,21 +8618,21 @@ const TravelTab = ({ data, setData, userId }) => {
     }
   };
 
-  // 🗑️ Remove country from wishlist
+  // ðŸ—‘ï¸ Remove country from wishlist
   const handleRemoveWishlistCountry = async (countryToRemove) => {
     const currentWishlist = data.travel?.wishlistCountries || [];
     const updatedWishlist = currentWishlist.filter(c => c !== countryToRemove);
     const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
       setData({ ...data, travel: updatedTravel });
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8731,7 +8731,7 @@ const TravelTab = ({ data, setData, userId }) => {
         }
       };
       
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedData.travel
       });
@@ -8748,7 +8748,7 @@ const TravelTab = ({ data, setData, userId }) => {
       }, 100);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8805,7 +8805,7 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedTransactions = [mainTransaction, ...data.transactions];
 
      try {
-       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+       // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
          travel: updatedTravel,
          transactions: updatedTransactions
@@ -8835,7 +8835,7 @@ const TravelTab = ({ data, setData, userId }) => {
        }, 100);
      } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8867,7 +8867,7 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedTravel = { ...data.travel, trips: updatedTrips };
 
      try {
-       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+       // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
          travel: updatedTravel
        });
@@ -8884,7 +8884,7 @@ const TravelTab = ({ data, setData, userId }) => {
        }, 100);
      } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8914,7 +8914,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // 🛡️ USE updateDoc to prevent data loss
+     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel
      });
@@ -8934,7 +8934,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // 🗑️ DELETE TRIP HANDLER
+ // ðŸ—‘ï¸ DELETE TRIP HANDLER
  const handleDeleteTrip = async (tripId) => {
    if (!window.confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
      return;
@@ -8944,7 +8944,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // 🛡️ USE updateDoc to prevent data loss
+     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel
      });
@@ -8954,7 +8954,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
+ // ðŸ—‘ï¸ DELETE EXPENSE FROM TRIP HANDLER
  const handleDeleteExpense = async (tripId, expenseId) => {
    if (!window.confirm('Delete this expense?')) {
      return;
@@ -8973,7 +8973,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // 🛡️ USE updateDoc to prevent data loss
+     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel
      });
@@ -8983,7 +8983,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // 💫 NEW: ADD MOMENT TO TRIP HANDLER
+ // ðŸ’« NEW: ADD MOMENT TO TRIP HANDLER
  const handleAddMomentToTrip = async () => {
    if (!momentText.trim() || !momentTrip) return;
 
@@ -9016,7 +9016,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // 🛡️ USE updateDoc to prevent data loss
+     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel,
        moments: updatedMoments
@@ -9033,7 +9033,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // 💫 DELETE MOMENT FROM TRIP HANDLER
+ // ðŸ’« DELETE MOMENT FROM TRIP HANDLER
  const handleDeleteTripMoment = async (tripId, momentId) => {
    if (!window.confirm('Delete this moment?')) return;
 
@@ -9054,7 +9054,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // 🛡️ USE updateDoc to prevent data loss
+     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel,
        moments: updatedMoments
@@ -9070,11 +9070,11 @@ const TravelTab = ({ data, setData, userId }) => {
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* ✅ Travel Runway Calculator MOVED to "Trip Planning & Budgets" section below! */}
+      {/* âœ… Travel Runway Calculator MOVED to "Trip Planning & Budgets" section below! */}
       {/* Now it's collapsible with a "Show Travel Runway" button - much cleaner! */}
-      {/* 🗺️ OPERATOR'S WORLD MAP - Now at TOP of page (no more scroll issues!) */}
+      {/* ðŸ—ºï¸ OPERATOR'S WORLD MAP - Now at TOP of page (no more scroll issues!) */}
       {(() => {
-        // 🌍 COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
+        // ðŸŒ COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
         const normalizeCountryName = (userInput) => {
           const input = userInput.trim().toLowerCase();
           
@@ -9112,7 +9112,7 @@ const TravelTab = ({ data, setData, userId }) => {
             'burma': 'myanmar',
             
             // Africa
-            'ivory coast': "côte d'ivoire",
+            'ivory coast': "cÃ´te d'ivoire",
             'cape verde': 'cabo verde',
             'congo': 'republic of the congo',
             'drc': 'democratic republic of the congo',
@@ -9164,25 +9164,25 @@ const TravelTab = ({ data, setData, userId }) => {
             
             // Debug logging (can remove later)
             if (countries.length > 0) {
-              console.log(`🗺️ Trip: "${trip.name}" | End: ${trip.endDate} | isPast: ${isPast}`);
+              console.log(`ðŸ—ºï¸ Trip: "${trip.name}" | End: ${trip.endDate} | isPast: ${isPast}`);
             }
             
             countries.forEach(country => {
               const normalizedCountry = normalizeCountryName(country);
               if (isPast) {
-                // COMPLETED EXPEDITION → AMBER/GOLD
+                // COMPLETED EXPEDITION â†’ AMBER/GOLD
                 if (!visitedCountries.has(normalizedCountry)) {
                   visitedCountries.set(normalizedCountry, []);
                 }
                 visitedCountries.get(normalizedCountry).push(trip);
-                console.log(`✅ COMPLETED: ${country} → ${normalizedCountry} (AMBER)`);
+                console.log(`âœ… COMPLETED: ${country} â†’ ${normalizedCountry} (AMBER)`);
               } else {
-                // FUTURE MISSION → BLUE
+                // FUTURE MISSION â†’ BLUE
                 if (!plannedCountries.has(normalizedCountry)) {
                   plannedCountries.set(normalizedCountry, []);
                 }
                 plannedCountries.get(normalizedCountry).push(trip);
-                console.log(`🔵 PLANNED: ${country} → ${normalizedCountry} (BLUE)`);
+                console.log(`ðŸ”µ PLANNED: ${country} â†’ ${normalizedCountry} (BLUE)`);
               }
             });
           });
@@ -9296,7 +9296,7 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
             ) : (
               <div className="bg-slate-800/40 rounded-lg p-4 md:p-6 border border-gray-700">
-                {/* 🗺️ VINTAGE EXPEDITION WORLD MAP */}
+                {/* ðŸ—ºï¸ VINTAGE EXPEDITION WORLD MAP */}
                 <div className="relative w-full mb-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border-2 border-amber-900/40 p-4 shadow-2xl">
                   {/* Decorative Compass Rose */}
                   <div className="absolute top-4 right-4 w-16 h-16 opacity-20 pointer-events-none">
@@ -9407,7 +9407,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   </ComposableMap>
                   </div>
                   
-                  {/* 🌍 Country Tooltip - Appears on Hover */}
+                  {/* ðŸŒ Country Tooltip - Appears on Hover */}
                   {hoveredCountry && (
                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-none z-50">
                       <div className="bg-gradient-to-r from-slate-900 to-gray-900 px-6 py-3 rounded-xl border-2 shadow-2xl animate-fadeIn"
@@ -9422,17 +9422,17 @@ const TravelTab = ({ data, setData, userId }) => {
                           <div className="flex items-center justify-center gap-2 text-sm">
                             {hoveredCountry.isVisited && (
                               <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/40 font-semibold">
-                                ✅ Completed Expedition
+                                âœ… Completed Expedition
                               </span>
                             )}
                             {hoveredCountry.isPlanned && (
                               <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/40 font-semibold">
-                                🔵 Future Mission
+                                ðŸ”µ Future Mission
                               </span>
                             )}
                             {!hoveredCountry.isVisited && !hoveredCountry.isPlanned && (
                               <span className="px-3 py-1 bg-gray-600/20 text-gray-400 rounded-full border border-gray-600/40">
-                                🌍 Unexplored
+                                ðŸŒ Unexplored
                               </span>
                             )}
                           </div>
@@ -9498,7 +9498,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-amber-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Completed ✓</div>
+                                      <div className="text-gray-400">Status: Completed âœ“</div>
                                     </div>
                                   ))}
                                 </div>
@@ -9535,7 +9535,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-blue-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Planned 📅</div>
+                                      <div className="text-gray-400">Status: Planned ðŸ“…</div>
                                     </div>
                                   ))}
                                 </div>
@@ -9547,7 +9547,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     </div>
                   )}
                   
-                  {/* 🌍 EDITABLE TRAVEL WISHLIST */}
+                  {/* ðŸŒ EDITABLE TRAVEL WISHLIST */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-lg font-semibold text-purple-400 flex items-center gap-2">
@@ -9610,7 +9610,7 @@ const TravelTab = ({ data, setData, userId }) => {
                       <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      <strong className="text-white">Pro Tip:</strong> Use the wishlist for quick dreaming, then create full trips when you're ready to plan! 🌍
+                      <strong className="text-white">Pro Tip:</strong> Use the wishlist for quick dreaming, then create full trips when you're ready to plan! ðŸŒ
                     </div>
                   </div>
                 </div>
@@ -9626,7 +9626,7 @@ const TravelTab = ({ data, setData, userId }) => {
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-2">
-              🗺️ Trip Planning & Budgets
+              ðŸ—ºï¸ Trip Planning & Budgets
             </h2>
             <p className="text-gray-400">Manage your travel budgets and track expenses by trip</p>
           </div>
@@ -9648,7 +9648,7 @@ const TravelTab = ({ data, setData, userId }) => {
           </div>
         </div>
         
-        {/* 🌍 TRAVEL RUNWAY CALCULATOR - Collapsible Section */}
+        {/* ðŸŒ TRAVEL RUNWAY CALCULATOR - Collapsible Section */}
         {showRunwayCalculator && (
           <div className="mt-6 pt-6 border-t border-gray-700">
             <div className="relative">
@@ -9662,11 +9662,11 @@ const TravelTab = ({ data, setData, userId }) => {
               
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 mb-2">
-                  <h3 className="text-2xl font-bold text-white">🌍 Travel Runway Calculator</h3>
+                  <h3 className="text-2xl font-bold text-white">ðŸŒ Travel Runway Calculator</h3>
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <p className="text-slate-300">Smart destination-based travel planning with cost tiers</p>
-                  {/* 💡 Help Tooltip - Left side on mobile */}
+                  {/* ðŸ’¡ Help Tooltip - Left side on mobile */}
                   <div className="group relative">
                     <button className="text-slate-400 hover:text-amber-400 transition-colors">
                       <HelpCircle className="w-5 h-5" />
@@ -9676,12 +9676,12 @@ const TravelTab = ({ data, setData, userId }) => {
                       <div className="space-y-2 text-xs text-gray-300">
                         <p><strong>1. Set Your Travel Savings:</strong> Enter your total travel fund (top right edit button)</p>
                         <p><strong>2. Plan Your Days:</strong> Allocate days to different cost tiers:
-                          <br />• 🟢 Cheap ($30/day): SE Asia, India, Eastern Europe
-                          <br />• 🟡 Moderate ($100/day): South America, Southern Europe
-                          <br />• 🔴 Expensive ($200/day): Western Europe, Japan, Scandinavia
+                          <br />â€¢ ðŸŸ¢ Cheap ($30/day): SE Asia, India, Eastern Europe
+                          <br />â€¢ ðŸŸ¡ Moderate ($100/day): South America, Southern Europe
+                          <br />â€¢ ðŸ”´ Expensive ($200/day): Western Europe, Japan, Scandinavia
                         </p>
                         <p><strong>3. See Your Runway:</strong> Calculator shows total possible travel days and cost breakdown!</p>
-                        <p className="text-amber-300 font-semibold mt-2">💡 Pro Tip: Mix cheap and expensive destinations to maximize your travel time!</p>
+                        <p className="text-amber-300 font-semibold mt-2">ðŸ’¡ Pro Tip: Mix cheap and expensive destinations to maximize your travel time!</p>
                       </div>
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
                         <div className="border-8 border-transparent border-t-gray-900"></div>
@@ -9708,24 +9708,24 @@ const TravelTab = ({ data, setData, userId }) => {
 
                 {/* Destination Cost Breakdown */}
                 <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
-                  <h4 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h4>
+                  <h4 className="text-lg font-semibold text-slate-200 mb-4">ðŸŽ¯ Your Travel Plan</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
-                      <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
+                      <div className="text-emerald-300 font-semibold">ðŸŸ¢ Cheap Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
                       <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
                       <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
                       <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
                     </div>
                     <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
-                      <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
+                      <div className="text-amber-300 font-semibold">ðŸŸ¡ Moderate Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
                       <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
                       <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
                       <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
                     </div>
                     <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
-                      <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
+                      <div className="text-rose-300 font-semibold">ðŸ”´ Expensive Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
                       <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
                       <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
@@ -9753,7 +9753,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div className="text-xs text-slate-400 text-center">
-                  💡 Extend your journey by choosing cheaper destinations with remaining funds
+                  ðŸ’¡ Extend your journey by choosing cheaper destinations with remaining funds
                 </div>
               </div>
             </div>
@@ -9814,7 +9814,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   >
                     Add Expense
                   </button>
-                  {/* 💫 NEW: Add Moment Button */}
+                  {/* ðŸ’« NEW: Add Moment Button */}
                   <button
                     onClick={() => {
                       setMomentTrip(trip);
@@ -9824,7 +9824,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     style={{ backgroundColor: '#F59E0B' }}
                     title="Add Travel Moment"
                   >
-                    💫 Moment
+                    ðŸ’« Moment
                   </button>
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
@@ -9919,11 +9919,11 @@ const TravelTab = ({ data, setData, userId }) => {
                   </div>
                 )}
 
-                {/* 💫 NEW: Quick Moments */}
+                {/* ðŸ’« NEW: Quick Moments */}
                 {trip.moments && trip.moments.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-1" style={{ color: '#F59E0B' }}>
-                      💫 Travel Moments ({trip.moments.length})
+                      ðŸ’« Travel Moments ({trip.moments.length})
                     </h4>
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.moments.slice(0, 2).map(moment => (
@@ -10048,7 +10048,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
               </div>
 
-              {/* 🗺️ Countries Selector - For World Map */}
+              {/* ðŸ—ºï¸ Countries Selector - For World Map */}
               <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                 <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10092,13 +10092,13 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                  ðŸ’¡ Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
                 </p>
                 {Array.isArray(newTrip.countries) && newTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {newTrip.countries.map((country, idx) => (
                       <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
-                        🌍 {country}
+                        ðŸŒ {country}
                         <button
                           type="button"
                           onClick={() => {
@@ -10107,7 +10107,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           }}
                           className="hover:text-red-400 transition-colors font-bold text-base"
                         >
-                          ×
+                          Ã—
                         </button>
                       </span>
                     ))}
@@ -10238,7 +10238,7 @@ const TravelTab = ({ data, setData, userId }) => {
               {newExpense.currency !== 'CAD' && newExpense.amount && (
                 <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
                   <div className="text-sm text-blue-200">
-                    💱 <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ≈ 
+                    ðŸ’± <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} â‰ˆ 
                     <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
                   </div>
                   <div className="text-xs text-blue-300 mt-1">
@@ -10278,13 +10278,13 @@ const TravelTab = ({ data, setData, userId }) => {
          </div>
        )}
 
-       {/* 💫 NEW: Add Moment Modal */}
+       {/* ðŸ’« NEW: Add Moment Modal */}
        {showMomentModal && momentTrip && (
          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
            <Card className="w-full max-w-lg border-amber-500/30">
              <div className="flex justify-between items-center mb-4">
                <div>
-                 <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>💫 Add Travel Moment</h3>
+                 <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>ðŸ’« Add Travel Moment</h3>
                  <p className="text-sm text-gray-400">{momentTrip.name}</p>
                </div>
                <button
@@ -10303,7 +10303,7 @@ const TravelTab = ({ data, setData, userId }) => {
                {/* Inspiring Message */}
                <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
                  <p className="text-amber-200 text-sm italic text-center">
-                   ✨ "You didn't work for money. You worked for moments like this."
+                   âœ¨ "You didn't work for money. You worked for moments like this."
                  </p>
                </div>
 
@@ -10320,7 +10320,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    autoFocus
                  />
                  <p className="text-xs text-gray-500 mt-2">
-                   💡 Pro tip: Write about the emotions, the people, the unexpected surprises. These stories are your treasure!
+                   ðŸ’¡ Pro tip: Write about the emotions, the people, the unexpected surprises. These stories are your treasure!
                  </p>
                </div>
              </div>
@@ -10444,7 +10444,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 />
               </div>
 
-              {/* 🗺️ Countries Selector - For World Map */}
+              {/* ðŸ—ºï¸ Countries Selector - For World Map */}
               <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                 <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10490,13 +10490,13 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                  ðŸ’¡ Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
                 </p>
                 {Array.isArray(editingTrip.countries) && editingTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {editingTrip.countries.map((country, idx) => (
                       <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
-                        🌍 {country}
+                        ðŸŒ {country}
                         <button
                           type="button"
                           onClick={() => {
@@ -10505,7 +10505,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           }}
                           className="hover:text-red-400 transition-colors font-bold text-base"
                         >
-                          ×
+                          Ã—
                         </button>
                       </span>
                     ))}
@@ -10558,7 +10558,7 @@ const TravelTab = ({ data, setData, userId }) => {
             <div className="space-y-4">
               <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
                 <p className="text-sm text-purple-200 mb-2">
-                  ✨ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
+                  âœ¨ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
                 </p>
                 <p className="text-xs text-gray-400">
                   No need to create a full trip. Just type the country name and we'll add it to your wishlist.
@@ -10583,7 +10583,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   autoFocus
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 First letter will be automatically capitalized
+                  ðŸ’¡ First letter will be automatically capitalized
                 </p>
               </div>
             </div>
@@ -10615,7 +10615,7 @@ const TravelTab = ({ data, setData, userId }) => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
           <Card className="w-full max-w-sm sm:max-w-2xl border-blue-500/30 my-4 sm:my-8 max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-3 sm:mb-4">
-                 <h3 className="text-lg sm:text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
+                 <h3 className="text-lg sm:text-xl font-bold text-white">ðŸŒ Travel Runway Settings</h3>
                <button
                  onClick={() => {
                    setShowRunwayModal(false);
@@ -10676,12 +10676,12 @@ const TravelTab = ({ data, setData, userId }) => {
 
                {/* Trip Planning by Destination Tiers */}
                <div className="bg-blue-900/20 rounded-lg p-3 sm:p-4 border border-blue-600/30">
-                 <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🎯 Plan Your Travel by Destination Type</h4>
+                 <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">ðŸŽ¯ Plan Your Travel by Destination Type</h4>
                  
                  <div className="space-y-2 sm:space-y-3">
                    <div className="bg-green-900/30 rounded-lg p-2 sm:p-3 border border-green-600/30">
                      <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-green-400 font-semibold text-sm">🟢 Cheap ($40/day)</span>
+                       <span className="text-green-400 font-semibold text-sm">ðŸŸ¢ Cheap ($40/day)</span>
                        <span className="text-green-300 text-xs sm:hidden">SE Asia, E.Europe</span>
                      </div>
                      <input
@@ -10703,7 +10703,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                    <div className="bg-yellow-900/30 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
                      <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-yellow-400 font-semibold text-sm">🟡 Moderate ($90/day)</span>
+                       <span className="text-yellow-400 font-semibold text-sm">ðŸŸ¡ Moderate ($90/day)</span>
                        <span className="text-yellow-300 text-xs sm:hidden">S.America, S.Europe</span>
                      </div>
                      <input
@@ -10725,7 +10725,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                    <div className="bg-red-900/30 rounded-lg p-2 sm:p-3 border border-red-600/30">
                      <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-red-400 font-semibold text-sm">🔴 Expensive ($160/day)</span>
+                       <span className="text-red-400 font-semibold text-sm">ðŸ”´ Expensive ($160/day)</span>
                        <span className="text-red-300 text-xs sm:hidden">W.Europe, Japan</span>
                      </div>
                      <input
@@ -10749,7 +10749,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                {/* Enhanced Preview */}
                <div className="bg-blue-900/20 rounded-lg p-2 sm:p-3 border border-blue-600/30">
-                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Preview</div>
+                 <div className="text-blue-200 text-sm font-semibold mb-2">ðŸ“Š Preview</div>
                  <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs">
                    <div className="text-center">
                      <div className="text-blue-300 font-bold text-sm">
@@ -10958,7 +10958,7 @@ function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  // 🔐 PRODUCTION AUTHENTICATION ENABLED
+  // ðŸ” PRODUCTION AUTHENTICATION ENABLED
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
@@ -10972,14 +10972,14 @@ function App() {
   const [existingUserWithPayment, setExistingUserWithPayment] = useState(null);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
   
-  // 🎖️ RANK-UP MODAL STATE (moved to top for scope access)
+  // ðŸŽ–ï¸ RANK-UP MODAL STATE (moved to top for scope access)
   const [showRankUpModal, setShowRankUpModal] = useState(false);
   const [rankUpData, setRankUpData] = useState(null);
   
-  // 🛠️ SECURE DEVELOPER PANEL (only for admins)
+  // ðŸ› ï¸ SECURE DEVELOPER PANEL (only for admins)
   const [showDevPanel, setShowDevPanel] = useState(false);
   const [devOverridePlan, setDevOverridePlan] = useState(null);
-  const [devDemoMode, setDevDemoMode] = useState(false); // 🎭 Demo mode - hides real name
+  const [devDemoMode, setDevDemoMode] = useState(false); // ðŸŽ­ Demo mode - hides real name
   
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
@@ -10994,7 +10994,7 @@ function App() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   
   
-  // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
+  // ðŸ“Š FEEDBACK SYSTEM - Bug Reports & Feature Requests
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug'); // 'bug' or 'feature'
   const [feedbackData, setFeedbackData] = useState({
@@ -11008,12 +11008,12 @@ function App() {
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
   
-  // 🖱️ Desktop Tab Scroll
+  // ðŸ–±ï¸ Desktop Tab Scroll
   const tabContainerRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
   
-  // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
+  // ðŸ”’ SECURE ADMIN CHECK - Only specific emails can use dev panel
   const ADMIN_EMAILS = [
     'janara.nguon@gmail.com',
     // Add more admin emails here as needed
@@ -11021,7 +11021,7 @@ function App() {
   
   const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
   
-  // 🔐 URL Parameter Dev Mode (Admin Only)
+  // ðŸ” URL Parameter Dev Mode (Admin Only)
   React.useEffect(() => {
     if (isAdmin) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -11042,16 +11042,16 @@ function App() {
   const [editingCard, setEditingCard] = useState(null);
   const [tempCardData, setTempCardData] = useState({});
   
-  // 📅 HELPER: Get today's date in local timezone (not UTC)
+  // ðŸ“… HELPER: Get today's date in local timezone (not UTC)
   const getTodayLocal = () => {
     const today = new Date();
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   };
 
-  // 🎮 XP Refresh Trigger - increment this to force MissionStatusBanner to reload
+  // ðŸŽ® XP Refresh Trigger - increment this to force MissionStatusBanner to reload
   const [xpRefreshTrigger, setXpRefreshTrigger] = useState(0);
 
-  // 🎯 First Climb Protocol states
+  // ðŸŽ¯ First Climb Protocol states
   const [showFirstClimbProtocol, setShowFirstClimbProtocol] = useState(false);
   const [missions, setMissions] = useState({
     mission1: { completed: false, progress: 0, target: 10 },
@@ -11073,7 +11073,7 @@ function App() {
     date: getTodayInUserTimezone()
   });
   
-  // 🔒 STEALTH MODE - Privacy Protection Feature (Free for everyone!)
+  // ðŸ”’ STEALTH MODE - Privacy Protection Feature (Free for everyone!)
   const [stealthMode, setStealthMode] = useState(() => {
     // Check localStorage for saved preference
     const saved = localStorage.getItem('stealthMode');
@@ -11089,28 +11089,28 @@ function App() {
     });
   };
 
-  // 📝 QUICK JOURNAL SYSTEM
+  // ðŸ“ QUICK JOURNAL SYSTEM
   const [showQuickJournal, setShowQuickJournal] = useState(false);
   const [quickJournalNote, setQuickJournalNote] = useState('');
 
-  // 🧳 OFFLINE SUPPORT FOR TRAVELERS
+  // ðŸ§³ OFFLINE SUPPORT FOR TRAVELERS
   const [isOffline, setIsOffline] = useState(!isOnline());
   const [offlineSummary, setOfflineSummary] = useState(getOfflineSummary());
   const [showOfflineIndicator, setShowOfflineIndicator] = useState(false);
 
-  // 🛡️ DATA SAFETY - Protecting user data like it's sacred
+  // ðŸ›¡ï¸ DATA SAFETY - Protecting user data like it's sacred
   const [showDataRecoveryModal, setShowDataRecoveryModal] = useState(false);
   const [showDataImportModal, setShowDataImportModal] = useState(false);
   const [userBackups, setUserBackups] = useState([]);
   const [dataSafetySummary, setDataSafetySummary] = useState(null);
 
-  // 📓 FREEDOM JOURNAL SYSTEM
+  // ðŸ““ FREEDOM JOURNAL SYSTEM
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [selectedTripForJournal, setSelectedTripForJournal] = useState(null);
   const [showMissionCompleteModal, setShowMissionCompleteModal] = useState(false);
   const [completedTrip, setCompletedTrip] = useState(null);
 
-  // 💫 MOMENTS SYSTEM
+  // ðŸ’« MOMENTS SYSTEM
   const [showMomentModal, setShowMomentModal] = useState(false);
   const [editingMoment, setEditingMoment] = useState(null);
   const [newMoment, setNewMoment] = useState(() => {
@@ -11124,7 +11124,7 @@ function App() {
     };
   });
 
-  // 🎯 PRICING PHASE STATE
+  // ðŸŽ¯ PRICING PHASE STATE
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
 
@@ -11139,15 +11139,15 @@ function App() {
     setTimeout(() => setNotification(null), 3000);
   }, []);
 
-  // 📊 GOOGLE ANALYTICS - Track Events
+  // ðŸ“Š GOOGLE ANALYTICS - Track Events
   const trackEvent = useCallback((eventName, eventParams = {}) => {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', eventName, eventParams);
-      debugLog('📊 Analytics Event:', eventName, eventParams);
+      debugLog('ðŸ“Š Analytics Event:', eventName, eventParams);
     }
   }, []);
 
-  // 💫 MOMENTS HANDLERS - Creating memories from financial milestones
+  // ðŸ’« MOMENTS HANDLERS - Creating memories from financial milestones
   const handleEditMoment = (moment) => {
     if (moment) {
       // Edit existing moment
@@ -11175,7 +11175,7 @@ function App() {
 
   const handleShareMoment = (moment) => {
     // Create shareable text
-    const shareText = `${moment.title}\n\n${moment.story}\n\n📍 ${moment.location || 'My Journey'}\n📅 ${new Date(moment.timestamp).toLocaleDateString()}\n\n#FinancialFreedom #TheCompass`;
+    const shareText = `${moment.title}\n\n${moment.story}\n\nðŸ“ ${moment.location || 'My Journey'}\nðŸ“… ${new Date(moment.timestamp).toLocaleDateString()}\n\n#FinancialFreedom #TheCompass`;
     
     if (navigator.share) {
       navigator.share({
@@ -11185,7 +11185,7 @@ function App() {
     } else {
       // Fallback - copy to clipboard
       navigator.clipboard.writeText(shareText).then(() => {
-        showNotification('📋 Moment copied to clipboard!', 'success');
+        showNotification('ðŸ“‹ Moment copied to clipboard!', 'success');
       });
     }
   };
@@ -11196,10 +11196,10 @@ function App() {
       return;
     }
 
-    // 🛡️ SAFETY CHECK: Prevent data loss!
+    // ðŸ›¡ï¸ SAFETY CHECK: Prevent data loss!
     if (editingMoment && (!data.moments || data.moments.length === 0)) {
-      showNotification('⚠️ Data error detected. Please refresh and try again.', 'error');
-      console.error('🚨 CRITICAL: Attempting to edit when moments array is empty!');
+      showNotification('âš ï¸ Data error detected. Please refresh and try again.', 'error');
+      console.error('ðŸš¨ CRITICAL: Attempting to edit when moments array is empty!');
       return;
     }
 
@@ -11215,18 +11215,18 @@ function App() {
       // Update existing moment
       updatedMoments = (data.moments || []).map(m => m.id === editingMoment.id ? moment : m);
       
-      // 🛡️ SAFETY: Verify moment was actually updated
+      // ðŸ›¡ï¸ SAFETY: Verify moment was actually updated
       const updated = updatedMoments.find(m => m.id === editingMoment.id);
       if (!updated) {
-        showNotification('⚠️ Update failed. Moment not found.', 'error');
-        console.error('🚨 CRITICAL: Moment to update not found!');
+        showNotification('âš ï¸ Update failed. Moment not found.', 'error');
+        console.error('ðŸš¨ CRITICAL: Moment to update not found!');
         return;
       }
 
-      // 🛡️ SAFETY: Never save if this would delete all moments
+      // ðŸ›¡ï¸ SAFETY: Never save if this would delete all moments
       if (updatedMoments.length === 0) {
-        showNotification('⚠️ Cannot save - this would delete all moments!', 'error');
-        console.error('🚨 CRITICAL: Save blocked - would delete all moments!');
+        showNotification('âš ï¸ Cannot save - this would delete all moments!', 'error');
+        console.error('ðŸš¨ CRITICAL: Save blocked - would delete all moments!');
         return;
       }
     } else {
@@ -11234,19 +11234,19 @@ function App() {
       updatedMoments = [moment, ...(data.moments || [])];
     }
 
-    // 🛡️ Deep clone to prevent reference issues
+    // ðŸ›¡ï¸ Deep clone to prevent reference issues
     const updatedData = JSON.parse(JSON.stringify({
       ...data,
       moments: updatedMoments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
     }));
 
     try {
-      // 🛡️ CREATE BACKUP BEFORE SAVE!
+      // ðŸ›¡ï¸ CREATE BACKUP BEFORE SAVE!
       if (data.moments && data.moments.length > 0) {
         await createBackup(userId, data, 'before-moment-save');
       }
 
-      // 🛡️ USE updateDoc to prevent data loss
+      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         moments: updatedData.moments
       });
@@ -11260,7 +11260,7 @@ function App() {
         date: new Date().toISOString().split('T')[0],
         isAchievement: false
       });
-      showNotification(editingMoment ? '✨ Moment updated!' : '💫 Moment created!', 'success');
+      showNotification(editingMoment ? 'âœ¨ Moment updated!' : 'ðŸ’« Moment created!', 'success');
       
       // Award XP for creating moment
       if (!editingMoment) {
@@ -11283,29 +11283,29 @@ function App() {
   };
 
   const handleDeleteMoment = async (momentId) => {
-    if (!window.confirm('Delete this moment?\\n\\n⚠️ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
+    if (!window.confirm('Delete this moment?\\n\\nâš ï¸ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
 
     const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
      try {
-       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+       // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
          moments: updatedMoments
        });
        
        setData({ ...data, moments: updatedMoments });
       
-      // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting moment
+      // ðŸ›¡ï¸ ANTI-EXPLOIT: Deduct XP for deleting moment
       try {
         const result = await deductXp(db, userId, 10);
         setXpRefreshTrigger(prev => prev + 1);
         if (result.rankDown) {
-          showNotification(`🗑️ Moment deleted. -10 XP. Rank: ${result.newRank.name}`, 'warning');
+          showNotification(`ðŸ—‘ï¸ Moment deleted. -10 XP. Rank: ${result.newRank.name}`, 'warning');
         } else {
-          showNotification('🗑️ Moment deleted. -10 XP', 'warning');
+          showNotification('ðŸ—‘ï¸ Moment deleted. -10 XP', 'warning');
         }
       } catch (error) {
         console.warn('XP deduction failed (moment delete)', error);
-        showNotification('🗑️ Moment deleted', 'success');
+        showNotification('ðŸ—‘ï¸ Moment deleted', 'success');
       }
     } catch (error) {
       console.error('Error deleting moment:', error);
@@ -11313,7 +11313,7 @@ function App() {
     }
   };
 
-  // 📧 FEEDBACK SUBMISSION HANDLER
+  // ðŸ“§ FEEDBACK SUBMISSION HANDLER
   const handleSubmitFeedback = async () => {
     if (!feedbackData.message.trim()) {
       showNotification('Please enter a message', 'error');
@@ -11343,8 +11343,8 @@ function App() {
 
       showNotification(
         feedbackData.type === 'bug' 
-          ? '🐛 Bug report submitted! Thank you!' 
-          : '💡 Feature request submitted! Thank you!',
+          ? 'ðŸ› Bug report submitted! Thank you!' 
+          : 'ðŸ’¡ Feature request submitted! Thank you!',
         'success'
       );
 
@@ -11362,7 +11362,7 @@ function App() {
     }
   };
 
-  // 📓 FREEDOM JOURNAL HANDLERS
+  // ðŸ““ FREEDOM JOURNAL HANDLERS
   const handleSaveJournalEntry = async (entry) => {
     if (!selectedTripForJournal) return;
 
@@ -11379,12 +11379,12 @@ function App() {
     const updatedTravel = { ...data.travel, trips: updatedTrips };
 
     try {
-      // 🛡️ USE updateDoc to prevent data loss
+      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
       setData({ ...data, travel: updatedTravel });
-      showNotification('Journal entry saved! 📓', 'success');
+      showNotification('Journal entry saved! ðŸ““', 'success');
       
       // Award XP for journaling
       if (userId) {
@@ -11396,7 +11396,7 @@ function App() {
       }
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11419,7 +11419,7 @@ function App() {
     setSelectedTripForJournal(null);
   };
 
-  // 🎯 MISSION COMPLETE AUTOMATION
+  // ðŸŽ¯ MISSION COMPLETE AUTOMATION
   const checkForCompletedTrips = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -11454,7 +11454,7 @@ function App() {
     }
   };
 
-  // 📄 PDF EXPORT HANDLER
+  // ðŸ“„ PDF EXPORT HANDLER
   const handleExportPDF = async () => {
     if (currentUserPlan !== SUBSCRIPTION_TIERS.OPERATOR && currentUserPlan !== SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE) {
       setUpgradePromptData({
@@ -11466,7 +11466,7 @@ function App() {
     }
 
     // TODO: Implement PDF generation
-    showNotification('PDF export feature coming soon! 🚀', 'success');
+    showNotification('PDF export feature coming soon! ðŸš€', 'success');
   };
 
   // Feature gating and upgrade functions
@@ -11494,7 +11494,7 @@ function App() {
     }
 
     try {
-      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing${priceId ? ` (Price ID: ${priceId})` : ''}`);
+      console.log(`ðŸ›’ Initiating upgrade to ${planId} with ${billingCycle} billing${priceId ? ` (Price ID: ${priceId})` : ''}`);
       
       // Import Stripe utilities dynamically
       const { createCheckoutSession } = await import('./utils/stripeUtils');
@@ -11510,7 +11510,7 @@ function App() {
       
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11518,7 +11518,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('❌ Upgrade error:', error);
+      console.error('âŒ Upgrade error:', error);
       showNotification(
         error.message || 'Failed to process upgrade. Please try again.',
         'error'
@@ -11526,7 +11526,7 @@ function App() {
     }
   }, [user, showNotification]);
 
-  // 🖱️ Desktop Tab Scroll Functions
+  // ðŸ–±ï¸ Desktop Tab Scroll Functions
   const scrollTabs = (direction) => {
     if (tabContainerRef.current) {
       const scrollAmount = 200;
@@ -11573,7 +11573,7 @@ function App() {
         'travel-mode': 'Travel Mode'
       };
       
-      // 📊 Track locked feature access attempt
+      // ðŸ“Š Track locked feature access attempt
       trackEvent('locked_feature_clicked', {
         feature_name: featureNames[requiredFeature] || tab,
         tab: tab,
@@ -11584,7 +11584,7 @@ function App() {
       return;
     }
     
-    // 📊 Track page view
+    // ðŸ“Š Track page view
     trackEvent('page_view', {
       page_title: tab,
       user_plan: currentUserPlan
@@ -11593,7 +11593,7 @@ function App() {
     setActiveTab(tab);
   }, [checkFeatureAccess, showUpgradePromptForFeature, trackEvent, currentUserPlan]);
 
-  // 🔄 Process Recurring Expenses Function
+  // ðŸ”„ Process Recurring Expenses Function
   const processRecurringExpenses = useCallback(async (userData, currentUserId) => {
     if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
       return;
@@ -11609,7 +11609,7 @@ function App() {
       
       try {
         const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
-        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(docRef, {
           transactions: updatedTransactions,
           recurringExpenses: updatedRecurringExpenses
@@ -11622,9 +11622,9 @@ function App() {
         
         // Show notification about processed recurring expenses
         if (newTransactions.length === 1) {
-          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+          showNotification(`âœ… Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
         } else {
-          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
+          showNotification(`âœ… Processed ${newTransactions.length} recurring transactions`, 'success');
         }
       } catch (error) {
         console.error('Error processing recurring expenses:', error);
@@ -11633,7 +11633,7 @@ function App() {
     }
   }, [showNotification]);
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11642,18 +11642,18 @@ function App() {
   //   console.log('Share moment:', moment);
   // };
 
-    // 🔐 PRODUCTION Authentication Effect
+    // ðŸ” PRODUCTION Authentication Effect
   useEffect(() => {
     if (!auth) {
-      console.error('❌ Firebase auth not initialized');
+      console.error('âŒ Firebase auth not initialized');
       setAuthLoading(false);
       setShowAuth(true);
       return;
     }
 
-    debugLog('🔐 Setting up authentication listener...');
+    debugLog('ðŸ” Setting up authentication listener...');
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      debugLog('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
+      debugLog('ðŸ” Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
       setAuthLoading(true);
       setIsLoading(true);
       
@@ -11677,10 +11677,10 @@ function App() {
             const userData = docSnap.data();
             setData(userData);
             
-            // 🔄 Process recurring expenses on data load
+            // ðŸ”„ Process recurring expenses on data load
             await processRecurringExpenses(userData, firebaseUser.uid);
           } else {
-            // 🆕 NEW USER - Show Quick Start Guide!
+            // ðŸ†• NEW USER - Show Quick Start Guide!
             // Check if they haven't dismissed it before
             const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
             
@@ -11702,7 +11702,7 @@ function App() {
           }
         } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11716,7 +11716,7 @@ function App() {
           setData(initialData);
         }
         
-        // 💳 Load user's subscription data
+        // ðŸ’³ Load user's subscription data
         try {
           const userDocRef = doc(db, 'users', firebaseUser.uid);
           const userDocSnap = await getDoc(userDocRef);
@@ -11726,19 +11726,19 @@ function App() {
             const subscription = userDoc.subscription;
             
             if (subscription && subscription.plan && subscription.status === 'active') {
-              console.log('✅ Active subscription found:', subscription.plan);
+              console.log('âœ… Active subscription found:', subscription.plan);
               setUserPlan(subscription.plan);
             } else {
-              console.log('📋 No active subscription, using free tier');
+              console.log('ðŸ“‹ No active subscription, using free tier');
               setUserPlan(SUBSCRIPTION_TIERS.FREE);
             }
           } else {
-            debugLog('📋 No user document, using free tier');
+            debugLog('ðŸ“‹ No user document, using free tier');
             setUserPlan(SUBSCRIPTION_TIERS.FREE);
           }
         } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11776,7 +11776,7 @@ function App() {
     return () => unsubscribe();
   }, [processRecurringExpenses, showNotification]);
   
-  // 🛡️ DAILY AUTO-BACKUP - Creates automatic backup every 24 hours
+  // ðŸ›¡ï¸ DAILY AUTO-BACKUP - Creates automatic backup every 24 hours
   useEffect(() => {
     if (!userId || !data) return;
 
@@ -11788,12 +11788,12 @@ function App() {
       // Check if 24 hours have passed since last backup (or no backup exists)
       if (!lastBackup || (now - parseInt(lastBackup)) > 24 * 60 * 60 * 1000) {
         try {
-          console.log('🛡️ Creating daily auto-backup...');
+          console.log('ðŸ›¡ï¸ Creating daily auto-backup...');
           await createBackup(userId, data, 'daily-auto');
           localStorage.setItem(lastBackupKey, now.toString());
-          console.log('✅ Daily auto-backup created successfully');
+          console.log('âœ… Daily auto-backup created successfully');
         } catch (error) {
-          console.error('❌ Daily auto-backup failed:', error);
+          console.error('âŒ Daily auto-backup failed:', error);
         }
       }
     };
@@ -11806,7 +11806,7 @@ function App() {
     return () => clearInterval(interval);
   }, [userId, data]);
   
-  // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
+  // ðŸ› ï¸ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
   useEffect(() => {
     const handleKeyPress = (e) => {
       // Only works for admin emails
@@ -11829,7 +11829,7 @@ function App() {
   }, [isAdmin, showDevPanel]);
 
 
-  // 🔐 Authentication Functions
+  // ðŸ” Authentication Functions
   const handleSignUp = async () => {
     if (!authForm.email || !authForm.password || !authForm.name) {
       showNotification('Please fill in all fields', 'error');
@@ -11838,20 +11838,20 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // 🌊 FLOW LIKE WATER: Try signup first (handles Firebase Auth inconsistency)
-      console.log('🌊 Creating new account for:', authForm.email);
+      // ðŸŒŠ FLOW LIKE WATER: Try signup first (handles Firebase Auth inconsistency)
+      console.log('ðŸŒŠ Creating new account for:', authForm.email);
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
-      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      // ðŸš€ Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('🚀 Showing Quick Start popup for new signup user');
+          console.log('ðŸš€ Showing Quick Start popup for new signup user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
@@ -11859,8 +11859,8 @@ function App() {
       console.error('Signup error:', error);
       
       if (error.code === 'auth/email-already-in-use') {
-        // 🌊 FLOW LIKE WATER: Email exists (webhook created user), show password setup
-        console.log('🌊 Email already exists - webhook created user, showing set password option');
+        // ðŸŒŠ FLOW LIKE WATER: Email exists (webhook created user), show password setup
+        console.log('ðŸŒŠ Email already exists - webhook created user, showing set password option');
         setExistingUserWithPayment({
           email: authForm.email,
           name: authForm.name,
@@ -11897,19 +11897,19 @@ function App() {
       showNotification('Welcome back!', 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
-      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      // ðŸš€ Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('🚀 Showing Quick Start popup for new user');
+          console.log('ðŸš€ Showing Quick Start popup for new user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
       
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11941,7 +11941,7 @@ function App() {
       showNotification('Signed out successfully', 'success');
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11954,7 +11954,7 @@ function App() {
     }
   };
 
-  // 🎯 SMART SIGNUP FLOW: Handle setting password for existing users with payments
+  // ðŸŽ¯ SMART SIGNUP FLOW: Handle setting password for existing users with payments
   const handleSetPassword = async () => {
     if (!authForm.password) {
       showNotification('Please enter a password', 'error');
@@ -11963,8 +11963,8 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // 🌊 FLOW LIKE WATER: Use our API to update the password
-      console.log('🌊 Updating password for webhook-created user:', existingUserWithPayment.email);
+      // ðŸŒŠ FLOW LIKE WATER: Use our API to update the password
+      console.log('ðŸŒŠ Updating password for webhook-created user:', existingUserWithPayment.email);
       
       const response = await fetch('/api/update-user-password', {
         method: 'POST',
@@ -11983,19 +11983,19 @@ function App() {
       }
 
       const result = await response.json();
-      console.log('✅ Password updated successfully:', result);
+      console.log('âœ… Password updated successfully:', result);
       
       // Now sign in with the new password
       await signInWithEmailAndPassword(auth, existingUserWithPayment.email, authForm.password);
       
       showNotification(`Welcome ${existingUserWithPayment.name}! Your account is now set up.`, 'success');
       
-      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      // ðŸš€ Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('🚀 Showing Quick Start popup for new webhook-created user');
+          console.log('ðŸš€ Showing Quick Start popup for new webhook-created user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
@@ -12028,7 +12028,7 @@ function App() {
       showNotification('Welcome! Signed in with Google.', 'success');
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12070,7 +12070,7 @@ function App() {
     };
   }, []);
 
-  // 🔧 REMOVED: Aggressive scroll-to-top fix that was breaking UX
+  // ðŸ”§ REMOVED: Aggressive scroll-to-top fix that was breaking UX
   // This was scrolling to top on EVERY input blur - breaking Side Hustle, Travel, etc.
   // Modern browsers (iOS 14+, Android 10+) handle mobile keyboards correctly
   // No manual intervention needed!
@@ -12079,7 +12079,7 @@ function App() {
   // useEffect(() => {
   //   const handleInputBlur = () => {
   //     setTimeout(() => {
-  //       window.scrollTo(0, 0); // ← THIS caused scroll-to-top on every input!
+  //       window.scrollTo(0, 0); // â† THIS caused scroll-to-top on every input!
   //     }, 100);
   //   };
   //   document.addEventListener('focusout', handleInputBlur);
@@ -12113,21 +12113,21 @@ function App() {
   }, [userId]);
 
 
-  // 🎯 MISSION COMPLETE AUTOMATION - Check for completed trips
+  // ðŸŽ¯ MISSION COMPLETE AUTOMATION - Check for completed trips
   useEffect(() => {
     if (data && data.travel && data.travel.trips) {
       checkForCompletedTrips();
     }
   }, [data]);
 
-  // 🔔 DEBT PAYMENT NOTIFICATIONS - Check for upcoming payments
+  // ðŸ”” DEBT PAYMENT NOTIFICATIONS - Check for upcoming payments
   useEffect(() => {
     if (data && data.debt && data.debt.accounts) {
       checkDebtPaymentNotifications();
     }
   }, [data]);
 
-  // 🎯 LOAD PRICING PHASE DATA (OPTIONAL - Don't error if no access)
+  // ðŸŽ¯ LOAD PRICING PHASE DATA (OPTIONAL - Don't error if no access)
   useEffect(() => {
     const loadPricingPhaseData = async () => {
       try {
@@ -12138,7 +12138,7 @@ function App() {
         if (foundersDoc.exists()) {
           const count = foundersDoc.data().subscriberCount || 0;
           setFoundersCircleCount(count);
-          infoLog(`📊 Founder's Circle: ${count}/100 spots taken`);
+          infoLog(`ðŸ“Š Founder's Circle: ${count}/100 spots taken`);
         }
 
         // Load Early Adopter count
@@ -12148,11 +12148,11 @@ function App() {
         if (earlyAdopterDoc.exists()) {
           const count = earlyAdopterDoc.data().subscriberCount || 0;
           setEarlyAdopterCount(count);
-          infoLog(`📊 Early Adopter: ${count}/500 spots taken`);
+          infoLog(`ðŸ“Š Early Adopter: ${count}/500 spots taken`);
         }
       } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12168,7 +12168,7 @@ function App() {
     loadPricingPhaseData();
   }, []);
 
-  // 🎯 HANDLE LANDING PAGE REDIRECTS (Simplified - Optional)
+  // ðŸŽ¯ HANDLE LANDING PAGE REDIRECTS (Simplified - Optional)
   useEffect(() => {
     // Only run after user authentication is complete
     if (authLoading || !user) return;
@@ -12180,7 +12180,7 @@ function App() {
 
     // Optional: Still support redirects for users who want to upgrade in-app
     if (upgradePlan) {
-      console.log('🎯 Landing redirect: Opening pricing modal for', upgradePlan);
+      console.log('ðŸŽ¯ Landing redirect: Opening pricing modal for', upgradePlan);
       setLandingRedirect({ type: 'upgrade', plan: upgradePlan });
       
       // Add small delay to ensure user data is loaded
@@ -12192,7 +12192,7 @@ function App() {
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (signup && plan) {
-      console.log('🎯 Landing redirect: User needs to signup for', plan);
+      console.log('ðŸŽ¯ Landing redirect: User needs to signup for', plan);
       setLandingRedirect({ type: 'signup', plan: plan });
       showNotification(`Welcome! You can upgrade to ${plan} after signing up.`, 'info');
       // Clean URL
@@ -12200,7 +12200,7 @@ function App() {
     }
   }, [authLoading, user]); // Run when loading state or user changes
 
-  // 🌊 FLOW LIKE WATER: Pre-detect user status on signup page load
+  // ðŸŒŠ FLOW LIKE WATER: Pre-detect user status on signup page load
   useEffect(() => {
     // Only run on signup page when not authenticated
     if (authLoading || user || !showAuth || authMode !== 'signup') return;
@@ -12211,16 +12211,16 @@ function App() {
     const emailToCheck = emailFromUrl || authForm.email;
     
     if (emailToCheck) {
-      console.log('🌊 Pre-detecting user status for:', emailToCheck);
+      console.log('ðŸŒŠ Pre-detecting user status for:', emailToCheck);
       
       // Check if this email exists in Firebase Auth (webhook-created user)
       fetchSignInMethodsForEmail(auth, emailToCheck)
         .then(signInMethods => {
-          console.log('🌊 Pre-detection result:', signInMethods);
+          console.log('ðŸŒŠ Pre-detection result:', signInMethods);
           
           if (signInMethods.length > 0) {
             // Email exists - this is a webhook-created user, show password setup immediately
-            console.log('🌊 User exists - showing password setup flow immediately');
+            console.log('ðŸŒŠ User exists - showing password setup flow immediately');
             setExistingUserWithPayment({
               email: emailToCheck,
               name: authForm.name || '',
@@ -12234,7 +12234,7 @@ function App() {
               setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
             }
           } else {
-            console.log('🌊 New user - showing normal signup form');
+            console.log('ðŸŒŠ New user - showing normal signup form');
             // Pre-fill email from URL if available
             if (emailFromUrl) {
               setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
@@ -12242,7 +12242,7 @@ function App() {
           }
         })
         .catch(error => {
-          console.log('🌊 Pre-detection failed, showing normal signup:', error);
+          console.log('ðŸŒŠ Pre-detection failed, showing normal signup:', error);
           // Pre-fill email from URL if available
           if (emailFromUrl) {
             setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
@@ -12311,7 +12311,7 @@ function App() {
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
-    // 🔧 CRITICAL FIX: Prevent scroll and lock scroll position
+    // ðŸ”§ CRITICAL FIX: Prevent scroll and lock scroll position
     const scrollY = window.scrollY;
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollY}px`;
@@ -12356,7 +12356,7 @@ function App() {
   };
 
   const closeCardEditor = () => {
-    // 🔧 CRITICAL FIX: Restore scroll position (don't scroll to top!)
+    // ðŸ”§ CRITICAL FIX: Restore scroll position (don't scroll to top!)
     const scrollY = document.body.style.top;
     document.body.style.position = '';
     document.body.style.top = '';
@@ -12379,7 +12379,7 @@ function App() {
     
     let convertedData;
     
-    // 🎯 Special handling for array-based cards (goals, budgets, etc.)
+    // ðŸŽ¯ Special handling for array-based cards (goals, budgets, etc.)
     if (Array.isArray(tempCardData)) {
       // For arrays, convert numbers within each object
       convertedData = tempCardData.map(item => {
@@ -12397,7 +12397,7 @@ function App() {
         return converted;
       });
     } else {
-      // 🔧 Convert string values to numbers for object-based cards
+      // ðŸ”§ Convert string values to numbers for object-based cards
       convertedData = {};
       Object.keys(tempCardData).forEach(key => {
         const value = tempCardData[key];
@@ -12428,7 +12428,7 @@ function App() {
     }
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         [editingCard]: convertedData
       });
@@ -12456,7 +12456,7 @@ function App() {
       closeCardEditor();
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12550,24 +12550,24 @@ function App() {
   };
 
   const confirmResetData = async () => {
-    debugLog('🔧 Reset Data: Function called');
-    debugLog('🔧 Reset Data: userId =', userId);
-    debugLog('🔧 Reset Data: resetType =', resetType);
+    debugLog('ðŸ”§ Reset Data: Function called');
+    debugLog('ðŸ”§ Reset Data: userId =', userId);
+    debugLog('ðŸ”§ Reset Data: resetType =', resetType);
     
     if (!userId) {
-      console.error('❌ Reset Data: No userId available!');
-      showNotification('❌ Please sign in to reset data', 'error');
+      console.error('âŒ Reset Data: No userId available!');
+      showNotification('âŒ Please sign in to reset data', 'error');
       return;
     }
 
     let resetData;
     
     if (resetType === 'sample-financial') {
-      // 📊 SAMPLE FINANCIAL DATA ONLY (FREE tier safe!)
+      // ðŸ“Š SAMPLE FINANCIAL DATA ONLY (FREE tier safe!)
       // Only populates transactions & dashboard - no businesses, travel, investments
       const startDate = new Date(resetStartDate);
       
-      // 🛡️ PRESERVE non-financial data
+      // ðŸ›¡ï¸ PRESERVE non-financial data
       const preservedData = {
         moments: data.moments || [],
         logbook: data.logbook || [],
@@ -12604,13 +12604,13 @@ function App() {
           income: initialData.income.total,
           expenses: initialData.expenses.total,
           cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
-          businessIncome: 0, // ✅ No business data in sample
+          businessIncome: 0, // âœ… No business data in sample
           businessExpenses: 0,
-          investmentValue: 0, // ✅ No investment data in sample
+          investmentValue: 0, // âœ… No investment data in sample
           savingsRate: initialData.savingsRate.current
         }],
         
-        // ✅ Override to remove premium features (FREE tier safe!)
+        // âœ… Override to remove premium features (FREE tier safe!)
         businesses: [], // No sample businesses
         investments: { totalValue: 0, totalGainLoss: 0, holdings: [], categories: [], monthlyData: [] },
         travel: {
@@ -12621,22 +12621,22 @@ function App() {
           runwayCalculation: { averageDailySpend: 0, totalAvailableFunds: 0, estimatedDaysRemaining: 0, lastUpdated: resetStartDate },
           tripPlan: { cheap: 90, moderate: 30, expensive: 15 },
           expenseCategories: [
-            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
-            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
-            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
-            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
-            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
-            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
+            { name: 'Accommodation', icon: 'ðŸ¨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: 'ðŸ½ï¸', color: 'bg-green-500' },
+            { name: 'Transportation', icon: 'ðŸš•', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: 'ðŸŽ­', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: 'ðŸ›ï¸', color: 'bg-pink-500' },
+            { name: 'Other', icon: 'ðŸ’µ', color: 'bg-gray-500' }
           ]
         },
         
-        // 🛡️ PRESERVE non-financial data
+        // ðŸ›¡ï¸ PRESERVE non-financial data
         ...preservedData
       };
     } else if (resetType === 'financial-only') {
-      // 💰 RESET FINANCIAL DATA ONLY (keep moments, logbook, businesses, travel, etc.)
+      // ðŸ’° RESET FINANCIAL DATA ONLY (keep moments, logbook, businesses, travel, etc.)
       
-      // 🛡️ PRESERVE all non-financial data
+      // ðŸ›¡ï¸ PRESERVE all non-financial data
       const preservedData = {
         moments: data.moments || [],
         logbook: data.logbook || [],
@@ -12656,7 +12656,7 @@ function App() {
         },
         creditScore: { current: 0, history: [] },
         cashOnHand: { total: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] },
-        rainyDayFund: { total: 0, goal: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] }, // 🛡️ FIX: Start at 0, let users set their own goal!
+        rainyDayFund: { total: 0, goal: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] }, // ðŸ›¡ï¸ FIX: Start at 0, let users set their own goal!
         debt: {
           total: 0,
           accounts: [
@@ -12689,11 +12689,11 @@ function App() {
           sixJars: { necessities: 55, education: 10, play: 10, longTermSavings: 10, financial: 10, give: 5 }
         },
         
-        // 🛡️ PRESERVE all non-financial data
+        // ðŸ›¡ï¸ PRESERVE all non-financial data
         ...preservedData
       };
     } else {
-      // 🗑️ RESET WHOLE APP (everything goes - nuclear option)
+      // ðŸ—‘ï¸ RESET WHOLE APP (everything goes - nuclear option)
       resetData = {
         financialFreedom: {
           targetAmount: 2000000,
@@ -12712,7 +12712,7 @@ function App() {
         },
         rainyDayFund: {
           total: 0,
-          goal: 0, // 🛡️ FIX: Start at 0, let users set their own goal!
+          goal: 0, // ðŸ›¡ï¸ FIX: Start at 0, let users set their own goal!
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
@@ -12818,12 +12818,12 @@ function App() {
             expensive: 15
           },
           expenseCategories: [
-            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
-            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
-            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
-            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
-            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
-            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
+            { name: 'Accommodation', icon: 'ðŸ¨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: 'ðŸ½ï¸', color: 'bg-green-500' },
+            { name: 'Transportation', icon: 'ðŸš•', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: 'ðŸŽ­', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: 'ðŸ›ï¸', color: 'bg-pink-500' },
+            { name: 'Other', icon: 'ðŸ’µ', color: 'bg-gray-500' }
           ]
         },
         budgetSettings: {
@@ -12845,13 +12845,13 @@ function App() {
     }
 
     try {
-      debugLog('🔧 Reset Data: Starting Firebase write...');
+      debugLog('ðŸ”§ Reset Data: Starting Firebase write...');
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
-      debugLog('✅ Reset Data: Firebase write successful');
+      debugLog('âœ… Reset Data: Firebase write successful');
       
-      // 🎮 Reset XP only for sample-financial and whole-app (not financial-only)
+      // ðŸŽ® Reset XP only for sample-financial and whole-app (not financial-only)
       if (resetType === 'sample-financial' || resetType === 'whole-app') {
-        debugLog('🎮 Resetting XP profile to Recruit (0 XP)...');
+        debugLog('ðŸŽ® Resetting XP profile to Recruit (0 XP)...');
         const initialProfile = {
           xpPoints: 0,
           rank: 'Recruit',
@@ -12860,30 +12860,30 @@ function App() {
           createdAt: new Date().toISOString()
         };
         await setDoc(doc(db, 'userProfiles', userId), initialProfile);
-        debugLog('✅ XP profile reset successful');
+        debugLog('âœ… XP profile reset successful');
       } else {
-        debugLog('ℹ️ Financial-only reset - XP preserved');
+        debugLog('â„¹ï¸ Financial-only reset - XP preserved');
       }
       
       setData(resetData);
-      debugLog('✅ Reset Data: Local state updated');
+      debugLog('âœ… Reset Data: Local state updated');
       
       // Trigger MissionStatusBanner refresh by changing state
       setXpRefreshTrigger(prev => prev + 1);
       
       setShowResetModal(false);
       setResetType('financial-only');
-      debugLog('✅ Reset Data: Modal closed');
+      debugLog('âœ… Reset Data: Modal closed');
       
       const resetTypeMessages = {
-        'financial-only': '✅ Financial data reset successfully!',
-        'sample-financial': '✅ Sample financial data loaded! XP reset to 0.',
-        'whole-app': '✅ All data reset successfully! XP reset to 0.'
+        'financial-only': 'âœ… Financial data reset successfully!',
+        'sample-financial': 'âœ… Sample financial data loaded! XP reset to 0.',
+        'whole-app': 'âœ… All data reset successfully! XP reset to 0.'
       };
-      showNotification(resetTypeMessages[resetType] || '✅ Data reset successfully!', 'success');
+      showNotification(resetTypeMessages[resetType] || 'âœ… Data reset successfully!', 'success');
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12891,9 +12891,9 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('❌ Reset Data Error:', error);
-      console.error('❌ Reset Data Error Details:', error.message, error.code);
-      showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
+      console.error('âŒ Reset Data Error:', error);
+      console.error('âŒ Reset Data Error Details:', error.message, error.code);
+      showNotification(`âŒ Failed to reset data: ${error.message}`, 'error');
     }
   };
 
@@ -12928,7 +12928,7 @@ function App() {
     setTimeout(resetMobileViewport, 100);
   };
 
-  // 🛡️ DATA SAFETY FUNCTIONS - Protecting user data like it's sacred
+  // ðŸ›¡ï¸ DATA SAFETY FUNCTIONS - Protecting user data like it's sacred
   const loadDataSafetyInfo = async () => {
     if (!userId) return;
     
@@ -12942,7 +12942,7 @@ function App() {
       setDataSafetySummary(summary);
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12950,7 +12950,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('🛡️ Failed to load data safety info:', error);
+      console.error('ðŸ›¡ï¸ Failed to load data safety info:', error);
     }
   };
 
@@ -12961,8 +12961,8 @@ function App() {
     }
     
     try {
-      // 📦 Try ZIP export via Cloud Function first (premium experience)
-      showNotification('📦 Preparing your complete archive...', 'info');
+      // ðŸ“¦ Try ZIP export via Cloud Function first (premium experience)
+      showNotification('ðŸ“¦ Preparing your complete archive...', 'info');
       
       try {
         const exportFunction = httpsCallable(functions, 'exportUserData');
@@ -12977,7 +12977,7 @@ function App() {
           link.click();
           document.body.removeChild(link);
           
-          showNotification(`✅ Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
+          showNotification(`âœ… Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
           
           // Track last export for reminder widget
           localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
@@ -12987,17 +12987,17 @@ function App() {
         console.warn('Cloud Function export unavailable, using JSON fallback:', cloudError);
       }
       
-      // 💾 Fallback to JSON export (always works, no dependencies)
-      console.log('📥 Using JSON export fallback...');
+      // ðŸ’¾ Fallback to JSON export (always works, no dependencies)
+      console.log('ðŸ“¥ Using JSON export fallback...');
       exportUserData(data);
-      showNotification('✅ Backup downloaded as JSON!', 'success');
+      showNotification('âœ… Backup downloaded as JSON!', 'success');
       
       // Track last export for reminder widget
       localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
       
     } catch (error) {
       console.error('Export error:', error);
-      showNotification('❌ Export failed. Please try again.', 'error');
+      showNotification('âŒ Export failed. Please try again.', 'error');
     }
   };
 
@@ -13020,12 +13020,12 @@ function App() {
       if (userId) {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), importedData);
         setData(importedData);
-        showNotification('📁 Data imported successfully!', 'success');
+        showNotification('ðŸ“ Data imported successfully!', 'success');
         setShowDataImportModal(false);
       }
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13033,7 +13033,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('🛡️ Data import failed:', error);
+      console.error('ðŸ›¡ï¸ Data import failed:', error);
       showNotification('Import failed', 'error');
     }
   };
@@ -13044,23 +13044,23 @@ function App() {
     try {
       const success = await restoreFromBackup(userId, backupId);
       if (success) {
-        showNotification('🛡️ Data recovered successfully! Reloading...', 'success');
+        showNotification('ðŸ›¡ï¸ Data recovered successfully! Reloading...', 'success');
         
-        // 🛡️ CRITICAL FIX: Reload the actual financial data from Firebase!
+        // ðŸ›¡ï¸ CRITICAL FIX: Reload the actual financial data from Firebase!
         try {
           const docRef = doc(db, `users/${userId}/financials`, 'data');
           const docSnap = await getDoc(docRef);
           
           if (docSnap.exists()) {
             const restoredData = docSnap.data();
-            setData(restoredData); // ✅ Update React state with restored data!
-            showNotification('✅ Data restored and loaded successfully!', 'success');
+            setData(restoredData); // âœ… Update React state with restored data!
+            showNotification('âœ… Data restored and loaded successfully!', 'success');
           } else {
-            showNotification('⚠️ Data restored but reload failed. Please refresh page.', 'warning');
+            showNotification('âš ï¸ Data restored but reload failed. Please refresh page.', 'warning');
           }
         } catch (reloadError) {
           console.error('Error reloading data after recovery:', reloadError);
-          showNotification('⚠️ Data restored but reload failed. Please refresh page.', 'warning');
+          showNotification('âš ï¸ Data restored but reload failed. Please refresh page.', 'warning');
         }
         
         setShowDataRecoveryModal(false);
@@ -13070,12 +13070,12 @@ function App() {
         showNotification('Recovery failed', 'error');
       }
     } catch (error) {
-      console.error('🛡️ Data recovery failed:', error);
+      console.error('ðŸ›¡ï¸ Data recovery failed:', error);
       showNotification('Recovery failed', 'error');
     }
   };
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13084,7 +13084,7 @@ function App() {
   //   console.log('Share moment:', moment);
   // };
 
-  // ⚡ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
+  // âš¡ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
   const confirmQuickExpense = async (expense) => {
     if (!expense.description || !expense.amount || !userId) return;
 
@@ -13093,7 +13093,7 @@ function App() {
 
     // CRITICAL FIX: Ensure data is valid before proceeding
     if (!data || typeof data !== 'object') {
-      console.error('❌ Quick Expense Error: data is invalid:', data);
+      console.error('âŒ Quick Expense Error: data is invalid:', data);
       showNotification('Error: Data not loaded. Please refresh the page.', 'error');
       return;
     }
@@ -13134,12 +13134,12 @@ function App() {
     };
 
     try {
-      debugLog('🔍 DEBUG: Quick Expense Transaction:', transaction);
-      debugLog('🔍 DEBUG: Updated transactions array length:', updatedTransactions.length);
-      debugLog('🔍 DEBUG: Updated recentTransactions array length:', updatedTransactions.length);
-      debugLog('🔍 DEBUG: First item in recentTransactions:', updatedTransactions[0]);
+      debugLog('ðŸ” DEBUG: Quick Expense Transaction:', transaction);
+      debugLog('ðŸ” DEBUG: Updated transactions array length:', updatedTransactions.length);
+      debugLog('ðŸ” DEBUG: Updated recentTransactions array length:', updatedTransactions.length);
+      debugLog('ðŸ” DEBUG: First item in recentTransactions:', updatedTransactions[0]);
       
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         transactions: updatedTransactions,
         expenses: updatedExpenses,
@@ -13154,10 +13154,10 @@ function App() {
         recentTransactions: updatedTransactions
       });
       
-      debugLog('✅ DEBUG: Data saved to Firebase and state updated');
-      debugLog('🔍 DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
+      debugLog('âœ… DEBUG: Data saved to Firebase and state updated');
+      debugLog('ðŸ” DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
       
-      showNotification('⚡ Quick expense logged!', 'success');
+      showNotification('âš¡ Quick expense logged!', 'success');
       
       // Award XP for logging expense
       try {
@@ -13174,7 +13174,7 @@ function App() {
       }
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13182,12 +13182,12 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('❌ ERROR adding quick expense:', error);
+      console.error('âŒ ERROR adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
   };
 
-  // 📝 QUICK JOURNAL HANDLERS
+  // ðŸ“ QUICK JOURNAL HANDLERS
   const openQuickJournal = () => {
     setShowQuickJournal(true);
   };
@@ -13212,7 +13212,7 @@ function App() {
     const updatedQuickJournal = [...(data.quickJournalEntries || []), journalEntry];
     
     try {
-      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         quickJournalEntries: updatedQuickJournal
       });
@@ -13222,7 +13222,7 @@ function App() {
         quickJournalEntries: updatedQuickJournal
       });
       closeQuickJournal();
-      showNotification('📝 Quick note saved!', 'success');
+      showNotification('ðŸ“ Quick note saved!', 'success');
       
       // Award XP for journaling
       try {
@@ -13238,7 +13238,7 @@ function App() {
       }
     } catch (error) {
 
-  // 💫 MOMENTS HANDLERS
+  // ðŸ’« MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13257,7 +13257,7 @@ function App() {
       transactions = [];
     }
 
-    // 🔧 FIX: Calculate from CURRENT MONTH only (not all transactions ever!)
+    // ðŸ”§ FIX: Calculate from CURRENT MONTH only (not all transactions ever!)
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -13281,14 +13281,14 @@ function App() {
     const totalBusinessIncome = businesses.reduce((sum, business) => 
       sum + (business.totalIncome || business.income || 0), 0);
 
-    // 🔧 FIX: Calculate business expenses (CRITICAL BUG FIX!)
+    // ðŸ”§ FIX: Calculate business expenses (CRITICAL BUG FIX!)
     const totalBusinessExpenses = businesses.reduce((sum, business) => 
       sum + (business.totalExpenses || business.expenses || 0), 0);
 
     // Combine transaction and business income
     const totalIncome = totalTransactionIncome + totalBusinessIncome;
 
-    // 🔧 FIX: Combine transaction and business expenses
+    // ðŸ”§ FIX: Combine transaction and business expenses
     const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
 
     // Group income by subcategory (from CURRENT MONTH transactions only)
@@ -13323,7 +13323,7 @@ function App() {
         expensesByCategory[category] += Math.abs(t.amount);
       });
 
-    // 🔧 FIX: Add business expenses as separate categories
+    // ðŸ”§ FIX: Add business expenses as separate categories
     businesses.forEach((business, index) => {
       if ((business.totalExpenses || business.expenses || 0) > 0) {
         const businessKey = `${business.name || `Business ${index + 1}`} Expenses`;
@@ -13362,7 +13362,7 @@ function App() {
   const getAnnualizedData = () => {
     if (!data) return data;
     
-    // 🔧 EDGE CASE FIX: Null safety for transactions and businesses
+    // ðŸ”§ EDGE CASE FIX: Null safety for transactions and businesses
     const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     
     return {
@@ -13398,7 +13398,7 @@ function App() {
   const getDisplayData = () => {
     if (!data) return data;
     
-    // 🔧 EDGE CASE FIX: Ensure all required data structures exist
+    // ðŸ”§ EDGE CASE FIX: Ensure all required data structures exist
     const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     const actualInvestmentTotal = calculateInvestmentTotal(data.investments?.holdings || []);
     
@@ -13432,13 +13432,13 @@ function App() {
       },
       savingsRate: { 
         ...data.savingsRate,
-        // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
+        // ðŸ”§ EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
         current: calculatedData.income.total > 0 ? 
           Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
       },
-      // 🔧 FIX: Ensure goals are included in displayData
+      // ðŸ”§ FIX: Ensure goals are included in displayData
       goals: data.goals || [],
-      // 🔧 FIX: Ensure financialFreedom is included in displayData
+      // ðŸ”§ FIX: Ensure financialFreedom is included in displayData
       financialFreedom: data.financialFreedom || {
         targetAmount: 500000,
         currentInvestments: 0,
@@ -13452,13 +13452,13 @@ function App() {
 
   const displayData = getDisplayData();
 
-  // 🧳 OFFLINE EVENT LISTENERS - Perfect for travelers
+  // ðŸ§³ OFFLINE EVENT LISTENERS - Perfect for travelers
   React.useEffect(() => {
     const handleOnline = () => {
       setIsOffline(false);
       setShowOfflineIndicator(false);
       setOfflineSummary(getOfflineSummary());
-      debugLog('🧳 Back online! Syncing offline data...');
+      debugLog('ðŸ§³ Back online! Syncing offline data...');
       
       // TODO: Implement sync of pending offline data
       // syncPendingOfflineData();
@@ -13468,7 +13468,7 @@ function App() {
       setIsOffline(true);
       setShowOfflineIndicator(true);
       setOfflineSummary(getOfflineSummary());
-      debugLog('🧳 Gone offline! Storing data locally...');
+      debugLog('ðŸ§³ Gone offline! Storing data locally...');
     };
 
     // Add event listeners
@@ -13509,26 +13509,26 @@ function App() {
         }`}>
           <div className="flex items-center gap-2">
             {notification.type === 'success' ? (
-              <span className="text-green-200">✅</span>
+              <span className="text-green-200">âœ…</span>
             ) : (
-              <span className="text-red-200">❌</span>
+              <span className="text-red-200">âŒ</span>
             )}
             <span className="font-medium">{notification.message}</span>
           </div>
         </div>
       )}
 
-      {/* 🧳 OFFLINE INDICATOR - Perfect for travelers */}
+      {/* ðŸ§³ OFFLINE INDICATOR - Perfect for travelers */}
       {isOffline && (
         <div className="fixed top-4 left-4 right-4 z-50 p-3 rounded-lg shadow-lg bg-orange-600 text-white border border-orange-500">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-orange-200">🧳</span>
+            <span className="text-orange-200">ðŸ§³</span>
             <span className="font-medium">Offline Mode</span>
-            <span className="text-orange-200">•</span>
+            <span className="text-orange-200">â€¢</span>
             <span className="text-sm">Data will sync when connected</span>
             {offlineSummary.pendingSync > 0 && (
               <>
-                <span className="text-orange-200">•</span>
+                <span className="text-orange-200">â€¢</span>
                 <span className="text-sm bg-orange-700 px-2 py-1 rounded">
                   {offlineSummary.pendingSync} pending
                 </span>
@@ -13538,7 +13538,7 @@ function App() {
         </div>
       )}
 
-      {/* 🎯 PRICING PHASE BANNER - REMOVED FOR CLEAN UI */}
+      {/* ðŸŽ¯ PRICING PHASE BANNER - REMOVED FOR CLEAN UI */}
       
       {/* Show loading screen while checking authentication */}
       {authLoading && (
@@ -13580,7 +13580,7 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                {/* 🎯 SMART SIGNUP FLOW: Show different UI based on user status */}
+                {/* ðŸŽ¯ SMART SIGNUP FLOW: Show different UI based on user status */}
                 {showSetPassword ? (
                   // Show "Set Password" flow for existing users with payments
                   <div className="space-y-4">
@@ -13723,7 +13723,7 @@ function App() {
           {/* Mission Status Banner */}
           <MissionStatusBanner userId={userId} refreshTrigger={xpRefreshTrigger} />
           
-          {/* 🛡️ Data Safety & Export Reminder Widget */}
+          {/* ðŸ›¡ï¸ Data Safety & Export Reminder Widget */}
           {data && userId && (() => {
             const lastBackupKey = `lastAutoBackup_${userId}`;
             const lastExportKey = `lastExport_${userId}`;
@@ -13747,7 +13747,7 @@ function App() {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-green-400 font-semibold text-sm">🛡️ Data Protected</p>
+                        <p className="text-green-400 font-semibold text-sm">ðŸ›¡ï¸ Data Protected</p>
                         <p className="text-green-200 text-xs">
                           {backupAge !== null 
                             ? `Last backup: ${backupAge < 1 ? 'Less than 1 hour ago' : `${backupAge} hour${backupAge > 1 ? 's' : ''} ago`}`
@@ -13762,7 +13762,7 @@ function App() {
                       }}
                       className="text-green-400 hover:text-green-300 text-xs font-medium px-3 py-1 rounded bg-green-600/20 hover:bg-green-600/30 transition-colors"
                     >
-                      View →
+                      View â†’
                     </button>
                   </div>
                 </div>
@@ -13778,7 +13778,7 @@ function App() {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-blue-400 font-semibold text-sm">💾 Export Recommended</p>
+                          <p className="text-blue-400 font-semibold text-sm">ðŸ’¾ Export Recommended</p>
                           <p className="text-blue-200 text-xs">
                             {exportAge !== null 
                               ? `Last export: ${exportAge} day${exportAge > 1 ? 's' : ''} ago`
@@ -13793,7 +13793,7 @@ function App() {
                         }}
                         className="text-blue-400 hover:text-blue-300 text-xs font-medium px-3 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
                       >
-                        Export →
+                        Export â†’
                       </button>
                     </div>
                   </div>
@@ -13829,7 +13829,7 @@ function App() {
                 <Plus className="w-5 h-5" />
               </button>
               
-              {/* Quick Journal Button - FREE FOR EVERYONE! 🎁 - BRIGHT BLUE! */}
+              {/* Quick Journal Button - FREE FOR EVERYONE! ðŸŽ - BRIGHT BLUE! */}
               <button
                 onClick={() => setShowQuickJournal(true)}
                 className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
@@ -13838,7 +13838,7 @@ function App() {
                 <Edit3 className="w-5 h-5" />
               </button>
               
-              {/* 🔒 STEALTH MODE Toggle - Free for Everyone! */}
+              {/* ðŸ”’ STEALTH MODE Toggle - Free for Everyone! */}
               <button
                 onClick={toggleStealthMode}
                 className={`${
@@ -13928,7 +13928,7 @@ function App() {
                           </span>
                           {/* Timezone Indicator */}
                           <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded">
-                            🌍 {getTimezoneInfo().displayName}
+                            ðŸŒ {getTimezoneInfo().displayName}
                           </span>
                         </div>
                       </div>
@@ -13975,9 +13975,9 @@ function App() {
                         
                         <div className="border-t border-gray-700 my-2"></div>
                         
-                        {/* 🛡️ DATA SAFETY SECTION */}
+                        {/* ðŸ›¡ï¸ DATA SAFETY SECTION */}
                         <div className="px-4 py-2">
-                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">🛡️ Data Safety</p>
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">ðŸ›¡ï¸ Data Safety</p>
                         </div>
                         
                         {/* Export Data */}
@@ -14041,9 +14041,9 @@ function App() {
                               return;
                             }
                             try {
-                              showNotification('💾 Creating backup...', 'info');
+                              showNotification('ðŸ’¾ Creating backup...', 'info');
                               await createBackup(userId, data, 'manual-backup');
-                              showNotification('✅ Backup created successfully!', 'success');
+                              showNotification('âœ… Backup created successfully!', 'success');
                             } catch (error) {
                               console.error('Manual backup failed:', error);
                               showNotification('Backup failed', 'error');
@@ -14120,7 +14120,7 @@ function App() {
             )}
             
             <div className="bg-gray-800 rounded-full p-1 overflow-hidden relative">
-              {/* 🖱️ Desktop-Only Left Scroll Arrow */}
+              {/* ðŸ–±ï¸ Desktop-Only Left Scroll Arrow */}
               {showLeftScroll && (
                 <button
                   onClick={() => scrollTabs('left')}
@@ -14131,7 +14131,7 @@ function App() {
                 </button>
               )}
 
-              {/* 🖱️ Desktop-Only Right Scroll Arrow */}
+              {/* ðŸ–±ï¸ Desktop-Only Right Scroll Arrow */}
               {showRightScroll && (
                 <button
                   onClick={() => scrollTabs('right')}
@@ -14177,11 +14177,11 @@ function App() {
                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    🌍 Travel
+                    ðŸŒ Travel
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('moments')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'moments' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    💫 Moments
+                    ðŸ’« Moments
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
@@ -14237,11 +14237,11 @@ function App() {
                 </FinancialErrorBoundary>
               )}
               
-              {/* 🎯 OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
+              {/* ðŸŽ¯ OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
               
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Cash Flow - FREE+ (Left) */}
               <StealthCard>
@@ -14254,15 +14254,15 @@ function App() {
                 />
               </StealthCard>
               
-              {/* Rainy Day Fund - 🎁 NOW FREE! (Emergency fund tracking) */}
+              {/* Rainy Day Fund - ðŸŽ NOW FREE! (Emergency fund tracking) */}
               <StealthCard>
                 <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
               </StealthCard>
               </div>
               
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Monthly Income - FREE+ (Left) */}
               <StealthCard>
@@ -14275,9 +14275,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Net Worth - FREE+ (Left) */}
               <StealthCard>
@@ -14286,7 +14286,7 @@ function App() {
                 </FinancialErrorBoundary>
               </StealthCard>
               
-              {/* Survival Runway - 🎁 NOW FREE! (Financial Runway Tracker) */}
+              {/* Survival Runway - ðŸŽ NOW FREE! (Financial Runway Tracker) */}
               <StealthCard>
                 <FinancialErrorBoundary componentName="Cash Management">
                   <CashOnHandCard 
@@ -14299,9 +14299,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Financial Freedom Goal - CLIMBER+ (Left) */}
               <StealthCard>
@@ -14322,9 +14322,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               {/* FULL-WIDTH CARDS: Detailed Intelligence */}
-              {/* ═══════════════════════════════════════════════════════ */}
+              {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
@@ -14385,7 +14385,7 @@ function App() {
           
           {activeTab === 'budget' && (
             <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-              {/* 📦 Supply Crate System - Climber+ Feature */}
+              {/* ðŸ“¦ Supply Crate System - Climber+ Feature */}
               {checkFeatureAccess('financial-calculators') ? (
                 <SupplyCrateSystem
                   data={data}
@@ -14400,17 +14400,17 @@ function App() {
                   <div className="w-16 h-16 mx-auto mb-4 bg-green-600/20 rounded-full flex items-center justify-center">
                     <Package className="w-8 h-8 text-green-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">📦 Supply Crate System</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">ðŸ“¦ Supply Crate System</h3>
                   <p className="text-gray-300 mb-4 max-w-lg mx-auto">
                     Real-time budget management that shows you EXACTLY what you can spend, right now. 
                     Like envelope budgeting, but gamified!
                   </p>
                   <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30 mb-6 max-w-md mx-auto">
                     <div className="text-sm text-green-200 space-y-2">
-                      <p>✅ Assign monthly supplies to each category</p>
-                      <p>✅ Track burn rate in real-time</p>
-                      <p>✅ Visual warnings before overspending</p>
-                      <p>✅ The discipline tool you've been missing!</p>
+                      <p>âœ… Assign monthly supplies to each category</p>
+                      <p>âœ… Track burn rate in real-time</p>
+                      <p>âœ… Visual warnings before overspending</p>
+                      <p>âœ… The discipline tool you've been missing!</p>
                     </div>
                   </div>
                   <button
@@ -14467,7 +14467,7 @@ function App() {
             </FinancialErrorBoundary>
           )}
 
-          {/* 💫 Moments - OPERATOR+ ONLY */}
+          {/* ðŸ’« Moments - OPERATOR+ ONLY */}
           {activeTab === 'moments' && (
             checkFeatureAccess('travel-mode') ? (
               <div className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -14481,7 +14481,7 @@ function App() {
                   <div className="w-16 h-16 mx-auto mb-4 bg-pink-600/20 rounded-full flex items-center justify-center">
                     <Crown className="w-8 h-8 text-pink-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">💫 Moments - Operator Feature</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">ðŸ’« Moments - Operator Feature</h3>
                   <p className="text-gray-300 mb-6 max-w-lg mx-auto">
                     Capture and celebrate your financial milestones with stories and achievements. 
                     Document your journey from start to freedom!
@@ -14498,7 +14498,7 @@ function App() {
             )
           )}
 
-          {/* 🎯 MISSION CONTROL - The Heart of The Compass (CLIMBER+ Feature) */}
+          {/* ðŸŽ¯ MISSION CONTROL - The Heart of The Compass (CLIMBER+ Feature) */}
           {activeTab === 'mission-control' && (
             checkFeatureAccess('goal-tracking') ? (
               <FinancialErrorBoundary componentName="Mission Control">
@@ -14516,7 +14516,7 @@ function App() {
                   <Target className="w-20 h-20 text-purple-400" />
                 </div>
                 <h2 className="text-4xl font-black text-white mb-4">
-                  🎯 Mission Control
+                  ðŸŽ¯ Mission Control
                 </h2>
                 <p className="text-xl text-purple-200 mb-6 max-w-2xl mx-auto">
                   Your strategic flight plan. Connect your daily actions to your ultimate life goals.
@@ -14524,19 +14524,19 @@ function App() {
                 <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-500/30 mb-8 max-w-2xl mx-auto">
                   <div className="text-lg text-blue-200 space-y-3 text-left">
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">⭐</span>
+                      <span className="text-2xl">â­</span>
                       <span><strong>North Star:</strong> Set your ultimate life goal and track progress</span>
                     </p>
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">🎯</span>
+                      <span className="text-2xl">ðŸŽ¯</span>
                       <span><strong>Active Missions:</strong> See all your sub-goals in one strategic view</span>
                     </p>
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">🧭</span>
+                      <span className="text-2xl">ðŸ§­</span>
                       <span><strong>Your "Why":</strong> Write your personal mission statement</span>
                     </p>
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">📅</span>
+                      <span className="text-2xl">ðŸ“…</span>
                       <span><strong>Projected Freedom Date:</strong> See when you'll reach your North Star</span>
                     </p>
                   </div>
@@ -14555,7 +14555,7 @@ function App() {
             )
           )}
 
-          {/* 🎁 Field Notes - NOW FREE FOR EVERYONE! Export PDF = Operator+ */}
+          {/* ðŸŽ Field Notes - NOW FREE FOR EVERYONE! Export PDF = Operator+ */}
           {activeTab === 'reflections' && (
             <FinancialErrorBoundary componentName="Field Notes Archive">
               <ReflectionsPage 
@@ -14612,7 +14612,7 @@ function App() {
             onSave={saveQuickJournal}
           />
 
-          {/* 🎯 First Climb Protocol - Week 1 Missions */}
+          {/* ðŸŽ¯ First Climb Protocol - Week 1 Missions */}
           {showFirstClimbProtocol && (
             <FirstClimbProtocol
               userId={userId}
@@ -14626,7 +14626,7 @@ function App() {
             />
           )}
 
-          {/* 💫 Moments Modal - Add/Edit Moments */}
+          {/* ðŸ’« Moments Modal - Add/Edit Moments */}
           {showMomentModal && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
               <div className="bg-gray-800 rounded-lg w-full max-w-2xl border border-purple-500/30 shadow-xl">
@@ -14672,7 +14672,7 @@ function App() {
                       className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-4 rounded-xl border-2 border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-amber-500/50 resize-none leading-relaxed"
                     />
                     <p className="text-xs text-gray-400 mt-1">
-                      💡 Tip: Be specific! Future you will love reading this.
+                      ðŸ’¡ Tip: Be specific! Future you will love reading this.
                     </p>
                   </div>
 
@@ -14714,14 +14714,14 @@ function App() {
                       className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500"
                     />
                     <label htmlFor="isAchievement" className="text-sm text-purple-200 font-medium cursor-pointer">
-                      🏆 Mark as Achievement (shows special badge)
+                      ðŸ† Mark as Achievement (shows special badge)
                     </label>
                   </div>
 
                   {/* Info Box */}
                   <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4">
                     <p className="text-sm text-purple-200">
-                      <strong>💫 What are Moments?</strong>
+                      <strong>ðŸ’« What are Moments?</strong>
                     </p>
                     <p className="text-xs text-gray-400 mt-2">
                       Moments capture the emotional side of your financial journey. They're not just numbers - 
@@ -14993,7 +14993,7 @@ function App() {
                                 <label className="block text-xs text-gray-400 mb-1">
                                   Current Balance
                                   {account.balance === 0 && (
-                                    <span className="ml-2 text-green-400 font-bold">🎉 PAID OFF!</span>
+                                    <span className="ml-2 text-green-400 font-bold">ðŸŽ‰ PAID OFF!</span>
                                   )}
                                 </label>
                               <input
@@ -15009,7 +15009,7 @@ function App() {
                                     updatedAccounts[index] = {...account, balance: currentBalance, amountPaid};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                   
-                                  // 🎉 CELEBRATE DEBT PAYOFF!
+                                  // ðŸŽ‰ CELEBRATE DEBT PAYOFF!
                                   if (currentBalance === 0 && account.balance > 0) {
                                     // Award XP for paying off debt
                                     if (userId) {
@@ -15028,7 +15028,7 @@ function App() {
                                     }
                                     
                                     // Show celebration notification
-                                    showNotification('🎉 DEBT PAID OFF! You earned 50 XP!', 'success');
+                                    showNotification('ðŸŽ‰ DEBT PAID OFF! You earned 50 XP!', 'success');
                                   }
                                 }}
                                 className={`w-full px-2 py-1 rounded text-sm border focus:outline-none ${
@@ -15153,7 +15153,7 @@ function App() {
                                 }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
-                                          ←
+                                          â†
                                         </button>
                                         <span className="text-white font-semibold">
                                           {new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth())).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
@@ -15168,7 +15168,7 @@ function App() {
                                           }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
-                                          →
+                                          â†’
                               </button>
                             </div>
                                       
@@ -15383,11 +15383,11 @@ function App() {
                     />
                     <div className="mt-2 text-xs text-gray-400">
                       <div className="grid grid-cols-1 gap-1">
-                        <div>💡 <strong>Common targets:</strong></div>
-                        <div>• 20% - Traditional advice</div>
-                        <div>• 30-40% - Aggressive saving</div>
-                        <div>• 50%+ - FIRE/Early retirement</div>
-                        <div>• 60%+ - Digital nomad lifestyle</div>
+                        <div>ðŸ’¡ <strong>Common targets:</strong></div>
+                        <div>â€¢ 20% - Traditional advice</div>
+                        <div>â€¢ 30-40% - Aggressive saving</div>
+                        <div>â€¢ 50%+ - FIRE/Early retirement</div>
+                        <div>â€¢ 60%+ - Digital nomad lifestyle</div>
                       </div>
                     </div>
                   </div>
@@ -15494,7 +15494,7 @@ function App() {
                   {tempCardData.history && tempCardData.history.length > 0 && (
                     <div className="bg-indigo-900/20 rounded-lg p-3 border border-indigo-600/30">
                       <div className="flex justify-between items-center mb-3">
-                        <h5 className="text-indigo-200 font-semibold">📈 Score History</h5>
+                        <h5 className="text-indigo-200 font-semibold">ðŸ“ˆ Score History</h5>
                         <div className="text-xs text-indigo-300">
                           {tempCardData.history.length} entries
                         </div>
@@ -15539,7 +15539,7 @@ function App() {
                       </div>
                       
                       <div className="mt-3 p-2 bg-indigo-800/20 rounded text-xs text-indigo-200">
-                        💡 <strong>Tip:</strong> Check your credit score monthly to track improvements from paying down debt and maintaining good credit habits.
+                        ðŸ’¡ <strong>Tip:</strong> Check your credit score monthly to track improvements from paying down debt and maintaining good credit habits.
                       </div>
                     </div>
                   )}
@@ -15665,7 +15665,7 @@ function App() {
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} • 
+                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} â€¢ 
                         Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0)).toLocaleString()}
                       </div>
                     </div>
@@ -15870,10 +15870,10 @@ function App() {
                               {/* Account Type Badge */}
                               <div className="flex justify-center">
                                 <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-600/30 font-semibold">
-                                  {account.type === 'tax-free' && '💰 Tax-Free'}
-                                  {account.type === 'tax-deferred' && '📊 Tax-Deferred'}
-                                  {account.type === 'pension' && '🏛️ Pension'}
-                                  {account.type === 'savings' && '💵 Savings'}
+                                  {account.type === 'tax-free' && 'ðŸ’° Tax-Free'}
+                                  {account.type === 'tax-deferred' && 'ðŸ“Š Tax-Deferred'}
+                                  {account.type === 'pension' && 'ðŸ›ï¸ Pension'}
+                                  {account.type === 'savings' && 'ðŸ’µ Savings'}
                                 </span>
                               </div>
                             </div>
@@ -16021,7 +16021,7 @@ function App() {
                   {(tempCardData || []).length > 0 && (
                     <div className="mt-4 p-3 bg-amber-900/20 rounded-lg border border-amber-600/30">
                       <div className="text-sm text-amber-200">
-                        <strong>💡 Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
+                        <strong>ðŸ’¡ Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
                         Breaking big goals into smaller milestones helps maintain motivation!
                       </div>
                     </div>
@@ -16094,7 +16094,7 @@ function App() {
                     />
                     <div>
                       <div className="text-white font-medium flex items-center gap-2">
-                        💰 Financial Data Only
+                        ðŸ’° Financial Data Only
                         <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Recommended</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
@@ -16112,7 +16112,7 @@ function App() {
                       className="mt-1 text-amber-400"
                     />
                     <div>
-                      <div className="text-white font-medium">📊 Sample Financial Data (FREE tier safe)</div>
+                      <div className="text-white font-medium">ðŸ“Š Sample Financial Data (FREE tier safe)</div>
                       <div className="text-xs text-gray-400 mt-1">
                         Example transactions & dashboard only. No phantom data. Perfect for learning!
                       </div>
@@ -16129,7 +16129,7 @@ function App() {
                     />
                     <div>
                       <div className="text-white font-medium flex items-center gap-2">
-                        🗑️ Reset Whole App
+                        ðŸ—‘ï¸ Reset Whole App
                         <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Nuclear</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
@@ -16158,39 +16158,39 @@ function App() {
 
               <div className="bg-gray-700/30 rounded-lg p-3">
                 <h5 className="text-white font-medium mb-2">
-                  {resetType === 'financial-only' && '💰 Will Reset:'}
-                  {resetType === 'sample-financial' && '📊 Will Load:'}
-                  {resetType === 'whole-app' && '🗑️ Will Delete:'}
+                  {resetType === 'financial-only' && 'ðŸ’° Will Reset:'}
+                  {resetType === 'sample-financial' && 'ðŸ“Š Will Load:'}
+                  {resetType === 'whole-app' && 'ðŸ—‘ï¸ Will Delete:'}
                 </h5>
                 <div className="text-sm space-y-1 text-gray-300">
                   {resetType === 'financial-only' && (
                     <>
-                      <div>• Transactions & recurring expenses</div>
-                      <div>• Dashboard cards (cash, debt, goals)</div>
-                      <div>• Financial metrics & history</div>
-                      <div className="text-green-400 mt-2">✅ KEEPS: Moments, logbook, businesses, travel, investments</div>
-                      <div className="text-green-400">✅ KEEPS: Your XP and rank!</div>
+                      <div>â€¢ Transactions & recurring expenses</div>
+                      <div>â€¢ Dashboard cards (cash, debt, goals)</div>
+                      <div>â€¢ Financial metrics & history</div>
+                      <div className="text-green-400 mt-2">âœ… KEEPS: Moments, logbook, businesses, travel, investments</div>
+                      <div className="text-green-400">âœ… KEEPS: Your XP and rank!</div>
                     </>
                   )}
                   {resetType === 'sample-financial' && (
                     <>
-                      <div>• Sample transactions (last month)</div>
-                      <div>• Sample dashboard data</div>
-                      <div>• Example financial metrics</div>
-                      <div className="text-green-400 mt-2">✅ KEEPS: Moments, logbook</div>
-                      <div className="text-amber-400">⚠️ RESETS: XP to 0</div>
+                      <div>â€¢ Sample transactions (last month)</div>
+                      <div>â€¢ Sample dashboard data</div>
+                      <div>â€¢ Example financial metrics</div>
+                      <div className="text-green-400 mt-2">âœ… KEEPS: Moments, logbook</div>
+                      <div className="text-amber-400">âš ï¸ RESETS: XP to 0</div>
                     </>
                   )}
                   {resetType === 'whole-app' && (
                     <>
-                      <div>• All transactions & financial data</div>
-                      <div>• Investment portfolio & holdings</div>
-                      <div>• Business income/expense records</div>
-                      <div>• All moments & logbook entries</div>
-                      <div>• Travel plans & journal</div>
-                      <div>• Dashboard metrics & history</div>
-                      <div className="text-red-400 mt-2">⚠️ DELETES: EVERYTHING!</div>
-                      <div className="text-red-400">⚠️ RESETS: XP to 0</div>
+                      <div>â€¢ All transactions & financial data</div>
+                      <div>â€¢ Investment portfolio & holdings</div>
+                      <div>â€¢ Business income/expense records</div>
+                      <div>â€¢ All moments & logbook entries</div>
+                      <div>â€¢ Travel plans & journal</div>
+                      <div>â€¢ Dashboard metrics & history</div>
+                      <div className="text-red-400 mt-2">âš ï¸ DELETES: EVERYTHING!</div>
+                      <div className="text-red-400">âš ï¸ RESETS: XP to 0</div>
                     </>
                   )}
                 </div>
@@ -16252,7 +16252,7 @@ function App() {
                 Terms of Service
               </button>
               <span className="text-gray-500">
-                © {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. All rights reserved.
+                Â© {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. All rights reserved.
               </span>
             </div>
           </div>
@@ -16281,7 +16281,7 @@ function App() {
         />
       )}
 
-      {/* 🆕 Quick Start Guide - Auto-shows for new users, accessible from Help menu */}
+      {/* ðŸ†• Quick Start Guide - Auto-shows for new users, accessible from Help menu */}
       {showQuickStart && (
         <QuickStartGuide 
           onClose={() => {
@@ -16328,25 +16328,25 @@ function App() {
         />
       )}
       
-      {/* 🛠️ SECURE DEVELOPER PANEL - Only visible to admin emails */}
+      {/* ðŸ› ï¸ SECURE DEVELOPER PANEL - Only visible to admin emails */}
       {showDevPanel && isAdmin && (
         <div className="fixed bottom-4 right-4 bg-gray-900 border-2 border-amber-500 rounded-lg shadow-2xl p-6 z-50 min-w-[300px]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
-              <h3 className="text-white font-bold text-sm">🛠️ DEVELOPER MODE</h3>
+              <h3 className="text-white font-bold text-sm">ðŸ› ï¸ DEVELOPER MODE</h3>
             </div>
             <button
               onClick={() => setShowDevPanel(false)}
               className="text-gray-400 hover:text-white transition-colors"
             >
-              ✕
+              âœ•
             </button>
           </div>
           
           <div className="space-y-3">
             <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <span className="text-green-400">●</span>
+              <span className="text-green-400">â—</span>
               Admin: {devDemoMode ? 'demo@example.com' : user?.email}
             </div>
             
@@ -16367,15 +16367,15 @@ function App() {
                 }}
                 className="w-full bg-gray-800 text-white border border-gray-700 hover:border-amber-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
               >
-                <option value="none">🔄 Use Real Subscription</option>
-                <option value={SUBSCRIPTION_TIERS.FREE}>🆓 FREE (Recon Kit)</option>
-                <option value={SUBSCRIPTION_TIERS.CLIMBER}>🧗 CLIMBER ($7.99/mo)</option>
-                <option value={SUBSCRIPTION_TIERS.OPERATOR}>⚙️ OPERATOR ($14.99/mo)</option>
-                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
+                <option value="none">ðŸ”„ Use Real Subscription</option>
+                <option value={SUBSCRIPTION_TIERS.FREE}>ðŸ†“ FREE (Recon Kit)</option>
+                <option value={SUBSCRIPTION_TIERS.CLIMBER}>ðŸ§— CLIMBER ($7.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.OPERATOR}>âš™ï¸ OPERATOR ($14.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>ðŸ‘‘ FOUNDER'S CIRCLE ($7.49/mo)</option>
               </select>
             </div>
             
-            {/* 🎭 DEMO MODE TOGGLE */}
+            {/* ðŸŽ­ DEMO MODE TOGGLE */}
             <div className="pt-3 border-t border-gray-700">
               <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-all">
                 <input
@@ -16385,13 +16385,13 @@ function App() {
                   className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-800"
                 />
                 <div className="flex-1">
-                  <span className="text-white font-semibold text-sm block">🎭 Demo Mode</span>
+                  <span className="text-white font-semibold text-sm block">ðŸŽ­ Demo Mode</span>
                   <span className="text-gray-400 text-xs">Hide real name & email</span>
                 </div>
               </label>
               {devDemoMode && (
                 <div className="mt-2 text-xs text-purple-400 bg-purple-500/10 rounded px-3 py-2">
-                  ✨ Demo Mode ON: Shows "Demo User" & "demo@example.com"
+                  âœ¨ Demo Mode ON: Shows "Demo User" & "demo@example.com"
                 </div>
               )}
             </div>
@@ -16408,7 +16408,7 @@ function App() {
                 </div>
                 {devOverridePlan && (
                   <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
-                    ⚠️ Dev Override Active
+                    âš ï¸ Dev Override Active
                   </div>
                 )}
               </div>
@@ -16421,9 +16421,9 @@ function App() {
         </div>
       )}
 
-      {/* 💬 FEEDBACK BUTTON - Moved to User Menu Dropdown (cleaner UX) */}
+      {/* ðŸ’¬ FEEDBACK BUTTON - Moved to User Menu Dropdown (cleaner UX) */}
 
-      {/* 💬 FEEDBACK MODAL */}
+      {/* ðŸ’¬ FEEDBACK MODAL */}
       {showFeedbackModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
           <Card className="w-full max-w-lg border-blue-500/30 animate-fade-in">
@@ -16483,8 +16483,8 @@ function App() {
                   feedbackType === 'bug' ? 'text-red-300' : 'text-amber-300'
                 }`}>
                   {feedbackType === 'bug' 
-                    ? '🐛 Found a bug? Let us know! We\'ll fix it ASAP.' 
-                    : '💡 Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
+                    ? 'ðŸ› Found a bug? Let us know! We\'ll fix it ASAP.' 
+                    : 'ðŸ’¡ Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
                 </p>
               </div>
 
@@ -16554,7 +16554,7 @@ function App() {
         </div>
       )}
 
-      {/* 🎖️ RANK-UP CELEBRATION MODAL */}
+      {/* ðŸŽ–ï¸ RANK-UP CELEBRATION MODAL */}
       <RankUpModal
         isOpen={showRankUpModal}
         onClose={() => setShowRankUpModal(false)}
@@ -16563,13 +16563,13 @@ function App() {
         xpGained={rankUpData?.xpGained}
       />
 
-      {/* 📓 FREEDOM JOURNAL MODAL */}
+      {/* ðŸ““ FREEDOM JOURNAL MODAL */}
       {showJournalModal && selectedTripForJournal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl my-auto">
             <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">📓 Freedom Journal - {selectedTripForJournal.name}</h3>
+                <h3 className="text-xl font-bold text-white">ðŸ““ Freedom Journal - {selectedTripForJournal.name}</h3>
                 <button
                   onClick={handleCloseJournal}
                   className="text-gray-400 hover:text-white"
@@ -16588,7 +16588,7 @@ function App() {
         </div>
       )}
 
-      {/* 🎯 MISSION COMPLETE MODAL */}
+      {/* ðŸŽ¯ MISSION COMPLETE MODAL */}
       {showMissionCompleteModal && completedTrip && (
         <MissionCompleteModal
           trip={completedTrip}
@@ -16597,13 +16597,13 @@ function App() {
         />
       )}
 
-      {/* 🛡️ DATA RECOVERY MODAL */}
+      {/* ðŸ›¡ï¸ DATA RECOVERY MODAL */}
       {showDataRecoveryModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl my-auto">
             <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">🛡️ Data Recovery</h3>
+                <h3 className="text-xl font-bold text-white">ðŸ›¡ï¸ Data Recovery</h3>
                 <button
                   onClick={() => setShowDataRecoveryModal(false)}
                   className="text-gray-400 hover:text-white"
@@ -16615,7 +16615,7 @@ function App() {
               <div className="space-y-4">
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-amber-400">⚠️</span>
+                    <span className="text-amber-400">âš ï¸</span>
                     <span className="font-semibold text-amber-400">Recovery Warning</span>
                   </div>
                   <p className="text-sm text-amber-200">
@@ -16635,7 +16635,7 @@ function App() {
                               {new Date(backup.backupDate).toLocaleString()}
                             </p>
                             <p className="text-sm text-gray-400">
-                              Type: {backup.backupType} • ID: {backup.id}
+                              Type: {backup.backupType} â€¢ ID: {backup.id}
                             </p>
                           </div>
                           <button
@@ -16662,13 +16662,13 @@ function App() {
         </div>
       )}
 
-      {/* 🛡️ DATA IMPORT MODAL */}
+      {/* ðŸ›¡ï¸ DATA IMPORT MODAL */}
       {showDataImportModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl my-auto">
             <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">🛡️ Import Data</h3>
+                <h3 className="text-xl font-bold text-white">ðŸ›¡ï¸ Import Data</h3>
                 <button
                   onClick={() => setShowDataImportModal(false)}
                   className="text-gray-400 hover:text-white"
@@ -16680,7 +16680,7 @@ function App() {
               <div className="space-y-4">
                 <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-blue-400">ℹ️</span>
+                    <span className="text-blue-400">â„¹ï¸</span>
                     <span className="font-semibold text-blue-400">Import Information</span>
                   </div>
                   <p className="text-sm text-blue-200">
@@ -16731,11996 +16731,3 @@ const AppWithErrorBoundary = () => (
 );
 
 export default AppWithErrorBoundary;
-
-
-                    const autoCategory = categorizeExpense(newDesc);
-
-                    setNewTransaction(prev => ({
-
-                      ...prev, 
-
-                      description: newDesc,
-
-                      category: autoCategory.category,
-
-                      subcategory: autoCategory.subcategory
-
-                    }));
-
-                  }
-                }
-
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-              />
-
-              
-
-              <input
-
-                type="number"
-
-                placeholder="Amount"
-
-                value={newTransaction.amount || ''}
-                onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? '' : e.target.value})}
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-              />
-
-              
-
-              <select
-
-                value={newTransaction.type}
-
-                onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
-
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-
-              >
-
-                <option value="expense">💸 Expense</option>
-
-                <option value="income">💰 Income</option>
-
-              </select>
-
-              
-
-              <select
-
-                value={newTransaction.category}
-
-                onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
-
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-
-              >
-
-                <option value="personal">👤 Personal</option>
-
-                <option value="business">🏢 Business</option>
-
-              </select>
-
-              
-
-              <select
-
-                value={newTransaction.subcategory}
-
-                onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
-
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-
-              >
-
-                <option value="">🤖 Auto-categorize</option>
-
-                {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
-
-                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
-
-                ))}
-
-              </select>
-
-              
-
-              <input
-
-                type="date"
-
-                value={newTransaction.date}
-
-                onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
-
-                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-              />
-
-            </div>
-
-
-
-            {/* 🔄 Recurring Expense Section */}
-
-            <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
-
-              <div className="flex items-center gap-3 mb-3">
-
-                <label className="flex items-center gap-2 cursor-pointer">
-
-                  <input
-
-                    type="checkbox"
-
-                    checked={newTransaction.isRecurring}
-
-                    onChange={(e) => setNewTransaction({...newTransaction, isRecurring: e.target.checked})}
-
-                    className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
-
-                  />
-
-                  <span className="text-white font-semibold">🔄 Make this a recurring {newTransaction.type}</span>
-
-                </label>
-
-              </div>
-
-              
-
-              {newTransaction.isRecurring && (
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-
-                  <select
-
-                    value={newTransaction.frequency}
-
-                    onChange={(e) => setNewTransaction({...newTransaction, frequency: e.target.value})}
-
-                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                  >
-
-                    <option value="weekly">📅 Weekly</option>
-
-                    <option value="monthly">🗓️ Monthly</option>
-
-                    <option value="yearly">📆 Yearly</option>
-
-                  </select>
-
-                  
-
-                  {newTransaction.frequency === 'weekly' && (
-                    <select
-
-                      value={newTransaction.dayOfWeek}
-
-                      onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: parseInt(e.target.value)})}
-                      className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                    >
-
-                      <option value={0}>Sunday</option>
-
-                      <option value={1}>Monday</option>
-
-                      <option value={2}>Tuesday</option>
-
-                      <option value={3}>Wednesday</option>
-
-                      <option value={4}>Thursday</option>
-
-                      <option value={5}>Friday</option>
-
-                      <option value={6}>Saturday</option>
-
-                    </select>
-
-                  )}
-
-                  
-
-                  {newTransaction.frequency === 'monthly' && (
-
-                    <select
-
-                      value={newTransaction.dayOfMonth}
-
-                      onChange={(e) => setNewTransaction({...newTransaction, dayOfMonth: parseInt(e.target.value)})}
-
-                      className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                    >
-
-                      {Array.from({length: 31}, (_, i) => (
-
-                        <option key={i+1} value={i+1}>Day {i+1}</option>
-
-                      ))}
-
-                    </select>
-
-                  )}
-
-                  
-
-                  {newTransaction.frequency === 'yearly' && (
-
-                    <>
-
-                      <select
-
-                        value={newTransaction.monthOfYear}
-
-                        onChange={(e) => setNewTransaction({...newTransaction, monthOfYear: parseInt(e.target.value)})}
-
-                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                      >
-
-                        <option value={1}>January</option>
-
-                        <option value={2}>February</option>
-
-                        <option value={3}>March</option>
-
-                        <option value={4}>April</option>
-
-                        <option value={5}>May</option>
-
-                        <option value={6}>June</option>
-
-                        <option value={7}>July</option>
-
-                        <option value={8}>August</option>
-
-                        <option value={9}>September</option>
-
-                        <option value={10}>October</option>
-
-                        <option value={11}>November</option>
-
-                        <option value={12}>December</option>
-
-                      </select>
-
-                      <select
-
-                        value={newTransaction.dayOfMonth}
-
-                        onChange={(e) => setNewTransaction({...newTransaction, dayOfMonth: parseInt(e.target.value)})}
-
-                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                      >
-
-                        {Array.from({length: 31}, (_, i) => (
-
-                          <option key={i+1} value={i+1}>Day {i+1}</option>
-
-                        ))}
-
-                      </select>
-
-                    </>
-
-                  )}
-
-                </div>
-
-              )}
-
-              
-
-              {newTransaction.isRecurring && (
-
-                <div className="mt-3 p-3 bg-blue-800/20 rounded-lg text-sm text-blue-200">
-
-                  <div className="flex items-center gap-2 mb-1">
-
-                    <Repeat className="w-4 h-4" />
-
-                    <span className="font-semibold">Automation Preview:</span>
-
-                  </div>
-
-                  <div>
-
-                    This {newTransaction.type} will automatically be added every{' '}
-
-                    {newTransaction.frequency === 'weekly' && `week on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]}`}
-
-                    {newTransaction.frequency === 'monthly' && `month on day ${newTransaction.dayOfMonth}`}
-
-                    {newTransaction.frequency === 'yearly' && `year on ${['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][newTransaction.monthOfYear]} ${newTransaction.dayOfMonth}`}
-
-                    . You can manage all recurring {newTransaction.type}s in the Transactions tab.
-
-                  </div>
-
-                </div>
-
-              )}
-
-            </div>
-
-          </div>
-
-          
-
-          <div className="mt-4 flex justify-end gap-2">
-
-            <button
-
-              onClick={() => setShowAddForm(false)}
-
-              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-            >
-
-              Cancel
-
-            </button>
-
-            <button
-
-              onClick={handleAddTransaction}
-
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-            >
-
-              Add Transaction
-
-            </button>
-
-          </div>
-
-        </Card>
-      )}
-
-
-      {/* 📊 UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
-
-      <Card className="bg-gradient-to-br from-indigo-900/40 to-blue-900/40 border-blue-500/30">
-
-        <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex flex-wrap items-center gap-2">
-
-          <div className="flex items-center">
-
-            <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
-
-            💰 Spending by Category
-
-          </div>
-
-          <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
-
-        </h3>
-
-        
-
-        {spendingByCategory.length > 0 ? (
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-            {/* Donut Chart - Centered on mobile */}
-
-            <div className="flex justify-center items-center py-4 md:py-0">
-
-              <svg ref={spendingChartRef}></svg>
-
-            </div>
-
-            
-
-            {/* Legend - Mobile optimized with larger tap targets */}
-
-            <div className="space-y-2">
-
-              <h4 className="text-sm font-semibold text-gray-300 mb-3 px-1">Category Breakdown</h4>
-
-              {spendingByCategory.map(item => (
-
-                <div key={item.category} className="flex items-center justify-between p-3 md:p-2 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors min-h-[3rem] md:min-h-0">
-
-                  <div className="flex items-center gap-3">
-
-                    <div 
-
-                      className="w-5 h-5 md:w-4 md:h-4 rounded-full flex-shrink-0" 
-
-                      style={{ backgroundColor: item.color }}
-
-                    ></div>
-
-                    <span className="text-sm md:text-sm text-gray-200 capitalize">{item.category}</span>
-
-                  </div>
-
-                  <div className="flex items-center gap-2 md:gap-3">
-
-                    <span className="text-sm font-semibold text-white">${item.amount.toLocaleString()}</span>
-
-                    <span className="text-sm text-blue-400 font-semibold min-w-[3rem] text-right">
-
-                      {item.percentage}%
-
-                    </span>
-
-                  </div>
-
-                </div>
-
-              ))}
-
-              <div className="mt-4 pt-3 border-t border-gray-600">
-
-                <div className="flex justify-between text-sm">
-
-                  <span className="text-gray-300">Total Spending This Month:</span>
-
-                  <span className="text-lg font-bold text-red-400">
-
-                    ${spendingByCategory.reduce((sum, cat) => sum + cat.amount, 0).toLocaleString()}
-
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        ) : (
-
-          <div className="text-center py-12">
-
-            <PieChart className="w-16 h-16 mx-auto text-gray-600 mb-4" />
-
-            <p className="text-gray-400 text-lg font-semibold">
-
-              Log your first expense to see your spending analysis
-
-            </p>
-
-            <p className="text-gray-500 text-sm mt-2">
-
-              Track where your money goes each month with visual insights
-
-            </p>
-
-          </div>
-
-        )}
-
-      </Card>
-
-
-
-      {/* Recurring Expenses Management */}
-
-      {data.recurringExpenses && data.recurringExpenses.length > 0 && (
-
-        <Card className="border-purple-500/30">
-
-          <div className="flex justify-between items-center mb-4">
-
-            <div>
-
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-
-                <Repeat className="w-6 h-6 text-purple-400" />
-
-                Recurring Income/Expenses
-
-                ({data.recurringExpenses.filter(r => r.isActive).length} active)
-
-              </h3>
-
-              <p className="text-gray-400">Automatically processed transactions</p>
-
-            </div>
-
-          </div>
-
-          
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-            {data.recurringExpenses.map(recurring => (
-
-              <div key={recurring.id} className={`p-4 rounded-lg border-2 ${
-
-                recurring.isActive 
-
-                  ? 'bg-purple-900/20 border-purple-500/30' 
-
-                  : 'bg-gray-800/50 border-gray-600/30'
-
-              }`}>
-
-                <div className="flex justify-between items-start mb-2">
-
-                  <div>
-
-                    <h4 className="font-semibold text-white">{recurring.description}</h4>
-
-                    <p className={`text-lg font-bold ${
-
-                      recurring.type === 'expense' ? 'text-red-400' : 'text-green-400'
-
-                    }`}>
-
-                      {recurring.type === 'expense' ? '-' : '+'}${recurring.amount.toLocaleString()}
-
-                    </p>
-
-                  </div>
-
-                  <div className={`px-2 py-1 rounded text-xs font-semibold ${
-
-                    recurring.isActive 
-
-                      ? 'bg-green-600/20 text-green-400' 
-
-                      : 'bg-gray-600/20 text-gray-400'
-
-                  }`}>
-
-                    {recurring.isActive ? 'Active' : 'Paused'}
-
-                  </div>
-
-                </div>
-
-                
-
-                <div className="space-y-1 text-sm text-gray-300">
-
-                  <div className="flex justify-between">
-
-                    <span>Frequency:</span>
-
-                    <span className="capitalize">{recurring.frequency}</span>
-
-                  </div>
-
-                  <div className="flex justify-between">
-
-                    <span>Next Due:</span>
-
-                    <span className="text-purple-300">{new Date(recurring.nextDueDate).toLocaleDateString()}</span>
-
-                  </div>
-
-                  <div className="flex justify-between">
-
-                    <span>Category:</span>
-
-                    <span className="capitalize">{recurring.subcategory}</span>
-
-                  </div>
-
-                </div>
-
-                
-
-                {recurring.tags && recurring.tags.length > 0 && (
-
-                  <div className="mt-2 flex flex-wrap gap-1">
-
-                    {recurring.tags.map(tag => (
-
-                      <span key={tag} className="px-2 py-1 bg-gray-700/50 text-xs text-gray-300 rounded">
-
-                        {tag}
-
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                )}
-
-                
-
-                <div className="mt-3 flex gap-2 flex-wrap">
-
-                  <button
-
-                    onClick={() => setEditingRecurring(recurring)}
-
-                    className="flex-1 px-3 py-1.5 bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1"
-
-                  >
-
-                    <Edit className="w-3 h-3" />
-
-                    Edit
-
-                  </button>
-
-                  
-
-                  <button
-
-                    onClick={async () => {
-
-                      const updatedRecurring = data.recurringExpenses.map(r => 
-
-                        r.id === recurring.id ? { ...r, isActive: !r.isActive } : r
-
-                      );
-
-                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
-                      try {
-                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-                        setData(updatedData);
-                      } catch (error) {
-
-                        console.error('Error updating recurring expense:', error);
-
-                      }
-
-                    }}
-
-                    className={`flex-1 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-
-                      recurring.isActive
-
-                        ? 'bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30'
-
-                        : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
-
-                    }`}
-
-                  >
-
-                    {recurring.isActive ? 'Pause' : 'Resume'}
-
-                  </button>
-
-                  
-
-                  <button
-
-                    onClick={async () => {
-
-                      if (!window.confirm('Delete this recurring expense?')) return;
-
-                      const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
-
-                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
-                      try {
-                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-                        setData(updatedData);
-                      } catch (error) {
-
-                        console.error('Error deleting recurring expense:', error);
-
-                      }
-
-                    }}
-
-                    className="flex-1 px-3 py-1.5 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
-
-                  >
-
-                    Delete
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </Card>
-
-      )}
-
-
-
-      {/* ✏️ EDIT RECURRING EXPENSE MODAL */}
-
-      {editingRecurring && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
-          <div className="bg-gray-800 rounded-lg max-w-2xl w-full border border-purple-500/30">
-
-            <div className="flex justify-between items-center p-4 border-b border-gray-700">
-
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-
-                <Edit className="w-5 h-5 text-purple-400" />
-
-                Edit Recurring {editingRecurring.type === 'income' ? 'Income' : 'Expense'}
-
-              </h3>
-
-              <button
-
-                onClick={() => setEditingRecurring(null)}
-
-                className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-
-              {/* Description */}
-
-              <div>
-
-                <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                  Description
-
-                </label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="e.g., Netflix Subscription"
-
-                  value={editingRecurring.description || ''}
-
-                  onChange={(e) => setEditingRecurring({...editingRecurring, description: e.target.value})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-
-                />
-
-              </div>
-
-
-
-              {/* Amount & Type */}
-
-              <div className="grid grid-cols-2 gap-4">
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                    Amount
-
-                  </label>
-
-                  <input
-
-                    type="number"
-
-                    placeholder="50"
-
-                    value={editingRecurring.amount || ''}
-                    onChange={(e) => setEditingRecurring({...editingRecurring, amount: parseFloat(e.target.value) || 0})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                    Type
-
-                  </label>
-
-                  <select
-
-                    value={editingRecurring.type || 'expense'}
-
-                    onChange={(e) => setEditingRecurring({...editingRecurring, type: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-
-                  >
-
-                    <option value="expense">Expense</option>
-
-                    <option value="income">Income</option>
-
-                  </select>
-
-                </div>
-
-              </div>
-
-
-
-              {/* Frequency */}
-
-              <div>
-
-                <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                  Frequency
-
-                </label>
-
-                <select
-
-                  value={editingRecurring.frequency || 'monthly'}
-
-                  onChange={(e) => setEditingRecurring({...editingRecurring, frequency: e.target.value})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-
-                >
-
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
-
-              </div>
-
-
-
-              {/* Category & Subcategory */}
-
-              <div className="grid grid-cols-2 gap-4">
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                    Category
-
-                  </label>
-
-                  <select
-
-                    value={editingRecurring.category || 'personal'}
-
-                    onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value, subcategory: ''})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-
-                  >
-
-                    <option value="personal">👤 Personal</option>
-
-                    <option value="business">🏢 Business</option>
-
-                  </select>
-
-                </div>
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                    Subcategory
-
-                  </label>
-
-                  <select
-
-                    value={editingRecurring.subcategory || ''}
-
-                    onChange={(e) => setEditingRecurring({...editingRecurring, subcategory: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-
-                  >
-
-                    <option value="">🤖 Auto-categorize</option>
-
-                    {subcategoryOptions[editingRecurring.category || 'personal']?.[editingRecurring.type || 'expense']?.map(sub => (
-
-                      <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
-
-                    ))}
-
-                  </select>
-
-                  <p className="text-xs text-gray-400 mt-1">
-
-                    💡 Categorize for better tracking
-
-                  </p>
-
-                </div>
-
-              </div>
-
-
-
-              {/* Next Due Date */}
-
-              <div>
-
-                <label className="block text-sm font-semibold text-gray-300 mb-2">
-
-                  Next Due Date
-
-                </label>
-
-                <input
-
-                  type="date"
-
-                  value={editingRecurring.nextDueDate || ''}
-
-                  onChange={(e) => setEditingRecurring({...editingRecurring, nextDueDate: e.target.value})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-                />
-
-              </div>
-
-
-
-              {/* Active Status */}
-
-              <div className="flex items-center gap-3">
-
-                <input
-
-                  type="checkbox"
-
-                  id="edit-active"
-
-                  checked={editingRecurring.isActive || false}
-
-                  onChange={(e) => setEditingRecurring({...editingRecurring, isActive: e.target.checked})}
-
-                  className="w-4 h-4 rounded border-gray-600"
-
-                />
-
-                <label htmlFor="edit-active" className="text-sm text-gray-300">
-
-                  Active (will process automatically)
-
-                </label>
-
-              </div>
-
-            </div>
-
-
-
-            {/* Actions */}
-
-            <div className="p-4 border-t border-gray-700 flex justify-end gap-3">
-
-              <button
-
-                onClick={() => setEditingRecurring(null)}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={handleEditRecurringExpense}
-
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-
-              >
-
-                <Save className="w-4 h-4" />
-
-                Save Changes
-
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* 🔍 UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
-
-      <Card className="bg-gradient-to-br from-slate-900/40 to-gray-900/40">
-
-        <div className="space-y-4">
-
-          {/* Search Bar & Filters Button - Mobile optimized */}
-
-          <div className="flex flex-col sm:flex-row gap-3">
-
-            {/* Keyword Search - Large tap target on mobile */}
-
-            <div className="flex-1 relative">
-
-              <input
-
-                type="text"
-
-                placeholder="🔍 Search transactions..."
-
-                value={searchKeyword}
-
-                onChange={(e) => setSearchKeyword(e.target.value)}
-
-                className="w-full bg-gray-700/50 text-white px-4 py-4 md:py-3 pl-12 md:pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
-
-              />
-
-              <div className="absolute left-3 md:left-3 top-4 md:top-3.5 text-gray-400 text-lg md:text-base">
-
-                🔍
-
-              </div>
-
-            </div>
-
-            
-
-            {/* Advanced Filters Button - Extra large on mobile */}
-
-            <button
-
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-
-              className={`px-6 py-4 md:py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 min-h-[3rem] md:min-h-0 ${
-
-                showAdvancedFilters 
-
-                  ? 'bg-blue-600 text-white' 
-
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-600'
-
-              }`}
-
-            >
-
-              <svg className="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-
-              </svg>
-
-              <span className="text-base md:text-sm">Filters</span>
-
-              {(selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
-
-                <span className="bg-blue-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-
-                  {[
-
-                    selectedCategories.length > 0 ? 1 : 0,
-
-                    dateRange.start || dateRange.end ? 1 : 0,
-
-                    selectedTypes.length < 3 ? 1 : 0
-
-                  ].reduce((a, b) => a + b, 0)}
-
-                </span>
-
-              )}
-
-            </button>
-
-            
-
-            {/* Reset Filters - Large tap target on mobile */}
-
-            {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
-
-              <button
-
-                onClick={() => {
-
-                  setSearchKeyword('');
-
-                  setSelectedCategories([]);
-
-                  setSelectedTypes(['income', 'expense', 'transfer']);
-
-                  setDateRange({ start: '', end: '' });
-
-                  setSortBy('date-desc');
-
-                }}
-
-                className="px-5 py-4 md:px-4 md:py-3 bg-red-600/20 text-red-400 hover:bg-red-600/30 active:bg-red-600/40 rounded-lg font-semibold transition-colors min-h-[3rem] md:min-h-0 text-base md:text-sm"
-
-              >
-
-                Reset
-
-              </button>
-
-            )}
-
-          </div>
-
-          
-
-          {/* Advanced Filters Panel */}
-
-          {showAdvancedFilters && (
-
-            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-600 space-y-4 animate-fadeIn">
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                {/* Transaction Type Filter */}
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Transaction Type</label>
-
-                  <div className="space-y-2">
-
-                    {['income', 'expense', 'transfer'].map(type => (
-
-                      <label key={type} className="flex items-center gap-2 cursor-pointer">
-
-                        <input
-
-                          type="checkbox"
-
-                          checked={selectedTypes.includes(type)}
-
-                          onChange={(e) => {
-
-                            if (e.target.checked) {
-
-                              setSelectedTypes([...selectedTypes, type]);
-
-                            } else {
-
-                              setSelectedTypes(selectedTypes.filter(t => t !== type));
-
-                            }
-
-                          }}
-
-                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
-
-                        />
-
-                        <span className="text-sm text-gray-200 capitalize">{type}</span>
-
-                      </label>
-
-                    ))}
-
-                  </div>
-
-                </div>
-
-                
-
-                {/* Category Filter - Mobile friendly */}
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Category</label>
-
-                  <select
-
-                    multiple
-
-                    value={selectedCategories}
-
-                    onChange={(e) => {
-
-                      const selected = Array.from(e.target.selectedOptions, option => option.value);
-
-                      setSelectedCategories(selected);
-
-                    }}
-
-                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
-
-                    size="3"
-
-                  >
-
-                    <option value="housing">Housing</option>
-
-                    <option value="food">Food</option>
-
-                    <option value="transport">Transport</option>
-
-                    <option value="entertainment">Entertainment</option>
-
-                    <option value="healthcare">Healthcare</option>
-
-                    <option value="utilities">Utilities</option>
-
-                    <option value="personal">Personal</option>
-
-                    <option value="business">Business</option>
-
-                  </select>
-
-                  <p className="text-xs text-gray-400 mt-2 md:mt-1">Hold Ctrl/Cmd for multiple</p>
-
-                </div>
-
-                
-
-                {/* Date Range Filter - Large tap targets */}
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Date Range</label>
-
-                  <input
-
-                    type="date"
-
-                    value={dateRange.start}
-
-                    onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-
-                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none mb-3 md:mb-2 text-base md:text-sm"
-
-                    placeholder="Start Date"
-
-                  />
-
-                  <input
-
-                    type="date"
-
-                    value={dateRange.end}
-
-                    onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-
-                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
-
-                    placeholder="End Date"
-
-                  />
-
-                </div>
-
-                
-
-                {/* Sort By - Large tap target */}
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Sort By</label>
-
-                  <select
-
-                    value={sortBy}
-
-                    onChange={(e) => setSortBy(e.target.value)}
-
-                    className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
-
-                  >
-
-                    <option value="date-desc">📅 Date (Newest First)</option>
-
-                    <option value="date-asc">📅 Date (Oldest First)</option>
-
-                    <option value="amount-desc">💰 Amount (High to Low)</option>
-
-                    <option value="amount-asc">💰 Amount (Low to High)</option>
-
-                  </select>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          )}
-
-        </div>
-
-      </Card>
-
-
-
-      {/* Transaction List */}
-
-      <Card>
-
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
-
-          <span>Recent Transactions ({filteredTransactions.length})</span>
-
-          {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
-
-            <span className="text-sm text-blue-400 font-normal">
-
-              {[
-
-                searchKeyword ? 1 : 0,
-
-                selectedCategories.length > 0 ? 1 : 0,
-
-                dateRange.start || dateRange.end ? 1 : 0,
-
-                selectedTypes.length < 3 ? 1 : 0
-
-              ].reduce((a, b) => a + b, 0)} Filter{[searchKeyword, selectedCategories.length > 0, dateRange.start || dateRange.end, selectedTypes.length < 3].filter(Boolean).length !== 1 ? 's' : ''} Active
-
-            </span>
-
-          )}
-
-        </h3>
-
-        
-
-        <div className="space-y-2 max-h-96 overflow-y-auto">
-
-          {filteredTransactions.map(transaction => (
-
-            <div key={transaction.id} className="bg-gray-700/30 rounded-lg p-4 flex items-center justify-between hover:bg-gray-700/50 transition-colors">
-
-              <div className="flex-1">
-
-                <div className="flex items-center gap-3">
-
-                  <div className={`w-3 h-3 rounded-full ${
-
-                    transaction.amount > 0 ? 'bg-green-500' : 'bg-red-500'
-
-                  }`}></div>
-
-                  <div>
-
-                    <h4 className="font-semibold text-white">{transaction.description}</h4>
-
-                    <div className="text-sm text-gray-400">
-
-                      {new Date(transaction.date).toLocaleDateString()} • 
-                      <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
-
-                        {transaction.category}
-
-                      </span>
-
-                      {transaction.subcategory && ` • ${transaction.subcategory}`}
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              
-
-              <div className="flex items-center gap-4">
-
-                <div className={`text-lg font-bold ${
-
-                  transaction.amount > 0 ? 'text-green-400' : 'text-red-400'
-
-                }`}>
-
-                  {transaction.amount > 0 ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
-
-                </div>
-
-                
-
-                <div className="flex gap-1">
-
-                  <button
-
-                    onClick={() => setEditingTransaction(transaction)}
-
-                    className="text-gray-400 hover:text-blue-400 p-1"
-
-                  >
-
-                    <Edit className="w-4 h-4" />
-
-                  </button>
-
-                  <button
-
-                    onClick={() => handleDeleteTransaction(transaction.id)}
-
-                    className="text-gray-400 hover:text-red-400 p-1"
-
-                  >
-
-                    <Trash2 className="w-4 h-4" />
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          ))}
-
-          
-
-          {filteredTransactions.length === 0 && (
-
-            <div className="text-center text-gray-400 py-8">
-
-              No transactions found matching your filters.
-
-            </div>
-
-          )}
-
-        </div>
-
-      </Card>
-
-
-
-      {/* Edit Transaction Modal */}
-
-      {editingTransaction && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
-          <Card className="w-full max-w-md border-blue-500/30">
-
-            <div className="flex justify-between items-center mb-4">
-
-              <h3 className="text-xl font-bold text-white">Edit Transaction</h3>
-
-              <button
-
-                onClick={() => setEditingTransaction(null)}
-
-                className="text-gray-400 hover:text-white"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              <input
-
-                type="text"
-
-                placeholder="Description"
-
-                value={editingTransaction.description}
-
-                onChange={(e) => setEditingTransaction({...editingTransaction, description: e.target.value})}
-
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-
-              />
-
-              
-
-              <input
-
-                type="number"
-
-                placeholder="Amount"
-
-                value={Math.abs(editingTransaction.amount) || ''}
-                onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value === '' ? '' : e.target.value})}
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-
-              />
-
-              
-
-              <div className="grid grid-cols-2 gap-4">
-
-                <select
-
-                  value={editingTransaction.type}
-
-                  onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value, subcategory: ''})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-
-                >
-
-                  <option value="expense">💸 Expense</option>
-
-                  <option value="income">💰 Income</option>
-
-                </select>
-
-                
-
-                <select
-
-                  value={editingTransaction.category}
-
-                  onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value, subcategory: ''})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-
-                >
-
-                  <option value="personal">👤 Personal</option>
-
-                  <option value="business">🏢 Business</option>
-
-                </select>
-
-              </div>
-
-              
-
-              <select
-
-                value={editingTransaction.subcategory || ''}
-
-                onChange={(e) => setEditingTransaction({...editingTransaction, subcategory: e.target.value})}
-
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-
-              >
-
-                <option value="">🤖 Auto-categorize</option>
-
-                {subcategoryOptions[editingTransaction.category]?.[editingTransaction.type]?.map(sub => (
-
-                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
-
-                ))}
-
-              </select>
-
-              
-
-              <input
-
-                type="date"
-
-                value={editingTransaction.date}
-
-                onChange={(e) => setEditingTransaction({...editingTransaction, date: e.target.value})}
-
-                className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-              />
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-2">
-
-              <button
-
-                onClick={() => setEditingTransaction(null)}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={() => handleEditTransaction(editingTransaction)}
-
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Save Changes
-
-              </button>
-
-            </div>
-
-          </Card>
-
-        </div>
-
-      )}
-
-    </div>
-
-  );
-
-};
-
-
-
-// Travel Tab Component with Trip Budgeting
-
-const TravelTab = ({ data, setData, userId }) => {
-
-  const [showAddTrip, setShowAddTrip] = useState(false);
-
-  const [editingTrip, setEditingTrip] = useState(null);
-
-  const [showExpenseModal, setShowExpenseModal] = useState(false);
-
-  const [selectedTrip, setSelectedTrip] = useState(null);
-
-  const [showRunwayModal, setShowRunwayModal] = useState(false);
-
-  const [hoveredCountry, setHoveredCountry] = useState(null);
-
-  const [runwaySettings, setRunwaySettings] = useState({
-
-    totalSavings: data.travel?.totalSavings || 0,
-
-    homeCurrency: data.travel?.homeCurrency || 'CAD',
-
-    tripPlan: data.travel?.tripPlan || {
-
-      cheap: 90,      // 3 months cheap travel
-
-      moderate: 30,   // 1 month moderate  
-
-      expensive: 15   // 2 weeks expensive
-
-    }
-
-  });
-
-  
-
-  const [newTrip, setNewTrip] = useState({
-
-    name: '',
-
-    description: '',
-
-    targetBudget: '',
-
-    startDate: '',
-
-    endDate: '',
-
-    estimatedDailySpend: '',
-
-    countries: [],
-
-    countryInput: ''
-
-  });
-
-
-
-  // 🌍 Wishlist editing states
-
-  const [showAddWishlistCountry, setShowAddWishlistCountry] = useState(false);
-
-  const [wishlistCountryInput, setWishlistCountryInput] = useState('');
-
-  
-
-  const [newExpense, setNewExpense] = useState({
-
-    description: '',
-
-    amount: '',
-
-    currency: data.travel?.homeCurrency || 'CAD',
-
-    category: 'other',
-
-    date: new Date().toISOString().split('T')[0]
-  });
-
-
-
-  // 🔤 Auto-capitalize first letter of country name
-
-  const capitalizeCountryName = (name) => {
-
-    if (!name) return '';
-
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-
-  };
-
-
-
-  // 🌍 Add country to wishlist
-
-  const handleAddWishlistCountry = async () => {
-
-    if (!wishlistCountryInput.trim()) return;
-
-    
-
-    const formattedCountry = capitalizeCountryName(wishlistCountryInput.trim());
-
-    const currentWishlist = data.travel?.wishlistCountries || [];
-
-    
-
-    // Check if already in wishlist
-
-    if (currentWishlist.some(c => c.toLowerCase() === formattedCountry.toLowerCase())) {
-
-      alert('This country is already in your wishlist!');
-
-      return;
-
-    }
-
-    
-
-    const updatedWishlist = [...currentWishlist, formattedCountry];
-
-    const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
-
-    
-
-    try {
-
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), {
-        ...data,
-        travel: updatedTravel
-
-      });
-
-      setData({ ...data, travel: updatedTravel });
-
-      setWishlistCountryInput('');
-
-      setShowAddWishlistCountry(false);
-
-    } catch (error) {
-
-      console.error('Error adding wishlist country:', error);
-
-      alert('Failed to add country. Please try again.');
-
-    }
-
-  };
-
-
-
-  // 🗑️ Remove country from wishlist
-
-  const handleRemoveWishlistCountry = async (countryToRemove) => {
-
-    const currentWishlist = data.travel?.wishlistCountries || [];
-
-    const updatedWishlist = currentWishlist.filter(c => c !== countryToRemove);
-
-    const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
-
-    
-
-    try {
-
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), {
-        ...data,
-        travel: updatedTravel
-
-      });
-
-      setData({ ...data, travel: updatedTravel });
-
-    } catch (error) {
-
-      console.error('Error removing wishlist country:', error);
-
-      alert('Failed to remove country. Please try again.');
-
-    }
-
-  };
-
-
-
-  // Enhanced Travel Runway Calculation with Destination Tiers
-
-  const calculateRunway = () => {
-
-    const totalFunds = data.travel?.totalSavings || 0;
-
-    
-
-    // Cost tiers for different destination types
-
-    const costTiers = {
-
-      cheap: 40,      // $40/day - Southeast Asia, Central America, Eastern Europe, India
-
-      moderate: 90,   // $90/day - South America, Southern Europe, parts of Asia, Mexico  
-
-      expensive: 160  // $160/day - Western Europe, Scandinavia, Australia, Japan, North America
-
-    };
-
-    
-
-    // Get planned trips from user settings or defaults
-
-    const tripPlan = data.travel?.tripPlan || {
-
-      cheap: 90,      // 3 months cheap travel
-
-      moderate: 30,   // 1 month moderate  
-
-      expensive: 15   // 2 weeks expensive
-
-    };
-
-    
-
-    // Calculate costs for planned trips
-
-    const plannedCosts = {
-
-      cheap: tripPlan.cheap * costTiers.cheap,
-
-      moderate: tripPlan.moderate * costTiers.moderate,
-
-      expensive: tripPlan.expensive * costTiers.expensive
-
-    };
-
-    
-
-    const totalPlannedCost = plannedCosts.cheap + plannedCosts.moderate + plannedCosts.expensive;
-
-    const totalPlannedDays = tripPlan.cheap + tripPlan.moderate + tripPlan.expensive;
-
-    const remainingFunds = Math.max(0, totalFunds - totalPlannedCost);
-
-    
-
-    // Calculate how much longer they can extend with remaining funds (assume cheap travel)
-
-    const extensionDays = Math.floor(remainingFunds / costTiers.cheap);
-
-    const totalPossibleDays = totalPlannedDays + extensionDays;
-
-    
-
-    return { 
-
-      totalFunds,
-
-      costTiers,
-
-      tripPlan,
-
-      plannedCosts,
-
-      totalPlannedCost,
-
-      totalPlannedDays,
-
-      remainingFunds,
-
-      extensionDays,
-
-      totalPossibleDays,
-
-      weeksRemaining: Math.floor(totalPossibleDays / 7),
-
-      monthsRemaining: Math.floor(totalPossibleDays / 30)
-
-    };
-
-  };
-
-
-
-  const convertCurrency = (amount, fromCurrency, toCurrency = data.travel?.homeCurrency || 'CAD') => {
-
-    if (fromCurrency === toCurrency) return amount;
-
-    
-
-    // Updated exchange rates (realistic as of 2024)
-
-    const globalRates = {
-
-      'USD': { 'CAD': 1.35, 'EUR': 0.92, 'GBP': 0.79, 'THB': 36.0, 'COP': 4100 },
-
-      'CAD': { 'USD': 0.74, 'EUR': 0.68, 'GBP': 0.59, 'THB': 27.0, 'COP': 3050 },
-
-      'EUR': { 'USD': 1.09, 'CAD': 1.47, 'GBP': 0.86, 'THB': 39.5, 'COP': 4450 },
-
-      'GBP': { 'USD': 1.27, 'CAD': 1.70, 'EUR': 1.16, 'THB': 46.0, 'COP': 5200 },
-
-      'THB': { 'USD': 0.028, 'CAD': 0.037, 'EUR': 0.025, 'GBP': 0.022, 'COP': 113 },
-
-      'COP': { 'USD': 0.00024, 'CAD': 0.00033, 'EUR': 0.00022, 'GBP': 0.00019, 'THB': 0.0088 }
-
-    };
-
-    
-
-    // Direct conversion using global rate matrix
-
-    if (globalRates[fromCurrency] && globalRates[fromCurrency][toCurrency]) {
-
-      return amount * globalRates[fromCurrency][toCurrency];
-
-    }
-
-    
-
-        // Fallback to 1:1 if rates not found
-
-    return amount;
-
-  };
-
-
-
-  const handleSaveRunwaySettings = async () => {
-
-    try {
-
-      const updatedData = {
-
-        ...data,
-
-        travel: {
-
-          ...data.travel,
-
-          totalSavings: Number(runwaySettings.totalSavings),
-          homeCurrency: runwaySettings.homeCurrency,
-
-          tripPlan: runwaySettings.tripPlan
-        }
-      };
-        
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-
-      setShowRunwayModal(false);
-
-      
-
-      // Force viewport cleanup after modal close
-
-      setTimeout(() => {
-
-        window.scrollTo(0, 0);
-
-        document.body.style.overflow = '';
-
-        document.body.style.position = '';
-
-        document.body.style.height = '';
-
-      }, 100);
-
-    } catch (error) {
-
-      console.error('Error saving runway settings:', error);
-
-    }
-
-  };
-
-
-
-   const handleAddExpense = async () => {
-
-     if (!newExpense.description || !newExpense.amount || !selectedTrip) return;
-
-
-
-     const amount = parseFloat(newExpense.amount);
-
-     if (isNaN(amount) || amount <= 0) return;
-
-
-
-     const expense = {
-
-       id: Date.now(),
-
-       ...newExpense,
-
-       amount,
-
-       tripId: selectedTrip.id
-
-     };
-
-
-
-     const updatedTrips = data.travel.trips.map(trip => {
-
-       if (trip.id === selectedTrip.id) {
-
-         return {
-
-           ...trip,
-
-           expenses: [...(trip.expenses || []), expense]
-
-         };
-
-       }
-
-       return trip;
-
-     });
-
-
-
-     // Convert currency if needed for main transaction
-
-     const amountInHomeCurrency = expense.currency !== (data.travel?.homeCurrency || 'CAD') 
-
-       ? convertCurrency(expense.amount, expense.currency, data.travel?.homeCurrency || 'CAD')
-
-       : expense.amount;
-
-
-
-     // Add to main transactions for dashboard consistency
-
-     const mainTransaction = {
-
-       id: Date.now() + 1, // Ensure unique ID
-
-       description: `${selectedTrip.name}: ${expense.description}`,
-
-       amount: -Math.abs(amountInHomeCurrency), // Negative for expense
-
-       type: 'expense',
-
-       category: 'Travel',
-
-       subcategory: expense.category || 'other',
-
-       date: expense.date,
-
-       linkedToTravel: true,
-
-       tripId: selectedTrip.id
-
-     };
-
-
-
-     const updatedTravel = { ...data.travel, trips: updatedTrips };
-
-     const updatedTransactions = [mainTransaction, ...data.transactions];
-
-     const updatedData = { 
-         ...data,
-
-         travel: updatedTravel,
-
-         transactions: updatedTransactions
-
-     };
-
-     try {
-       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
-       setNewExpense({
-
-         description: '',
-
-         amount: '',
-
-         currency: data.travel?.homeCurrency || 'CAD',
-
-         category: 'other',
-
-         date: new Date().toISOString().split('T')[0]
-
-       });
-
-       setShowExpenseModal(false);
-
-       setSelectedTrip(null);
-
-       
-
-       // Force viewport cleanup after modal close
-
-       setTimeout(() => {
-
-         window.scrollTo(0, 0);
-
-         document.body.style.overflow = '';
-
-         document.body.style.position = '';
-
-         document.body.style.height = '';
-
-       }, 100);
-
-     } catch (error) {
-
-       console.error('Error adding expense:', error);
-
-     }
-
-   };
-
-
-
-   const handleEditTrip = async () => {
-
-     if (!editingTrip || !editingTrip.name || !editingTrip.targetBudget) return;
-
-
-
-     const updatedTrips = data.travel.trips.map(trip => {
-
-       if (trip.id === editingTrip.id) {
-
-         return {
-
-           ...trip,
-
-           ...editingTrip,
-
-           targetBudget: Number(editingTrip.targetBudget),
-           estimatedDailySpend: Number(editingTrip.estimatedDailySpend),
-           countries: editingTrip.countries.filter(c => c.trim())
-
-         };
-
-       }
-
-       return trip;
-
-     });
-
-
-
-     const updatedTravel = { ...data.travel, trips: updatedTrips };
-
-     const updatedData = { ...data, travel: updatedTravel };
-
-     try {
-       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-       setData(updatedData);
-       setEditingTrip(null);
-
-       
-
-       // Force viewport cleanup after modal close
-
-       setTimeout(() => {
-
-         window.scrollTo(0, 0);
-
-         document.body.style.overflow = '';
-
-         document.body.style.position = '';
-
-         document.body.style.height = '';
-
-       }, 100);
-
-     } catch (error) {
-
-       console.error('Error editing trip:', error);
-
-     }
-
-   };
-
-
-
-  const handleAddTrip = async () => {
-
-   if (!newTrip.name || !newTrip.targetBudget) return;
-
-
-
-   const trip = {
-
-     id: Date.now(),
-
-     ...newTrip,
-
-     targetBudget: Number(newTrip.targetBudget),
-
-     estimatedDailySpend: Number(newTrip.estimatedDailySpend),
-
-     currentSavings: 0,
-
-     status: 'saving',
-
-     expenses: [],
-
-     countries: newTrip.countries.filter(c => c.trim())
-
-   };
-
-
-
-   const updatedTrips = [...(data.travel?.trips || []), trip];
-
-   const updatedTravel = { ...data.travel, trips: updatedTrips };
-
-   const updatedData = { ...data, travel: updatedTravel };
-
-   try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
-     setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [], countryInput: '' });
-
-     setShowAddTrip(false);
-
-     
-
-     // Force viewport cleanup after modal close
-
-     setTimeout(() => {
-
-       window.scrollTo(0, 0);
-
-       document.body.style.overflow = '';
-
-       document.body.style.position = '';
-
-       document.body.style.height = '';
-
-     }, 100);
-
-   } catch (error) {
-
-     console.error('Error adding trip:', error);
-
-   }
-
- };
-
-
-
- // 🗑️ DELETE TRIP HANDLER
-
- const handleDeleteTrip = async (tripId) => {
-
-   if (!window.confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
-
-     return;
-
-   }
-
-
-
-   const updatedTrips = (data.travel?.trips || []).filter(trip => trip.id !== tripId);
-
-   const updatedTravel = { ...data.travel, trips: updatedTrips };
-
-   const updatedData = { ...data, travel: updatedTravel };
-
-   try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
-   } catch (error) {
-
-     console.error('Error deleting trip:', error);
-
-   }
-
- };
-
-
-
- // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
-
- const handleDeleteExpense = async (tripId, expenseId) => {
-
-   if (!window.confirm('Delete this expense?')) {
-
-     return;
-
-   }
-
-
-
-   const updatedTrips = (data.travel?.trips || []).map(trip => {
-
-     if (trip.id === tripId) {
-
-       return {
-
-         ...trip,
-
-         expenses: trip.expenses.filter(exp => exp.id !== expenseId)
-
-       };
-
-     }
-
-     return trip;
-
-   });
-
-
-
-   const updatedTravel = { ...data.travel, trips: updatedTrips };
-
-   const updatedData = { ...data, travel: updatedTravel };
-
-   try {
-     await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-     setData(updatedData);
-   } catch (error) {
-
-     console.error('Error deleting expense:', error);
-
-   }
-
- };
-
-
-
-  const runway = calculateRunway();
-
-  return (
-    <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* Travel Runway Calculator - Hero Section */}
-      <Card style={{ backgroundColor: '#18212F' }} className="border-slate-500/30 relative">
-        <button
-          onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
-          title="Edit Travel Runway Settings"
-        >
-          <Edit className="w-4 h-4 text-slate-300" />
-        </button>
-        
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
-          
-          {/* Main Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
-              <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
-              <div className="text-slate-300">Total Possible Days</div>
-            </div>
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
-              <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
-              <div className="text-slate-300">Weeks of Travel</div>
-            </div>
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
-              <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
-              <div className="text-slate-300">Months of Travel</div>
-            </div>
-          </div>
-
-          {/* Destination Cost Breakdown */}
-          <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
-            <h3 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
-                <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
-                <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
-                <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
-                <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
-                <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
-              </div>
-              <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
-                <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
-                <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
-                <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
-                <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
-                <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
-              </div>
-              <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
-                <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
-                <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
-                <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
-                <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
-                <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Financial Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
-              <div className="text-slate-300">Total Travel Funds</div>
-              <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
-            </div>
-            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
-              <div className="text-slate-300">Planned Trip Cost</div>
-              <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
-              <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
-            </div>
-            <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
-              <div className="text-emerald-200">Remaining Funds</div>
-              <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
-              <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
-            </div>
-          </div>
-          
-          <div className="text-xs text-slate-400 text-center">
-            💡 Extend your journey by choosing cheaper destinations with remaining funds
-          </div>
-        </div>
-      </Card>
-
-      {/* 🗺️ OPERATOR'S WORLD MAP - Epic Interactive Visualization */}
-      {(() => {
-
-        // 🌍 COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
-
-        const normalizeCountryName = (userInput) => {
-
-          const input = userInput.trim().toLowerCase();
-
-          
-
-          // Common aliases and mappings to official GeoJSON names
-
-          const countryAliases = {
-
-            // Americas
-
-            'usa': 'united states of america',
-
-            'us': 'united states of america',
-
-            'united states': 'united states of america',
-
-            'america': 'united states of america',
-
-            
-
-            // Europe
-
-            'uk': 'united kingdom',
-
-            'england': 'united kingdom',
-
-            'britain': 'united kingdom',
-
-            'great britain': 'united kingdom',
-
-            'czech republic': 'czechia',
-
-            'holland': 'netherlands',
-
-            'macedonia': 'north macedonia',
-
-            'russia': 'russian federation',
-
-            
-
-            // Middle East
-
-            'uae': 'united arab emirates',
-
-            'emirates': 'united arab emirates',
-
-            'syria': 'syrian arab republic',
-
-            'iran': 'islamic republic of iran',
-
-            'palestine': 'palestinian territory',
-
-            
-
-            // Asia
-
-            'south korea': 'republic of korea',
-
-            'korea': 'republic of korea',
-
-            'north korea': "democratic people's republic of korea",
-
-            'vietnam': 'viet nam',
-
-            'laos': "lao people's democratic republic",
-
-            'burma': 'myanmar',
-
-            
-
-            // Africa
-
-            'ivory coast': "côte d'ivoire",
-
-            'cape verde': 'cabo verde',
-
-            'congo': 'republic of the congo',
-
-            'drc': 'democratic republic of the congo',
-
-            'dr congo': 'democratic republic of the congo',
-
-            'swaziland': 'eswatini',
-
-            
-
-            // South America
-
-            'venezuela': 'bolivarian republic of venezuela',
-
-            'bolivia': 'plurinational state of bolivia',
-
-            
-
-            // East Africa
-
-            'tanzania': 'united republic of tanzania',
-
-            
-
-            // Eastern Europe
-
-            'moldova': 'republic of moldova',
-
-            
-
-            // Pacific
-
-            'east timor': 'timor-leste',
-
-            
-
-            // Additional common variations
-
-            'china': "people's republic of china",
-
-            'prc': "people's republic of china"
-
-          };
-
-          
-
-          return countryAliases[input] || input;
-
-        };
-
-        
-
-        // Calculate visited countries from trips
-
-        const calculateCountryData = () => {
-
-          const trips = data.travel?.trips || [];
-
-          
-
-          // Normalize today to midnight for proper date comparison
-
-          const today = new Date();
-
-          today.setHours(0, 0, 0, 0);
-
-          
-
-          const visitedCountries = new Map();
-
-          const plannedCountries = new Map();
-
-          
-
-          trips.forEach(trip => {
-
-            if (!trip.endDate) return; // Skip trips without end date
-
-            
-
-            // Normalize trip end date to midnight for comparison
-
-            const endDate = new Date(trip.endDate);
-
-            endDate.setHours(0, 0, 0, 0);
-
-            
-
-            // Compare dates: if end date is BEFORE today, it's completed
-
-            const isPast = endDate < today;
-
-            const countries = trip.countries || [];
-
-            
-
-            // Debug logging (can remove later)
-
-            if (countries.length > 0) {
-
-              console.log(`🗺️ Trip: "${trip.name}" | End: ${trip.endDate} | isPast: ${isPast}`);
-
-            }
-
-            
-
-            countries.forEach(country => {
-
-              const normalizedCountry = normalizeCountryName(country);
-
-              if (isPast) {
-
-                // COMPLETED EXPEDITION → AMBER/GOLD
-
-                if (!visitedCountries.has(normalizedCountry)) {
-
-                  visitedCountries.set(normalizedCountry, []);
-
-                }
-
-                visitedCountries.get(normalizedCountry).push(trip);
-
-                console.log(`✅ COMPLETED: ${country} → ${normalizedCountry} (AMBER)`);
-
-              } else {
-
-                // FUTURE MISSION → BLUE
-
-                if (!plannedCountries.has(normalizedCountry)) {
-
-                  plannedCountries.set(normalizedCountry, []);
-
-                }
-
-                plannedCountries.get(normalizedCountry).push(trip);
-
-                console.log(`🔵 PLANNED: ${country} → ${normalizedCountry} (BLUE)`);
-
-              }
-
-            });
-
-          });
-
-          
-
-          return { visitedCountries, plannedCountries };
-
-        };
-
-        
-
-        const { visitedCountries, plannedCountries } = calculateCountryData();
-
-        const totalVisited = visitedCountries.size;
-
-        const totalPlanned = plannedCountries.size;
-
-        const allVisitedCountries = Array.from(visitedCountries.keys());
-
-        const allPlannedCountries = Array.from(plannedCountries.keys());
-
-        
-
-        // World map data - major countries with positions adjusted for new viewBox (100x50)
-
-        const worldMapCountries = [
-
-          // North America
-
-          { name: 'usa', display: 'USA', x: 12, y: 18, region: 'North America' },
-
-          { name: 'united states', display: 'USA', x: 12, y: 18, region: 'North America' },
-
-          { name: 'canada', display: 'Canada', x: 12, y: 12, region: 'North America' },
-
-          { name: 'mexico', display: 'Mexico', x: 12, y: 25, region: 'North America' },
-
-          // South America
-
-          { name: 'brazil', display: 'Brazil', x: 27, y: 38, region: 'South America' },
-
-          { name: 'argentina', display: 'Argentina', x: 25, y: 45, region: 'South America' },
-
-          { name: 'colombia', display: 'Colombia', x: 22, y: 32, region: 'South America' },
-
-          { name: 'peru', display: 'Peru', x: 23, y: 37, region: 'South America' },
-
-          { name: 'chile', display: 'Chile', x: 24, y: 42, region: 'South America' },
-
-          // Europe
-
-          { name: 'uk', display: 'UK', x: 46, y: 12, region: 'Europe' },
-
-          { name: 'united kingdom', display: 'UK', x: 46, y: 12, region: 'Europe' },
-
-          { name: 'france', display: 'France', x: 48, y: 15, region: 'Europe' },
-
-          { name: 'germany', display: 'Germany', x: 50, y: 13, region: 'Europe' },
-
-          { name: 'italy', display: 'Italy', x: 51, y: 17, region: 'Europe' },
-
-          { name: 'spain', display: 'Spain', x: 46, y: 17, region: 'Europe' },
-
-          { name: 'portugal', display: 'Portugal', x: 44, y: 17, region: 'Europe' },
-
-          { name: 'netherlands', display: 'Netherlands', x: 49, y: 13, region: 'Europe' },
-
-          { name: 'sweden', display: 'Sweden', x: 52, y: 10, region: 'Europe' },
-
-          { name: 'norway', display: 'Norway', x: 51, y: 8, region: 'Europe' },
-
-          { name: 'greece', display: 'Greece', x: 54, y: 18, region: 'Europe' },
-
-          { name: 'switzerland', display: 'Switzerland', x: 49, y: 15, region: 'Europe' },
-
-          // Africa
-
-          { name: 'egypt', display: 'Egypt', x: 54, y: 23, region: 'Africa' },
-
-          { name: 'south africa', display: 'South Africa', x: 52, y: 42, region: 'Africa' },
-
-          { name: 'morocco', display: 'Morocco', x: 45, y: 22, region: 'Africa' },
-
-          { name: 'kenya', display: 'Kenya', x: 56, y: 32, region: 'Africa' },
-
-          { name: 'tanzania', display: 'Tanzania', x: 56, y: 34, region: 'Africa' },
-
-          // Asia
-
-          { name: 'china', display: 'China', x: 72, y: 20, region: 'Asia' },
-
-          { name: 'japan', display: 'Japan', x: 82, y: 19, region: 'Asia' },
-
-          { name: 'south korea', display: 'South Korea', x: 80, y: 19, region: 'Asia' },
-
-          { name: 'thailand', display: 'Thailand', x: 74, y: 27, region: 'Asia' },
-
-          { name: 'vietnam', display: 'Vietnam', x: 76, y: 27, region: 'Asia' },
-
-          { name: 'cambodia', display: 'Cambodia', x: 75, y: 28, region: 'Asia' },
-
-          { name: 'singapore', display: 'Singapore', x: 76, y: 31, region: 'Asia' },
-
-          { name: 'malaysia', display: 'Malaysia', x: 75, y: 30, region: 'Asia' },
-
-          { name: 'indonesia', display: 'Indonesia', x: 78, y: 33, region: 'Asia' },
-
-          { name: 'philippines', display: 'Philippines', x: 79, y: 28, region: 'Asia' },
-
-          { name: 'india', display: 'India', x: 68, y: 25, region: 'Asia' },
-
-          { name: 'nepal', display: 'Nepal', x: 70, y: 23, region: 'Asia' },
-
-          { name: 'uae', display: 'UAE', x: 62, y: 25, region: 'Middle East' },
-
-          { name: 'turkey', display: 'Turkey', x: 56, y: 18, region: 'Middle East' },
-
-          // Oceania
-
-          { name: 'australia', display: 'Australia', x: 83, y: 39, region: 'Oceania' },
-
-          { name: 'new zealand', display: 'New Zealand', x: 90, y: 44, region: 'Oceania' },
-
-        ];
-
-        
-
-        return (
-
-          <Card className="bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/30">
-
-            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-
-              <div>
-
-                <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 mb-2">
-
-                  <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                  </svg>
-
-                  Operator's World Map
-
-                </h2>
-
-                <p className="text-gray-400">Your quest to paint the map - track every expedition</p>
-
-              </div>
-
-              
-
-              {/* Statistics Counter */}
-
-              <div className="flex flex-wrap gap-4">
-
-                <div className="bg-amber-900/30 rounded-lg px-4 py-3 border border-amber-600/40">
-
-                  <div className="text-xs text-amber-300 uppercase tracking-wide">Completed Expeditions</div>
-
-                  <div className="text-2xl font-bold text-amber-400">{totalVisited} / 195</div>
-
-                  <div className="text-xs text-gray-400">Countries Visited</div>
-
-                </div>
-
-                <div className="bg-blue-900/30 rounded-lg px-4 py-3 border border-blue-600/40">
-
-                  <div className="text-xs text-blue-300 uppercase tracking-wide">Future Missions</div>
-
-                  <div className="text-2xl font-bold text-blue-400">{totalPlanned}</div>
-
-                  <div className="text-xs text-gray-400">Countries Planned</div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            
-
-            {/* Map Visualization */}
-
-            {totalVisited === 0 && totalPlanned === 0 ? (
-
-              <div className="text-center py-16 bg-gradient-to-br from-slate-800/30 to-gray-800/30 rounded-lg border-2 border-dashed border-gray-600">
-
-                <svg className="w-24 h-24 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                </svg>
-
-                <h3 className="text-xl font-bold text-white mb-2">Your World Map Awaits</h3>
-
-                <p className="text-gray-400 mb-6 max-w-md mx-auto">
-
-                  Start planning trips and watch your map come to life! Add countries to your trips to begin painting your journey.
-
-                </p>
-
-                <button
-
-                  onClick={() => setShowAddTrip(true)}
-
-                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg inline-flex items-center gap-2"
-
-                >
-
-                  <Plus className="w-5 h-5" />
-
-                  Plan Your First Expedition
-
-                </button>
-
-              </div>
-
-            ) : (
-
-              <div className="bg-slate-800/40 rounded-lg p-4 md:p-6 border border-gray-700">
-
-                {/* 🗺️ VINTAGE EXPEDITION WORLD MAP */}
-
-                <div className="relative w-full mb-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border-2 border-amber-900/40 p-4 shadow-2xl">
-
-                  {/* Decorative Compass Rose */}
-
-                  <div className="absolute top-4 right-4 w-16 h-16 opacity-20 pointer-events-none">
-
-                    <svg viewBox="0 0 100 100" className="text-amber-400">
-
-                      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2"/>
-
-                      <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="1"/>
-
-                      <path d="M 50 5 L 55 45 L 50 50 L 45 45 Z" fill="currentColor"/>
-
-                      <path d="M 95 50 L 55 55 L 50 50 L 55 45 Z" fill="currentColor" opacity="0.7"/>
-
-                      <path d="M 50 95 L 45 55 L 50 50 L 55 55 Z" fill="currentColor" opacity="0.5"/>
-
-                      <path d="M 5 50 L 45 45 L 50 50 L 45 55 Z" fill="currentColor" opacity="0.3"/>
-
-                      <text x="50" y="15" fontSize="12" fill="currentColor" textAnchor="middle" fontWeight="bold">N</text>
-
-                    </svg>
-
-                  </div>
-
-                  
-
-                  {/* The Map */}
-                  <div 
-                    onTouchStart={(e) => e.stopPropagation()}
-                    onTouchMove={(e) => e.stopPropagation()}
-                    onTouchEnd={(e) => e.stopPropagation()}
-                  >
-
-                  <ComposableMap
-
-                    projection="geoMercator"
-
-                    projectionConfig={{
-
-                      scale: 100,
-
-                      center: [0, 20]
-
-                    }}
-
-                    style={{
-
-                      width: '100%',
-
-                      height: 'auto',
-
-                      minHeight: '400px',
-
-                      background: 'linear-gradient(to bottom, #1e3a5f, #0f1f3d)',
-
-                      touchAction: 'pan-y pinch-zoom'
-                    }}
-
-                  >
-
-                    <ZoomableGroup>
-                      <Geographies geography="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json">
-
-                        {({ geographies }) =>
-
-                          geographies.map((geo) => {
-
-                            const countryName = geo.properties.name.toLowerCase();
-
-                            const isVisited = visitedCountries.has(countryName);
-
-                            const isPlanned = plannedCountries.has(countryName);
-
-                            
-
-                            return (
-
-                              <Geography
-
-                                key={geo.rsmKey}
-
-                                geography={geo}
-
-                                fill={
-
-                                  isVisited 
-
-                                    ? "#FBBF24"  // Amber/Gold for completed
-
-                                    : isPlanned 
-
-                                    ? "#38BDF8"  // Sky Blue for planned
-
-                                    : "#2d3748"  // Dark gray for unvisited
-
-                                }
-
-                                stroke={
-
-                                  isVisited
-
-                                    ? "#F59E0B"  // Darker amber border
-
-                                    : isPlanned
-
-                                    ? "#0EA5E9"  // Darker blue border
-
-                                    : "#4a5568"  // Gray border
-
-                                }
-
-                                strokeWidth={isVisited || isPlanned ? 0.75 : 0.3}
-
-                                onMouseEnter={() => {
-
-                                  setHoveredCountry({
-
-                                    name: geo.properties.name,
-
-                                    isVisited,
-
-                                    isPlanned
-
-                                  });
-
-                                }}
-
-                                onMouseLeave={() => {
-
-                                  setHoveredCountry(null);
-
-                                }}
-
-                                onClick={(e) => {
-
-                                  e.preventDefault();
-
-                                  e.stopPropagation();
-
-                                }}
-
-                                onTouchStart={(e) => {
-
-                                  e.stopPropagation();
-
-                                }}
-
-                                onTouchEnd={(e) => {
-
-                                  e.preventDefault();
-
-                                  e.stopPropagation();
-
-                                }}
-
-                                style={{
-
-                                  default: { 
-
-                                    outline: 'none',
-
-                                    transition: 'all 0.3s ease',
-
-                                    touchAction: 'none'
-
-                                  },
-
-                                  hover: { 
-
-                                    fill: isVisited ? "#FCD34D" : isPlanned ? "#7DD3FC" : "#3d4552",
-
-                                    stroke: isVisited ? "#F59E0B" : isPlanned ? "#0EA5E9" : "#5a6678",
-
-                                    strokeWidth: 1,
-
-                                    outline: 'none',
-
-                                    cursor: 'pointer',
-
-                                    touchAction: 'none'
-
-                                  },
-
-                                  pressed: { outline: 'none', touchAction: 'none' }
-
-                                }}
-
-                              />
-
-                            );
-
-                          })
-
-                        }
-
-                      </Geographies>
-
-                    </ZoomableGroup>
-
-                  </ComposableMap>
-
-                  </div>
-
-                  
-
-                  {/* 🌍 Country Tooltip - Appears on Hover */}
-
-                  {hoveredCountry && (
-
-                    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-none z-50">
-
-                      <div className="bg-gradient-to-r from-slate-900 to-gray-900 px-6 py-3 rounded-xl border-2 shadow-2xl animate-fadeIn"
-
-                        style={{
-
-                          borderColor: hoveredCountry.isVisited ? '#F59E0B' : hoveredCountry.isPlanned ? '#0EA5E9' : '#6B7280'
-
-                        }}
-
-                      >
-
-                        <div className="text-center">
-
-                          <div className="text-2xl font-bold text-white mb-1">
-
-                            {hoveredCountry.name}
-
-                          </div>
-
-                          <div className="flex items-center justify-center gap-2 text-sm">
-
-                            {hoveredCountry.isVisited && (
-
-                              <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/40 font-semibold">
-
-                                ✅ Completed Expedition
-
-                              </span>
-
-                            )}
-
-                            {hoveredCountry.isPlanned && (
-
-                              <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/40 font-semibold">
-
-                                🔵 Future Mission
-
-                              </span>
-
-                            )}
-
-                            {!hoveredCountry.isVisited && !hoveredCountry.isPlanned && (
-
-                              <span className="px-3 py-1 bg-gray-600/20 text-gray-400 rounded-full border border-gray-600/40">
-
-                                🌍 Unexplored
-
-                              </span>
-
-                            )}
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                  )}
-
-                  
-
-                  {/* Vintage Map Legend */}
-
-                  <div className="mt-4 flex flex-wrap items-center justify-center gap-6 text-sm bg-slate-900/60 rounded-lg p-3 border border-amber-900/30">
-
-                    <div className="flex items-center gap-2">
-
-                      <div className="w-4 h-4 rounded-sm bg-amber-500 border-2 border-amber-600"></div>
-
-                      <span className="text-amber-200 font-semibold">Completed Expeditions</span>
-
-                    </div>
-
-                    <div className="flex items-center gap-2">
-
-                      <div className="w-4 h-4 rounded-sm bg-sky-400 border-2 border-sky-600"></div>
-
-                      <span className="text-sky-200 font-semibold">Future Missions</span>
-
-                    </div>
-
-                    <div className="flex items-center gap-2">
-
-                      <div className="w-4 h-4 rounded-sm bg-gray-700 border-2 border-gray-600"></div>
-
-                      <span className="text-gray-400">Unexplored</span>
-
-                    </div>
-
-                  </div>
-
-                  
-
-                  {/* Vintage Paper Texture Overlay */}
-
-                  <div className="absolute inset-0 pointer-events-none rounded-xl" style={{
-
-                    backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(251, 191, 36, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.03) 0%, transparent 50%)',
-
-                    mixBlendMode: 'overlay'
-
-                  }}></div>
-
-                </div>
-
-                
-
-                {/* Country List View - Collapsible */}
-
-                <details className="border-t border-gray-700 pt-4">
-
-                  <summary className="cursor-pointer text-gray-400 hover:text-white transition-colors mb-4 flex items-center gap-2">
-
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-
-                    </svg>
-
-                    View Detailed Country List
-
-                  </summary>
-
-                <div className="space-y-4">
-
-                  {totalVisited > 0 && (
-
-                    <div>
-
-                      <h3 className="text-lg font-semibold text-amber-400 mb-3 flex items-center gap-2">
-
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-
-                        </svg>
-
-                        Completed Expeditions
-
-                      </h3>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-
-                        {allVisitedCountries.map(country => {
-
-                          const trips = visitedCountries.get(country);
-
-                          return (
-
-                            <div 
-
-                              key={country}
-
-                              className="group relative bg-amber-900/20 hover:bg-amber-900/40 border border-amber-600/40 rounded-lg p-3 transition-all cursor-pointer"
-
-                            >
-
-                              <div className="text-amber-400 font-semibold text-sm">{capitalizeCountryName(country)}</div>
-
-                              <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
-
-                              
-
-                              {/* Tooltip */}
-
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-
-                                <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg border border-amber-500/50 whitespace-nowrap">
-
-                                  {trips.map((trip, idx) => (
-
-                                    <div key={idx} className="py-1">
-
-                                      <div className="font-semibold text-amber-300">{trip.name}</div>
-
-                                      <div className="text-gray-400">Status: Completed ✓</div>
-
-                                    </div>
-
-                                  ))}
-
-                                </div>
-
-                              </div>
-
-                            </div>
-
-                          );
-
-                        })}
-
-                      </div>
-
-                    </div>
-
-                  )}
-
-                  
-
-                  {totalPlanned > 0 && (
-
-                    <div>
-
-                      <h3 className="text-lg font-semibold text-blue-400 mb-3 flex items-center gap-2">
-
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-
-                        </svg>
-
-                        Future Missions
-
-                      </h3>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-
-                        {allPlannedCountries.map(country => {
-
-                          const trips = plannedCountries.get(country);
-
-                          return (
-
-                            <div 
-
-                              key={country}
-
-                              className="group relative bg-blue-900/20 hover:bg-blue-900/40 border border-blue-600/40 rounded-lg p-3 transition-all cursor-pointer"
-
-                            >
-
-                              <div className="text-blue-400 font-semibold text-sm">{capitalizeCountryName(country)}</div>
-
-                              <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
-
-                              
-
-                              {/* Tooltip */}
-
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-
-                                <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg border border-blue-500/50 whitespace-nowrap">
-
-                                  {trips.map((trip, idx) => (
-
-                                    <div key={idx} className="py-1">
-
-                                      <div className="font-semibold text-blue-300">{trip.name}</div>
-
-                                      <div className="text-gray-400">Status: Planned 📅</div>
-
-                                    </div>
-
-                                  ))}
-
-                                </div>
-
-                              </div>
-
-                            </div>
-
-                          );
-
-                        })}
-
-                      </div>
-
-                    </div>
-
-                  )}
-
-                  
-
-                  {/* 🌍 EDITABLE TRAVEL WISHLIST */}
-
-                  <div>
-
-                    <div className="flex items-center justify-between mb-3">
-
-                      <h3 className="text-lg font-semibold text-purple-400 flex items-center gap-2">
-
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-
-                        </svg>
-
-                        My Travel Wishlist
-
-                      </h3>
-
-                      <button
-
-                        onClick={() => setShowAddWishlistCountry(true)}
-
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2 transition-colors"
-
-                      >
-
-                        <Plus className="w-4 h-4" />
-
-                        Add Country
-
-                      </button>
-
-                    </div>
-
-                    
-
-                    {/* Wishlist Countries Grid */}
-
-                    {data.travel?.wishlistCountries && data.travel.wishlistCountries.length > 0 ? (
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-
-                        {data.travel.wishlistCountries.map((country, idx) => (
-
-                          <div 
-
-                            key={idx}
-
-                            className="group relative bg-purple-900/20 hover:bg-purple-900/40 border border-purple-600/40 rounded-lg p-3 transition-all"
-
-                          >
-
-                            <div className="flex items-start justify-between gap-2">
-
-                              <div className="text-purple-400 font-semibold text-sm flex-1">{country}</div>
-
-                              <button
-
-                                onClick={() => handleRemoveWishlistCountry(country)}
-
-                                className="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300"
-
-                                title="Remove from wishlist"
-
-                              >
-
-                                <X className="w-4 h-4" />
-
-                              </button>
-
-                            </div>
-
-                            <div className="text-xs text-gray-400">Wishlist</div>
-
-                          </div>
-
-                        ))}
-
-                      </div>
-
-                    ) : (
-
-                      <div className="text-center py-8 bg-purple-900/10 rounded-lg border border-purple-600/20">
-
-                        <svg className="w-12 h-12 text-purple-400/50 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                        </svg>
-
-                        <p className="text-purple-400 font-medium mb-1">Your wishlist is empty</p>
-
-                        <p className="text-gray-400 text-sm">Add countries you dream of visiting!</p>
-
-                        <button
-
-                          onClick={() => setShowAddWishlistCountry(true)}
-
-                          className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2 transition-colors"
-
-                        >
-
-                          <Plus className="w-4 h-4" />
-
-                          Add Your First Country
-
-                        </button>
-
-                      </div>
-
-                    )}
-
-                  </div>
-
-                  
-
-                  <div className="mt-6 p-4 bg-gradient-to-r from-amber-900/20 to-blue-900/20 rounded-lg border border-gray-700">
-
-                    <div className="text-sm text-gray-300 flex items-center gap-2">
-
-                      <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-
-                      </svg>
-
-                      <strong className="text-white">Pro Tip:</strong> Use the wishlist for quick dreaming, then create full trips when you're ready to plan! 🌍
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                </details>
-
-              </div>
-
-            )}
-
-          </Card>
-
-        );
-
-      })()}
-
-
-
-      {/* Trip Planning Header */}
-      <Card>
-
-        <div className="flex flex-wrap justify-between items-center gap-4">
-
-          <div>
-
-            <h2 className="text-2xl font-bold text-white flex items-center mb-2">
-
-              🗺️ Trip Planning & Budgets
-
-            </h2>
-
-            <p className="text-gray-400">Manage your travel budgets and track expenses by trip</p>
-
-          </div>
-
-            <button
-
-              onClick={() => setShowAddTrip(true)}
-
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
-
-            >
-
-              <Plus className="w-4 h-4 mr-2" />
-
-              Plan New Trip
-
-            </button>
-
-          </div>
-
-      </Card>
-
-
-
-      {/* Trip Cards */}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        {(data.travel?.trips || []).length === 0 ? (
-
-          <div className="col-span-1 lg:col-span-2">
-
-            <Card className="bg-gradient-to-br from-blue-900/20 to-emerald-900/20 border-blue-500/30">
-
-              <div className="text-center py-12">
-
-                <Target className="w-16 h-16 text-blue-400 mx-auto mb-4 opacity-50" />
-
-                <h3 className="text-xl font-bold text-white mb-2">No Trips Planned Yet</h3>
-
-                <p className="text-gray-400 mb-6 max-w-md mx-auto">
-
-                  Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.
-
-                </p>
-
-                <button
-
-                  onClick={() => setShowAddTrip(true)}
-
-                  className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
-
-                >
-
-                  <Plus className="w-5 h-5" />
-
-                  Plan Your First Trip
-
-                </button>
-
-              </div>
-
-            </Card>
-
-          </div>
-
-        ) : (
-
-          (data.travel?.trips || []).map(trip => {
-
-          const progress = trip.targetBudget > 0 ? (trip.currentSavings / trip.targetBudget) * 100 : 0;
-
-          const totalExpenses = trip.expenses?.reduce((sum, exp) => {
-
-            return sum + convertCurrency(exp.amount, exp.currency, 'CAD');
-
-          }, 0) || 0;
-
-          const remainingBudget = trip.targetBudget - totalExpenses;
-
-          
-
-          return (
-
-            <Card key={trip.id} className="border-blue-500/30">
-
-              <div className="flex justify-between items-start mb-4">
-
-                <div>
-
-                  <h3 className="text-xl font-bold text-white">{trip.name}</h3>
-
-                  <p className="text-gray-400 text-sm">{trip.description}</p>
-
-                  <div className="flex flex-wrap gap-1 mt-2">
-
-                    {trip.countries?.map(country => (
-
-                      <span key={country} className="text-xs bg-blue-600/30 text-blue-200 px-2 py-1 rounded">
-
-                        {country}
-
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                </div>
-
-                <div className="flex gap-2">
-
-                  <button
-
-                    onClick={() => {
-
-                      setSelectedTrip(trip);
-
-                      setShowExpenseModal(true);
-
-                    }}
-
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-
-                  >
-
-                    Add Expense
-
-                  </button>
-
-                  <button 
-
-                    onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
-
-                    className="text-blue-400 hover:text-blue-300 p-1"
-
-                    title="Edit Trip"
-
-                  >
-
-                    <Edit className="w-4 h-4" />
-
-                  </button>
-
-                  <button 
-
-                    onClick={() => handleDeleteTrip(trip.id)}
-
-                    className="text-red-400 hover:text-red-300 p-1"
-
-                    title="Delete Trip"
-
-                  >
-
-                    <Trash2 className="w-4 h-4" />
-
-                  </button>
-
-                </div>
-
-              </div>
-
-
-
-              <div className="space-y-4">
-
-                <div>
-
-                  <div className="flex justify-between text-sm text-gray-300 mb-1">
-
-                    <span>Savings Progress</span>
-
-                    <span>{Math.round(progress)}%</span>
-
-                  </div>
-
-                  <div className="w-full bg-gray-700 rounded-full h-2">
-
-                    <div 
-
-                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-
-                      style={{ width: `${Math.min(progress, 100)}%` }}
-
-                    ></div>
-
-                  </div>
-
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
-
-                    <span>${trip.currentSavings.toLocaleString()}</span>
-
-                    <span>${trip.targetBudget.toLocaleString()}</span>
-
-                  </div>
-
-                </div>
-
-
-
-                <div className="grid grid-cols-3 gap-4 text-center">
-
-                  <div className="bg-gray-700/30 rounded-lg p-2">
-
-                    <div className="text-sm text-gray-400">Start Date</div>
-
-                    <div className="text-white font-medium">{new Date(trip.startDate).toLocaleDateString()}</div>
-
-                  </div>
-
-                  <div className="bg-gray-700/30 rounded-lg p-2">
-
-                    <div className="text-sm text-gray-400">Daily Budget</div>
-
-                    <div className="text-white font-medium">${trip.estimatedDailySpend}</div>
-
-                  </div>
-
-                  <div className="bg-gray-700/30 rounded-lg p-2">
-
-                    <div className="text-sm text-gray-400">Remaining</div>
-
-                    <div className={`font-medium ${remainingBudget >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-
-                      ${remainingBudget.toLocaleString()}
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-
-                {trip.expenses && trip.expenses.length > 0 && (
-
-                  <div>
-
-                    <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
-
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
-
-                      {trip.expenses.slice(0, 3).map(expense => (
-
-                        <div key={expense.id} className="flex justify-between items-start text-xs group">
-
-                          <div className="flex flex-col flex-1">
-
-                            <span className="text-gray-400">{expense.description}</span>
-
-                            {expense.date && (
-
-                              <span className="text-gray-500 text-xs mt-0.5">
-
-                                {new Date(expense.date).toLocaleDateString('en-US', { 
-
-                                  month: 'short', 
-
-                                  day: 'numeric', 
-
-                                  year: 'numeric' 
-
-                                })}
-
-                              </span>
-
-                            )}
-
-                          </div>
-
-                          <div className="flex items-center gap-2">
-
-                            <span className="text-white flex-shrink-0">
-
-                              {expense.amount} {expense.currency}
-
-                              {expense.currency !== 'CAD' && (
-
-                                <span className="text-gray-500 ml-1">
-
-                                  (${convertCurrency(expense.amount, expense.currency, 'CAD').toFixed(0)} CAD)
-
-                                </span>
-
-                              )}
-
-                            </span>
-
-                            <button
-
-                              onClick={() => handleDeleteExpense(trip.id, expense.id)}
-
-                              className="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-
-                              title="Delete expense"
-
-                            >
-
-                              <Trash2 className="w-3 h-3" />
-
-                            </button>
-
-                          </div>
-
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                  </div>
-
-                )}
-
-              </div>
-
-            </Card>
-
-          );
-
-        })
-
-        )}
-
-      </div>
-
-
-
-      {/* Add Trip Modal */}
-
-      {showAddTrip && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-
-          <div className="w-full max-w-2xl my-auto">
-
-            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
-
-            <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-
-              <h3 className="text-xl font-bold text-white">Plan New Trip</h3>
-
-              <button
-
-                onClick={() => setShowAddTrip(false)}
-
-                className="text-gray-400 hover:text-white"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
-
-                  <input
-
-                    type="text"
-
-                    placeholder="e.g., Southeast Asia Adventure"
-
-                    value={newTrip.name}
-
-                    onChange={(e) => setNewTrip({...newTrip, name: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Target Budget (CAD)</label>
-
-                  <input
-
-                    type="number"
-
-                    placeholder="45000"
-
-                    value={newTrip.targetBudget || ''}
-                    onChange={(e) => setNewTrip({...newTrip, targetBudget: e.target.value === '' ? '' : e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                  />
-
-                </div>
-
-              </div>
-
-
-
-              <div>
-
-                <label className="block text-sm text-gray-300 mb-1">Description</label>
-
-                <textarea
-
-                  placeholder="Brief description of your trip..."
-
-                  value={newTrip.description}
-
-                  onChange={(e) => setNewTrip({...newTrip, description: e.target.value})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                  rows="2"
-
-                />
-
-              </div>
-
-
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Start Date</label>
-
-                  <input
-
-                    type="date"
-
-                    value={newTrip.startDate}
-
-                    onChange={(e) => setNewTrip({...newTrip, startDate: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">End Date</label>
-
-                  <input
-
-                    type="date"
-
-                    value={newTrip.endDate}
-
-                    onChange={(e) => setNewTrip({...newTrip, endDate: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Daily Budget (CAD)</label>
-
-                  <input
-
-                    type="number"
-
-                    placeholder="500"
-
-                    value={newTrip.estimatedDailySpend || ''}
-                    onChange={(e) => setNewTrip({...newTrip, estimatedDailySpend: e.target.value === '' ? '' : e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                  />
-
-                </div>
-
-              </div>
-
-
-
-              {/* 🗺️ Countries Selector - For World Map */}
-
-              <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
-
-                <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
-
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                  </svg>
-
-                  Countries (Paint the Map!)
-
-                </label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="Type country name and press comma or Enter"
-
-                  value={newTrip.countryInput || ''}
-
-                  onChange={(e) => {
-
-                    setNewTrip({...newTrip, countryInput: e.target.value});
-
-                  }}
-
-                  onKeyDown={(e) => {
-
-                    if (e.key === ',' || e.key === 'Enter') {
-
-                      e.preventDefault();
-
-                      const trimmed = (newTrip.countryInput || '').trim();
-
-                      if (trimmed && !newTrip.countries.includes(trimmed)) {
-
-                        setNewTrip({
-
-                          ...newTrip,
-
-                          countries: [...newTrip.countries, trimmed],
-
-                          countryInput: ''
-
-                        });
-
-                      } else {
-
-                        setNewTrip({...newTrip, countryInput: ''});
-
-                      }
-
-                    }
-
-                  }}
-
-                  onBlur={() => {
-
-                    // Also add on blur if there's text
-
-                    const trimmed = (newTrip.countryInput || '').trim();
-
-                    if (trimmed && !newTrip.countries.includes(trimmed)) {
-
-                      setNewTrip({
-
-                        ...newTrip,
-
-                        countries: [...newTrip.countries, trimmed],
-
-                        countryInput: ''
-
-                      });
-
-                    }
-
-                  }}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
-
-                />
-
-                <p className="text-xs text-gray-400 mt-2">
-
-                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
-
-                </p>
-
-                {Array.isArray(newTrip.countries) && newTrip.countries.length > 0 && (
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-
-                    {newTrip.countries.map((country, idx) => (
-
-                      <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
-
-                        🌍 {country}
-
-                        <button
-
-                          type="button"
-
-                          onClick={() => {
-
-                            const updatedCountries = newTrip.countries.filter((_, i) => i !== idx);
-
-                            setNewTrip({...newTrip, countries: updatedCountries});
-
-                          }}
-
-                          className="hover:text-red-400 transition-colors font-bold text-base"
-
-                        >
-
-                          ×
-
-                        </button>
-
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                )}
-
-              </div>
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-3">
-
-              <button
-
-                onClick={() => setShowAddTrip(false)}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={handleAddTrip}
-
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Create Trip
-
-              </button>
-
-            </div>
-
-          </Card>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* Add Expense Modal */}
-
-      {showExpenseModal && selectedTrip && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
-          <Card className="w-full max-w-md border-green-500/30">
-
-            <div className="flex justify-between items-center mb-4">
-
-              <div>
-
-                <h3 className="text-xl font-bold text-white">Add Expense</h3>
-
-                <p className="text-sm text-gray-400">{selectedTrip.name}</p>
-
-              </div>
-
-              <button
-
-                onClick={() => {
-
-                  setShowExpenseModal(false);
-
-                  setSelectedTrip(null);
-
-                  // Force viewport cleanup after modal close
-
-                  setTimeout(() => {
-
-                    window.scrollTo(0, 0);
-
-                    document.body.style.overflow = '';
-
-                    document.body.style.position = '';
-
-                    document.body.style.height = '';
-
-                  }, 100);
-
-                }}
-
-                className="text-gray-400 hover:text-white"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              <div>
-
-                <label className="block text-sm text-gray-300 mb-1">Description</label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="e.g., Hotel in Bangkok, Street food, Train ticket..."
-
-                  value={newExpense.description}
-
-                  onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
-
-                  autoFocus
-
-                />
-
-              </div>
-
-
-
-              <div className="grid grid-cols-2 gap-3">
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Amount</label>
-
-                  <input
-
-                    type="number"
-
-                    placeholder="0.00"
-
-                    step="0.01"
-
-                    value={newExpense.amount || ''}
-                    onChange={(e) => setNewExpense({...newExpense, amount: e.target.value === '' ? '' : e.target.value})}
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
-
-                  />
-
-                </div>
-
-                
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Currency</label>
-
-                  <select
-
-                    value={newExpense.currency}
-
-                    onChange={(e) => setNewExpense({...newExpense, currency: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
-
-                  >
-
-                    <option value="CAD">CAD</option>
-
-                    <option value="USD">USD</option>
-
-                    <option value="EUR">EUR</option>
-
-                    <option value="THB">THB (Thai Baht)</option>
-
-                    <option value="COP">COP (Colombian Peso)</option>
-
-                    <option value="PEN">PEN (Peruvian Sol)</option>
-
-                    <option value="VND">VND (Vietnamese Dong)</option>
-
-                    <option value="MXN">MXN (Mexican Peso)</option>
-
-                  </select>
-
-                </div>
-
-              </div>
-
-
-
-              <div className="grid grid-cols-2 gap-3">
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Category</label>
-
-                  <select
-
-                    value={newExpense.category}
-
-                    onChange={(e) => setNewExpense({...newExpense, category: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
-
-                  >
-
-                    {(data.travel?.expenseCategories || []).map(cat => (
-
-                      <option key={cat.name} value={cat.name}>
-
-                        {cat.icon} {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
-
-                      </option>
-
-                    ))}
-
-                  </select>
-
-                </div>
-
-                
-
-                <div>
-
-                  <label className="block text-sm text-gray-300 mb-1">Date</label>
-
-                  <input
-
-                    type="date"
-
-                    value={newExpense.date}
-
-                    onChange={(e) => setNewExpense({...newExpense, date: e.target.value})}
-
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
-                  />
-
-                </div>
-
-              </div>
-
-
-
-              {newExpense.currency !== 'CAD' && newExpense.amount && (
-
-                <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
-
-                  <div className="text-sm text-blue-200">
-
-                    💱 <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ≈ 
-
-                    <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
-
-                  </div>
-
-                  <div className="text-xs text-blue-300 mt-1">
-
-                    * Rates are estimates. Actual conversion may vary.
-
-                  </div>
-
-                </div>
-
-              )}
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-3">
-
-              <button
-
-                onClick={() => {
-
-                  setShowExpenseModal(false);
-
-                  setSelectedTrip(null);
-
-                  // Force viewport cleanup after modal close
-
-                  setTimeout(() => {
-
-                    window.scrollTo(0, 0);
-
-                    document.body.style.overflow = '';
-
-                    document.body.style.position = '';
-
-                    document.body.style.height = '';
-
-                  }, 100);
-
-                }}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={handleAddExpense}
-
-                disabled={!newExpense.description || !newExpense.amount}
-
-                className="bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-
-              >
-
-                                 <Plus className="w-4 h-4" />
-
-                 Add Expense
-
-               </button>
-
-             </div>
-
-           </Card>
-
-         </div>
-
-       )}
-
-
-
-       {/* Edit Trip Modal */}
-
-       {editingTrip && (
-
-         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-
-           <div className="w-full max-w-2xl my-auto">
-
-           <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
-
-             <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-
-               <h3 className="text-xl font-bold text-white">Edit Trip</h3>
-
-               <button
-
-                 onClick={() => setEditingTrip(null)}
-
-                 className="text-gray-400 hover:text-white"
-
-               >
-
-                 <X className="w-5 h-5" />
-
-               </button>
-
-             </div>
-
-             
-
-             <div className="space-y-4">
-
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
-
-                   <input
-
-                     type="text"
-
-                     placeholder="e.g., Southeast Asia Adventure"
-
-                     value={editingTrip.name}
-
-                     onChange={(e) => setEditingTrip({...editingTrip, name: e.target.value})}
-
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                   />
-
-                 </div>
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">Target Budget (CAD)</label>
-
-                   <input
-
-                     type="number"
-
-                     placeholder="45000"
-
-                     value={editingTrip.targetBudget || ''}
-                     onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value === '' ? '' : e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                   />
-
-                 </div>
-
-               </div>
-
-
-
-               <div>
-
-                 <label className="block text-sm text-gray-300 mb-1">Description</label>
-
-                 <textarea
-
-                   placeholder="Brief description of your trip..."
-
-                   value={editingTrip.description}
-
-                   onChange={(e) => setEditingTrip({...editingTrip, description: e.target.value})}
-
-                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                   rows="2"
-
-                 />
-
-               </div>
-
-
-
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">Start Date</label>
-
-                   <input
-
-                     type="date"
-
-                     value={editingTrip.startDate}
-
-                     onChange={(e) => setEditingTrip({...editingTrip, startDate: e.target.value})}
-
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                   />
-
-                 </div>
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">End Date</label>
-
-                   <input
-
-                     type="date"
-
-                     value={editingTrip.endDate}
-
-                     onChange={(e) => setEditingTrip({...editingTrip, endDate: e.target.value})}
-
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                   />
-
-                 </div>
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">Daily Budget (CAD)</label>
-
-                   <input
-
-                     type="number"
-
-                     placeholder="500"
-
-                     value={editingTrip.estimatedDailySpend || ''}
-                     onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value === '' ? '' : e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                   />
-
-                 </div>
-
-               </div>
-
-
-
-              <div>
-
-                <label className="block text-sm text-gray-300 mb-1">Current Savings (CAD)</label>
-
-                <input
-
-                  type="number"
-
-                  placeholder="0"
-
-                  value={editingTrip.currentSavings || ''}
-                  onChange={(e) => setEditingTrip({...editingTrip, currentSavings: e.target.value === '' ? '' : Number(e.target.value)})}
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-
-                />
-
-              </div>
-
-
-
-              {/* 🗺️ Countries Selector - For World Map */}
-
-              <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
-
-                <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
-
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                  </svg>
-
-                  Countries (Edit Your Map!)
-
-                </label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="Type country name and press comma or Enter"
-
-                  value={editingTrip.countryInput || ''}
-
-                  onChange={(e) => {
-
-                    setEditingTrip({...editingTrip, countryInput: e.target.value});
-
-                  }}
-
-                  onKeyDown={(e) => {
-
-                    if (e.key === ',' || e.key === 'Enter') {
-
-                      e.preventDefault();
-
-                      const trimmed = (editingTrip.countryInput || '').trim();
-
-                      const currentCountries = editingTrip.countries || [];
-
-                      if (trimmed && !currentCountries.includes(trimmed)) {
-
-                        setEditingTrip({
-
-                          ...editingTrip,
-
-                          countries: [...currentCountries, trimmed],
-
-                          countryInput: ''
-
-                        });
-
-                      } else {
-
-                        setEditingTrip({...editingTrip, countryInput: ''});
-
-                      }
-
-                    }
-
-                  }}
-
-                  onBlur={() => {
-
-                    // Also add on blur if there's text
-
-                    const trimmed = (editingTrip.countryInput || '').trim();
-
-                    const currentCountries = editingTrip.countries || [];
-
-                    if (trimmed && !currentCountries.includes(trimmed)) {
-
-                      setEditingTrip({
-
-                        ...editingTrip,
-
-                        countries: [...currentCountries, trimmed],
-
-                        countryInput: ''
-
-                      });
-
-                    }
-
-                  }}
-
-                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
-
-                />
-
-                <p className="text-xs text-gray-400 mt-2">
-
-                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
-
-                </p>
-
-                {Array.isArray(editingTrip.countries) && editingTrip.countries.length > 0 && (
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-
-                    {editingTrip.countries.map((country, idx) => (
-
-                      <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
-
-                        🌍 {country}
-
-                        <button
-
-                          type="button"
-
-                          onClick={() => {
-
-                            const updatedCountries = editingTrip.countries.filter((_, i) => i !== idx);
-
-                            setEditingTrip({...editingTrip, countries: updatedCountries});
-
-                          }}
-
-                          className="hover:text-red-400 transition-colors font-bold text-base"
-
-                        >
-
-                          ×
-
-                        </button>
-
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                )}
-
-              </div>
-
-            </div>
-
-             
-
-             <div className="mt-6 flex justify-end gap-3">
-
-               <button
-
-                 onClick={() => setEditingTrip(null)}
-
-                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-               >
-
-                 Cancel
-
-               </button>
-
-               <button
-
-                 onClick={handleEditTrip}
-
-                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-               >
-
-                 Save Changes
-
-               </button>
-
-             </div>
-
-           </Card>
-
-           </div>
-
-         </div>
-
-       )}
-
-
-
-      {/* Add Wishlist Country Modal */}
-
-      {showAddWishlistCountry && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
-          <Card className="w-full max-w-md border-purple-500/30">
-
-            <div className="flex justify-between items-center mb-4">
-
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-
-                <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-
-                </svg>
-
-                Add Country to Wishlist
-
-              </h3>
-
-              <button
-
-                onClick={() => {
-
-                  setShowAddWishlistCountry(false);
-
-                  setWishlistCountryInput('');
-
-                }}
-
-                className="text-gray-400 hover:text-white"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
-
-                <p className="text-sm text-purple-200 mb-2">
-
-                  ✨ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
-
-                </p>
-
-                <p className="text-xs text-gray-400">
-
-                  No need to create a full trip. Just type the country name and we'll add it to your wishlist.
-
-                </p>
-
-              </div>
-
-              
-
-              <div>
-
-                <label className="block text-sm text-gray-300 mb-2">
-
-                  Country Name
-
-                </label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="e.g., Thailand, Japan, Italy"
-
-                  value={wishlistCountryInput}
-
-                  onChange={(e) => setWishlistCountryInput(e.target.value)}
-
-                  onKeyPress={(e) => {
-
-                    if (e.key === 'Enter') {
-
-                      handleAddWishlistCountry();
-
-                    }
-
-                  }}
-
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                  autoFocus
-
-                />
-
-                <p className="text-xs text-gray-400 mt-2">
-
-                  💡 First letter will be automatically capitalized
-
-                </p>
-
-              </div>
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-3">
-
-              <button
-
-                onClick={() => {
-
-                  setShowAddWishlistCountry(false);
-
-                  setWishlistCountryInput('');
-
-                }}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={handleAddWishlistCountry}
-
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-
-              >
-
-                <Plus className="w-5 h-5" />
-
-                Add to Wishlist
-
-              </button>
-
-            </div>
-
-          </Card>
-
-        </div>
-
-      )}
-
-
-
-             {/* Travel Runway Settings Modal */}
-
-      {showRunwayModal && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <Card className="w-full max-w-sm sm:max-w-2xl border-blue-500/30 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
-                            <div className="flex justify-between items-center mb-3 sm:mb-4">
-
-                 <h3 className="text-lg sm:text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
-
-               <button
-
-                 onClick={() => {
-
-                   setShowRunwayModal(false);
-
-                   // Force viewport cleanup after modal close
-
-                   setTimeout(() => {
-
-                     window.scrollTo(0, 0);
-
-                     document.body.style.overflow = '';
-
-                     document.body.style.position = '';
-
-                     document.body.style.height = '';
-
-                   }, 100);
-
-                 }}
-
-                 className="text-gray-400 hover:text-white"
-
-               >
-
-                 <X className="w-5 h-5" />
-
-               </button>
-
-             </div>
-
-             
-
-                          <div className="space-y-3 sm:space-y-4">
-
-               {/* Basic Settings in Mobile-Friendly Grid */}
-
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">Total Travel Savings</label>
-
-                   <input
-
-                     type="number"
-
-                     placeholder="50000"
-
-                     value={runwaySettings.totalSavings || ''}
-                     onChange={(e) => setRunwaySettings({
-
-                       ...runwaySettings, 
-
-                       totalSavings: e.target.value === '' ? '' : Number(e.target.value)
-                     })}
-
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
-
-                     style={{ fontSize: '16px' }}
-
-                   />
-
-                   <p className="text-xs text-gray-400 mt-1 hidden sm:block">Your total funds available for travel</p>
-
-                 </div>
-
-
-
-                 <div>
-
-                   <label className="block text-sm text-gray-300 mb-1">Home Currency</label>
-
-                   <select
-
-                     value={runwaySettings.homeCurrency}
-
-                     onChange={(e) => setRunwaySettings({
-
-                       ...runwaySettings, 
-
-                       homeCurrency: e.target.value
-
-                     })}
-
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
-
-                     style={{ fontSize: '16px' }}
-
-                   >
-
-                    <option value="USD">USD - US Dollar</option>
-
-                    <option value="CAD">CAD - Canadian Dollar</option>
-
-                    <option value="EUR">EUR - Euro</option>
-
-                    <option value="GBP">GBP - British Pound</option>
-
-                    <option value="THB">THB - Thai Baht</option>
-
-                    <option value="COP">COP - Colombian Peso</option>
-
-                  </select>
-
-                   <p className="text-xs text-gray-400 mt-1 hidden sm:block">Your primary currency for calculations</p>
-
-                 </div>
-
-               </div>
-
-
-
-               {/* Trip Planning by Destination Tiers */}
-
-               <div className="bg-blue-900/20 rounded-lg p-3 sm:p-4 border border-blue-600/30">
-
-                 <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🎯 Plan Your Travel by Destination Type</h4>
-
-                 
-
-                 <div className="space-y-2 sm:space-y-3">
-
-                   <div className="bg-green-900/30 rounded-lg p-2 sm:p-3 border border-green-600/30">
-
-                     <div className="flex justify-between items-center mb-1 sm:mb-2">
-
-                       <span className="text-green-400 font-semibold text-sm">🟢 Cheap ($40/day)</span>
-
-                       <span className="text-green-300 text-xs sm:hidden">SE Asia, E.Europe</span>
-
-                     </div>
-
-                     <input
-
-                       type="number"
-
-                       placeholder="90"
-
-                       value={runwaySettings.tripPlan.cheap || ''}
-                       onChange={(e) => setRunwaySettings({
-
-                         ...runwaySettings,
-
-                         tripPlan: {
-
-                           ...runwaySettings.tripPlan,
-
-                           cheap: e.target.value === '' ? 0 : Number(e.target.value)
-                         }
-
-                       })}
-
-                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none text-base"
-
-                       style={{ fontSize: '16px' }}
-
-                     />
-
-                     <p className="text-xs text-green-300 mt-1 hidden sm:block">Days in Southeast Asia, Eastern Europe, India</p>
-
-                   </div>
-
-
-
-                   <div className="bg-yellow-900/30 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
-
-                     <div className="flex justify-between items-center mb-1 sm:mb-2">
-
-                       <span className="text-yellow-400 font-semibold text-sm">🟡 Moderate ($90/day)</span>
-
-                       <span className="text-yellow-300 text-xs sm:hidden">S.America, S.Europe</span>
-
-                     </div>
-
-                     <input
-
-                       type="number"
-
-                       placeholder="30"
-
-                       value={runwaySettings.tripPlan.moderate || ''}
-                       onChange={(e) => setRunwaySettings({
-
-                         ...runwaySettings,
-
-                         tripPlan: {
-
-                           ...runwaySettings.tripPlan,
-
-                           moderate: e.target.value === '' ? 0 : Number(e.target.value)
-                         }
-
-                       })}
-
-                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-yellow-400 focus:outline-none text-base"
-
-                       style={{ fontSize: '16px' }}
-
-                     />
-
-                     <p className="text-xs text-yellow-300 mt-1 hidden sm:block">Days in South America, Southern Europe</p>
-
-                   </div>
-
-
-
-                   <div className="bg-red-900/30 rounded-lg p-2 sm:p-3 border border-red-600/30">
-
-                     <div className="flex justify-between items-center mb-1 sm:mb-2">
-
-                       <span className="text-red-400 font-semibold text-sm">🔴 Expensive ($160/day)</span>
-
-                       <span className="text-red-300 text-xs sm:hidden">W.Europe, Japan</span>
-
-                     </div>
-
-                     <input
-
-                       type="number"
-
-                       placeholder="15"
-
-                       value={runwaySettings.tripPlan.expensive || ''}
-                       onChange={(e) => setRunwaySettings({
-
-                         ...runwaySettings,
-
-                         tripPlan: {
-
-                           ...runwaySettings.tripPlan,
-
-                           expensive: e.target.value === '' ? 0 : Number(e.target.value)
-                         }
-
-                       })}
-
-                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-red-400 focus:outline-none text-base"
-
-                       style={{ fontSize: '16px' }}
-
-                     />
-
-                     <p className="text-xs text-red-300 mt-1 hidden sm:block">Days in Western Europe, Scandinavia, Japan</p>
-
-                   </div>
-
-                 </div>
-
-               </div>
-
-
-
-               {/* Enhanced Preview */}
-
-               <div className="bg-blue-900/20 rounded-lg p-2 sm:p-3 border border-blue-600/30">
-
-                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Preview</div>
-
-                 <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs">
-
-                   <div className="text-center">
-
-                     <div className="text-blue-300 font-bold text-sm">
-
-                       {(runwaySettings.tripPlan.cheap || 0) + (runwaySettings.tripPlan.moderate || 0) + (runwaySettings.tripPlan.expensive || 0)}
-
-                     </div>
-
-                     <div className="text-blue-200 text-xs">Days</div>
-
-                   </div>
-
-                   <div className="text-center">
-
-                     <div className="text-blue-300 font-bold text-sm">
-
-                       ${Math.round(((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160) / 1000)}k
-
-                     </div>
-
-                     <div className="text-blue-200 text-xs">Cost</div>
-
-                   </div>
-
-                   <div className="text-center">
-
-                     <div className="text-green-300 font-bold text-sm">
-
-                       ${Math.round(Math.max(0, (runwaySettings.totalSavings || 0) - ((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160)) / 1000)}k
-
-                     </div>
-
-                     <div className="text-green-200 text-xs">Left</div>
-
-                   </div>
-
-                 </div>
-
-               </div>
-
-             </div>
-
-             
-
-             <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-
-               <button
-
-                 onClick={() => {
-
-                   setShowRunwayModal(false);
-
-                   // Force viewport cleanup after modal close
-
-                   setTimeout(() => {
-
-                     window.scrollTo(0, 0);
-
-                     document.body.style.overflow = '';
-
-                     document.body.style.position = '';
-
-                     document.body.style.height = '';
-
-                   }, 100);
-
-                 }}
-
-                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 sm:py-2 rounded-lg transition-colors text-base font-medium"
-
-               >
-
-                 Cancel
-
-               </button>
-
-               <button
-
-                 onClick={handleSaveRunwaySettings}
-
-                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 sm:py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-base font-medium"
-
-               >
-
-                 <Save className="w-4 h-4" />
-
-                 Save Settings
-
-               </button>
-
-             </div>
-
-           </Card>
-
-         </div>
-
-       )}
-
-     </div>
-
-   );
-
- };
-
-
-
-function App() {
-
-  // Add CSS for scrollbar hiding and mobile viewport fixes
-
-  React.useEffect(() => {
-
-    const style = document.createElement('style');
-
-    style.textContent = `
-
-      .scrollbar-hide {
-
-        -ms-overflow-style: none;
-
-        scrollbar-width: none;
-
-      }
-
-      .scrollbar-hide::-webkit-scrollbar {
-
-        display: none;
-
-      }
-
-      
-
-      /* Fix mobile over-scrolling and viewport issues */
-
-      html, body {
-
-        overflow-x: hidden;
-
-        position: relative;
-
-        height: 100%;
-
-        margin: 0;
-
-        padding: 0;
-
-        background-color: #111827;
-
-      }
-
-      
-
-      body {
-
-        -webkit-overflow-scrolling: touch;
-
-        overscroll-behavior: contain;
-
-        overscroll-behavior-y: none;
-
-        padding-bottom: env(safe-area-inset-bottom);
-
-      }
-
-      
-
-      /* Prevent pull-to-refresh on mobile */
-
-      .app-container {
-
-        overscroll-behavior-y: contain;
-
-        touch-action: pan-y;
-
-        min-height: 100vh;
-
-        min-height: 100dvh;
-
-        background-color: #111827;
-
-      }
-
-      
-
-      /* Fix mobile viewport whitespace */
-
-      html {
-
-        overscroll-behavior: none;
-
-        overscroll-behavior-y: none;
-
-      }
-
-      
-
-              /* Modern viewport units for better mobile support */
-
-        @supports (height: 100dvh) {
-
-          .app-container {
-
-            min-height: 100dvh;
-
-          }
-
-        }
-
-        
-
-        /* Prevent mobile zoom on inputs */
-
-        input[type="number"],
-
-        input[type="text"],
-
-        input[type="email"],
-
-        input[type="password"],
-
-        select,
-
-        textarea {
-
-          font-size: 16px !important;
-
-          transform-origin: left top;
-
-          -webkit-user-select: text;
-
-        }
-
-        
-
-        /* Force zoom reset on modal close */
-
-        .modal-open {
-
-          position: fixed;
-
-          width: 100%;
-
-          height: 100%;
-
-          top: 0;
-
-          left: 0;
-
-        }
-
-        
-
-        /* Additional mobile input fixes */
-
-        @media screen and (max-width: 768px) {
-
-          input, select, textarea {
-
-            font-size: 16px !important;
-
-            line-height: 1.2;
-
-          }
-
-          
-
-          /* Force viewport reset */
-
-          .zoom-reset {
-
-            zoom: 1;
-
-            -webkit-transform: scale(1);
-
-            transform: scale(1);
-
-          }
-
-          
-
-          /* MODAL POSITIONING - NOW HANDLED BY INLINE STYLES */
-
-          .modal-container {
-
-            /* Inline styles take precedence for reliable positioning */
-
-          }
-
-          
-
-          /* PREVENT BODY SCROLL WHEN MODAL OPEN - NO CONFLICTS */
-
-          body.modal-open {
-
-            /* Remove overflow hidden - it conflicts with floating button */
-
-          }
-
-          
-
-          /* Floating button - SUPREME Z-INDEX */
-
-          .floating-quick-btn {
-
-            position: fixed !important;
-
-            bottom: 1.5rem !important;
-
-            right: 1.5rem !important;
-
-            z-index: 99999 !important;
-
-            width: 3.5rem !important;
-
-            height: 3.5rem !important;
-
-            border-radius: 50% !important;
-
-            display: flex !important;
-
-            align-items: center !important;
-
-            justify-content: center !important;
-
-            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4) !important;
-
-            transform: scale(1) !important;
-
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-
-            border: none !important;
-
-            outline: none !important;
-
-            pointer-events: auto !important;
-
-            user-select: none !important;
-
-            -webkit-tap-highlight-color: transparent !important;
-
-            visibility: visible !important;
-
-            opacity: 1 !important;
-
-            will-change: transform !important;
-
-            backface-visibility: hidden !important;
-
-            transform-origin: center !important;
-
-            /* Force positioning to override any conflicts */
-
-            top: auto !important;
-
-            left: auto !important;
-
-            margin: 0 !important;
-
-            /* Prevent any layout shifts */
-
-            contain: layout style paint !important;
-
-          }
-
-          
-
-          .floating-quick-btn:hover {
-
-            transform: scale(1.1) !important;
-
-            box-shadow: 0 12px 40px rgba(239, 68, 68, 0.6) !important;
-
-          }
-
-          
-
-          .floating-quick-btn:active {
-
-            transform: scale(0.95) !important;
-
-          }
-
-          
-
-          /* Ensure button is always above everything */
-
-          .floating-quick-btn {
-
-            isolation: isolate !important;
-
-          }
-
-        }
-
-    `;
-
-    document.head.appendChild(style);
-
-    return () => document.head.removeChild(style);
-
-  }, []);
-
-
-
-  const [data, setData] = useState(null);
-
-  const [userId, setUserId] = useState(null);
-
-  // 🔐 PRODUCTION AUTHENTICATION ENABLED
-
-  const [user, setUser] = useState(null);
-
-  const [authLoading, setAuthLoading] = useState(true);
-
-  const [showAuth, setShowAuth] = useState(false);
-
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
-
-  const [editingRecurring, setEditingRecurring] = useState(null); // For editing recurring expenses
-
-  const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
-
-  const [showSubscription, setShowSubscription] = useState(false);
-
-  const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
-
-  
-
-  // 🛠️ SECURE DEVELOPER PANEL (only for admins)
-
-  const [showDevPanel, setShowDevPanel] = useState(false);
-
-  const [devOverridePlan, setDevOverridePlan] = useState(null);
-
-  const [devDemoMode, setDevDemoMode] = useState(false); // 🎭 Demo mode - hides real name
-
-  
-
-  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-
-  const [showTermsOfService, setShowTermsOfService] = useState(false);
-
-  const [showHelpFAQ, setShowHelpFAQ] = useState(false);
-
-  const [showPricingModal, setShowPricingModal] = useState(false);
-
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
-
-  const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
-
-  const [showUserMenu, setShowUserMenu] = useState(false);
-
-  
-
-  // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
-
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-
-  const [feedbackType, setFeedbackType] = useState('bug'); // 'bug' or 'feature'
-
-  const [feedbackData, setFeedbackData] = useState({
-
-    type: 'bug',
-
-    message: '',
-
-    email: '',
-
-    page: ''
-
-  });
-
-  // Removed unused loading state - using authLoading instead
-
-  const [activeTab, setActiveTab] = useState('dashboard');
-
-  const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
-
-  const [showHistory, setShowHistory] = useState(false);
-
-  
-
-  // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
-
-  const ADMIN_EMAILS = [
-
-    'janara.nguon@gmail.com',
-
-    // Add more admin emails here as needed
-
-  ];
-
-  
-
-  const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
-
-  
-
-  // Get current plan (with dev override if admin)
-
-  const currentUserPlan = (isAdmin && devOverridePlan) ? devOverridePlan : userPlan;
-
-  
-
-  // Modal states for dashboard cards
-
-  const [editingCard, setEditingCard] = useState(null);
-
-  const [tempCardData, setTempCardData] = useState({});
-
-
-
-  // Reset data states
-
-  const [showResetModal, setShowResetModal] = useState(false);
-
-  const [resetStartDate, setResetStartDate] = useState(new Date().toISOString().split('T')[0]);
-  const [resetToSample, setResetToSample] = useState(false);
-  
-
-  // Quick expense logging states
-
-  const [showQuickExpense, setShowQuickExpense] = useState(false);
-
-  const [quickExpense, setQuickExpense] = useState({
-
-    description: '',
-
-    amount: '',
-
-    date: new Date().toISOString().split('T')[0]
-  });
-
-
-  // User feedback system
-
-  // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
-
-  const [notification, setNotification] = useState(null);
-
-  
-
-  const showNotification = useCallback((message, type = 'success') => {
-
-    setNotification({ message, type });
-
-    setTimeout(() => setNotification(null), 3000);
-
-  }, []);
-
-
-
-  // 📊 GOOGLE ANALYTICS - Track Events
-
-  const trackEvent = useCallback((eventName, eventParams = {}) => {
-
-    if (typeof window !== 'undefined' && window.gtag) {
-
-      window.gtag('event', eventName, eventParams);
-
-      console.log('📊 Analytics Event:', eventName, eventParams);
-    }
-
-  }, []);
-
-
-
-  // 📧 FEEDBACK SUBMISSION HANDLER
-
-  const handleSubmitFeedback = async () => {
-
-    if (!feedbackData.message.trim()) {
-
-      showNotification('Please enter a message', 'error');
-
-      return;
-
-    }
-
-
-
-    try {
-
-      const feedbackDoc = {
-
-        type: feedbackData.type,
-
-        message: feedbackData.message,
-
-        email: feedbackData.email || user?.email || 'anonymous',
-
-        userPlan: currentUserPlan,
-
-        page: activeTab,
-
-        url: window.location.href,
-
-        timestamp: new Date().toISOString(),
-
-        userAgent: navigator.userAgent
-
-      };
-
-
-
-      // Save to Firebase
-
-      await setDoc(doc(db, 'feedback', `${Date.now()}_${user?.uid || 'anonymous'}`), feedbackDoc);
-
-      
-
-      // Track in Analytics
-
-      trackEvent('feedback_submitted', {
-
-        feedback_type: feedbackData.type,
-
-        from_page: activeTab
-
-      });
-
-
-
-      showNotification(
-
-        feedbackData.type === 'bug' 
-
-          ? '🐛 Bug report submitted! Thank you!' 
-
-          : '💡 Feature request submitted! Thank you!',
-
-        'success'
-
-      );
-
-
-
-      // Reset form
-
-      setFeedbackData({
-
-        type: 'bug',
-
-        message: '',
-
-        email: '',
-
-        page: ''
-
-      });
-
-      setShowFeedbackModal(false);
-
-    } catch (error) {
-
-      console.error('Error submitting feedback:', error);
-
-      showNotification('Failed to submit feedback. Please try again.', 'error');
-
-    }
-
-  };
-
-
-
-  // Feature gating and upgrade functions
-
-  const checkFeatureAccess = useCallback((feature) => {
-
-    return hasFeatureAccess(userPlan, feature);
-
-  }, [userPlan]);
-
-
-
-  const showUpgradePromptForFeature = useCallback((featureName, feature) => {
-
-    const requiredPlan = getRequiredTier(feature);
-
-    setUpgradePromptData({ featureName, requiredPlan });
-
-    setShowUpgradePrompt(true);
-
-  }, []);
-
-
-
-  const handleUpgrade = useCallback(async (planId, billingCycle = 'monthly') => {
-    if (planId === 'view-all') {
-
-      setShowUpgradePrompt(false);
-
-      setShowPricingModal(true);
-
-      return;
-
-    }
-
-
-
-    // Don't allow upgrading if not authenticated
-
-    if (!user) {
-
-      showNotification('Please sign in to upgrade your plan', 'error');
-
-      return;
-
-    }
-
-
-
-    try {
-
-      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing`);
-      
-
-      // Import Stripe utilities dynamically
-
-      const { createCheckoutSession } = await import('./utils/stripeUtils');
-
-      
-
-      // Show loading notification
-
-      showNotification('Redirecting to secure checkout...', 'info');
-
-      
-
-      // Create Stripe checkout session and redirect
-
-      await createCheckoutSession(planId, billingCycle, user);
-      
-
-      // Note: User will be redirected to Stripe, so code after this may not execute
-
-      // Subscription update happens via webhook after successful payment
-
-      
-
-    } catch (error) {
-
-      console.error('❌ Upgrade error:', error);
-
-      showNotification(
-
-        error.message || 'Failed to process upgrade. Please try again.',
-
-        'error'
-
-      );
-
-    }
-
-  }, [user, showNotification]);
-
-
-
-  const handleTabClick = useCallback((tab) => {
-
-    // Check if user has access to the tab
-
-    const tabFeatures = {
-
-      'dashboard': 'basic-dashboard',
-
-      'budget': 'budget-calculator', 
-
-      'investment': 'investment-portfolio',
-
-      'investments': 'investment-portfolio',
-
-      'side-hustle': 'side-hustle',
-
-      'travel': 'travel-mode',
-
-      'transactions': 'transaction-management'
-
-    };
-
-
-
-    const requiredFeature = tabFeatures[tab];
-
-    if (requiredFeature && !checkFeatureAccess(requiredFeature)) {
-
-      const featureNames = {
-
-        'investment-portfolio': 'Investment Portfolio',
-
-        'side-hustle': 'Side Hustle Management',
-
-        'travel-mode': 'Travel Mode'
-
-      };
-
-      
-
-      // 📊 Track locked feature access attempt
-
-      trackEvent('locked_feature_clicked', {
-
-        feature_name: featureNames[requiredFeature] || tab,
-
-        tab: tab,
-
-        user_plan: currentUserPlan
-
-      });
-
-      
-
-      showUpgradePromptForFeature(featureNames[requiredFeature] || tab, requiredFeature);
-
-      return;
-
-    }
-
-    
-
-    // 📊 Track page view
-
-    trackEvent('page_view', {
-
-      page_title: tab,
-
-      user_plan: currentUserPlan
-
-    });
-
-    
-
-    setActiveTab(tab);
-
-  }, [checkFeatureAccess, showUpgradePromptForFeature, trackEvent, currentUserPlan]);
-
-
-
-  // 🔄 Process Recurring Expenses Function
-
-  const processRecurringExpenses = useCallback(async (userData, currentUserId) => {
-
-    if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
-
-      return;
-
-    }
-
-
-
-    const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
-
-      userData.recurringExpenses, 
-
-      userData.transactions || []
-
-    );
-
-    
-
-    if (newTransactions.length > 0) {
-
-      const updatedData = {
-        ...userData,
-        transactions: [...newTransactions, ...(userData.transactions || [])],
-        recurringExpenses: updatedRecurringExpenses
-      };
-      
-
-      try {
-
-        const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
-
-        await setDoc(docRef, updatedData);
-        setData(updatedData);
-        
-
-        // Show notification about processed recurring expenses
-
-        if (newTransactions.length === 1) {
-
-          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
-
-        } else {
-
-          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
-
-        }
-
-      } catch (error) {
-
-        console.error('Error processing recurring expenses:', error);
-
-        showNotification('Error processing recurring transactions', 'error');
-
-      }
-
-    }
-
-  }, [showNotification]);
-
-
-
-    // 🔐 PRODUCTION Authentication Effect
-
-  useEffect(() => {
-
-    if (!auth) {
-
-      console.error('❌ Firebase auth not initialized');
-
-      setAuthLoading(false);
-
-      setShowAuth(true);
-
-      return;
-
-    }
-
-
-
-    console.log('🔐 Setting up authentication listener...');
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-
-      console.log('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
-      setAuthLoading(true);
-
-      
-
-      if (firebaseUser) {
-
-        // User is signed in
-
-        setUser(firebaseUser);
-
-        setUserId(firebaseUser.uid);
-
-        setShowAuth(false);
-
-        
-
-        // Load user's financial data from Firestore
-
-        try {
-
-          const docRef = doc(db, `users/${firebaseUser.uid}/financials`, 'data');
-
-          const docSnap = await getDoc(docRef);
-
-          
-
-          if (docSnap.exists()) {
-
-            const userData = docSnap.data();
-
-            setData(userData);
-
-            
-
-            // 🔄 Process recurring expenses on data load
-
-            await processRecurringExpenses(userData, firebaseUser.uid);
-
-          } else {
-
-            // New user - initialize with sample data
-
-            console.log('New user detected, initializing with sample data');
-
-            const newUserData = { ...initialData };
-
-            await setDoc(docRef, newUserData);
-
-            setData(newUserData);
-
-            showNotification('Welcome! Your financial dashboard is ready.', 'success');
-
-          }
-
-        } catch (error) {
-
-          console.error('Error loading user data:', error);
-
-          showNotification('Error loading your data. Please try refreshing.', 'error');
-
-          // Fallback to initial data
-
-          setData(initialData);
-
-        }
-
-        
-
-        // 💳 Load user's subscription data
-
-        try {
-
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
-
-          const userDocSnap = await getDoc(userDocRef);
-
-          
-
-          if (userDocSnap.exists()) {
-
-            const userDoc = userDocSnap.data();
-
-            const subscription = userDoc.subscription;
-
-            
-
-            if (subscription && subscription.plan && subscription.status === 'active') {
-
-              console.log('✅ Active subscription found:', subscription.plan);
-
-              setUserPlan(subscription.plan);
-
-            } else {
-
-              console.log('📋 No active subscription, using free tier');
-
-              setUserPlan(SUBSCRIPTION_TIERS.FREE);
-
-            }
-
-          } else {
-
-            console.log('📋 No user document, using free tier');
-            setUserPlan(SUBSCRIPTION_TIERS.FREE);
-
-          }
-
-        } catch (error) {
-
-          console.error('Error loading subscription:', error);
-
-          setUserPlan(SUBSCRIPTION_TIERS.FREE);
-
-        }
-
-      } else {
-
-        // User is signed out - show authentication screen
-
-        console.log('No user found, showing auth screen...');
-        setUser(null);
-
-        setUserId(null);
-
-        setData(null);
-
-        setShowAuth(true);
-
-        
-
-        // TEMPORARILY DISABLED: Auto anonymous sign-in (for Stripe testing)
-
-        // Uncomment below to re-enable anonymous sign-in after payment testing
-
-        // try {
-
-        //   await signInAnonymously(auth);
-
-        //   // onAuthStateChanged will handle the rest
-
-        // } catch (error) {
-
-        //   console.error('Anonymous sign-in failed:', error);
-
-        //   setShowAuth(true);
-
-        // }
-
-      }
-
-      
-
-      setAuthLoading(false);
-
-      // setLoading(false); // Removed - using authLoading instead
-
-    });
-
-
-
-    return () => unsubscribe();
-
-  }, [processRecurringExpenses, showNotification]);
-
-  
-
-  // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
-
-  useEffect(() => {
-
-    const handleKeyPress = (e) => {
-
-      // Only works for admin emails
-
-      if (!isAdmin) return;
-
-      
-
-      // Secret combo: Ctrl + Shift + Alt + D
-
-      if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'D') {
-
-        e.preventDefault();
-
-        setShowDevPanel(prev => !prev);
-
-      }
-
-      
-
-      // Quick close: Escape
-
-      if (e.key === 'Escape' && showDevPanel) {
-
-        setShowDevPanel(false);
-
-      }
-
-    };
-
-    
-
-    window.addEventListener('keydown', handleKeyPress);
-
-    return () => window.removeEventListener('keydown', handleKeyPress);
-
-  }, [isAdmin, showDevPanel]);
-
-
-
-
-
-  // 🔐 Authentication Functions
-
-  const handleSignUp = async () => {
-
-    if (!authForm.email || !authForm.password || !authForm.name) {
-
-      showNotification('Please fill in all fields', 'error');
-
-      return;
-
-    }
-
-
-
-    setAuthLoading(true);
-
-    try {
-
-      const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
-
-      await updateProfile(userCredential.user, { displayName: authForm.name });
-
-      
-
-      showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
-
-      setAuthForm({ email: '', password: '', name: '' });
-
-    } catch (error) {
-
-      console.error('Signup error:', error);
-
-      let errorMessage = 'Failed to create account';
-
-      
-
-      if (error.code === 'auth/email-already-in-use') {
-
-        errorMessage = 'An account with this email already exists';
-
-      } else if (error.code === 'auth/weak-password') {
-
-        errorMessage = 'Password should be at least 6 characters';
-
-      } else if (error.code === 'auth/invalid-email') {
-
-        errorMessage = 'Please enter a valid email address';
-
-      }
-
-      
-
-      showNotification(errorMessage, 'error');
-
-    }
-
-    setAuthLoading(false);
-
-  };
-
-
-
-  const handleSignIn = async () => {
-
-    if (!authForm.email || !authForm.password) {
-
-      showNotification('Please enter email and password', 'error');
-
-      return;
-
-    }
-
-
-
-    setAuthLoading(true);
-
-    try {
-
-      await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
-
-      showNotification('Welcome back!', 'success');
-
-      setAuthForm({ email: '', password: '', name: '' });
-
-    } catch (error) {
-
-      console.error('Signin error:', error);
-
-      let errorMessage = 'Failed to sign in';
-
-      
-
-      if (error.code === 'auth/user-not-found') {
-
-        errorMessage = 'No account found with this email';
-
-      } else if (error.code === 'auth/wrong-password') {
-
-        errorMessage = 'Incorrect password';
-
-      } else if (error.code === 'auth/invalid-email') {
-
-        errorMessage = 'Please enter a valid email address';
-
-      } else if (error.code === 'auth/too-many-requests') {
-
-        errorMessage = 'Too many failed attempts. Please try again later';
-
-      }
-
-      
-
-      showNotification(errorMessage, 'error');
-
-    }
-
-    setAuthLoading(false);
-
-  };
-
-
-
-  const handleSignOut = async () => {
-
-    try {
-
-      await signOut(auth);
-
-      showNotification('Signed out successfully', 'success');
-
-    } catch (error) {
-
-      console.error('Signout error:', error);
-
-      showNotification('Error signing out', 'error');
-
-    }
-
-  };
-
-
-
-  const handleGoogleSignIn = async () => {
-
-    setAuthLoading(true);
-
-    try {
-
-      const provider = new GoogleAuthProvider();
-
-      await signInWithPopup(auth, provider);
-
-      showNotification('Welcome! Signed in with Google.', 'success');
-
-    } catch (error) {
-
-      console.error('Google signin error:', error);
-
-      let errorMessage = 'Failed to sign in with Google';
-
-      
-
-      if (error.code === 'auth/popup-closed-by-user') {
-
-        errorMessage = 'Sign-in cancelled';
-
-      } else if (error.code === 'auth/popup-blocked') {
-
-        errorMessage = 'Popup blocked. Please allow popups and try again';
-
-      }
-
-      
-
-      showNotification(errorMessage, 'error');
-
-    }
-
-    setAuthLoading(false);
-
-  };
-
-
-
-  // Set up --vh for iOS viewport fix
-
-  useEffect(() => {
-
-    const setVH = () => {
-
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-
-    };
-
-    
-
-    // Set initial --vh
-
-    setVH();
-
-    
-
-    // Update --vh on resize (orientation change, etc.)
-
-    window.addEventListener('resize', setVH);
-
-    window.addEventListener('orientationchange', setVH);
-
-    
-
-    return () => {
-
-      window.removeEventListener('resize', setVH);
-
-      window.removeEventListener('orientationchange', setVH);
-
-    };
-
-  }, []);
-
-
-
-  // 🔧 MOBILE KEYBOARD FIX - Reset viewport when keyboard dismisses
-  useEffect(() => {
-    const handleInputBlur = () => {
-      // Small delay to let keyboard fully dismiss
-      setTimeout(() => {
-        // Reset scroll position
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        
-        // Force viewport recalculation
-        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-        
-        // Reset any body positioning
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-      }, 100);
-    };
-
-    // Listen for all input/textarea blur events
-    const inputs = document.querySelectorAll('input, textarea, select');
-    inputs.forEach(input => {
-      input.addEventListener('blur', handleInputBlur);
-    });
-
-    // Also handle on focusout for the document
-    document.addEventListener('focusout', handleInputBlur);
-
-    return () => {
-      inputs.forEach(input => {
-        input.removeEventListener('blur', handleInputBlur);
-      });
-      document.removeEventListener('focusout', handleInputBlur);
-    };
-  }, []);
-
-
-
-
-  // Firebase Data Loading - DISABLED FOR DEVELOPMENT
-
-  useEffect(() => {
-
-    // Skip Firebase - data already loaded in auth effect
-
-    return;
-
-    
-
-    // if (!userId) return;
-
-    // setLoading(true);
-
-    // const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/financials`, 'data');
-
-    // 
-
-    // const unsubscribeSnapshot = onSnapshot(userDocRef, (doc) => {
-
-    //   if (doc.exists()) {
-
-    //     const fetchedData = doc.data();
-
-    //     setData(fetchedData);
-
-    //   } else {
-
-    //     setDoc(userDocRef, initialData)
-
-    //       .then(() => setData(initialData))
-
-    //       .catch(error => console.error("Error creating initial document:", error));
-
-    //   }
-
-    //   setLoading(false);
-
-    // }, (error) => { 
-
-    //   console.error("Firestore snapshot error:", error); 
-
-    //   setLoading(false); 
-
-    // });
-
-    // return () => unsubscribeSnapshot();
-
-  }, [userId]);
-
-
-
-  // Card editing functions
-
-  const openCardEditor = (cardType, currentData) => {
-
-    // 🔧 CRITICAL FIX: Prevent scroll and lock scroll position
-
-    const scrollY = window.scrollY;
-
-    document.body.style.position = 'fixed';
-
-    document.body.style.top = `-${scrollY}px`;
-
-    document.body.style.width = '100%';
-
-    document.body.style.overflow = 'hidden';
-
-    
-
-    setEditingCard(cardType);
-
-    
-
-    // Provide safe defaults for different card types
-
-    if (cardType === 'debt' && (!currentData || !currentData.accounts)) {
-      setTempCardData({
-
-        accounts: currentData?.accounts || [],
-        total: currentData?.total || 0,
-
-        history: currentData?.history || []
-
-      });
-
-    } else {
-
-      setTempCardData(currentData || {});
-
-    }
-
-  };
-
-
-
-  const resetMobileViewport = () => {
-
-    // Force viewport reset on mobile (NO SCROLLING!)
-
-    if (window.innerWidth <= 768) {
-
-      // Remove any zoom/scale
-
-      document.body.style.zoom = "1";
-
-      document.body.style.transform = "scale(1)";
-
-      document.body.style.webkitTransform = "scale(1)";
-
-      
-
-      // Blur any focused elements
-
-      if (document.activeElement) {
-
-        document.activeElement.blur();
-
-      }
-
-      
-
-      // NOTE: Removed viewport meta manipulation as it can cause issues
-
-      // Scroll position is now handled by openCardEditor/closeCardEditor
-
-    }
-
-  };
-
-
-
-  const closeCardEditor = () => {
-
-    // 🔧 CRITICAL FIX: Restore scroll position (don't scroll to top!)
-
-    const scrollY = document.body.style.top;
-
-    document.body.style.position = '';
-
-    document.body.style.top = '';
-
-    document.body.style.width = '';
-
-    document.body.style.overflow = '';
-
-    document.body.style.height = '';
-
-    
-
-    // Restore the scroll position we saved when opening
-
-    if (scrollY) {
-
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    }
-
-    
-
-    setEditingCard(null);
-
-    setTempCardData({});
-
-  };
-
-
-
-  const saveCardData = async () => {
-
-    if (!editingCard || !data) return;
-
-    
-
-    let updatedData;
-
-    
-
-    // Special handling for savings rate target (only update the target, not the entire savingsRate object)
-
-    if (editingCard === 'savingsRateTarget') {
-
-      updatedData = { 
-
-        ...data, 
-
-        savingsRate: { 
-
-          ...data.savingsRate, 
-
-          target: tempCardData.target 
-        } 
-
-      };
-
-    } else {
-
-      updatedData = { ...data, [editingCard]: tempCardData };
-    }
-
-    
-
-    try {
-
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-
-      closeCardEditor();
-
-    } catch (error) {
-
-      console.error('Error saving card data:', error);
-
-    }
-
-  };
-
-
-
-  // CSV Export Functions
-
-  const exportToCSV = (filename, data) => {
-
-    const csvContent = data.map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-
-    const link = document.createElement('a');
-
-    if (link.download !== undefined) {
-
-      const url = URL.createObjectURL(blob);
-
-      link.setAttribute('href', url);
-
-      link.setAttribute('download', filename);
-
-      link.style.visibility = 'hidden';
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      document.body.removeChild(link);
-
-    }
-
-  };
-
-
-
-  const exportAllData = () => {
-
-    if (!data) return;
-
-    
-
-    const timestamp = new Date().toISOString().split('T')[0];
-
-    
-
-    // Export Transactions
-
-    const transactionData = [
-
-      ['Date', 'Description', 'Amount', 'Type', 'Category', 'Subcategory'],
-
-      ...data.transactions.map(t => [
-
-        t.date, t.description, t.amount, t.type, t.category, t.subcategory || ''
-
-      ])
-
-    ];
-
-    exportToCSV(`transactions_${timestamp}.csv`, transactionData);
-
-    
-
-    // Export Business Data
-
-    if (data.businesses?.length > 0) {
-
-      setTimeout(() => {
-
-        const businessData = [
-
-          ['Business Name', 'Description', 'Start Date', 'Total Income', 'Total Expenses', 'Net Profit'],
-
-          ...data.businesses.map(b => [
-
-            b.name, b.description, b.startDate, b.totalIncome, b.totalExpenses, b.netProfit
-
-          ])
-
-        ];
-
-        exportToCSV(`businesses_${timestamp}.csv`, businessData);
-
-      }, 500);
-
-    }
-
-    
-
-    // Export Investment Holdings
-
-    if (data.investments?.holdings?.length > 0) {
-
-      setTimeout(() => {
-
-        const investmentData = [
-
-          ['Symbol', 'Name', 'Shares', 'Avg Cost', 'Current Price', 'Total Value', 'Annual Dividend', 'DRIP Enabled'],
-
-          ...data.investments.holdings.map(h => [
-
-            h.symbol, h.name, h.shares, h.avgCost, h.currentPrice, h.totalValue, h.annualDividend, h.dripEnabled
-
-          ])
-
-        ];
-
-        exportToCSV(`investments_${timestamp}.csv`, investmentData);
-
-      }, 1000);
-
-    }
-
-    
-
-    // Export Monthly History
-
-    if (data.monthlyHistory?.length > 0) {
-
-      setTimeout(() => {
-
-        const historyData = [
-
-          ['Month', 'Net Worth', 'Income', 'Expenses', 'Cash Flow', 'Business Income', 'Business Expenses', 'Investment Value', 'Savings Rate'],
-
-          ...data.monthlyHistory.map(h => [
-
-            h.month, h.netWorth, h.income, h.expenses, h.cashflow, h.businessIncome, h.businessExpenses, h.investmentValue, h.savingsRate
-
-          ])
-
-        ];
-
-        exportToCSV(`monthly_history_${timestamp}.csv`, historyData);
-
-      }, 1500);
-
-    }
-
-  };
-
-
-
-  const openResetModal = () => {
-
-    setShowResetModal(true);
-
-    setResetStartDate(new Date().toISOString().split('T')[0]);
-
-    setResetToSample(false);
-  };
-
-
-
-  const closeResetModal = () => {
-
-    setShowResetModal(false);
-
-    setResetToSample(false);
-  };
-
-
-
-  const confirmResetData = async () => {
-
-    console.log('🔧 Reset Data: Function called');
-    console.log('🔧 Reset Data: userId =', userId);
-    console.log('🔧 Reset Data: resetToSample =', resetToSample);
-    
-
-    if (!userId) {
-
-      console.error('❌ Reset Data: No userId available!');
-
-      showNotification('❌ Please sign in to reset data', 'error');
-
-      return;
-
-    }
-
-
-
-    let resetData;
-
-    
-
-    if (resetToSample) {
-      // Reset to sample data with new start date
-      // 🔧 FIX: Spread transactions across the month (not all on same date!)
-      const startDate = new Date(resetStartDate);
-
-      resetData = {
-
-        ...initialData,
-
-        // Update all dates to spread across the month
-        transactions: initialData.transactions.map((t, index) => {
-
-          // Spread transactions across the month (days 1, 3, 5, 8, 10, 12, 15, etc.)
-          const daysToAdd = index * 2; // 0, 2, 4, 6, 8, 10, 12, 14...
-          const transactionDate = new Date(startDate);
-
-          transactionDate.setDate(startDate.getDate() + daysToAdd);
-          
-          return {
-
-            ...t,
-
-            date: transactionDate.toISOString().split('T')[0]
-
-          };
-
-        }),
-
-        recurringExpenses: initialData.recurringExpenses.map(r => ({
-
-          ...r,
-
-          nextDueDate: calculateNextDueDate(
-
-            r.frequency,
-
-            r.dayOfMonth,
-
-            r.dayOfWeek,
-
-            r.monthOfYear,
-
-            resetStartDate
-
-          ),
-
-          lastProcessed: resetStartDate,
-
-          createdDate: resetStartDate
-
-        })),
-
-        monthlyHistory: [{
-
-          month: resetStartDate.substring(0, 7),
-
-          netWorth: initialData.netWorth.total,
-
-          income: initialData.income.total,
-
-          expenses: initialData.expenses.total,
-
-          cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
-
-          businessIncome: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalIncome || 0), 0),
-          businessExpenses: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalExpenses || 0), 0),
-          investmentValue: initialData.investments.totalValue || 0,
-          savingsRate: initialData.savingsRate.current
-
-        }]
-      };
-
-    } else {
-
-      // Reset to completely clean data
-      resetData = {
-
-        financialFreedom: {
-
-          targetAmount: 2000000,
-
-          currentInvestments: 0,
-
-          monthlyContribution: 0,
-
-          annualReturn: 7,
-
-        },
-
-        creditScore: {
-
-          current: 0,
-
-          history: []
-
-        },
-
-        cashOnHand: {
-
-          total: 0,
-
-          accounts: [],
-
-          history: [{ date: resetStartDate, total: 0 }]
-
-        },
-
-        rainyDayFund: {
-
-          total: 0,
-
-          goal: 30000,
-          accounts: [],
-
-          history: [{ date: resetStartDate, total: 0 }]
-
-        },
-
-        debt: {
-
-          total: 0,
-
-          accounts: [],
-          history: [{ date: resetStartDate, total: 0 }]
-
-        },
-
-        registeredAccounts: {
-
-          accounts: [
-
-            {
-
-              id: 'tfsa',
-
-              name: 'TFSA',
-
-              contributed: 0,
-
-              limit: 88000,
-
-              goal: 10000,
-
-              type: 'tax-free',
-
-              description: 'Tax-free growth and withdrawals'
-
-            },
-
-            {
-
-              id: 'rrsp', 
-
-              name: 'RRSP',
-
-              contributed: 0,
-
-              limit: 31560,
-
-              goal: 5000,
-
-              type: 'tax-deferred',
-
-              description: 'Tax-deferred retirement savings'
-
-            }
-
-          ]
-
-        },
-
-        businesses: [],
-
-        netWorth: {
-
-          total: 0,
-
-          breakdown: [],
-
-          history: [{ date: resetStartDate, total: 0 }]
-
-        },
-
-        income: {
-
-          total: 0,
-
-          sources: [],
-
-          history: [{ date: resetStartDate, total: 0 }]
-
-        },
-
-        expenses: {
-
-          total: 0,
-
-          categories: [],
-
-          history: [{ date: resetStartDate, total: 0 }]
-
-        },
-
-        cashflow: {
-
-          total: 0,
-
-          monthly: 0,
-
-          history: [{ date: resetStartDate, amount: 0 }]
-
-        },
-
-        savingsRate: {
-
-          current: 0,
-
-          target: 20,
-
-          monthly: 0,
-
-          monthlyIncome: 0,
-
-          history: [{ date: resetStartDate, rate: 0 }]
-
-        },
-
-        goals: [],
-
-        investments: {
-
-          totalValue: 0,
-
-          totalGainLoss: 0,
-
-          holdings: [],
-
-          categories: [],
-
-          monthlyData: []
-
-        },
-
-        transactions: [],
-
-        recurringExpenses: [],
-
-        monthlyHistory: [{
-
-          month: resetStartDate.substring(0, 7),
-
-          netWorth: 0,
-
-          income: 0,
-
-          expenses: 0,
-
-          cashflow: 0,
-
-          businessIncome: 0,
-
-          businessExpenses: 0,
-
-          investmentValue: 0,
-
-          savingsRate: 0
-
-        }],
-
-        travel: {
-
-          totalSavings: 0,
-
-          homeCurrency: 'CAD',
-
-          exchangeRates: {
-
-            'USD': 1.35,
-
-            'EUR': 1.47,
-
-            'GBP': 1.70,
-
-            'THB': 0.037,
-
-            'COP': 0.00033
-
-          },
-
-          trips: [],
-
-          runwayCalculation: {
-
-            averageDailySpend: 0,
-
-            totalAvailableFunds: 0,
-
-            estimatedDaysRemaining: 0,
-
-            lastUpdated: resetStartDate
-
-          },
-
-          tripPlan: {
-
-            cheap: 90,
-
-            moderate: 30,
-
-            expensive: 15
-
-          },
-
-          expenseCategories: [
-
-            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
-
-            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
-
-            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
-
-            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
-
-            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
-
-            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
-
-          ]
-
-        },
-
-        budgetSettings: {
-
-          fiftyThirtyTwenty: {
-
-            needs: 50,
-
-            wants: 30,
-
-            savings: 20
-
-          },
-
-          sixJars: {
-
-            necessities: 55,
-
-            education: 10,
-
-            play: 10,
-
-            longTermSavings: 10,
-
-            financial: 10,
-
-            give: 5
-
-          }
-
-        }
-
-      };
-
-    }
-
-
-
-    try {
-
-      console.log('🔧 Reset Data: Starting Firebase write...');
-      // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
-
-      console.log('✅ Reset Data: Firebase write successful');
-      
-
-      setData(resetData);
-
-      console.log('✅ Reset Data: Local state updated');
-      
-
-      setShowResetModal(false);
-
-      setResetToSample(false);
-      console.log('✅ Reset Data: Modal closed');
-      
-      showNotification('✅ Data reset successfully!', 'success');
-    } catch (error) {
-
-      console.error('❌ Reset Data Error:', error);
-
-      console.error('❌ Reset Data Error Details:', error.message, error.code);
-
-      showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
-
-    }
-
-  };
-
-
-
-  const openQuickExpense = () => {
-
-    setShowQuickExpense(true);
-
-    
-
-    setQuickExpense({
-
-      description: '',
-
-      amount: '',
-
-      date: new Date().toISOString().split('T')[0]
-
-    });
-
-  };
-
-
-
-  const closeQuickExpense = () => {
-
-    setShowQuickExpense(false);
-
-    
-
-    setQuickExpense({
-
-      description: '',
-
-      amount: '',
-
-      date: new Date().toISOString().split('T')[0]
-    });
-
-    
-
-    // Enhanced viewport cleanup
-
-    window.scrollTo(0, 0);
-
-    document.body.style.overflow = '';
-
-    document.body.style.position = '';
-
-    document.body.style.height = '';
-
-    
-
-
-
-    
-
-    // Reset mobile viewport on modal close
-
-    setTimeout(resetMobileViewport, 100);
-
-  };
-
-
-
-  const confirmQuickExpense = async () => {
-    if (!quickExpense.description || !quickExpense.amount || !userId) return;
-
-    const amount = parseFloat(quickExpense.amount);
-    if (isNaN(amount) || amount <= 0) return;
-
-
-
-    const transaction = {
-
-      id: Date.now(),
-
-      description: quickExpense.description,
-      amount: -Math.abs(amount), // Always negative for expenses
-
-      type: 'expense',
-
-      category: 'personal',
-
-      subcategory: 'cash',
-
-      date: quickExpense.date
-    };
-
-    const updatedTransactions = [transaction, ...(data.transactions || [])];
-    const updatedData = { ...data, transactions: updatedTransactions };
-
-    try {
-      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
-      setData(updatedData);
-      closeQuickExpense();
-      
-      // Additional viewport cleanup after successful save
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-        
-
-      }, 150);
-    } catch (error) {
-
-      console.error('Error adding quick expense:', error);
-    }
-
-  };
-
-
-
-  // Calculate income and expenses from transactions
-
-  const calculateIncomeExpenses = (transactions, businesses = []) => {
-
-    if (!transactions || transactions.length === 0) {
-
-      transactions = [];
-
-    }
-
-
-
-    // 🔧 FIX: Calculate from CURRENT MONTH only (not all transactions ever!)
-
-    const now = new Date();
-
-    const currentMonth = now.getMonth();
-
-    const currentYear = now.getFullYear();
-
-    
-
-    // Filter transactions to current month only
-
-    const currentMonthTransactions = transactions.filter(t => {
-
-      const tDate = new Date(t.date);
-
-      return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
-
-    });
-
-
-
-    // Calculate total income and expenses from CURRENT MONTH transactions
-
-    const totalTransactionIncome = currentMonthTransactions
-
-      .filter(t => t.type === 'income')
-
-      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-    
-
-    const totalTransactionExpenses = currentMonthTransactions
-
-      .filter(t => t.type === 'expense')
-
-      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-
-
-    // Calculate business income
-
-    const totalBusinessIncome = businesses.reduce((sum, business) => 
-
-      sum + (business.totalIncome || business.income || 0), 0);
-
-
-
-    // 🔧 FIX: Calculate business expenses (CRITICAL BUG FIX!)
-
-    const totalBusinessExpenses = businesses.reduce((sum, business) => 
-
-      sum + (business.totalExpenses || business.expenses || 0), 0);
-
-
-
-    // Combine transaction and business income
-
-    const totalIncome = totalTransactionIncome + totalBusinessIncome;
-
-
-
-    // 🔧 FIX: Combine transaction and business expenses
-
-    const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
-
-
-
-    // Group income by subcategory (from CURRENT MONTH transactions only)
-
-    const incomeByCategory = {};
-
-    currentMonthTransactions
-
-      .filter(t => t.type === 'income')
-
-      .forEach(t => {
-
-        const category = t.subcategory || 'Other';
-
-        if (!incomeByCategory[category]) {
-
-          incomeByCategory[category] = 0;
-
-        }
-
-        incomeByCategory[category] += Math.abs(t.amount);
-
-      });
-
-
-
-    // Add business income as separate categories
-
-    businesses.forEach((business, index) => {
-
-      if (business.totalIncome > 0) {
-
-        const businessKey = business.name || `Business ${index + 1}`;
-
-        incomeByCategory[businessKey] = business.totalIncome;
-
-      }
-
-    });
-
-
-
-    // Group expenses by subcategory (from CURRENT MONTH transactions only)
-
-    const expensesByCategory = {};
-
-    currentMonthTransactions
-
-      .filter(t => t.type === 'expense')
-
-      .forEach(t => {
-
-        const category = t.subcategory || 'Other';
-
-        if (!expensesByCategory[category]) {
-
-          expensesByCategory[category] = 0;
-
-        }
-
-        expensesByCategory[category] += Math.abs(t.amount);
-
-      });
-
-
-
-    // 🔧 FIX: Add business expenses as separate categories
-
-    businesses.forEach((business, index) => {
-
-      if ((business.totalExpenses || business.expenses || 0) > 0) {
-
-        const businessKey = `${business.name || `Business ${index + 1}`} Expenses`;
-
-        expensesByCategory[businessKey] = business.totalExpenses || business.expenses || 0;
-
-      }
-
-    });
-
-
-
-    // Convert to array format
-
-    const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => ({
-
-      id: index + 1,
-
-      name: name.charAt(0).toUpperCase() + name.slice(1),
-
-      amount,
-
-      type: 'active'
-
-    }));
-
-
-
-    const expenseCategories = Object.entries(expensesByCategory).map(([name, amount], index) => ({
-
-      id: index + 1,
-
-      name: name.charAt(0).toUpperCase() + name.slice(1),
-
-      amount,
-
-      color: `bg-red-${500 + (index % 3) * 100}`
-
-    }));
-
-
-
-    return {
-
-      income: {
-
-        total: totalIncome,
-
-        sources: incomeSources
-
-      },
-
-      expenses: {
-
-        total: totalExpenses,
-
-        categories: expenseCategories
-
-      }
-
-    };
-
-  };
-
-
-
-  // Calculate annual values
-
-  const getAnnualizedData = () => {
-
-    if (!data) return data;
-
-    
-
-    // 🔧 EDGE CASE FIX: Null safety for transactions and businesses
-
-    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
-
-    
-
-    return {
-
-      ...data,
-
-      income: { 
-
-        ...calculatedData.income, 
-
-        total: calculatedData.income.total * 12,
-
-        sources: calculatedData.income.sources.map(s => ({...s, amount: s.amount * 12}))
-
-      },
-
-      expenses: { 
-
-        ...calculatedData.expenses, 
-
-        total: calculatedData.expenses.total * 12,
-
-        categories: calculatedData.expenses.categories.map(c => ({...c, amount: c.amount * 12}))
-
-      },
-
-      cashflow: { 
-
-        total: (calculatedData.income.total - calculatedData.expenses.total) * 12,
-
-        monthly: (calculatedData.income.total - calculatedData.expenses.total) * 12
-
-      },
-
-      // Savings rate is the same percentage regardless of monthly vs annual view
-
-      savingsRate: { 
-
-        ...data.savingsRate, 
-
-        current: calculatedData.income.total > 0 ? 
-
-          Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100 : 0
-
-      }
-
-    };
-
-  };
-
-
-
-  // Calculate dynamic investment total from holdings
-
-  const calculateInvestmentTotal = (holdings) => {
-
-    return holdings.reduce((sum, holding) => sum + (holding.totalValue || 0), 0);
-
-  };
-
-
-
-  const getDisplayData = () => {
-
-    if (!data) return data;
-
-    
-
-    // 🔧 EDGE CASE FIX: Ensure all required data structures exist
-
-    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
-
-    const actualInvestmentTotal = calculateInvestmentTotal(data.investments?.holdings || []);
-
-    
-
-    // Update Net Worth with dynamic investment value
-
-    const updatedNetWorth = {
-
-      ...data.netWorth,
-
-      breakdown: data.netWorth.breakdown.map(item => 
-
-        item.name === 'Investments' 
-
-          ? { ...item, value: actualInvestmentTotal }
-
-          : item
-
-      )
-
-    };
-
-    
-
-    // Recalculate net worth total
-
-    const newNetWorthTotal = updatedNetWorth.breakdown.reduce((sum, item) => sum + item.value, 0);
-
-    updatedNetWorth.total = newNetWorthTotal;
-
-    
-
-    const baseData = {
-
-      ...data,
-
-      income: calculatedData.income,
-
-      expenses: calculatedData.expenses,
-
-      netWorth: updatedNetWorth,
-
-      investments: {
-
-        ...data.investments,
-
-        totalValue: actualInvestmentTotal
-
-      },
-
-      cashflow: {
-
-        ...data.cashflow,
-
-        total: calculatedData.income.total - calculatedData.expenses.total,
-
-        monthly: calculatedData.income.total - calculatedData.expenses.total
-
-      },
-
-      savingsRate: { 
-
-        ...data.savingsRate,
-
-        // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
-
-        current: calculatedData.income.total > 0 ? 
-
-          Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
-
-      }
-
-    };
-
-    
-
-    return viewMode === 'annual' ? getAnnualizedData() : baseData;
-
-  };
-
-
-
-  const displayData = getDisplayData();
-
-
-
-
-
-  return (
-
-    <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
-
-      {/* Notification System */}
-
-      {notification && (
-
-        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
-
-          notification.type === 'success' 
-
-            ? 'bg-green-600 text-white border border-green-500' 
-
-            : 'bg-red-600 text-white border border-red-500'
-
-        }`}>
-
-          <div className="flex items-center gap-2">
-
-            {notification.type === 'success' ? (
-
-              <span className="text-green-200">✅</span>
-
-            ) : (
-
-              <span className="text-red-200">❌</span>
-
-            )}
-
-            <span className="font-medium">{notification.message}</span>
-
-          </div>
-
-        </div>
-
-      )}
-
-      
-
-      {/* Show loading screen while checking authentication */}
-
-      {authLoading && (
-
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
-
-          <div className="text-center">
-
-            <div className="relative mb-6">
-
-              {/* Spinning ring */}
-
-              <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-amber-500 mx-auto"></div>
-
-              {/* Inner pulsing circle */}
-
-              <div className="absolute inset-0 flex items-center justify-center">
-
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full opacity-50 animate-pulse"></div>
-
-              </div>
-
-            </div>
-
-            <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-
-              The Freedom Compass
-
-            </h2>
-
-            <p className="text-gray-400 animate-pulse">Loading your dashboard...</p>
-
-            <div className="mt-4 flex items-center justify-center gap-2">
-
-              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
-
-              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-
-              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* Show authentication screen if user is not logged in */}
-
-      {showAuth && !user && !authLoading && (
-
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center p-4">
-
-          <div className="max-w-md w-full">
-
-            <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-amber-500/30 shadow-lg shadow-amber-500/10">
-
-              <div className="text-center mb-8">
-
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
-
-                  The Freedom Compass
-
-                </h1>
-
-                <p className="text-amber-200 mt-2">
-
-                  {authMode === 'login' ? 'Navigate to your financial freedom' : 'Start your journey to financial independence'}
-
-                </p>
-
-              </div>
-
-
-
-              <div className="space-y-4">
-
-                {authMode === 'signup' && (
-
-                <input
-
-                  type="text"
-
-                  placeholder="First Name"
-
-                  value={authForm.name}
-
-                  onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-
-                />
-
-                )}
-
-                
-
-                <input
-
-                  type="email"
-
-                  placeholder="Email Address"
-
-                  value={authForm.email}
-
-                  onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-
-                />
-
-                
-
-                <input
-
-                  type="password"
-
-                  placeholder="Password"
-
-                  value={authForm.password}
-
-                  onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-
-                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
-
-                />
-
-              </div>
-
-
-
-              <div className="mt-6 space-y-3">
-
-                <button
-
-                  onClick={authMode === 'login' ? handleSignIn : handleSignUp}
-
-                  disabled={authLoading}
-
-                  className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
-
-                >
-
-                  {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
-
-                </button>
-
-                
-
-                <button
-
-                  onClick={handleGoogleSignIn}
-
-                  disabled={authLoading}
-
-                  className="w-full bg-white hover:bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-
-                >
-
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-
-                  </svg>
-
-                  Continue with Google
-
-                </button>
-
-              </div>
-
-
-
-              <div className="mt-6 text-center">
-
-                <button
-
-                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-
-                  className="text-amber-400 hover:text-amber-300 transition-colors"
-
-                >
-
-                  {authMode === 'login' 
-
-                    ? "Don't have an account? Sign up" 
-
-                    : "Already have an account? Sign in"
-
-                  }
-
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* Main Dashboard - Only show when authenticated */}
-
-      {user && !authLoading && (
-
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-8">
-
-          <div className="flex flex-wrap justify-between items-center gap-4">
-
-            <div>
-
-              <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
-
-              <p className="text-amber-200 text-lg">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Navigate your {viewMode} financial journey.</p>
-            </div>
-
-            
-
-            {/* User Profile Section - Modern Dropdown Menu - FIXED: Now stays right on mobile */}
-
-            <div className="flex items-center gap-4 order-last w-full sm:w-auto justify-end sm:ml-auto">
-
-              {userPlan === SUBSCRIPTION_TIERS.FREE && (
-
-                <button
-
-                  onClick={() => setShowPricingModal(true)}
-
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-medium"
-                >
-
-                  <Crown className="w-4 h-4" />
-                  <span className="hidden sm:inline">{isFoundersCircleAvailable() ? 'Join Founder\'s Circle' : 'Upgrade'}</span>
-                </button>
-
-              )}
-
-              
-
-              {/* Quick Expense Button */}
-
-              <button
-
-                onClick={openQuickExpense}
-
-                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-
-                title="Quick Expense"
-
-              >
-
-                <Plus className="w-5 h-5" />
-
-              </button>
-
-
-
-              {/* Help FAQ Button */}
-
-              <button
-
-                onClick={() => setShowHelpFAQ(true)}
-
-                className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-
-                title="Help & FAQ"
-
-              >
-
-                <HelpCircle className="w-4 h-4" />
-
-              </button>
-
-              
-
-              {/* Modern User Menu Dropdown */}
-
-              <div className="relative">
-
-                <button
-
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-
-                  className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
-
-                  title="Account Menu"
-
-                >
-
-                  {/* User Avatar with Plan Badge */}
-
-                  <div className="relative">
-
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
-
-                      {devDemoMode ? 'D' : (user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
-
-                    </div>
-
-                    {/* Plan Badge on Avatar */}
-
-                    <div className={`absolute -bottom-1 -right-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-
-                      userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
-
-                      userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
-
-                      userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
-
-                      'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
-
-                    }`}>
-
-                      {userPlan === SUBSCRIPTION_TIERS.FREE ? 'R' : 
-
-                       userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'C' : 
-
-                       userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'O' :
-
-                       userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'F' : 
-
-                       'F'}
-
-                    </div>
-
-                  </div>
-
-                  <svg className={`w-4 h-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-
-                  </svg>
-
-                </button>
-
-                
-
-                {/* Dropdown Menu */}
-
-                {showUserMenu && (
-
-                  <>
-
-                    {/* Backdrop to close menu when clicking outside */}
-
-                    <div 
-
-                      className="fixed inset-0 z-40" 
-
-                      onClick={() => setShowUserMenu(false)}
-
-                    />
-
-                    
-
-                    {/* Menu Content */}
-
-                    <div className="absolute right-0 mt-2 w-72 bg-gray-800 rounded-lg shadow-2xl border border-gray-700 z-50 overflow-hidden max-w-[calc(100vw-2rem)]">
-
-                      {/* User Info Header */}
-
-                      <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-4 border-b border-gray-700">
-
-                        <div className="flex items-center gap-3">
-
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-xl">
-
-                            {devDemoMode ? 'D' : (user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
-
-                          </div>
-
-                          <div className="flex-1">
-
-                            <p className="text-white font-semibold">{devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'User')}</p>
-
-                            <p className="text-gray-400 text-sm truncate">{devDemoMode ? 'demo@example.com' : user?.email}</p>
-
-                          </div>
-
-                        </div>
-
-                        <div className="mt-3">
-                          <span className={`inline-block text-xs px-3 py-1 rounded-full font-semibold ${
-
-                            userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
-
-                            userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
-
-                            userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
-
-                            'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
-
-                          }`}>
-
-                            {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon Kit' : 
-
-                             userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber Plan' : 
-
-                             userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator Plan' :
-
-                             userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder\'s Circle' : 
-
-                             'Free Plan'}
-
-                          </span>
-
-                        </div>
-
-                      </div>
-
-                      
-
-                      {/* Menu Items */}
-
-                      <div className="py-2">
-
-                        {/* Bug Report */}
-
-                        <button
-
-                          onClick={() => {
-
-                            setShowUserMenu(false);
-
-                            setFeedbackType('bug');
-
-                            setFeedbackData({...feedbackData, type: 'bug', email: user?.email || ''});
-
-                            setShowFeedbackModal(true);
-
-                          }}
-
-                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-white"
-
-                        >
-
-                          <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                          </svg>
-
-                          <div>
-
-                            <p className="font-medium">Report a Bug</p>
-
-                            <p className="text-xs text-gray-500">Help us improve</p>
-
-                          </div>
-
-                        </button>
-
-                        
-
-                        {/* Feature Request */}
-
-                        <button
-
-                          onClick={() => {
-
-                            setShowUserMenu(false);
-
-                            setFeedbackType('feature');
-
-                            setFeedbackData({...feedbackData, type: 'feature', email: user?.email || ''});
-
-                            setShowFeedbackModal(true);
-
-                          }}
-
-                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-white"
-
-                        >
-
-                          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-
-                          </svg>
-
-                          <div>
-
-                            <p className="font-medium">Request Feature</p>
-
-                            <p className="text-xs text-gray-500">Share your ideas</p>
-
-                          </div>
-
-                        </button>
-
-                        
-
-                        <div className="border-t border-gray-700 my-2"></div>
-
-                        
-
-                        {/* Sign Out */}
-
-                        <button
-
-                          onClick={() => {
-
-                            setShowUserMenu(false);
-
-                            handleSignOut();
-
-                          }}
-
-                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-300 hover:text-red-400"
-
-                        >
-
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-
-                          </svg>
-
-                          <div>
-
-                            <p className="font-medium">Sign Out</p>
-
-                            <p className="text-xs text-gray-500">See you next time!</p>
-
-                          </div>
-
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </>
-
-                )}
-
-              </div>
-
-            </div>
-
-            
-
-            {/* View Controls - Only show on dashboard tab */}
-
-            {activeTab === 'dashboard' && (
-
-              <div className="flex flex-wrap gap-2">
-
-                <div className="flex items-center bg-gray-800 rounded-full p-1 space-x-1">
-
-                  <button
-
-                    onClick={() => setViewMode('monthly')}
-
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-
-                      viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
-
-                    }`}
-
-                  >
-
-                    Monthly
-
-                  </button>
-
-                  <button
-
-                    onClick={() => setViewMode('annual')}
-
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-
-                      viewMode === 'annual' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
-
-                    }`}
-
-                  >
-
-                    Annual
-
-                  </button>
-
-                </div>
-
-                
-
-                <button
-
-                  onClick={() => setShowHistory(!showHistory)}
-
-                  className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center transition-colors ${
-
-                    showHistory ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-
-                  }`}
-
-                >
-
-                  <BarChart3 className="w-4 h-4 mr-2" />
-
-                  {showHistory ? 'Hide History' : 'Show History'}
-
-                </button>
-
-              </div>
-
-            )}
-
-            
-
-            <div className="bg-gray-800 rounded-full p-1 overflow-hidden">
-              <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
-                <div className="flex space-x-1 min-w-max">
-
-                  <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-
-                    <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
-
-                  </button>
-
-                  <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-
-                    <CreditCard className="w-4 h-4 mr-2"/>Transactions
-
-                  </button>
-
-                  <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-
-                    <Calculator className="w-4 h-4 mr-2"/>Budget
-
-                  </button>
-
-                  <button onClick={() => handleTabClick('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-
-                    <Building className="w-4 h-4 mr-2"/>Side Hustle
-
-                    {!checkFeatureAccess('side-hustle') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
-
-                  </button>
-
-                  <button onClick={() => handleTabClick('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-
-                    <Briefcase className="w-4 h-4 mr-2"/>Investment
-
-                    {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
-
-                  </button>
-
-                  <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-
-                    🌍 Travel
-
-                    {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </header>
-
-
-
-        <main className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-6">
-          {activeTab === 'dashboard' && (
-
-            <>
-
-              {/* Monthly History View */}
-
-              {showHistory && data.monthlyHistory && (
-
-                <FinancialErrorBoundary componentName="Monthly History">
-
-                <Card className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
-
-                    <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
-
-                    Monthly History
-
-                  </h2>
-
-                  <div className="overflow-x-auto">
-
-                    <table className="w-full text-sm">
-
-                      <thead>
-
-                        <tr className="border-b border-gray-700">
-
-                          <th className="text-left py-2 text-gray-300">Month</th>
-
-                          <th className="text-right py-2 text-gray-300">Net Worth</th>
-
-                          <th className="text-right py-2 text-gray-300">Income</th>
-
-                          <th className="text-right py-2 text-gray-300">Expenses</th>
-
-                          <th className="text-right py-2 text-gray-300">Cash Flow</th>
-
-                          <th className="text-right py-2 text-gray-300">Business Profit</th>
-
-                          <th className="text-right py-2 text-gray-300">Investment Value</th>
-
-                          <th className="text-right py-2 text-gray-300">Savings Rate</th>
-
-                        </tr>
-
-                      </thead>
-
-                      <tbody>
-
-                        {data.monthlyHistory.map(month => (
-
-                          <tr key={month.month} className="border-b border-gray-700/50 hover:bg-gray-700/20">
-
-                            <td className="py-2 text-white font-semibold">{month.month}</td>
-
-                            <td className="py-2 text-right text-emerald-400 font-semibold">${month.netWorth.toLocaleString()}</td>
-
-                            <td className="py-2 text-right text-blue-400">${month.income.toLocaleString()}</td>
-
-                            <td className="py-2 text-right text-red-400">${month.expenses.toLocaleString()}</td>
-
-                            <td className={`py-2 text-right font-semibold ${month.cashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-
-                              ${month.cashflow.toLocaleString()}
-
-                            </td>
-
-                            <td className="py-2 text-right text-violet-400">${(month.businessIncome - month.businessExpenses).toLocaleString()}</td>
-
-                            <td className="py-2 text-right text-purple-400">${month.investmentValue.toLocaleString()}</td>
-
-                            <td className="py-2 text-right text-amber-400">{month.savingsRate}%</td>
-
-                          </tr>
-
-                        ))}
-
-                      </tbody>
-
-                    </table>
-
-                  </div>
-
-                </Card>
-
-                </FinancialErrorBoundary>
-
-              )}
-
-              
-
-              {/* 🎯 OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
-
-              
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              
-              {/* Cash Flow - FREE+ (Left) */}
-
-                <CashFlowCard 
-
-                  data={displayData?.cashflow} 
-
-                  income={displayData?.income}
-
-                  expenses={displayData?.expenses}
-
-                  transactions={data?.transactions || []}
-
-                  onEdit={openCardEditor} 
-
-                />
-
-              
-
-              {/* Rainy Day Fund - CLIMBER+ (Right) */}
-              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
-                <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
-
-              ) : (
-                <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
-              
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              
-              {/* Monthly Income - FREE+ (Left) */}
-
-                <IncomeCard data={displayData?.income} viewMode={viewMode} />
-
-              
-
-              {/* Monthly Expenses - FREE+ (Right) */}
-
-                <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
-
-              
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              
-              {/* Net Worth - FREE+ (Left) */}
-
-                <FinancialErrorBoundary componentName="Net Worth Calculator">
-
-                  <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
-
-                </FinancialErrorBoundary>
-
-              
-
-              {/* Survival Runway - CLIMBER+ (Right) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <FinancialErrorBoundary componentName="Cash Management">
-
-                  <CashOnHandCard 
-
-                    data={displayData?.cashOnHand} 
-
-                    rainyDayGoal={6}
-
-                    transactions={data?.transactions || []}
-
-                    onEdit={openCardEditor} 
-
-                  />
-
-                </FinancialErrorBoundary>
-
-              ) : (
-                <LockedCard cardName="Survival Runway" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-              )}
-              
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              
-              {/* Financial Freedom Goal - CLIMBER+ (Left) */}
-
-                {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-
-                  <FinancialErrorBoundary componentName="Financial Freedom Goal">
-
-                    <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
-
-                  </FinancialErrorBoundary>
-
-                ) : (
-
-                  <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-
-                )}
-
-              
-
-              {/* Savings Rate - FREE+ (Right) */}
-
-                <FinancialErrorBoundary componentName="Savings Rate Tracker">
-
-                  <SavingsRateCard data={displayData?.savingsRate} onEdit={openCardEditor} />
-
-                </FinancialErrorBoundary>
-
-              
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              {/* FULL-WIDTH CARDS: Detailed Intelligence */}
-
-              {/* ═══════════════════════════════════════════════════════ */}
-
-              
-
-              {/* Total Debt - CLIMBER+ (Full Width) */}
-              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <DebtCard data={displayData?.debt} onEdit={openCardEditor} />
-              </div>
-
-              ) : (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <LockedCard cardName="Total Debt & Payoff Plan" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-                </div>
-
-              )}
-
-              
-
-              {/* Credit Score - CLIMBER+ (Full Width) */}
-
-              {hasDashboardCardAccess(userPlan, 'credit-score') ? (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <CreditScoreCard data={displayData?.creditScore} onEdit={openCardEditor} />
-
-                </div>
-
-              ) : (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-
-                </div>
-
-              )}
-
-              
-
-              {/* Financial Goals - CLIMBER+ (Full Width) */}
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
-                </div>
-
-              ) : (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-
-                </div>
-
-              )}
-
-              
-
-              {/* Retirement Accounts - CLIMBER+ (Full Width) */}
-
-              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <RegisteredAccountsCard 
-
-                    data={displayData?.registeredAccounts} 
-
-                    onEdit={openCardEditor} 
-
-                  />
-
-                </div>
-
-              ) : (
-
-                <div className="col-span-1 md:col-span-6 lg:col-span-6">
-                  <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
-
-                </div>
-
-              )}
-
-            </>
-
-          )}
-
-          
-
-          {activeTab === 'budget' && (
-
-              <ErrorBoundary>
-
-                <BudgetCalculatorTab 
-
-                  checkFeatureAccess={checkFeatureAccess}
-
-                  showUpgradePromptForFeature={showUpgradePromptForFeature}
-
-                />
-
-              </ErrorBoundary>
-
-          )}
-
-          
-
-          {activeTab === 'side-hustle' && (
-
-            <FinancialErrorBoundary componentName="Side Hustle Management">
-
-              <SideHustleTab data={data} setData={setData} userId={userId} />
-            </FinancialErrorBoundary>
-
-          )}
-
-          
-
-          {activeTab === 'investment' && (
-
-            <FinancialErrorBoundary componentName="Investment Portfolio">
-
-              <InvestmentTab data={data} setData={setData} userId={userId} />
-            </FinancialErrorBoundary>
-
-          )}
-
-          
-
-          {activeTab === 'transactions' && (
-
-            <FinancialErrorBoundary componentName="Transaction Management">
-
-              <TransactionsTab data={data} setData={setData} userId={userId} />
-            </FinancialErrorBoundary>
-
-          )}
-
-          
-
-          {activeTab === 'travel' && (
-
-            <FinancialErrorBoundary componentName="Travel Planning">
-
-              <TravelTab data={data} setData={setData} userId={userId} />
-
-            </FinancialErrorBoundary>
-
-          )}
-
-        </main>
-
-
-
-        <footer className="text-center mt-12 text-gray-500">
-
-          <p>Dashboard for the modern hustler. Keep building.</p>
-
-          <div className="flex justify-center items-center gap-6 mt-4">
-
-            <p className="text-xs">User ID: {userId}</p>
-
-            <button
-
-              onClick={exportAllData}
-
-              className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
-
-            >
-
-              Export Data to CSV
-
-            </button>
-
-            <button
-
-              onClick={openResetModal}
-
-              className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-1"
-
-            >
-
-              <Trash2 className="w-3 h-3" />
-
-              Reset Data
-
-            </button>
-
-          </div>
-
-        </footer>
-
-      </div>
-
-      )}
-
-
-
-      {/* Quick Expense Button - Moved to header (cleaner UX) */}
-
-      {user && !authLoading && (
-
-        <>
-
-          {/* Quick Expense Modal */}
-          {showQuickExpense && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            // Use the custom --vh property for height (iOS fix)
-            height: 'calc(var(--vh, 1vh) * 100)',
-            zIndex: 9999,
-            padding: '1rem' // Add padding to prevent modal touching edges
-          }}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
-        >
-          <Card 
-            className="w-full max-w-md border-red-500/30"
-            style={{
-              margin: 0 // Keep margin at 0
-            }}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-white">⚡ Quick Expense</h3>
-                <p className="text-xs text-gray-400">Log cash expenses fast!</p>
-              </div>
-                  <button
-
-                onClick={closeQuickExpense}
-                className="text-gray-400 hover:text-white"
-                  >
-
-                <X className="w-5 h-5" />
-                  </button>
-
-                </div>
-
-
-
-            <div className="space-y-4">
-                  <div>
-
-                <label className="block text-sm text-gray-300 mb-2">What did you spend on?</label>
-                    <input
-
-                      type="text"
-
-                  placeholder="e.g., Coffee, Lunch, Gas, Groceries..."
-                  value={quickExpense.description}
-                  onChange={(e) => setQuickExpense({...quickExpense, description: e.target.value})}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none placeholder-gray-400"
-                      autoFocus
-
-                    />
-
-                  </div>
-
-
-
-              <div className="grid grid-cols-2 gap-3">
-                  <div>
-
-                  <label className="block text-sm text-gray-300 mb-2">Amount</label>
-                  <input
-                    type="number"
-                    placeholder="0.00"
-                    step="0.01"
-                    value={quickExpense.amount || ''}
-                    onChange={(e) => setQuickExpense({...quickExpense, amount: e.target.value === '' ? '' : e.target.value})}
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none"
-                  />
-                  </div>
-
-
-
-                    <div>
-
-                  <label className="block text-sm text-gray-300 mb-2">Date</label>
-                      <input
-
-                        type="date"
-
-                    value={quickExpense.date}
-                    onChange={(e) => setQuickExpense({...quickExpense, date: e.target.value})}
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-red-400 focus:outline-none"
-                      />
-
-                    </div>
-
-                  </div>
-
-
-
-              <div className="bg-red-900/20 rounded-lg p-3 border border-red-600/30">
-                <div className="text-xs text-red-200">
-                  💡 <strong>Quick Tip:</strong> This logs to your personal cash expenses. 
-                  For business expenses or other categories, use the full Transaction tab.
-                  </div>
-
-                  </div>
-
-                </div>
-
-
-
-            <div className="mt-6 flex justify-end gap-3">
-                  <button
-
-                onClick={closeQuickExpense}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-                  >
-
-                    Cancel
-
-                  </button>
-
-                  <button
-
-                onClick={confirmQuickExpense}
-                disabled={!quickExpense.description || !quickExpense.amount}
-                className="bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Log Expense
-                  </button>
-
-                </div>
-
-          </Card>
-            </div>
-
-          )}
-
-        </>
-
-      )}
-
-
-
-      {/* Card Editing Modals */}
-
-      {editingCard && (
-
-        <div 
-
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
-
-          onClick={(e) => {
-
-            // Close if clicking backdrop
-
-            if (e.target === e.currentTarget) {
-
-              closeCardEditor();
-
-            }
-
-          }}
-
-        >
-
-          <div className="w-full max-w-2xl my-auto">
-
-            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
-
-            <div className="flex justify-between items-center mb-4">
-
-              <h3 className="text-xl font-bold text-white">
-
-                Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
-
-                     editingCard === 'savingsRateTarget' ? 'Savings Rate Target' :
-
-                     editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
-
-                     editingCard === 'creditScore' ? 'Credit Score' :
-
-                     editingCard === 'netWorth' ? 'Net Worth' :
-
-                     editingCard === 'cashOnHand' ? 'Survival Runway' :
-
-                     editingCard === 'debt' ? 'Debt Management' :
-
-
-
-                     editingCard === 'registeredAccounts' ? 'Registered Accounts' :
-
-                     editingCard === 'goals' ? 'Financial Goals' : editingCard}
-
-              </h3>
-
-              <button
-
-                onClick={closeCardEditor}
-
-                className="text-gray-400 hover:text-white"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              {/* Financial Freedom Goal Modal */}
-
-              {editingCard === 'financialFreedom' && (
-
-                <>
-
-                  <div className="grid grid-cols-2 gap-4">
-
-                    <div>
-
-                      <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
-
-                      <input
-
-                        type="number"
-
-                        value={tempCardData.targetAmount || ''}
-
-                        onChange={(e) => setTempCardData({...tempCardData, targetAmount: Number(e.target.value)})}
-                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
-
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <label className="block text-sm text-gray-300 mb-1">Current Investments</label>
-
-                      <input
-
-                        type="number"
-
-                        value={tempCardData.currentInvestments || ''}
-
-                        onChange={(e) => setTempCardData({...tempCardData, currentInvestments: Number(e.target.value)})}
-                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
-
-                      />
-
-                    </div>
-
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-
-                    <div>
-
-                      <label className="block text-sm text-gray-300 mb-1">Monthly Contribution</label>
-
-                      <input
-
-                        type="number"
-
-                        value={tempCardData.monthlyContribution || ''}
-
-                        onChange={(e) => setTempCardData({...tempCardData, monthlyContribution: Number(e.target.value)})}
-                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
-
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <label className="block text-sm text-gray-300 mb-1">Annual Return %</label>
-
-                      <input
-
-                        type="number"
-
-                        value={tempCardData.annualReturn || ''}
-
-                        onChange={(e) => setTempCardData({...tempCardData, annualReturn: Number(e.target.value)})}
-                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-emerald-500 focus:outline-none"
-
-                      />
-
-                    </div>
-
-                  </div>
-
-                </>
-
-              )}
-
-
-
-              {/* Survival Runway Modal */}
-
-              {editingCard === 'cashOnHand' && (
-
-                <>
-
-                  <div className="mb-4">
-
-                    <div className="flex justify-between items-center mb-2">
-
-                      <h4 className="text-lg font-semibold text-white">Bank Accounts</h4>
-
-                      <button
-
-                        onClick={() => {
-
-                          const newAccount = {
-
-                            id: Date.now(),
-
-                            name: '',
-
-                            balance: 0,
-
-                            type: 'Checking'
-
-                          };
-
-                          setTempCardData({
-
-                            ...tempCardData,
-
-                            accounts: [...(tempCardData.accounts || []), newAccount]
-
-                          });
-
-                        }}
-
-                        className="text-teal-400 hover:text-teal-300 text-sm flex items-center gap-1"
-
-                      >
-
-                        <Plus className="w-4 h-4" />
-
-                        Add Account
-
-                      </button>
-
-                    </div>
-
-                    
-
-                    <div className="space-y-3">
-
-                      {(tempCardData.accounts || []).map((account, index) => (
-
-                        <div key={account.id} className="bg-gray-700/50 rounded-lg p-3">
-
-                          <div className="grid grid-cols-12 gap-2 items-center">
-
-                            <div className="col-span-4">
-
-                              <input
-
-                                type="text"
-
-                                placeholder="Account Name"
-
-                                value={account.name}
-
-                                onChange={(e) => {
-
-                                  const updatedAccounts = [...tempCardData.accounts];
-
-                                  updatedAccounts[index] = {...account, name: e.target.value};
-
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            <div className="col-span-3">
-
-                              <select
-
-                                value={account.type}
-
-                                onChange={(e) => {
-
-                                  const updatedAccounts = [...tempCardData.accounts];
-
-                                  updatedAccounts[index] = {...account, type: e.target.value};
-
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
-
-                              >
-
-                                <option value="Checking">Checking</option>
-
-                                <option value="Savings">Savings</option>
-
-                                <option value="Investment Cash">Investment Cash</option>
-
-                                <option value="Money Market">Money Market</option>
-
-                                <option value="CD">CD</option>
-
-                              </select>
-
-                            </div>
-
-                            <div className="col-span-4">
-
-                              <input
-
-                                type="number"
-
-                                placeholder="Balance"
-
-                                value={account.balance || ''}
-
-                                onChange={(e) => {
-
-                                  const updatedAccounts = [...tempCardData.accounts];
-
-                                  updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  const newTotal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts, total: newTotal});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            <div className="col-span-1">
-
-                              <button
-
-                                onClick={() => {
-
-                                  const updatedAccounts = tempCardData.accounts.filter((_, i) => i !== index);
-
-                                  const newTotal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
-
-                                  setTempCardData({...tempCardData, accounts: updatedAccounts, total: newTotal});
-
-                                }}
-
-                                className="text-red-400 hover:text-red-300 p-1"
-
-                              >
-
-                                <Trash2 className="w-4 h-4" />
-
-                              </button>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                    
-
-                    <div className="mt-3 p-3 bg-teal-900/20 rounded-lg border border-teal-600/30">
-
-                      <div className="text-teal-400 font-semibold">
-
-                        Total Cash on Hand: ${(tempCardData.total || 0).toLocaleString()}
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </>
-
-              )}
-
-
-
-              {/* Debt Management Modal */}
-
-              {editingCard === 'debt' && (
-
-                <>
-
-                  <div className="mb-4">
-
-                    <div className="flex justify-between items-center mb-2">
-
-                      <h4 className="text-lg font-semibold text-white">Debt Accounts</h4>
-
-                      <button
-
-                        onClick={() => {
-
-                          const newAccount = {
-
-                            id: Date.now(),
-
-                            name: '',
-
-                            balance: 0,
-
-                            interestRate: 0,
-
-                            minPayment: 0
-                          };
-
-                          // Ensure tempCardData has the right structure
-
-                          const currentData = tempCardData || {};
-
-                          setTempCardData({
-
-                            ...currentData,
-
-                            accounts: [...(currentData.accounts || []), newAccount]
-
-                          });
-
-                        }}
-
-                        className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1"
-
-                      >
-
-                        <Plus className="w-4 h-4" />
-
-                        Add Debt
-
-                      </button>
-
-                    </div>
-
-                    
-
-                    <div className="space-y-3">
-
-                      {((tempCardData && tempCardData.accounts) || []).map((account, index) => (
-
-                        <div key={account.id} className="bg-gray-700/50 rounded-lg p-3 border border-red-600/20">
-
-                          <div className="grid grid-cols-12 gap-2 items-end">
-
-                            <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">Account Name</label>
-
-                              <input
-
-                                type="text"
-
-                                placeholder="Credit Card"
-
-                                value={account.name || ''}
-
-                                onChange={(e) => {
-
-                                  const currentData = tempCardData || {};
-
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-
-                                  updatedAccounts[index] = {...account, name: e.target.value};
-
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">Balance</label>
-                              <input
-
-                                type="number"
-
-                                placeholder="10000"
-
-                                value={account.balance || ''}
-                                onChange={(e) => {
-
-                                  const currentData = tempCardData || {};
-
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-
-                                  updatedAccounts[index] = {...account, balance: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-
-                                }}
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-                              />
-
-                            </div>
-
-                            <div className="col-span-2">
-                              <label className="block text-xs text-gray-400 mb-1">APR %</label>
-
-                              <input
-
-                                type="number"
-
-                                step="0.1"
-
-                                placeholder="19.9"
-
-                                value={account.interestRate || ''}
-                                onChange={(e) => {
-
-                                  const currentData = tempCardData || {};
-
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-
-                                  updatedAccounts[index] = {...account, interestRate: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-
-                              />
-
-                              </div>
-
-                            <div className="col-span-3">
-
-                              <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
-
-                              <input
-
-                                type="number"
-
-                                placeholder="200"
-
-                                value={account.minPayment || ''}
-                                onChange={(e) => {
-
-                                  const currentData = tempCardData || {};
-
-                                  const updatedAccounts = [...(currentData.accounts || [])];
-
-                                  updatedAccounts[index] = {...account, minPayment: e.target.value === '' ? 0 : Number(e.target.value)};
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            <div className="col-span-1">
-                              <button
-
-                                onClick={() => {
-
-                                  const currentData = tempCardData || {};
-
-                                  const updatedAccounts = (currentData.accounts || []).filter((_, i) => i !== index);
-                                  setTempCardData({...currentData, accounts: updatedAccounts});
-
-                                }}
-
-                                className="text-red-400 hover:text-red-300 p-1"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                    
-
-                    <div className="mt-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-
-                          <div className="text-red-400 font-semibold">
-
-                            Total Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.balance || 0), 0).toLocaleString()}
-                          </div>
-
-                        </div>
-
-                        <div>
-
-                          <div className="text-orange-400 font-semibold">
-
-                            Min Payment: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.minPayment || 0), 0).toLocaleString()}/mo
-
-                          </div>
-
-                        </div>
-
-                        <div>
-
-                          <div className="text-yellow-400 font-semibold">
-
-                            Avg APR: {(tempCardData && tempCardData.accounts && tempCardData.accounts.length > 0) ? 
-
-                              (tempCardData.accounts.reduce((sum, acc) => sum + (acc.interestRate || 0), 0) / tempCardData.accounts.length).toFixed(1) : 0}%
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </>
-
-              )}
-
-
-
-              {/* Savings Rate Target Modal */}
-
-              {editingCard === 'savingsRateTarget' && (
-
-                <div>
-
-                  <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
-
-                    <div className="text-blue-400 font-semibold text-sm mb-1">Current Rate (Auto-calculated)</div>
-
-                    <div className="text-2xl font-bold text-blue-400">{data.savingsRate.current}%</div>
-
-                    <div className="text-xs text-gray-300 mt-1">
-
-                      Based on your actual income and expenses from transactions
-
-                    </div>
-
-                  </div>
-
-                  
-
-                  <div>
-
-                    <label className="block text-sm text-gray-300 mb-1">Target Savings Rate %</label>
-
-                    <input
-
-                      type="number"
-
-                      value={tempCardData.target || ''}
-
-                      onChange={(e) => setTempCardData({...tempCardData, target: Number(e.target.value)})}
-                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-
-                      placeholder="e.g., 50"
-
-                      min="0"
-
-                      max="100"
-
-                    />
-
-                    <div className="mt-2 text-xs text-gray-400">
-
-                      <div className="grid grid-cols-1 gap-1">
-
-                        <div>💡 <strong>Common targets:</strong></div>
-
-                        <div>• 20% - Traditional advice</div>
-
-                        <div>• 30-40% - Aggressive saving</div>
-
-                        <div>• 50%+ - FIRE/Early retirement</div>
-
-                        <div>• 60%+ - Digital nomad lifestyle</div>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              )}
-
-
-
-              {/* Rainy Day Fund Modal */}
-
-              {editingCard === 'rainyDayFund' && (
-
-                <div className="grid grid-cols-2 gap-4">
-
-                  <div>
-
-                    <label className="block text-sm text-gray-300 mb-1">Current Amount</label>
-
-                    <input
-
-                      type="number"
-
-                      value={tempCardData.total || ''}
-
-                      onChange={(e) => setTempCardData({...tempCardData, total: e.target.value === '' ? 0 : Number(e.target.value)})}
-                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                    />
-
-                  </div>
-
-                  <div>
-
-                    <label className="block text-sm text-gray-300 mb-1">Goal Amount</label>
-
-                    <input
-
-                      type="number"
-
-                      value={tempCardData.goal || ''}
-
-                      onChange={(e) => setTempCardData({...tempCardData, goal: Number(e.target.value)})}
-                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-500 focus:outline-none"
-
-                    />
-
-                  </div>
-
-                </div>
-
-              )}
-
-
-
-              {/* Credit Score Modal */}
-
-              {editingCard === 'creditScore' && (
-
-                <div>
-
-                  <div className="mb-4">
-
-                    <div className="flex justify-between items-center mb-2">
-
-                      <h4 className="text-lg font-semibold text-white">Add New Credit Score</h4>
-
-                      <div className="text-sm text-indigo-400">
-
-                        Current: {tempCardData.current || 0}
-
-                      </div>
-
-                    </div>
-
-                    
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-
-                      <div>
-
-                        <label className="block text-sm text-gray-300 mb-1">New Credit Score</label>
-
-                        <input
-
-                          type="number"
-
-                          min="300"
-
-                          max="850"
-
-                          value={tempCardData.newScore || ''}
-
-                          onChange={(e) => setTempCardData({...tempCardData, newScore: Number(e.target.value)})}
-                          className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
-
-                          placeholder="750"
-
-                        />
-
-                        <div className="text-xs text-gray-400 mt-1">Range: 300-850</div>
-
-                      </div>
-
-                      
-
-                      <div>
-
-                        <label className="block text-sm text-gray-300 mb-1">Date</label>
-
-                        <input
-
-                          type="date"
-
-                          value={tempCardData.newDate || new Date().toISOString().split('T')[0]}
-
-                          onChange={(e) => {
-
-                            console.log('Date selected:', e.target.value);
-
-                            setTempCardData({...tempCardData, newDate: e.target.value});
-
-                          }}
-
-                          className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
-                        />
-
-                        <div className="text-xs text-gray-400 mt-1">When was this score checked?</div>
-
-                      </div>
-
-                    </div>
-
-                    
-
-                    <button
-
-                      onClick={() => {
-
-                        if (!tempCardData.newScore) return;
-
-                        
-
-                        const selectedDate = tempCardData.newDate || new Date().toISOString().split('T')[0];
-
-                        console.log('Adding score entry:', { date: selectedDate, score: tempCardData.newScore });
-
-                        const updatedHistory = [...(tempCardData.history || [])];
-
-                        
-
-                        // Add the new score entry to history
-
-                        updatedHistory.push({
-
-                          date: selectedDate,
-
-                          score: tempCardData.newScore
-
-                        });
-
-                        
-
-                        setTempCardData({
-
-                          ...tempCardData,
-
-                          current: tempCardData.newScore,
-
-                          history: updatedHistory,
-
-                          newScore: '',
-
-                          newDate: new Date().toISOString().split('T')[0]
-
-                        });
-
-                      }}
-
-                      disabled={!tempCardData.newScore}
-
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
-
-                    >
-
-                      <Plus className="w-4 h-4" />
-
-                      Add Score Entry
-
-                    </button>
-
-                  </div>
-
-                  
-
-                  {/* Credit Score History */}
-
-                  {tempCardData.history && tempCardData.history.length > 0 && (
-
-                    <div className="bg-indigo-900/20 rounded-lg p-3 border border-indigo-600/30">
-
-                      <div className="flex justify-between items-center mb-3">
-
-                        <h5 className="text-indigo-200 font-semibold">📈 Score History</h5>
-
-                        <div className="text-xs text-indigo-300">
-
-                          {tempCardData.history.length} entries
-
-                        </div>
-
-                      </div>
-
-                      
-
-                      <div className="space-y-2 max-h-40 overflow-y-auto">
-
-                        {[...tempCardData.history]
-
-                          .sort((a, b) => new Date(b.date) - new Date(a.date))
-
-                          .map((entry, index) => (
-
-                            <div key={index} className="flex justify-between items-center bg-gray-700/50 rounded p-2">
-
-                              <div className="flex items-center gap-3">
-
-                                <div className={`text-lg font-bold ${
-
-                                  entry.score >= 800 ? 'text-emerald-400' :
-
-                                  entry.score >= 740 ? 'text-green-400' :
-
-                                  entry.score >= 670 ? 'text-yellow-400' :
-
-                                  entry.score >= 580 ? 'text-orange-400' : 'text-red-400'
-
-                                }`}>
-
-                                  {entry.score}
-
-                                </div>
-
-                                <div className="text-sm text-gray-400">
-
-                                  {new Date(entry.date + 'T12:00:00').toLocaleDateString('en-US', { 
-
-                                    year: 'numeric', 
-
-                                    month: 'short', 
-
-                                    day: 'numeric' 
-
-                                  })}
-
-                                </div>
-
-                              </div>
-
-                              <button
-
-                                onClick={() => {
-
-                                  // Simple and reliable deletion - filter out this specific entry
-
-                                  const updatedHistory = tempCardData.history.filter(item => 
-
-                                    !(item.date === entry.date && item.score === entry.score)
-
-                                  );
-
-                                  setTempCardData({...tempCardData, history: updatedHistory});
-
-                                }}
-
-                                className="text-red-400 hover:text-red-300 p-1"
-
-                              >
-
-                                <Trash2 className="w-3 h-3" />
-
-                              </button>
-
-                            </div>
-
-                          ))}
-
-                      </div>
-
-                      
-
-                      <div className="mt-3 p-2 bg-indigo-800/20 rounded text-xs text-indigo-200">
-
-                        💡 <strong>Tip:</strong> Check your credit score monthly to track improvements from paying down debt and maintaining good credit habits.
-
-                      </div>
-
-                    </div>
-
-                  )}
-
-                </div>
-
-              )}
-
-
-
-              {/* Net Worth Modal */}
-
-              {editingCard === 'netWorth' && (
-
-                <>
-
-                  <div className="mb-4">
-
-                    <div className="flex justify-between items-center mb-2">
-
-                      <h4 className="text-lg font-semibold text-white">Assets & Liabilities</h4>
-
-                      <div className="flex gap-2">
-
-                        <button
-
-                          onClick={() => {
-
-                            const newAsset = {
-
-                              id: Date.now(),
-
-                              name: '',
-
-                              value: 0,
-
-                              type: 'asset',
-
-                              color: 'bg-emerald-500'
-
-                            };
-
-                            setTempCardData({
-
-                              ...tempCardData,
-
-                              breakdown: [...(tempCardData.breakdown || []), newAsset]
-
-                            });
-
-                          }}
-
-                          className="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-1 px-2 py-1 rounded bg-emerald-900/20"
-
-                        >
-
-                          <Plus className="w-4 h-4" />
-
-                          Add Asset
-
-                        </button>
-
-                        <button
-
-                          onClick={() => {
-
-                            const newLiability = {
-
-                              id: Date.now() + 1,
-
-                              name: '',
-
-                              value: 0,
-
-                              type: 'liability',
-
-                              color: 'bg-red-500'
-
-                            };
-
-                            setTempCardData({
-
-                              ...tempCardData,
-
-                              breakdown: [...(tempCardData.breakdown || []), newLiability]
-
-                            });
-
-                          }}
-
-                          className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1 px-2 py-1 rounded bg-red-900/20"
-
-                        >
-
-                          <Plus className="w-4 h-4" />
-
-                          Add Liability
-
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                    
-
-                    <div className="space-y-3">
-
-                      {(tempCardData.breakdown || []).map((item, index) => (
-
-                        <div key={item.id} className="bg-gray-700/50 rounded-lg p-3">
-
-                          <div className="grid grid-cols-12 gap-2 items-center">
-
-                            <div className="col-span-6">
-
-                              <label className="block text-xs text-gray-400 mb-1">
-
-                                {item.type === 'asset' ? 'Asset Name' : 'Liability Name'}
-
-                              </label>
-
-                              <input
-
-                                type="text"
-
-                                placeholder={item.type === 'asset' ? 'e.g., House, Car, Savings' : 'e.g., Mortgage, Credit Card, Loan'}
-
-                                value={item.name}
-
-                                onChange={(e) => {
-
-                                  const updatedBreakdown = [...tempCardData.breakdown];
-
-                                  updatedBreakdown[index] = {...item, name: e.target.value};
-
-                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            <div className="col-span-5">
-
-                              <label className="block text-xs text-gray-400 mb-1">Value</label>
-
-                              <input
-
-                                type="number"
-
-                                placeholder="Enter amount"
-
-                                value={Math.abs(item.value) || ''}
-
-                                onChange={(e) => {
-
-                                  const updatedBreakdown = [...tempCardData.breakdown];
-
-                                  const value = e.target.value === '' ? 0 : Number(e.target.value);
-                                  updatedBreakdown[index] = {
-
-                                    ...item, 
-
-                                    value: item.type === 'liability' ? -value : value
-                                  };
-
-                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
-                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-emerald-500 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            <div className="col-span-1">
-
-                              <label className="block text-xs text-gray-400 mb-1">&nbsp;</label>
-
-                              <button
-
-                                onClick={() => {
-
-                                  const updatedBreakdown = tempCardData.breakdown.filter((_, i) => i !== index);
-
-                                  const newTotal = updatedBreakdown.reduce((sum, b) => sum + b.value, 0);
-
-                                  setTempCardData({...tempCardData, breakdown: updatedBreakdown, total: newTotal});
-
-                                }}
-
-                                className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-900/20"
-
-                              >
-
-                                <Trash2 className="w-4 h-4" />
-
-                              </button>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      ))}
-
-                      
-
-                      {(!tempCardData.breakdown || tempCardData.breakdown.length === 0) && (
-
-                        <div className="text-center text-gray-400 py-4 border-2 border-dashed border-gray-600 rounded-lg">
-
-                          No assets or liabilities added yet. Use the buttons above to get started.
-
-                        </div>
-
-                      )}
-
-                    </div>
-
-                    
-
-                    <div className="mt-4 p-3 bg-emerald-900/20 rounded-lg border border-emerald-600/30">
-
-                      <div className="flex justify-between items-center">
-
-                        <span className="text-emerald-400 font-semibold">Total Net Worth:</span>
-
-                        <span className="text-2xl font-bold text-white">
-
-                          ${(tempCardData.total || 0).toLocaleString()}
-
-                        </span>
-
-                      </div>
-
-                      <div className="text-xs text-gray-400 mt-1">
-
-                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} • 
-
-                        Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0)).toLocaleString()}
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </>
-
-              )}
-
-
-
-              {/* Cash Flow Modal - REMOVED: Cash Flow is calculated from Income - Expenses */}
-
-
-
-              {/* Retirement Accounts Modal - Fully Editable System */}
-
-              {editingCard === 'registeredAccounts' && (
-
-                <div>
-
-                  <div className="flex justify-between items-center mb-4">
-
-                    <h3 className="text-lg font-semibold text-purple-400">Manage Retirement Accounts</h3>
-                    <button
-
-                      onClick={() => {
-
-                        const newAccount = {
-
-                          id: `account_${Date.now()}`,
-
-                          name: 'New Account',
-
-                          contributed: 0,
-
-                          limit: 0,
-
-                          type: 'tax-free',
-
-                          description: 'Custom retirement account'
-
-                        };
-
-                        setTempCardData({
-
-                          ...tempCardData,
-
-                          accounts: [...(tempCardData.accounts || []), newAccount]
-
-                        });
-
-                      }}
-
-                      className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
-                    >
-
-                      <Plus className="w-4 h-4" />
-
-                      Add Account
-
-                    </button>
-
-                  </div>
-
-
-
-                  {(!tempCardData.accounts || tempCardData.accounts.length === 0) ? (
-
-                    <div className="text-center py-8 text-gray-400">
-
-                      <div className="mb-4">
-
-                        <div className="w-16 h-16 bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Wallet className="w-8 h-8 text-purple-400" />
-                        </div>
-
-                        <h4 className="text-lg font-semibold mb-2">No Retirement Accounts</h4>
-
-                        <p className="text-sm">Add your retirement accounts like TFSA, RRSP, 401(k), IRA, etc.</p>
-
-                      </div>
-
-                      <button
-
-                        onClick={() => {
-
-                          // Add default Canadian accounts as starting point
-
-                          setTempCardData({
-
-                            ...tempCardData,
-
-                            accounts: [
-
-                              {
-
-                                id: 'tfsa_default',
-
-                                name: 'TFSA',
-
-                                contributed: 45000,
-
-                                limit: 88000,
-
-                                type: 'tax-free',
-
-                                description: 'Tax-Free Savings Account'
-
-                              },
-
-                              {
-
-                                id: 'rrsp_default', 
-
-                                name: 'RRSP',
-
-                                contributed: 25000,
-
-                                limit: 31560,
-
-                                type: 'tax-deferred',
-
-                                description: 'Registered Retirement Savings Plan'
-
-                              }
-
-                            ]
-
-                          });
-
-                        }}
-
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-                      >
-
-                        Add Default Accounts (TFSA & RRSP)
-
-                      </button>
-
-                    </div>
-
-                  ) : (
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                      {tempCardData.accounts.map((account, index) => {
-
-                        const colors = [
-                          'green', 'blue', 'orange', 'teal', 'indigo', 'pink'
-                        ];
-                        const color = colors[index % colors.length];
-                        
-                        return (
-
-                          <div key={account.id} className={`bg-${color}-900/20 rounded-lg p-4 border border-${color}-600/30 relative`}>
-                            <div className="flex justify-between items-start mb-3">
-
-                                <input
-
-                                  type="text"
-
-                                  value={account.name}
-
-                                  onChange={(e) => {
-
-                                    const updated = [...tempCardData.accounts];
-
-                                    updated[index] = { ...updated[index], name: e.target.value };
-
-                                    setTempCardData({ ...tempCardData, accounts: updated });
-
-                                  }}
-
-                                className={`text-lg font-semibold text-${color}-400 bg-transparent border-none outline-none focus:bg-gray-700/50 rounded px-2 py-1`}
-                                />
-
-                              <button
-
-                                onClick={() => {
-
-                                  const updated = tempCardData.accounts.filter((_, i) => i !== index);
-
-                                  setTempCardData({ ...tempCardData, accounts: updated });
-
-                                }}
-
-                                className="text-red-400 hover:text-red-300 p-1"
-                              >
-
-                                <X className="w-4 h-4" />
-
-                              </button>
-
-                            </div>
-
-
-
-                            <div className="space-y-3">
-
-                              <div>
-
-                                <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
-
-                                <input
-
-                                  type="number"
-
-                                  value={account.contributed}
-                                  onChange={(e) => {
-
-                                    const updated = [...tempCardData.accounts];
-
-                                    updated[index] = { ...updated[index], contributed: Number(e.target.value) };
-                                    setTempCardData({ ...tempCardData, accounts: updated });
-
-                                  }}
-
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
-                                />
-
-                              </div>
-
-
-
-                              <div>
-
-                                <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
-
-                                <input
-
-                                  type="number"
-
-                                  value={account.limit}
-                                  onChange={(e) => {
-
-                                    const updated = [...tempCardData.accounts];
-
-                                    updated[index] = { ...updated[index], limit: Number(e.target.value) };
-                                    setTempCardData({ ...tempCardData, accounts: updated });
-
-                                  }}
-
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
-                                />
-
-                              </div>
-
-
-
-                              <div>
-
-                                <label className="block text-sm text-gray-300 mb-1">Account Type</label>
-
-                                <select
-
-                                  value={account.type}
-
-                                  onChange={(e) => {
-
-                                    const updated = [...tempCardData.accounts];
-
-                                    updated[index] = { ...updated[index], type: e.target.value };
-
-                                    setTempCardData({ ...tempCardData, accounts: updated });
-
-                                  }}
-
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
-                                >
-
-                                  <option value="tax-free">Tax-Free</option>
-
-                                  <option value="tax-deferred">Tax-Deferred</option>
-
-                                  <option value="pension">Pension</option>
-
-                                  <option value="savings">Savings</option>
-
-                                </select>
-
-                              </div>
-
-
-
-                              <div>
-
-                                <label className="block text-sm text-gray-300 mb-1">Description</label>
-
-                                <input
-
-                                  type="text"
-
-                                  value={account.description}
-
-                                  onChange={(e) => {
-
-                                    const updated = [...tempCardData.accounts];
-
-                                    updated[index] = { ...updated[index], description: e.target.value };
-
-                                    setTempCardData({ ...tempCardData, accounts: updated });
-
-                                  }}
-
-                                  placeholder="e.g., Tax-Free Savings Account"
-                                  className={`w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-${color}-500 focus:outline-none`}
-                                />
-
-                              </div>
-
-
-
-                              {/* Progress Bar */}
-
-                              <div>
-
-                                <div className="flex justify-between text-sm text-gray-400 mb-1">
-
-                                  <span>Contribution Room Used</span>
-
-                                  <span>{Math.round((account.contributed / account.limit) * 100) || 0}%</span>
-
-                                </div>
-
-                                <div className="w-full bg-gray-700 rounded-full h-2">
-                                  <div 
-
-                                    className={`bg-${color}-500 h-2 rounded-full transition-all duration-300`}
-                                    style={{ width: `${Math.min((account.contributed / account.limit) * 100, 100) || 0}%` }}
-
-                                  ></div>
-
-                                </div>
-
-                              </div>
-
-
-
-                              {/* Account Type Badge */}
-
-                              <div className={`inline-block px-2 py-1 bg-${color}-600/20 text-${color}-400 text-xs rounded border border-${color}-600/30`}>
-                                {account.type.charAt(0).toUpperCase() + account.type.slice(1).replace('-', ' ')}
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                        );
-
-                      })}
-
-                    </div>
-
-                  )}
-
-                </div>
-
-              )}
-
-
-
-              {/* Goals Modal */}
-
-              {editingCard === 'goals' && (
-
-                <div>
-
-                  <div className="flex justify-between items-center mb-4">
-
-                    <h4 className="text-lg font-semibold text-white">Financial Goals</h4>
-                    <button
-
-                      onClick={() => {
-
-                        const newGoal = {
-
-                          id: Date.now(),
-
-                          name: '',
-
-                          targetAmount: 0,
-
-                          currentAmount: 0,
-
-                          deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
-                        };
-
-                        setTempCardData([...(tempCardData || []), newGoal]);
-
-                      }}
-
-                      className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors"
-
-                    >
-
-                      <Plus className="w-3 h-3" />
-
-                      Add Goal
-
-                    </button>
-
-                  </div>
-
-                  
-
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
-
-                    {(tempCardData || []).length === 0 ? (
-
-                      <div className="text-center py-8 text-gray-400">
-
-                        <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
-
-                        <p>No financial goals yet.</p>
-
-                        <p className="text-sm">Click "Add Goal" to create your first one!</p>
-
-                      </div>
-
-                    ) : (
-
-                      (tempCardData || []).map((goal, index) => (
-
-                        <div key={goal.id} className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
-
-                          <div className="flex justify-between items-start mb-3">
-
-                            <h5 className="text-white font-medium">Goal #{index + 1}</h5>
-
-                            <button
-
-                              onClick={() => {
-
-                                const updatedGoals = tempCardData.filter((_, i) => i !== index);
-
-                                setTempCardData(updatedGoals);
-
-                              }}
-
-                              className="text-red-400 hover:text-red-300 p-1 hover:bg-red-900/20 rounded transition-colors"
-
-                            >
-
-                              <Trash2 className="w-4 h-4" />
-
-                            </button>
-
-                          </div>
-
-                          
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-
-                            <div>
-
-                              <label className="block text-xs text-gray-400 mb-1">Goal Name</label>
-
-                              <input
-
-                                type="text"
-
-                                placeholder="e.g., New MacBook, Vacation, Car..."
-
-                                value={goal.name}
-
-                                onChange={(e) => {
-
-                                  const updatedGoals = [...tempCardData];
-
-                                  updatedGoals[index] = {...goal, name: e.target.value};
-
-                                  setTempCardData(updatedGoals);
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            
-
-                            <div>
-
-                              <label className="block text-xs text-gray-400 mb-1">Target Amount</label>
-
-                              <input
-
-                                type="number"
-
-                                placeholder="0"
-
-                                value={goal.targetAmount || ''}
-                                onChange={(e) => {
-
-                                  const updatedGoals = [...tempCardData];
-
-                                  updatedGoals[index] = {...goal, targetAmount: e.target.value === '' ? '' : Number(e.target.value)};
-                                  setTempCardData(updatedGoals);
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            
-
-                            <div>
-
-                              <label className="block text-xs text-gray-400 mb-1">Current Progress</label>
-
-                              <input
-
-                                type="number"
-
-                                placeholder="0"
-
-                                value={goal.currentAmount || ''}
-                                onChange={(e) => {
-
-                                  const updatedGoals = [...tempCardData];
-
-                                  updatedGoals[index] = {...goal, currentAmount: e.target.value === '' ? '' : Number(e.target.value)};
-                                  setTempCardData(updatedGoals);
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
-
-                              />
-
-                            </div>
-
-                            
-
-                            <div>
-
-                              <label className="block text-xs text-gray-400 mb-1">Target Date</label>
-
-                              <input
-
-                                type="date"
-
-                                value={goal.targetDate}
-
-                                onChange={(e) => {
-
-                                  const updatedGoals = [...tempCardData];
-
-                                  updatedGoals[index] = {...goal, targetDate: e.target.value};
-
-                                  setTempCardData(updatedGoals);
-
-                                }}
-
-                                className="w-full bg-gray-600 text-white px-3 py-2 rounded border border-gray-500 focus:border-amber-400 focus:outline-none"
-                              />
-
-                            </div>
-
-                          </div>
-
-                          
-
-                          {goal.targetAmount > 0 && (
-
-                            <div className="mt-3">
-
-                              <div className="flex justify-between text-xs text-gray-400 mb-1">
-
-                                <span>Progress</span>
-
-                                <span>{Math.round((goal.currentAmount / goal.targetAmount) * 100)}%</span>
-
-                              </div>
-
-                              <div className="w-full bg-gray-700 rounded-full h-2">
-
-                                <div 
-
-                                  className="bg-amber-500 h-2 rounded-full transition-all duration-300" 
-
-                                  style={{ width: `${Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)}%` }}
-
-                                ></div>
-
-                              </div>
-
-                              <div className="flex justify-between text-xs text-gray-400 mt-1">
-
-                                <span>${goal.currentAmount.toLocaleString()}</span>
-
-                                <span>${goal.targetAmount.toLocaleString()}</span>
-
-                              </div>
-
-                            </div>
-
-                          )}
-
-                        </div>
-
-                      ))
-
-                    )}
-
-                  </div>
-
-                  
-
-                  {(tempCardData || []).length > 0 && (
-
-                    <div className="mt-4 p-3 bg-amber-900/20 rounded-lg border border-amber-600/30">
-
-                      <div className="text-sm text-amber-200">
-
-                        <strong>💡 Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
-
-                        Breaking big goals into smaller milestones helps maintain motivation!
-
-                      </div>
-
-                    </div>
-
-                  )}
-
-                </div>
-
-              )}
-
-
-
-
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-2">
-
-              <button
-
-                onClick={closeCardEditor}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={saveCardData}
-
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Save Changes
-
-              </button>
-
-            </div>
-
-          </Card>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* Reset Data Modal */}
-
-      {showResetModal && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
-          <Card className="w-full max-w-md border-red-500/30">
-
-            <div className="flex justify-between items-center mb-4">
-
-              <h3 className="text-xl font-bold text-white">Reset Dashboard Data</h3>
-
-              <button
-
-                onClick={closeResetModal}
-
-                className="text-gray-400 hover:text-white"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              <div className="p-4 bg-red-900/20 rounded-lg border border-red-600/30">
-
-                <div className="flex items-start gap-3">
-
-                  <div className="text-red-400 mt-0.5">
-
-                    <AlertTriangle className="w-5 h-5" />
-
-                  </div>
-
-                  <div>
-
-                    <h4 className="text-red-400 font-semibold mb-1">Warning: Data Reset</h4>
-
-                    <p className="text-sm text-gray-300">
-
-                      This action will permanently replace your current data. Choose carefully:
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-
-              <div className="space-y-3">
-
-                <h5 className="text-white font-medium">Reset Options:</h5>
-
-                
-
-                <div className="space-y-2">
-
-                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50">
-
-                    <input
-
-                      type="radio"
-
-                      name="resetType"
-
-                      checked={!resetToSample}
-                      onChange={() => setResetToSample(false)}
-                      className="mt-1 text-red-400"
-                    />
-
-                    <div>
-
-                      <div className="text-white font-medium">Fresh Start (Blank Data)</div>
-                      <div className="text-xs text-gray-400">
-                        Clear everything and start with empty dashboard
-                      </div>
-
-                    </div>
-
-                  </label>
-
-                  
-
-                  <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50">
-
-                    <input
-
-                      type="radio"
-
-                      name="resetType"
-
-                      checked={resetToSample}
-                      onChange={() => setResetToSample(true)}
-                      className="mt-1 text-red-400"
-
-                    />
-
-                    <div>
-
-                      <div className="text-white font-medium">Sample Data</div>
-                      <div className="text-xs text-gray-400">
-                        Reset with example data for learning/demo purposes
-                      </div>
-
-                    </div>
-
-                  </label>
-
-                </div>
-
-              </div>
-
-
-
-              <div className="space-y-2">
-
-                <label className="block text-white font-medium">
-
-                  Start Date for Tracking:
-
-                </label>
-
-                <input
-
-                  type="date"
-
-                  value={resetStartDate}
-
-                  onChange={(e) => setResetStartDate(e.target.value)}
-
-                  className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-red-400 focus:outline-none"
-                />
-
-                <p className="text-xs text-gray-400">
-
-                  This will be your financial tracking start date
-
-                </p>
-
-              </div>
-
-
-
-              <div className="bg-gray-700/30 rounded-lg p-3">
-
-                <h5 className="text-white font-medium mb-2">What will be reset:</h5>
-                <div className="text-sm space-y-1 text-gray-300">
-
-                  <div>• All transactions and financial data</div>
-                  <div>• Investment portfolio and holdings</div>
-                      <div>• Business income/expense records</div>
-
-                  <div>• Dashboard metrics and history</div>
-                  <div>• Goals and savings targets</div>
-                </div>
-
-              </div>
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-3">
-
-              <button
-
-                onClick={closeResetModal}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={confirmResetData}
-
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-
-              >
-
-                <Trash2 className="w-4 h-4" />
-
-                Reset Data
-
-              </button>
-
-            </div>
-
-          </Card>
-
-        </div>
-
-      )}
-
-
-
-      {/* Subscription Manager Modal */}
-
-      {showSubscription && (
-
-        <SubscriptionManager
-
-          user={user}
-
-          currentPlan={userPlan}
-
-          onClose={() => setShowSubscription(false)}
-
-        />
-
-      )}
-
-
-
-      {/* Footer */}
-
-      <footer className="mt-12 border-t border-gray-700 pt-8 pb-6">
-
-        <div className="max-w-6xl mx-auto px-4">
-
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-
-            <div className="text-center md:text-left">
-
-              <h3 className="text-lg font-semibold text-white mb-1">The Freedom Compass</h3>
-              <p className="text-gray-400 text-sm">Navigate to your financial freedom</p>
-
-            </div>
-
-            
-
-            <div className="flex flex-wrap justify-center md:justify-end items-center space-x-6 text-sm">
-
-              <button
-
-                onClick={() => setShowPrivacyPolicy(true)}
-
-                className="text-gray-400 hover:text-white transition-colors"
-
-              >
-
-                Privacy Policy
-
-              </button>
-
-              <button
-
-                onClick={() => setShowTermsOfService(true)}
-
-                className="text-gray-400 hover:text-white transition-colors"
-
-              >
-
-                Terms of Service
-
-              </button>
-
-              <span className="text-gray-500">
-
-                © {new Date().getFullYear()} Survive Backpacking. All rights reserved.
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </footer>
-
-
-
-      {/* Privacy Policy Modal */}
-
-      {showPrivacyPolicy && (
-
-        <PrivacyPolicy onClose={() => setShowPrivacyPolicy(false)} />
-
-      )}
-
-
-
-      {/* Terms of Service Modal */}
-
-      {showTermsOfService && (
-
-        <TermsOfService onClose={() => setShowTermsOfService(false)} />
-
-      )}
-
-
-
-      {/* Help FAQ Modal */}
-
-      {showHelpFAQ && (
-
-        <HelpFAQ onClose={() => setShowHelpFAQ(false)} />
-      )}
-
-
-
-      {/* Pricing Modal */}
-
-      {showPricingModal && (
-
-        <PricingModal
-
-          onClose={() => setShowPricingModal(false)}
-
-          currentPlan={userPlan}
-
-          onUpgrade={handleUpgrade}
-
-        />
-
-      )}
-
-
-
-      {/* Upgrade Prompt Modal */}
-
-      {showUpgradePrompt && (
-
-        <UpgradePrompt
-
-          onClose={() => setShowUpgradePrompt(false)}
-
-          featureName={upgradePromptData.featureName}
-
-          requiredPlan={upgradePromptData.requiredPlan}
-
-          onViewPlans={() => {
-
-            setShowUpgradePrompt(false);
-
-            setShowPricingModal(true);
-
-          }}
-
-          currentPlan={userPlan}
-
-          onUpgrade={handleUpgrade}
-
-          isFoundersCircleAvailable={isFoundersCircleAvailable()}
-
-        />
-
-      )}
-
-      
-
-      {/* 🛠️ SECURE DEVELOPER PANEL - Only visible to admin emails */}
-
-      {showDevPanel && isAdmin && (
-
-        <div className="fixed bottom-4 right-4 bg-gray-900 border-2 border-amber-500 rounded-lg shadow-2xl p-6 z-50 min-w-[300px]">
-
-          <div className="flex items-center justify-between mb-4">
-
-            <div className="flex items-center gap-2">
-
-              <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
-
-              <h3 className="text-white font-bold text-sm">🛠️ DEVELOPER MODE</h3>
-
-            </div>
-
-            <button
-
-              onClick={() => setShowDevPanel(false)}
-
-              className="text-gray-400 hover:text-white transition-colors"
-
-            >
-
-              ✕
-
-            </button>
-
-          </div>
-
-          
-
-          <div className="space-y-3">
-
-            <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
-
-              <span className="text-green-400">●</span>
-
-              Admin: {devDemoMode ? 'demo@example.com' : user?.email}
-
-            </div>
-
-            
-
-            <div>
-
-              <label className="text-gray-300 text-sm font-semibold block mb-2">
-
-                Override Subscription Tier:
-
-              </label>
-
-              <select
-
-                value={devOverridePlan || 'none'}
-
-                onChange={(e) => {
-
-                  const value = e.target.value;
-
-                  if (value === 'none') {
-
-                    setDevOverridePlan(null);
-
-                  } else {
-
-                    setDevOverridePlan(value);
-
-                    setUserPlan(value);
-
-                  }
-
-                }}
-
-                className="w-full bg-gray-800 text-white border border-gray-700 hover:border-amber-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
-
-              >
-
-                <option value="none">🔄 Use Real Subscription</option>
-
-                <option value={SUBSCRIPTION_TIERS.FREE}>🆓 FREE (Recon Kit)</option>
-
-                <option value={SUBSCRIPTION_TIERS.CLIMBER}>🧗 CLIMBER ($7.99/mo)</option>
-
-                <option value={SUBSCRIPTION_TIERS.OPERATOR}>⚙️ OPERATOR ($14.99/mo)</option>
-
-                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
-
-              </select>
-
-            </div>
-
-            
-
-            {/* 🎭 DEMO MODE TOGGLE */}
-
-            <div className="pt-3 border-t border-gray-700">
-
-              <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-all">
-
-                <input
-
-                  type="checkbox"
-
-                  checked={devDemoMode}
-
-                  onChange={(e) => setDevDemoMode(e.target.checked)}
-
-                  className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-800"
-
-                />
-
-                <div className="flex-1">
-
-                  <span className="text-white font-semibold text-sm block">🎭 Demo Mode</span>
-
-                  <span className="text-gray-400 text-xs">Hide real name & email</span>
-
-                </div>
-
-              </label>
-
-              {devDemoMode && (
-
-                <div className="mt-2 text-xs text-purple-400 bg-purple-500/10 rounded px-3 py-2">
-
-                  ✨ Demo Mode ON: Shows "Demo User" & "demo@example.com"
-
-                </div>
-
-              )}
-
-            </div>
-
-            
-
-            <div className="pt-3 border-t border-gray-700 space-y-2">
-
-              <div className="text-xs space-y-1">
-
-                <div className="flex justify-between">
-
-                  <span className="text-gray-500">Active Plan:</span>
-
-                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
-
-                </div>
-
-                <div className="flex justify-between">
-
-                  <span className="text-gray-500">Real Subscription:</span>
-
-                  <span className="text-blue-400">{userPlan}</span>
-
-                </div>
-
-                {devOverridePlan && (
-
-                  <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
-
-                    ⚠️ Dev Override Active
-
-                  </div>
-
-                )}
-
-              </div>
-
-            </div>
-
-            
-
-            <div className="pt-2 text-xs text-gray-500 text-center border-t border-gray-700">
-
-              Press <kbd className="px-1 py-0.5 bg-gray-800 rounded text-amber-400">Ctrl+Shift+Alt+D</kbd> to toggle
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* 💬 FEEDBACK BUTTON - Moved to User Menu Dropdown (cleaner UX) */}
-
-
-
-      {/* 💬 FEEDBACK MODAL */}
-
-      {showFeedbackModal && (
-
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
-
-          <Card className="w-full max-w-lg border-blue-500/30 animate-fade-in">
-
-            <div className="flex justify-between items-center mb-6">
-
-              <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-
-                <MessageCircle className="w-6 h-6 text-blue-400" />
-
-                Send Feedback
-
-              </h3>
-
-              <button
-
-                onClick={() => setShowFeedbackModal(false)}
-
-                className="text-gray-400 hover:text-white transition-colors"
-
-              >
-
-                <X className="w-5 h-5" />
-
-              </button>
-
-            </div>
-
-            
-
-            <div className="space-y-4">
-
-              {/* Type Selector */}
-
-              <div className="flex gap-3">
-
-                <button
-
-                  onClick={() => {
-
-                    setFeedbackType('bug');
-
-                    setFeedbackData({...feedbackData, type: 'bug'});
-
-                  }}
-
-                  className={`flex-1 py-3 px-4 rounded-lg transition-all font-semibold flex items-center justify-center gap-2 ${
-
-                    feedbackType === 'bug' 
-
-                      ? 'bg-red-600 text-white shadow-lg scale-105' 
-
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-
-                  }`}
-
-                >
-
-                  <Bug className="w-5 h-5" />
-
-                  Report Bug
-
-                </button>
-
-                <button
-
-                  onClick={() => {
-
-                    setFeedbackType('feature');
-
-                    setFeedbackData({...feedbackData, type: 'feature'});
-
-                  }}
-
-                  className={`flex-1 py-3 px-4 rounded-lg transition-all font-semibold flex items-center justify-center gap-2 ${
-
-                    feedbackType === 'feature' 
-
-                      ? 'bg-amber-600 text-white shadow-lg scale-105' 
-
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-
-                  }`}
-
-                >
-
-                  <Lightbulb className="w-5 h-5" />
-
-                  Request Feature
-
-                </button>
-
-              </div>
-
-
-
-              {/* Info Box */}
-
-              <div className={`rounded-lg p-4 border ${
-
-                feedbackType === 'bug' 
-
-                  ? 'bg-red-900/20 border-red-500/30' 
-
-                  : 'bg-amber-900/20 border-amber-500/30'
-
-              }`}>
-
-                <p className={`text-sm ${
-
-                  feedbackType === 'bug' ? 'text-red-300' : 'text-amber-300'
-
-                }`}>
-
-                  {feedbackType === 'bug' 
-
-                    ? '🐛 Found a bug? Let us know! We\'ll fix it ASAP.' 
-
-                    : '💡 Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
-
-                </p>
-
-              </div>
-
-
-
-              {/* Message Input */}
-
-              <div>
-
-                <label className="block text-white font-semibold mb-2">
-
-                  {feedbackType === 'bug' ? 'Describe the bug:' : 'Describe your feature idea:'}
-
-                </label>
-
-                <textarea
-
-                  value={feedbackData.message}
-
-                  onChange={(e) => setFeedbackData({...feedbackData, message: e.target.value})}
-
-                  placeholder={feedbackType === 'bug' 
-
-                    ? 'What happened? What did you expect to happen?' 
-
-                    : 'What feature would you like to see? How would it help you?'}
-
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[120px] resize-none"
-
-                  rows="5"
-
-                />
-
-              </div>
-
-
-
-              {/* Email Input */}
-
-              <div>
-
-                <label className="block text-white font-semibold mb-2">
-
-                  Your Email (for follow-up):
-
-                </label>
-
-                <input
-
-                  type="email"
-
-                  value={feedbackData.email}
-
-                  onChange={(e) => setFeedbackData({...feedbackData, email: e.target.value})}
-
-                  placeholder="your@email.com"
-
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-
-                />
-
-              </div>
-
-
-
-              {/* Current Page Info */}
-
-              <div className="bg-gray-800/50 rounded-lg p-3 text-xs text-gray-400">
-
-                <div className="flex justify-between">
-
-                  <span>Current Page:</span>
-
-                  <span className="text-blue-400 font-semibold">{activeTab}</span>
-
-                </div>
-
-                <div className="flex justify-between mt-1">
-
-                  <span>Your Plan:</span>
-
-                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            
-
-            <div className="mt-6 flex justify-end gap-3">
-
-              <button
-
-                onClick={() => setShowFeedbackModal(false)}
-
-                className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold"
-
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-
-                onClick={handleSubmitFeedback}
-
-                className={`px-6 py-3 rounded-lg transition-all font-semibold flex items-center gap-2 ${
-
-                  feedbackType === 'bug'
-
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-
-                    : 'bg-amber-600 hover:bg-amber-700 text-white'
-
-                } hover:scale-105 shadow-lg`}
-
-              >
-
-                <Send className="w-4 h-4" />
-
-                Send {feedbackType === 'bug' ? 'Bug Report' : 'Feature Request'}
-
-              </button>
-
-            </div>
-
-          </Card>
-
-        </div>
-
-      )}
-
-    </div>
-
-  );
-
-}
-
-
-
-// Wrap the entire app with error boundary for maximum protection
-
-const AppWithErrorBoundary = () => (
-
-  <ErrorBoundary>
-
-    <App />
-
-  </ErrorBoundary>
-
-);
-
-
-
-export default AppWithErrorBoundary;
-
