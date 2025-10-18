@@ -314,21 +314,21 @@ const initialData = {
     ]
   },
   expenses: { 
-    total: 2000,  // Realistic monthly expenses
+    total: 1297,  // Matches actual transaction total
     categories: [
       { id: 1, name: 'Rent', amount: 900, color: 'bg-red-500' },
-      { id: 2, name: 'Transportation', amount: 300, color: 'bg-yellow-500' },
-      { id: 3, name: 'Groceries', amount: 400, color: 'bg-green-500' },
-      { id: 4, name: 'Utilities & Phone', amount: 200, color: 'bg-blue-500' },
-      { id: 5, name: 'Entertainment', amount: 150, color: 'bg-purple-500' },
-      { id: 6, name: 'Other', amount: 50, color: 'bg-gray-400' },
+      { id: 2, name: 'Transportation', amount: 50, color: 'bg-yellow-500' },
+      { id: 3, name: 'Groceries', amount: 120, color: 'bg-green-500' },
+      { id: 4, name: 'Debt Payment', amount: 200, color: 'bg-blue-500' },
+      { id: 5, name: 'Entertainment', amount: 27, color: 'bg-purple-500' },
+      { id: 6, name: 'Other', amount: 0, color: 'bg-gray-400' },
     ]
   },
-  cashflow: { total: 1000 },  // $1k/month savings
+  cashflow: { total: 1703 },  // $3,000 income - $1,297 expenses = $1,703 savings
   savingsRate: { 
-    current: 33,  // 33% savings rate (very achievable!)
+    current: 57,  // 57% savings rate (1,703 / 3,000)
     target: 40,
-    monthly: 1000,
+    monthly: 1703,
     monthlyIncome: 3000
   },
   goals: [
@@ -435,12 +435,12 @@ const initialData = {
       month: '2025-01', 
       netWorth: 4700,      // Realistic beginner: cash + car - debt
       income: 3000,        // Entry-level job
-      expenses: 2000,      // Manageable expenses
-      cashflow: 1000,      // $1k/month savings
+      expenses: 1297,      // Matches actual transaction total
+      cashflow: 1703,      // $3,000 - $1,297 = $1,703 savings
       businessIncome: 0,   // No business yet
       businessExpenses: 0,
       investmentValue: 0,  // Learning phase
-      savingsRate: 33      // Achievable 33%
+      savingsRate: 57      // 1,703 / 3,000 = 57%
     },
     { 
       month: '2024-12', 
@@ -11845,6 +11845,16 @@ function App() {
       
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
+      
+      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      setTimeout(() => {
+        // Check if user has seen Quick Start before
+        const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
+        if (!hasSeenQuickStart) {
+          console.log('🚀 Showing Quick Start popup for new signup user');
+          setShowQuickStart(true);
+        }
+      }, 2500); // 2.5 second delay
     } catch (error) {
       console.error('Signup error:', error);
       
@@ -11886,6 +11896,17 @@ function App() {
       await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
       showNotification('Welcome back!', 'success');
       setAuthForm({ email: '', password: '', name: '' });
+      
+      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      setTimeout(() => {
+        // Check if user has seen Quick Start before
+        const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
+        if (!hasSeenQuickStart) {
+          console.log('🚀 Showing Quick Start popup for new user');
+          setShowQuickStart(true);
+        }
+      }, 2500); // 2.5 second delay
+      
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -11968,6 +11989,16 @@ function App() {
       await signInWithEmailAndPassword(auth, existingUserWithPayment.email, authForm.password);
       
       showNotification(`Welcome ${existingUserWithPayment.name}! Your account is now set up.`, 'success');
+      
+      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      setTimeout(() => {
+        // Check if user has seen Quick Start before
+        const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
+        if (!hasSeenQuickStart) {
+          console.log('🚀 Showing Quick Start popup for new webhook-created user');
+          setShowQuickStart(true);
+        }
+      }, 2500); // 2.5 second delay
       
       // Reset states
       setShowSetPassword(false);
