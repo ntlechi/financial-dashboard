@@ -687,6 +687,51 @@ async function handlePaymentSucceeded(invoice) {
             return;
           } catch (authError) {
             console.log('❌ No user found in Firebase Auth:', authError.message);
+            
+            // Create user if they don't exist (for Payment Links)
+            console.log('🔄 Creating new Firebase user for Payment Link customer:', customer.email);
+            try {
+              const newUser = await admin.auth().createUser({
+                email: customer.email,
+                displayName: customer.name || 'Payment Link User',
+                password: 'TempPassword123!' // Temporary password
+              });
+              
+              const userId = newUser.uid;
+              console.log('✅ Created new Firebase user:', userId);
+              
+              // Create Firestore user document
+              await db.collection('users').doc(userId).set({
+                email: customer.email,
+                displayName: customer.name || 'Payment Link User',
+                tier: 'founders-circle', // Default to Founder's Circle for Payment Links
+                plan: 'founders-circle',
+                status: 'active',
+                stripeCustomerId: invoice.customer,
+                createdFromPaymentLink: true,
+                needsPasswordReset: true,
+                tempPassword: 'TempPassword123!',
+                createdAt: new Date().toISOString(),
+                lastUpdated: new Date().toISOString()
+              });
+              
+              console.log('✅ Created Firestore user document for:', userId);
+              
+              // Update subscription info
+              await updateUserSubscription(userId, {
+                lastPaymentDate: new Date().toISOString(),
+                lastUpdated: new Date().toISOString()
+              });
+
+              console.log(`✅ Payment succeeded for newly created user ${userId}`);
+              
+              // Send welcome email
+              await sendEmail(userId, 'payment_succeeded');
+              return;
+              
+            } catch (createError) {
+              console.error('❌ Error creating user:', createError);
+            }
           }
         }
       } catch (customerError) {

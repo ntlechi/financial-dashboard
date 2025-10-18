@@ -323,37 +323,66 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   console.log(`📧 Sending to ConvertKit with tag "${tag}" for tier: ${subscriptionTier}`);
 
   try {
-    // Use ConvertKit's form subscription endpoint (most reliable)
-    const formId = process.env.CONVERTKIT_FOUNDERS_FORM_ID; // Use the appropriate form ID
+    console.log('🔍 ConvertKit Debug Info:');
+    console.log('- API Key exists:', !!CONVERTKIT_API_KEY);
+    console.log('- API Key length:', CONVERTKIT_API_KEY ? CONVERTKIT_API_KEY.length : 0);
+    console.log('- Email:', email);
+    console.log('- Name:', name);
+    console.log('- Subscription Tier:', subscriptionTier);
     
-    const subscriberResponse = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        api_key: CONVERTKIT_API_KEY,
-        email: email,
-        first_name: name,
-        fields: {
-          subscription_tier: subscriptionTier,
-          trigger_event: trigger,
-          product_name: productName || subscriptionTier
-        }
-      })
-    });
-
-    if (!subscriberResponse.ok) {
-      const errorData = await subscriberResponse.json();
-      throw new Error(`ConvertKit subscriber creation error: ${errorData.error || subscriberResponse.statusText}`);
+    // Step 1: Check if subscriber already exists
+    console.log('🔍 Checking if subscriber already exists...');
+    const checkResponse = await fetch(`https://api.convertkit.com/v3/subscribers?api_key=${CONVERTKIT_API_KEY}&email_address=${encodeURIComponent(email)}`);
+    
+    let subscriberId = null;
+    
+    if (checkResponse.ok) {
+      const checkResult = await checkResponse.json();
+      console.log('📊 Subscriber check result:', checkResult);
+      
+      if (checkResult.subscribers && checkResult.subscribers.length > 0) {
+        subscriberId = checkResult.subscribers[0].id;
+        console.log('✅ Subscriber already exists with ID:', subscriberId);
+      }
     }
+    
+    // Step 2: Create subscriber if doesn't exist
+    if (!subscriberId) {
+      console.log('🆕 Creating new subscriber...');
+      const subscriberResponse = await fetch(`https://api.convertkit.com/v3/subscribers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          api_key: CONVERTKIT_API_KEY,
+          email: email,
+          first_name: name,
+          fields: {
+            subscription_tier: subscriptionTier,
+            trigger_event: trigger,
+            product_name: productName || subscriptionTier
+          }
+        })
+      });
 
-    const subscriberResult = await subscriberResponse.json();
-    console.log('✅ ConvertKit subscriber created:', subscriberResult);
+      console.log('📡 ConvertKit Response Status:', subscriberResponse.status);
 
-    // Step 2: Add tag to subscriber
-    if (subscriberResult.subscription && subscriberResult.subscription.subscriber_id) {
-      const tagResponse = await fetch(`https://api.convertkit.com/v3/tags`, {
+      if (!subscriberResponse.ok) {
+        const errorData = await subscriberResponse.json();
+        console.log('❌ ConvertKit Error Response:', errorData);
+        throw new Error(`ConvertKit subscriber creation error: ${errorData.error || subscriberResponse.statusText}`);
+      }
+
+      const subscriberResult = await subscriberResponse.json();
+      console.log('✅ ConvertKit subscriber created:', subscriberResult);
+      subscriberId = subscriberResult.subscription?.subscriber_id;
+    }
+    
+    // Step 3: Add tag to subscriber (whether new or existing)
+    if (subscriberId) {
+      console.log('🏷️ Adding tag to subscriber:', subscriberId);
+      const tagResponse = await fetch(`https://api.convertkit.com/v3/subscribers/${subscriberId}/tags`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -361,10 +390,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         body: JSON.stringify({
           api_key: CONVERTKIT_API_KEY,
           tag: {
-            name: tag,
-            subscriber: {
-              id: subscriberResult.subscription.subscriber_id
-            }
+            name: tag
           }
         })
       });
@@ -373,11 +399,11 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         const tagResult = await tagResponse.json();
         console.log('✅ ConvertKit tag added:', tagResult);
       } else {
-        console.log('⚠️ ConvertKit tag addition failed, but subscriber was created');
+        console.log('⚠️ ConvertKit tag addition failed');
       }
     }
 
-    return subscriberResult;
+    return { success: true, subscriberId };
   } catch (error) {
     console.error('Error sending to ConvertKit:', error);
     throw error;
