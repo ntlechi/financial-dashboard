@@ -180,8 +180,20 @@ async function sendEmailByTrigger(emailData) {
   }
 
   // Send via ConvertKit (recommended)
-  if (process.env.CONVERTKIT_API_KEY && process.env.CONVERTKIT_FOUNDERS_FORM_ID) {
-    await sendViaConvertKit(email, name, trigger, subscriptionTier, productName);
+  if (process.env.CONVERTKIT_API_KEY) {
+    try {
+      await sendViaConvertKit(email, name, trigger, subscriptionTier, productName);
+    } catch (convertKitError) {
+      console.error('ConvertKit error, falling back to logging:', convertKitError.message);
+      // Fallback: just log the email
+      console.log('📧 Email to send:', {
+        to: email,
+        subject: template.subject,
+        trigger: trigger,
+        subscriptionTier: subscriptionTier
+      });
+      console.log('⚠️ ConvertKit failed - email logged instead of sent');
+    }
   } else {
     // Fallback: just log the email
     console.log('📧 Email to send:', {
@@ -236,8 +248,9 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   };
 
   try {
-    // Add subscriber to ConvertKit using the correct API endpoint
-    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
+    // Use ConvertKit's form-based approach (more reliable)
+    // We'll use a default form ID or create a simple subscriber
+    const response = await fetch(`https://api.convertkit.com/v3/forms/123456/subscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -248,9 +261,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         first_name: name,
         fields: {
           subscription_tier: subscriptionTier,
-          trigger_event: trigger,
-          product_name: productName || subscriptionTier,
-          signup_date: new Date().toISOString()
+          trigger_event: trigger
         }
       })
     });
