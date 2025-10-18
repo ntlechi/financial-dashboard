@@ -11844,6 +11844,14 @@ function App() {
       // FIRST: Check Firestore for user with payment (more reliable for webhook-created users)
       try {
         console.log('🔍 Querying Firestore for user with email:', authForm.email);
+        console.log('🔍 DB object:', db, 'Type:', typeof db);
+        
+        if (!db || typeof db.collection !== 'function') {
+          console.error('❌ DB not properly initialized:', db);
+          throw new Error('Firestore not initialized');
+        }
+        
+        // Try the collection query first
         const userQuery = await db.collection('users')
           .where('email', '==', authForm.email)
           .limit(1)
