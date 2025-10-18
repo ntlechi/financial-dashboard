@@ -180,15 +180,17 @@ async function sendEmailByTrigger(emailData) {
   }
 
   // Send via ConvertKit (recommended)
-  if (process.env.CONVERTKIT_API_KEY) {
+  if (process.env.CONVERTKIT_API_KEY && process.env.CONVERTKIT_FOUNDERS_FORM_ID) {
     await sendViaConvertKit(email, name, trigger, subscriptionTier, productName);
   } else {
     // Fallback: just log the email
     console.log('📧 Email to send:', {
       to: email,
       subject: template.subject,
-      trigger: trigger
+      trigger: trigger,
+      subscriptionTier: subscriptionTier
     });
+    console.log('⚠️ ConvertKit not configured - email logged instead of sent');
   }
   
   return Promise.resolve();
