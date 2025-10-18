@@ -317,11 +317,11 @@ export const STRIPE_PRICE_IDS = {
   // Early Adopter Phase - Monthly Only (Less Friction!)
   'early-adopter-monthly': 'price_1SH2rg82nQ0x7qb2wte7rkSV', // $8.49/month - Product: prod_TDTpoRdW2RGmxZ
   
-  // Regular Phase - Your actual Stripe price IDs
-  'climber-monthly': 'price_1fZu9ANe1ge3F07Q6aX7bW05',
-  'climber-yearly': 'price_19B628l8GWaRtbQyard7bW06',
-  'operator-monthly': 'price_1aFa6oB1eu6Bd2fY6aX7bW03',
-  'operator-yearly': 'price_14gM8wJ6yOcZBcUC0QD7bW04'
+  // Regular Phase - Updated with correct Stripe price IDs ✅
+  'climber-monthly': 'price_1SEtk682nQ0x7qb2d80smPaj', // $7.99/month ✅ CONFIGURED
+  'climber-yearly': 'price_1SEtk682nQ0x7qb2C1q8yAni', // $79/year ✅ CONFIGURED
+  'operator-monthly': 'price_1SEtq282nQ0x7qb2iDCgzcpj', // $14.99/month ✅ CONFIGURED
+  'operator-yearly': 'price_1SEtq282nQ0x7qb2IEqw3DZ4' // $149/year ✅ CONFIGURED
 };
 
 /**
