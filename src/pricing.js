@@ -317,7 +317,7 @@ export const STRIPE_PRICE_IDS = {
   // Early Adopter Phase - Monthly Only (Less Friction!)
   'early-adopter-monthly': 'price_1SH2rg82nQ0x7qb2wte7rkSV', // $8.49/month - Product: prod_TDTpoRdW2RGmxZ
   
-  // Regular Phase - Updated with correct Stripe price IDs ✅
+  // Regular Phase - Updated with correct Stripe price IDs ✅ (Deploy Fix)
   'climber-monthly': 'price_1SEtk682nQ0x7qb2d80smPaj', // $7.99/month ✅ CONFIGURED
   'climber-yearly': 'price_1SEtk682nQ0x7qb2C1q8yAni', // $79/year ✅ CONFIGURED
   'operator-monthly': 'price_1SEtq282nQ0x7qb2iDCgzcpj', // $14.99/month ✅ CONFIGURED
