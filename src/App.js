@@ -13456,6 +13456,19 @@ function App() {
                   onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
                   className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
                 />
+                
+                {/* Forgot Password Link */}
+                {authMode === 'login' && (
+                  <div className="text-right mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-sm text-blue-400 hover:text-blue-300 underline transition-colors"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 space-y-3">
