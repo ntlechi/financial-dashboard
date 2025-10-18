@@ -5,24 +5,32 @@ const admin = require('firebase-admin');
 
 // Initialize Firebase Admin (if not already initialized)
 if (!admin.apps.length) {
-  // Use service account key for Vercel deployment
-  const serviceAccount = {
-    type: "service_account",
-    project_id: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'freedom-compass-prod',
-    private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-    private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    client_email: process.env.FIREBASE_CLIENT_EMAIL,
-    client_id: process.env.FIREBASE_CLIENT_ID,
-    auth_uri: "https://accounts.google.com/o/oauth2/auth",
-    token_uri: "https://oauth2.googleapis.com/token",
-    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-    client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${process.env.FIREBASE_CLIENT_EMAIL}`
-  };
+  try {
+    // Use service account key for Vercel deployment
+    const serviceAccount = {
+      type: "service_account",
+      project_id: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'freedom-compass-prod',
+      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      client_id: process.env.FIREBASE_CLIENT_ID,
+      auth_uri: "https://accounts.google.com/o/oauth2/auth",
+      token_uri: "https://oauth2.googleapis.com/token",
+      auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+      client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${process.env.FIREBASE_CLIENT_EMAIL}`
+    };
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'freedom-compass-prod',
-  });
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'freedom-compass-prod',
+      databaseURL: `https://${process.env.REACT_APP_FIREBASE_PROJECT_ID || 'freedom-compass-prod'}-default-rtdb.firebaseio.com`
+    });
+    
+    console.log('✅ Firebase Admin initialized successfully in send-email');
+  } catch (error) {
+    console.error('❌ Firebase Admin initialization failed in send-email:', error);
+    // Continue without Firebase - email will still work
+  }
 }
 
 const db = admin.firestore();
@@ -248,9 +256,8 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   };
 
   try {
-    // Use ConvertKit's form-based approach (more reliable)
-    // We'll use a default form ID or create a simple subscriber
-    const response = await fetch(`https://api.convertkit.com/v3/forms/123456/subscribe`, {
+    // Use ConvertKit's basic subscriber creation (most reliable)
+    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -261,7 +268,8 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         first_name: name,
         fields: {
           subscription_tier: subscriptionTier,
-          trigger_event: trigger
+          trigger_event: trigger,
+          product_name: productName || subscriptionTier
         }
       })
     });
