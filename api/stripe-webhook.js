@@ -330,6 +330,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
                 email: customer.email,
                 subscription: {
                   tier: 'founders-circle', // Default to Founder's Circle for Payment Links
+                  plan: 'founders-circle', // Add this for app compatibility
                   status: 'active',
                   planName: 'Founder\'s Circle',
                   billingCycle: 'monthly',
@@ -428,6 +429,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
     
     await updateUserSubscription(userId, {
       tier: subscriptionTier,
+      plan: subscriptionTier, // Add this for app compatibility
       stripeCustomerId: paymentIntent.customer,
       stripeSubscriptionId: subscription?.id || null,
       status: 'active',
@@ -491,6 +493,7 @@ async function handleCheckoutCompleted(session) {
   // Update user's subscription in Firebase
   await updateUserSubscription(userId, {
     tier: subscriptionTier,
+    plan: subscriptionTier, // Add this for app compatibility
     stripeCustomerId: session.customer,
     stripeSubscriptionId: session.subscription,
     status: 'active',
@@ -550,6 +553,7 @@ async function handleSubscriptionUpdated(subscription) {
 
   await updateUserSubscription(userId, {
     tier: subscriptionTier,
+    plan: subscriptionTier, // Add this for app compatibility
     status: subscription.status,
     currentPeriodStart: new Date(subscription.current_period_start * 1000).toISOString(),
     currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
@@ -571,6 +575,7 @@ async function handleSubscriptionCancelled(subscription) {
   // Downgrade user to FREE tier
   await updateUserSubscription(userId, {
     tier: SUBSCRIPTION_TIERS.FREE,
+    plan: SUBSCRIPTION_TIERS.FREE, // Add this for app compatibility
     status: 'cancelled',
     cancelledAt: new Date().toISOString(),
     lastUpdated: new Date().toISOString()
