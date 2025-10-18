@@ -93,6 +93,9 @@ async function addFreeUserToConvertKit(userId, userEmail, userName) {
   }
 }
 
+// Import the raw body parser for Vercel
+const { buffer } = require('micro');
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -104,27 +107,20 @@ module.exports = async (req, res) => {
   let event;
 
   try {
-    // Get the raw body - Vercel may have already parsed it
-    let rawBody;
+    // Get the raw body buffer
+    const rawBody = await buffer(req);
     
-    if (typeof req.body === 'string') {
-      // Body is already raw string
-      rawBody = req.body;
-    } else if (req.body && typeof req.body === 'object') {
-      // Body was parsed by Vercel, reconstruct it
-      rawBody = JSON.stringify(req.body);
-    } else {
-      throw new Error('Invalid request body format');
-    }
+    console.log('Webhook received:', {
+      bodyLength: rawBody.length,
+      hasSignature: !!sig,
+      hasSecret: !!endpointSecret
+    });
     
-    console.log('Raw body length:', rawBody.length);
-    console.log('Signature present:', !!sig);
-    console.log('Endpoint secret present:', !!endpointSecret);
-    
-    // Verify webhook signature
+    // Verify webhook signature with raw body
     event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
+    console.log('✅ Webhook signature verified successfully');
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    console.error('❌ Webhook signature verification failed:', err.message);
     console.error('Error details:', err);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
