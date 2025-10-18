@@ -486,53 +486,75 @@ async function handleSubscriptionCancelled(subscription) {
 
 // Handle successful payment
 async function handlePaymentSucceeded(invoice) {
+  console.log('💰 Invoice payment succeeded:', invoice.id);
+  
   const subscriptionId = invoice.subscription;
   
-  // Get subscription details from Stripe to find user
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const userId = subscription.metadata?.userId;
-  
-  if (!userId) {
-    console.error('Missing userId in subscription metadata');
+  if (!subscriptionId) {
+    console.log('⚠️ Invoice has no subscription - skipping payment success handler');
     return;
   }
-
-  // Update last payment date
-  await updateUserSubscription(userId, {
-    lastPaymentDate: new Date().toISOString(),
-    lastUpdated: new Date().toISOString()
-  });
-
-  console.log(`✅ Payment succeeded for user ${userId}`);
   
-  // Send payment success email
-  await sendEmail(userId, 'payment_succeeded');
+  try {
+    // Get subscription details from Stripe to find user
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const userId = subscription.metadata?.userId;
+    
+    if (!userId) {
+      console.error('Missing userId in subscription metadata');
+      return;
+    }
+
+    // Update last payment date
+    await updateUserSubscription(userId, {
+      lastPaymentDate: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
+    });
+
+    console.log(`✅ Payment succeeded for user ${userId}`);
+    
+    // Send payment success email
+    await sendEmail(userId, 'payment_succeeded');
+  } catch (error) {
+    console.error('❌ Error handling payment succeeded:', error);
+  }
 }
 
 // Handle failed payment
 async function handlePaymentFailed(invoice) {
+  console.log('❌ Invoice payment failed:', invoice.id);
+  
   const subscriptionId = invoice.subscription;
   
-  // Get subscription details from Stripe to find user
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const userId = subscription.metadata?.userId;
-  
-  if (!userId) {
-    console.error('Missing userId in subscription metadata');
+  if (!subscriptionId) {
+    console.log('⚠️ Invoice has no subscription - skipping payment failure handler');
     return;
   }
-
-  // Update payment failure status
-  await updateUserSubscription(userId, {
-    paymentFailed: true,
-    lastPaymentFailure: new Date().toISOString(),
-    lastUpdated: new Date().toISOString()
-  });
-
-  console.log(`❌ Payment failed for user ${userId}`);
   
-  // Send payment failure email
-  await sendEmail(userId, 'payment_failed');
+  try {
+    // Get subscription details from Stripe to find user
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const userId = subscription.metadata?.userId;
+    
+    if (!userId) {
+      console.error('Missing userId in subscription metadata');
+      return;
+    }
+
+    // Update payment failure status
+    await updateUserSubscription(userId, {
+      paymentFailed: true,
+      lastPaymentFailure: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
+    });
+
+    console.log(`❌ Payment failed for user ${userId}`);
+    
+    // Send payment failure email
+    await sendEmail(userId, 'payment_failed');
+  } catch (error) {
+    console.error('❌ Error handling payment failed:', error);
+  }
 }
 
 // Helper function to update user subscription in Firebase
