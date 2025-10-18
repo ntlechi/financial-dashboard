@@ -323,8 +323,8 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   console.log(`📧 Sending to ConvertKit with tag "${tag}" for tier: ${subscriptionTier}`);
 
   try {
-    // Use ConvertKit's basic subscriber creation with tags
-    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
+    // Step 1: Create subscriber first
+    const subscriberResponse = await fetch(`https://api.convertkit.com/v3/subscribers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -337,20 +337,42 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
           subscription_tier: subscriptionTier,
           trigger_event: trigger,
           product_name: productName || subscriptionTier
-        },
-        tags: [tag] // Use the mapped tag for the subscription tier
+        }
       })
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`ConvertKit error: ${errorData.error || response.statusText}`);
+    if (!subscriberResponse.ok) {
+      const errorData = await subscriberResponse.json();
+      throw new Error(`ConvertKit subscriber creation error: ${errorData.error || subscriberResponse.statusText}`);
     }
 
-    const result = await response.json();
-    console.log('✅ ConvertKit subscription successful:', result);
-    
-    return result;
+    const subscriberResult = await subscriberResponse.json();
+    console.log('✅ ConvertKit subscriber created:', subscriberResult);
+
+    // Step 2: Add tag to subscriber
+    if (subscriberResult.subscription && subscriberResult.subscription.subscriber_id) {
+      const tagResponse = await fetch(`https://api.convertkit.com/v3/subscribers/${subscriberResult.subscription.subscriber_id}/tags`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          api_key: CONVERTKIT_API_KEY,
+          tag: {
+            name: tag
+          }
+        })
+      });
+
+      if (tagResponse.ok) {
+        const tagResult = await tagResponse.json();
+        console.log('✅ ConvertKit tag added:', tagResult);
+      } else {
+        console.log('⚠️ ConvertKit tag addition failed, but subscriber was created');
+      }
+    }
+
+    return subscriberResult;
   } catch (error) {
     console.error('Error sending to ConvertKit:', error);
     throw error;
