@@ -248,6 +248,53 @@ async function sendEmailByTrigger(emailData) {
   return Promise.resolve();
 }
 
+// Helper function for ConvertKit with specific tag
+async function sendViaConvertKitWithTag(email, name, trigger, tag, productName) {
+  const CONVERTKIT_API_KEY = process.env.CONVERTKIT_API_KEY;
+  
+  if (!CONVERTKIT_API_KEY) {
+    console.log('ConvertKit API key not configured, skipping email');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        api_key: CONVERTKIT_API_KEY,
+        email: email,
+        first_name: name,
+        fields: {
+          subscription_tier: 'recon',
+          trigger_event: trigger,
+          product_name: productName || 'Unknown'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`ConvertKit error: ${errorData.error || response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ ConvertKit subscription successful with default tag:', result);
+    
+    // Add the tag to the subscriber
+    if (result.subscription && result.subscription.subscriber_id) {
+      await addTagToSubscriber(result.subscription.subscriber_id, tag);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error sending to ConvertKit with default tag:', error);
+    throw error;
+  }
+}
+
 // ConvertKit Integration
 async function sendViaConvertKit(email, name, trigger, subscriptionTier, productName) {
   const CONVERTKIT_API_KEY = process.env.CONVERTKIT_API_KEY;
@@ -269,7 +316,12 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   
   if (!tag) {
     console.error('No ConvertKit tag found for tier:', subscriptionTier);
-    return;
+    console.log('Available tiers:', Object.keys(tagMapping));
+    console.log('Using default tag for undefined tier');
+    // Use a default tag for undefined tiers
+    const defaultTag = 'Status - Recruit (Free)';
+    console.log('Using default tag:', defaultTag);
+    return sendViaConvertKitWithTag(email, name, trigger, defaultTag, productName);
   }
 
   const payload = {
@@ -289,7 +341,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
 
   try {
     // Use ConvertKit's basic subscriber creation (most reliable)
-    const response = await fetch(`https://api.convertkit.com/v3/subscribers`, {
+    const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
