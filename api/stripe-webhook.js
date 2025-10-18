@@ -291,6 +291,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
           console.log('🆕 Creating new user account for paid customer:', customer.email);
           try {
             // Create Firebase Auth user
+            console.log('🔄 Creating Firebase Auth user...');
             const newUser = await admin.auth().createUser({
               email: customer.email,
               emailVerified: true, // Trust Stripe's email verification
@@ -301,6 +302,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
             console.log('✅ Created new Firebase Auth user:', userId);
             
             // Create Firestore user document with basic subscription info
+            console.log('🔄 Creating Firestore user document...');
             await db.collection('users').doc(userId).set({
               email: customer.email,
               subscription: {
@@ -321,6 +323,11 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
             
           } catch (createError) {
             console.error('❌ Error creating user account:', createError);
+            console.error('Create error details:', {
+              email: customer.email,
+              error: createError.message,
+              stack: createError.stack
+            });
             // Continue without userId - will be handled below
           }
         }
@@ -379,20 +386,33 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   });
   
   // Update user's subscription in Firebase
-  await updateUserSubscription(userId, {
-    tier: subscriptionTier,
-    stripeCustomerId: paymentIntent.customer,
-    stripeSubscriptionId: subscription?.id || null,
-    status: 'active',
-    planName: 'Founder\'s Circle',
-    billingCycle: 'monthly',
-    startDate: new Date().toISOString(),
-    lastUpdated: new Date().toISOString(),
-    paymentIntentId: paymentIntent.id,
-    createdFromPaymentLink: true
-  });
+  try {
+    console.log('🔄 Starting subscription update for user:', userId);
+    
+    await updateUserSubscription(userId, {
+      tier: subscriptionTier,
+      stripeCustomerId: paymentIntent.customer,
+      stripeSubscriptionId: subscription?.id || null,
+      status: 'active',
+      planName: 'Founder\'s Circle',
+      billingCycle: 'monthly',
+      startDate: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      paymentIntentId: paymentIntent.id,
+      createdFromPaymentLink: true
+    });
 
-  console.log(`✅ User ${userId} upgraded to ${subscriptionTier} via Payment Intent`);
+    console.log(`✅ User ${userId} upgraded to ${subscriptionTier} via Payment Intent`);
+  } catch (updateError) {
+    console.error('❌ Error updating user subscription:', updateError);
+    console.error('Update error details:', {
+      userId,
+      subscriptionTier,
+      error: updateError.message,
+      stack: updateError.stack
+    });
+    throw updateError; // Re-throw to see the error in logs
+  }
   
   // Get the product name for ConvertKit
   const productName = getProductNameFromTier(subscriptionTier);
