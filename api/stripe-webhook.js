@@ -200,6 +200,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   console.log('💳 Payment Intent succeeded:', paymentIntent.id);
   console.log('📋 Payment Intent metadata:', paymentIntent.metadata);
   console.log('👤 Payment Intent customer:', paymentIntent.customer);
+  console.log('🚀 Webhook version: v2.1 - Enhanced user lookup');
   
   let subscription = null;
   let userId = null;
