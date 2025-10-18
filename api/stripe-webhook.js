@@ -141,43 +141,58 @@ module.exports = async (req, res) => {
 
   // Handle the event
   try {
+    console.log(`🎯 Processing event type: ${event.type}`);
+    
     switch (event.type) {
       case 'checkout.session.completed':
+        console.log('🛒 Handling checkout.session.completed');
         await handleCheckoutCompleted(event.data.object);
         break;
       
       case 'payment_intent.succeeded':
+        console.log('💳 Handling payment_intent.succeeded');
         await handlePaymentIntentSucceeded(event.data.object);
         break;
       
       case 'customer.subscription.created':
+        console.log('📝 Handling customer.subscription.created');
         await handleSubscriptionCreated(event.data.object);
         break;
       
       case 'customer.subscription.updated':
+        console.log('🔄 Handling customer.subscription.updated');
         await handleSubscriptionUpdated(event.data.object);
         break;
       
       case 'customer.subscription.deleted':
+        console.log('🗑️ Handling customer.subscription.deleted');
         await handleSubscriptionCancelled(event.data.object);
         break;
       
       case 'invoice.payment_succeeded':
+        console.log('💰 Handling invoice.payment_succeeded');
         await handlePaymentSucceeded(event.data.object);
         break;
       
       case 'invoice.payment_failed':
+        console.log('❌ Handling invoice.payment_failed');
         await handlePaymentFailed(event.data.object);
         break;
       
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        console.log(`⚠️ Unhandled event type: ${event.type}`);
     }
 
+    console.log('✅ Webhook processing completed successfully');
     res.json({ received: true });
   } catch (error) {
-    console.error('Error processing webhook:', error);
-    res.status(500).json({ error: 'Webhook processing failed' });
+    console.error('❌ Error processing webhook:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Webhook processing failed',
+      message: error.message,
+      type: error.type || 'unknown'
+    });
   }
 };
 
@@ -220,21 +235,37 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   if (!userId && paymentIntent.customer) {
     console.log('🔍 Looking for user by customer email');
     
-    const customer = await stripe.customers.retrieve(paymentIntent.customer);
-    console.log('📧 Customer email:', customer.email);
-    
-    if (customer.email) {
-      // Try to find user in Firebase by email
-      const usersSnapshot = await db.collection('users')
-        .where('email', '==', customer.email)
-        .limit(1)
-        .get();
+    try {
+      const customer = await stripe.customers.retrieve(paymentIntent.customer);
+      console.log('📧 Customer email:', customer.email);
       
-      if (!usersSnapshot.empty) {
-        const userDoc = usersSnapshot.docs[0];
-        userId = userDoc.id;
-        console.log('✅ Found user by email:', userId);
+      if (customer.email) {
+        // Try to find user in Firebase by email
+        console.log('🔍 Searching Firebase for user with email:', customer.email);
+        const usersSnapshot = await db.collection('users')
+          .where('email', '==', customer.email)
+          .limit(1)
+          .get();
+        
+        console.log('📊 Firebase query result:', {
+          empty: usersSnapshot.empty,
+          size: usersSnapshot.size,
+          docs: usersSnapshot.docs.length
+        });
+        
+        if (!usersSnapshot.empty) {
+          const userDoc = usersSnapshot.docs[0];
+          userId = userDoc.id;
+          console.log('✅ Found user by email:', userId);
+        } else {
+          console.log('❌ No user found with email:', customer.email);
+        }
+      } else {
+        console.log('❌ Customer has no email address');
       }
+    } catch (error) {
+      console.error('❌ Error finding user by email:', error);
+      // Don't throw - continue with other methods
     }
   }
   
