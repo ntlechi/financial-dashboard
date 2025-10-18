@@ -49,14 +49,21 @@ const SUBSCRIPTION_TIERS = {
   FOUNDERS_CIRCLE: 'founders-circle'
 };
 
-// Plan ID to tier mapping
+// Plan ID to tier mapping - Updated with correct live price IDs
 const PLAN_MAPPING = {
-  'price_climber_monthly': SUBSCRIPTION_TIERS.CLIMBER,
-  'price_climber_annual': SUBSCRIPTION_TIERS.CLIMBER,
-  'price_operator_monthly': SUBSCRIPTION_TIERS.OPERATOR,
-  'price_operator_annual': SUBSCRIPTION_TIERS.OPERATOR,
-  'price_founders_monthly': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
-  'price_founders_annual': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+  // Founder's Circle
+  'price_1SEtrg82nQ0x7qb2NBJr0IVU': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
+  
+  // Early Adopter
+  'price_1SH2rg82nQ0x7qb2wte7rkSV': SUBSCRIPTION_TIERS.CLIMBER, // Using Climber tier for Early Adopter
+  
+  // Climber Plan
+  'price_1SEtk682nQ0x7qb2d80smPaj': SUBSCRIPTION_TIERS.CLIMBER, // Monthly
+  'price_1SEtk682nQ0x7qb2C1q8yAni': SUBSCRIPTION_TIERS.CLIMBER, // Yearly
+  
+  // Operator Plan
+  'price_1SEtq282nQ0x7qb2iDCgzcpj': SUBSCRIPTION_TIERS.OPERATOR, // Monthly
+  'price_1SEtq282nQ0x7qb2IEqw3DZ4': SUBSCRIPTION_TIERS.OPERATOR, // Yearly
 };
 
 // Helper function to add FREE users to ConvertKit
@@ -97,8 +104,11 @@ module.exports = async (req, res) => {
   let event;
 
   try {
+    // Get raw body as string for signature verification
+    const rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    
     // Verify webhook signature
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
