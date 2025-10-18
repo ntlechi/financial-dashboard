@@ -12067,7 +12067,7 @@ function App() {
     loadPricingPhaseData();
   }, []);
 
-  // 🎯 HANDLE LANDING PAGE REDIRECTS
+  // 🎯 HANDLE LANDING PAGE REDIRECTS (Simplified - Optional)
   useEffect(() => {
     // Only run after user authentication is complete
     if (loading || !user) return;
@@ -12077,8 +12077,8 @@ function App() {
     const signup = urlParams.get('signup');
     const plan = urlParams.get('plan');
 
+    // Optional: Still support redirects for users who want to upgrade in-app
     if (upgradePlan) {
-      // User came from landing page and wants to upgrade
       console.log('🎯 Landing redirect: Opening pricing modal for', upgradePlan);
       setLandingRedirect({ type: 'upgrade', plan: upgradePlan });
       
@@ -12091,7 +12091,6 @@ function App() {
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (signup && plan) {
-      // User came from landing page and needs to signup
       console.log('🎯 Landing redirect: User needs to signup for', plan);
       setLandingRedirect({ type: 'signup', plan: plan });
       showNotification(`Welcome! You can upgrade to ${plan} after signing up.`, 'info');

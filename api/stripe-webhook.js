@@ -231,7 +231,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
     }
   }
   
-  // Method 3: If still no userId, try to find user by email
+  // Method 3: Find user by email (PRIMARY METHOD for Payment Links)
   if (!userId && paymentIntent.customer) {
     console.log('🔍 Looking for user by customer email');
     
@@ -240,34 +240,34 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
       console.log('📧 Customer email:', customer.email);
       
       if (customer.email) {
-        // Try to find user in Firebase by email
-        console.log('🔍 Searching Firebase for user with email:', customer.email);
-        const usersSnapshot = await db.collection('users')
-          .where('email', '==', customer.email)
-          .limit(1)
-          .get();
-        
-        console.log('📊 Firebase query result:', {
-          empty: usersSnapshot.empty,
-          size: usersSnapshot.size,
-          docs: usersSnapshot.docs.length
-        });
-        
-        if (!usersSnapshot.empty) {
-          const userDoc = usersSnapshot.docs[0];
-          userId = userDoc.id;
-          console.log('✅ Found user by email in Firestore:', userId);
-        } else {
-          console.log('❌ No user found with email in Firestore:', customer.email);
+        // Try to find user in Firebase Auth first (most reliable)
+        try {
+          console.log('🔍 Searching Firebase Auth for user with email:', customer.email);
+          const authUser = await admin.auth().getUserByEmail(customer.email);
+          userId = authUser.uid;
+          console.log('✅ Found user by email in Firebase Auth:', userId);
+        } catch (authError) {
+          console.log('❌ No user found in Firebase Auth:', authError.message);
           
-          // Fallback: Try to find user in Firebase Auth
-          try {
-            console.log('🔍 Trying to find user in Firebase Auth by email');
-            const authUser = await admin.auth().getUserByEmail(customer.email);
-            userId = authUser.uid;
-            console.log('✅ Found user by email in Firebase Auth:', userId);
-          } catch (authError) {
-            console.log('❌ No user found in Firebase Auth either:', authError.message);
+          // Fallback: Try to find user in Firestore
+          console.log('🔍 Searching Firestore for user with email:', customer.email);
+          const usersSnapshot = await db.collection('users')
+            .where('email', '==', customer.email)
+            .limit(1)
+            .get();
+          
+          console.log('📊 Firestore query result:', {
+            empty: usersSnapshot.empty,
+            size: usersSnapshot.size,
+            docs: usersSnapshot.docs.length
+          });
+          
+          if (!usersSnapshot.empty) {
+            const userDoc = usersSnapshot.docs[0];
+            userId = userDoc.id;
+            console.log('✅ Found user by email in Firestore:', userId);
+          } else {
+            console.log('❌ No user found with email in Firestore:', customer.email);
           }
         }
       } else {
