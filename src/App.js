@@ -62,7 +62,7 @@ import {
   updateProfile,
   fetchSignInMethodsForEmail
 } from "firebase/auth";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, collection, query, where, limit, getDocs } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 
 // Firebase App ID available if needed
@@ -11846,16 +11846,15 @@ function App() {
         console.log('🔍 Querying Firestore for user with email:', authForm.email);
         console.log('🔍 DB object:', db, 'Type:', typeof db);
         
-        if (!db || typeof db.collection !== 'function') {
+        if (!db) {
           console.error('❌ DB not properly initialized:', db);
           throw new Error('Firestore not initialized');
         }
         
-        // Try the collection query first
-        const userQuery = await db.collection('users')
-          .where('email', '==', authForm.email)
-          .limit(1)
-          .get();
+        // Use Firebase v9+ modular syntax
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', authForm.email), limit(1));
+        const userQuery = await getDocs(q);
         
         console.log('📊 Firestore query result:', {
           empty: userQuery.empty,
