@@ -49,6 +49,20 @@ const SUBSCRIPTION_TIERS = {
   FOUNDERS_CIRCLE: 'founders-circle'
 };
 
+// Helper function to get product name from tier
+function getProductNameFromTier(tier) {
+  switch (tier) {
+    case SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE:
+      return 'Founder\'s Circle - The Founder';
+    case SUBSCRIPTION_TIERS.CLIMBER:
+      return 'Climber Plan - The Climber';
+    case SUBSCRIPTION_TIERS.OPERATOR:
+      return 'Operator Plan - The Operator';
+    default:
+      return 'Free Plan - Recon Kit';
+  }
+}
+
 // Plan ID to tier mapping - Updated with correct live price IDs
 const PLAN_MAPPING = {
   // Founder's Circle
@@ -211,10 +225,15 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
 
   console.log(`✅ User ${userId} upgraded to ${subscriptionTier} via Payment Intent`);
   
-  // Send welcome email
+  // Get the product name for ConvertKit
+  const productName = getProductNameFromTier(subscriptionTier);
+  
+  // Send welcome email with proper product information
   await sendEmail(userId, 'subscription_created', {
     subscriptionTier,
-    planName: subscription.metadata?.planName || 'Founder\'s Circle'
+    planName: subscription.metadata?.planName || productName,
+    productName: productName,
+    priceId: priceId
   });
 }
 
@@ -253,10 +272,15 @@ async function handleCheckoutCompleted(session) {
 
   console.log(`✅ User ${userId} upgraded to ${subscriptionTier}`);
   
-  // Send welcome email
+  // Get the product name for ConvertKit
+  const productName = getProductNameFromTier(subscriptionTier);
+  
+  // Send welcome email with proper product information
   await sendEmail(userId, 'subscription_created', {
     subscriptionTier,
-    planName
+    planName: planName || productName,
+    productName: productName,
+    priceId: priceId
   });
 }
 
