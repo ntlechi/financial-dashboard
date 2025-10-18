@@ -323,8 +323,10 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
   console.log(`📧 Sending to ConvertKit with tag "${tag}" for tier: ${subscriptionTier}`);
 
   try {
-    // Step 1: Create subscriber first
-    const subscriberResponse = await fetch(`https://api.convertkit.com/v3/subscribers`, {
+    // Use ConvertKit's form subscription endpoint (most reliable)
+    const formId = process.env.CONVERTKIT_FOUNDERS_FORM_ID; // Use the appropriate form ID
+    
+    const subscriberResponse = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -351,7 +353,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
 
     // Step 2: Add tag to subscriber
     if (subscriberResult.subscription && subscriberResult.subscription.subscriber_id) {
-      const tagResponse = await fetch(`https://api.convertkit.com/v3/subscribers/${subscriberResult.subscription.subscriber_id}/tags`, {
+      const tagResponse = await fetch(`https://api.convertkit.com/v3/tags`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -359,7 +361,10 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         body: JSON.stringify({
           api_key: CONVERTKIT_API_KEY,
           tag: {
-            name: tag
+            name: tag,
+            subscriber: {
+              id: subscriberResult.subscription.subscriber_id
+            }
           }
         })
       });
