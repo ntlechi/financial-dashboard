@@ -11675,7 +11675,13 @@ function App() {
             // 🆕 NEW USER - Show Quick Start Guide!
             // Check if they haven't dismissed it before
             const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
-            if (hasSeenQuickStart !== 'true') {
+            
+            // Check if user came from landing page with upgrade intent
+            const urlParams = new URLSearchParams(window.location.search);
+            const upgradePlan = urlParams.get('upgrade');
+            
+            if (hasSeenQuickStart !== 'true' && !upgradePlan) {
+              // Only show Quick Start if no upgrade intent
               setShowQuickStart(true);
             }
             
@@ -12063,6 +12069,9 @@ function App() {
 
   // 🎯 HANDLE LANDING PAGE REDIRECTS
   useEffect(() => {
+    // Only run after user authentication is complete
+    if (loading || !user) return;
+
     const urlParams = new URLSearchParams(window.location.search);
     const upgradePlan = urlParams.get('upgrade');
     const signup = urlParams.get('signup');
@@ -12070,17 +12079,26 @@ function App() {
 
     if (upgradePlan) {
       // User came from landing page and wants to upgrade
+      console.log('🎯 Landing redirect: Opening pricing modal for', upgradePlan);
       setLandingRedirect({ type: 'upgrade', plan: upgradePlan });
-      setShowPricingModal(true);
+      
+      // Add small delay to ensure user data is loaded
+      setTimeout(() => {
+        setShowPricingModal(true);
+        showNotification(`Welcome! Opening ${upgradePlan} upgrade options...`, 'info');
+      }, 1000);
+      
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (signup && plan) {
       // User came from landing page and needs to signup
+      console.log('🎯 Landing redirect: User needs to signup for', plan);
       setLandingRedirect({ type: 'signup', plan: plan });
+      showNotification(`Welcome! You can upgrade to ${plan} after signing up.`, 'info');
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [loading, user]); // Run when loading state or user changes
 
   // Close calendar when clicking outside
   useEffect(() => {
