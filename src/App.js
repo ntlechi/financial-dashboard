@@ -11839,7 +11839,7 @@ function App() {
     setAuthLoading(true);
     try {
       // 🎯 SMART SIGNUP FLOW: Check if email already exists
-      console.log('🔍 Starting smart signup flow for email:', authForm.email);
+      console.log('🔍 Starting smart signup flow for email:', authForm.email, 'v2.1');
       
       // FIRST: Check Firestore for user with payment (more reliable for webhook-created users)
       try {
