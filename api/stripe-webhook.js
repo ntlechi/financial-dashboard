@@ -318,7 +318,8 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
               const newUser = await admin.auth().createUser({
                 email: customer.email,
                 emailVerified: true, // Trust Stripe's email verification
-                disabled: false
+                disabled: false,
+                password: 'TempPassword123!' // Temporary password for users created from payments
               });
               
               userId = newUser.uid;
@@ -340,7 +341,9 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
                   createdFromPayment: true // Flag to indicate account was created from payment
                 },
                 createdAt: new Date().toISOString(),
-                createdFromPayment: true
+                createdFromPayment: true,
+                tempPassword: 'TempPassword123!', // Temporary password for users created from payments
+                needsPasswordReset: true // Flag to indicate user should reset password
               });
               
               console.log('✅ Created Firestore user document for:', userId);
