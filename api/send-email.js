@@ -380,7 +380,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
 
       const subscriberResult = await subscriberResponse.json();
       console.log('✅ ConvertKit subscriber created:', subscriberResult);
-      subscriberId = subscriberResult.subscription?.subscriber_id;
+      subscriberId = subscriberResult.subscriber?.id;
     }
     
     // Step 3: Add tag to subscriber (whether new or existing)
