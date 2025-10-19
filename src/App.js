@@ -11843,7 +11843,7 @@ function App() {
       // 📧 TRIGGER EMAIL AUTOMATION FOR FREE USERS
       try {
         console.log('📧 Triggering welcome email for free user:', userCredential.user.uid);
-        const emailResponse = await fetch('/api/test-send-email', {
+        const emailResponse = await fetch('/api/send-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
