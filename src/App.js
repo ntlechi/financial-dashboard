@@ -10981,6 +10981,16 @@ function App() {
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   
+  // 🎯 Read email from URL parameters for pre-filling
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailParam = urlParams.get('email');
+    if (emailParam && emailParam !== '{CUSTOMER_EMAIL}') {
+      console.log('📧 Pre-filling email from URL:', emailParam);
+      setAuthForm(prev => ({ ...prev, email: emailParam }));
+    }
+  }, []);
+  
   // Smart Signup Flow states
   const [showSetPassword, setShowSetPassword] = useState(false);
   const [existingUserWithPayment, setExistingUserWithPayment] = useState(null);
