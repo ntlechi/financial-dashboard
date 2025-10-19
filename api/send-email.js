@@ -386,29 +386,56 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     // Step 3: Add tag to subscriber (whether new or existing)
     if (subscriberId) {
       console.log('🏷️ Adding tag to subscriber:', subscriberId);
-      const tagResponse = await fetch(`https://api.convertkit.com/v4/subscribers/${subscriberId}/tags`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Kit-Api-Key': CONVERTKIT_API_KEY
-        },
-        body: JSON.stringify({
-          tag: {
-            name: tag
-          }
-        })
-      });
-
-      console.log('📡 Tag Response Status:', tagResponse.status);
       
-      if (tagResponse.ok) {
-        const tagResult = await tagResponse.json();
-        console.log('✅ ConvertKit tag added:', tagResult);
+      // First, get the tag ID by name
+      console.log('🔍 Looking up tag ID for:', tag);
+      const tagsResponse = await fetch(`https://api.convertkit.com/v4/tags`, {
+        headers: {
+          'X-Kit-Api-Key': CONVERTKIT_API_KEY
+        }
+      });
+      
+      if (tagsResponse.ok) {
+        const tagsData = await tagsResponse.json();
+        console.log('📋 Available tags:', tagsData);
+        
+        // Find the tag by name
+        const targetTag = tagsData.tags?.find(t => t.name === tag);
+        
+        if (targetTag) {
+          console.log('✅ Found tag ID:', targetTag.id, 'for tag:', tag);
+          
+          // Now add the tag using the correct V4 endpoint
+          const tagResponse = await fetch(`https://api.convertkit.com/v4/subscribers/${subscriberId}/tags`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Kit-Api-Key': CONVERTKIT_API_KEY
+            },
+            body: JSON.stringify({
+              tag: {
+                id: targetTag.id
+              }
+            })
+          });
+
+          console.log('📡 Tag Response Status:', tagResponse.status);
+          
+          if (tagResponse.ok) {
+            const tagResult = await tagResponse.json();
+            console.log('✅ ConvertKit tag added:', tagResult);
+          } else {
+            const tagErrorData = await tagResponse.json();
+            console.log('❌ ConvertKit Tag Error Response:', tagErrorData);
+            console.log('❌ Tag addition failed with status:', tagResponse.status);
+            console.log('❌ Tag addition failed with error:', tagErrorData);
+          }
+        } else {
+          console.log('❌ Tag not found:', tag);
+          console.log('Available tags:', tagsData.tags?.map(t => t.name));
+        }
       } else {
-        const tagErrorData = await tagResponse.json();
-        console.log('❌ ConvertKit Tag Error Response:', tagErrorData);
-        console.log('❌ Tag addition failed with status:', tagResponse.status);
-        console.log('❌ Tag addition failed with error:', tagErrorData);
+        console.log('❌ Failed to fetch tags list');
       }
     }
 
