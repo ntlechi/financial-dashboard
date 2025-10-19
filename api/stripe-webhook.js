@@ -769,7 +769,50 @@ async function handlePaymentSucceeded(invoice) {
   const userId = subscription.metadata?.userId;
   
   if (!userId) {
-    console.error('Missing userId in subscription metadata');
+    console.log('Missing userId in subscription metadata - trying to find user by customer email');
+    
+    // Get customer details to find user by email
+    try {
+      const customer = await stripe.customers.retrieve(invoice.customer);
+      console.log('📧 Customer email:', customer.email);
+      
+      if (customer.email) {
+        // Find user by email
+        try {
+          const authUser = await admin.auth().getUserByEmail(customer.email);
+          const userId = authUser.uid;
+          
+          console.log('✅ Found user by email:', userId);
+          
+          // Update user to Founder's Circle tier
+          await updateUserSubscription(userId, {
+            tier: 'founders-circle',
+            plan: 'founders-circle',
+            status: 'active',
+            planName: 'Founder\'s Circle',
+            billingCycle: 'monthly',
+            stripeCustomerId: invoice.customer,
+            stripeSubscriptionId: subscriptionId,
+            lastPaymentDate: new Date().toISOString(),
+            lastUpdated: new Date().toISOString(),
+            createdFromPaymentLink: true
+          });
+
+          console.log(`✅ User ${userId} upgraded to Founder's Circle via subscription`);
+          
+          // Send payment success email
+          await sendEmail(userId, 'payment_succeeded');
+          return;
+          
+        } catch (authError) {
+          console.log('❌ No user found in Firebase Auth:', authError.message);
+        }
+      }
+    } catch (customerError) {
+      console.error('❌ Error retrieving customer:', customerError);
+    }
+    
+    console.error('Missing userId in subscription metadata and could not find user by email');
     return;
   }
 
