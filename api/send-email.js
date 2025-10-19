@@ -405,18 +405,14 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         if (targetTag) {
           console.log('✅ Found tag ID:', targetTag.id, 'for tag:', tag);
           
-          // Now add the tag using the correct V4 endpoint
-          const tagResponse = await fetch(`https://api.convertkit.com/v4/subscribers/${subscriberId}/tags`, {
+          // Now add the tag using the correct V4 endpoint: /v4/tags/:tag_id/subscribers/:id
+          const tagResponse = await fetch(`https://api.convertkit.com/v4/tags/${targetTag.id}/subscribers/${subscriberId}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'X-Kit-Api-Key': CONVERTKIT_API_KEY
             },
-            body: JSON.stringify({
-              tag: {
-                id: targetTag.id
-              }
-            })
+            body: JSON.stringify({})
           });
 
           console.log('📡 Tag Response Status:', tagResponse.status);
