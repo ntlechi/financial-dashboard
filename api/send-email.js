@@ -399,11 +399,16 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         })
       });
 
+      console.log('📡 Tag Response Status:', tagResponse.status);
+      
       if (tagResponse.ok) {
         const tagResult = await tagResponse.json();
         console.log('✅ ConvertKit tag added:', tagResult);
       } else {
-        console.log('⚠️ ConvertKit tag addition failed');
+        const tagErrorData = await tagResponse.json();
+        console.log('❌ ConvertKit Tag Error Response:', tagErrorData);
+        console.log('❌ Tag addition failed with status:', tagResponse.status);
+        console.log('❌ Tag addition failed with error:', tagErrorData);
       }
     }
 
