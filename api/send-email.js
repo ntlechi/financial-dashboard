@@ -360,7 +360,7 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
           'X-Kit-Api-Key': CONVERTKIT_API_KEY
         },
         body: JSON.stringify({
-          email: email,
+          email_address: email,
           first_name: name,
           fields: {
             subscription_tier: subscriptionTier,
