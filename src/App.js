@@ -11840,6 +11840,33 @@ function App() {
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
+      // 📧 TRIGGER EMAIL AUTOMATION FOR FREE USERS
+      try {
+        console.log('📧 Triggering welcome email for free user:', userCredential.user.uid);
+        const emailResponse = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: userCredential.user.uid,
+            trigger: 'free_user_signup',
+            additionalData: {
+              userName: authForm.name,
+              userEmail: authForm.email
+            }
+          })
+        });
+        
+        if (emailResponse.ok) {
+          console.log('✅ Welcome email triggered successfully for free user');
+        } else {
+          console.error('❌ Failed to trigger welcome email:', await emailResponse.text());
+        }
+      } catch (emailError) {
+        console.error('❌ Error triggering welcome email:', emailError);
+      }
+      
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
