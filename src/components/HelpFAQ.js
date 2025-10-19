@@ -248,6 +248,13 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           answer: 'Account deletion is permanent and irreversible. All your financial data, goals, and history will be permanently deleted within 30 days. Make sure to export your data first if you want to keep it. We cannot recover deleted accounts.',
           tags: ['account deletion', 'data removal', 'permanent'],
           popular: false
+        },
+        {
+          id: 33,
+          question: 'How do I manage my subscription and view invoices?',
+          answer: 'You can manage your subscription, view invoices, update payment methods, and download receipts through our Customer Portal. Click here to access your billing dashboard: https://billing.stripe.com/p/login/4gM00daP4gbN1bU56T7bW00. This portal allows you to view your payment history, download PDF receipts, update your payment method, and manage your subscription settings.',
+          tags: ['subscription management', 'invoices', 'billing', 'customer portal', 'payment methods'],
+          popular: true
         }
       ]
     },
@@ -509,6 +516,17 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
 
         {/* Footer */}
         <div className="border-t border-gray-700 p-4 text-center text-sm text-gray-400">
+          <div className="mb-3">
+            <a 
+              href="https://billing.stripe.com/p/login/4gM00daP4gbN1bU56T7bW00" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              <Settings className="w-4 h-4" />
+              Manage Subscription & View Invoices
+            </a>
+          </div>
           <p>Still need help? Contact us at <span className="text-blue-400">support@survivebackpacking.com</span></p>
         </div>
       </div>
