@@ -332,7 +332,11 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     
     // Step 1: Check if subscriber already exists
     console.log('🔍 Checking if subscriber already exists...');
-    const checkResponse = await fetch(`https://api.convertkit.com/v3/subscribers?api_key=${CONVERTKIT_API_KEY}&email_address=${encodeURIComponent(email)}`);
+    const checkResponse = await fetch(`https://api.convertkit.com/v4/subscribers?email_address=${encodeURIComponent(email)}`, {
+      headers: {
+        'X-Kit-Api-Key': CONVERTKIT_API_KEY
+      }
+    });
     
     let subscriberId = null;
     
@@ -349,13 +353,13 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     // Step 2: Create subscriber if doesn't exist
     if (!subscriberId) {
       console.log('🆕 Creating new subscriber...');
-      const subscriberResponse = await fetch(`https://api.convertkit.com/v3/subscribers`, {
+      const subscriberResponse = await fetch(`https://api.convertkit.com/v4/subscribers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Kit-Api-Key': CONVERTKIT_API_KEY
         },
         body: JSON.stringify({
-          api_key: CONVERTKIT_API_KEY,
           email: email,
           first_name: name,
           fields: {
@@ -382,13 +386,13 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
     // Step 3: Add tag to subscriber (whether new or existing)
     if (subscriberId) {
       console.log('🏷️ Adding tag to subscriber:', subscriberId);
-      const tagResponse = await fetch(`https://api.convertkit.com/v3/subscribers/${subscriberId}/tags`, {
+      const tagResponse = await fetch(`https://api.convertkit.com/v4/subscribers/${subscriberId}/tags`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Kit-Api-Key': CONVERTKIT_API_KEY
         },
         body: JSON.stringify({
-          api_key: CONVERTKIT_API_KEY,
           tag: {
             name: tag
           }

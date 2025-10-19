@@ -21,6 +21,20 @@ module.exports = async (req, res) => {
     console.log('API Key length:', CONVERTKIT_API_KEY.length);
     console.log('Test email:', testEmail);
     
+    // Test 0: Check API key validity
+    console.log('🔑 Checking API key validity...');
+    const accountResponse = await fetch(`https://api.convertkit.com/v3/account?api_key=${CONVERTKIT_API_KEY}`);
+    
+    console.log('Account response status:', accountResponse.status);
+    
+    if (accountResponse.ok) {
+      const accountResult = await accountResponse.json();
+      console.log('Account result:', JSON.stringify(accountResult, null, 2));
+    } else {
+      const errorData = await accountResponse.json();
+      console.log('Account error:', errorData);
+    }
+    
     // Test 1: Check if subscriber exists
     console.log('🔍 Checking if subscriber exists...');
     const checkResponse = await fetch(`https://api.convertkit.com/v3/subscribers?api_key=${CONVERTKIT_API_KEY}&email_address=${encodeURIComponent(testEmail)}`);
