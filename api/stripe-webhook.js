@@ -681,13 +681,20 @@ async function handlePaymentSucceeded(invoice) {
             
             console.log('✅ Found user by email:', userId);
             
-            // Update last payment date
+            // Update user to Founder's Circle tier (for Payment Links)
             await updateUserSubscription(userId, {
+              tier: 'founders-circle',
+              plan: 'founders-circle',
+              status: 'active',
+              planName: 'Founder\'s Circle',
+              billingCycle: 'monthly',
+              stripeCustomerId: invoice.customer,
               lastPaymentDate: new Date().toISOString(),
-              lastUpdated: new Date().toISOString()
+              lastUpdated: new Date().toISOString(),
+              createdFromPaymentLink: true
             });
 
-            console.log(`✅ Payment succeeded for user ${userId} (found by email)`);
+            console.log(`✅ User ${userId} upgraded to Founder's Circle via Payment Link`);
             
             // Send payment success email
             await sendEmail(userId, 'payment_succeeded');
