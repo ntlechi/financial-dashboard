@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain, Info } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import SubscriptionManager from './SubscriptionManager';
@@ -1862,7 +1862,24 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
         <span>â€¢</span>
-        <span>Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
+        <span className="flex items-center gap-1">
+          Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span>
+          {/* 🎯 Operator's Intel Tooltip */}
+          <div className="relative inline-block group">
+            <Info 
+              className="w-3 h-3 text-gray-500 hover:text-teal-400 cursor-help transition-colors" 
+              style={{ cursor: 'help' }}
+            />
+            {/* Tooltip */}
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 w-64 text-xs text-white">
+              <div className="text-center">
+                This metric calculates your personal monthly expenses and excludes any business costs. This gives you a true measure of your survival runway if all income were to stop.
+              </div>
+              {/* Tooltip arrow */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-600"></div>
+            </div>
+          </div>
+        </span>
       </div>
     </div>
   </Card>
