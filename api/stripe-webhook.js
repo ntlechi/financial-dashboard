@@ -655,7 +655,14 @@ async function handlePaymentSucceeded(invoice) {
     currency: invoice.currency
   });
   
-  const subscriptionId = invoice.subscription;
+  // Check for subscription in multiple locations
+  let subscriptionId = invoice.subscription;
+  
+  // If not found, check parent subscription details
+  if (!subscriptionId && invoice.parent && invoice.parent.subscription_details) {
+    subscriptionId = invoice.parent.subscription_details.subscription;
+    console.log('📋 Found subscription in parent details:', subscriptionId);
+  }
   
   if (!subscriptionId) {
     console.log('⚠️ Invoice has no subscription - trying to find user by customer email');
