@@ -28,7 +28,6 @@ import QuickJournalModal from './components/QuickJournalModal';
 import FixedModal from './components/FixedModal';
 // import MomentsModal from './components/MomentsModal'; // TODO: Create MomentsModal component
 import MomentsFeed from './components/MomentsFeed';
-import InstallPrompt from './components/FixedModal';
 import QuickStartGuide from './components/QuickStartGuide';
 import ForgotPassword from './components/ForgotPassword';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
@@ -55,14 +54,12 @@ import {
   createUserWithEmailAndPassword, 
   signInWithPopup, 
   GoogleAuthProvider,
-  signInAnonymously,
   signOut, 
   onAuthStateChanged,
-  sendPasswordResetEmail,
   updateProfile,
   fetchSignInMethodsForEmail
 } from "firebase/auth";
-import { doc, setDoc, getDoc, updateDoc, collection, query, where, limit, getDocs } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 
 // Firebase App ID available if needed

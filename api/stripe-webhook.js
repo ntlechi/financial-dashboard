@@ -665,7 +665,6 @@ async function handlePaymentSucceeded(invoice) {
       try {
         const customer = await stripe.customers.retrieve(invoice.customer);
         console.log('📧 Customer email:', customer.email);
-        console.log('🔍 Full customer object:', JSON.stringify(customer, null, 2));
         
         // Check if customer is deleted
         if (customer.deleted) {
