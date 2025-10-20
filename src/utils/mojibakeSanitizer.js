@@ -44,11 +44,15 @@ const replacements = [
   [/❌„¹ï¸\s*/g, 'ℹ️ '],
   [/❌œï¸\s*/g, '✏️ '],
   
-  // Catch-all for remaining mojibake - just remove it
+  // Aggressive catch-all for remaining mojibake
   [/ðŸ[^\s]{0,10}/g, ''],
-  [/ï¸\s*/g, ''],
-  [/â€[^\s]{0,3}/g, ''],
-  [/¢\s*€\s*/g, '✓ '],  // Check mark corruption
+  [/ï¸[^\s]{0,5}/g, ''],
+  [/â€[^\s]{0,5}/g, ''],
+  [/ƒ£/g, ''],  // Investment page fragment
+  [/¢\s*€/g, '✓'],
+  [/€\s*¢/g, '✓'],
+  // Final cleanup: any non-ASCII control chars in text
+  [/[\u{0080}-\u{009F}]+/gu, ''],
 ];
 
 function fixText(text) {
