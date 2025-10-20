@@ -1,7 +1,8 @@
 // Mapping of common mojibake sequences -> intended characters/text
 const replacements = [
   // Emoji corruption (UTF-8 seen as Windows-1252)
-  [/ðŸ›¡ï¸/g, '🛠️'],
+  // Insurance/shield
+  [/ðŸ›¡ï¸/g, '🛡️'],
   [/ðŸ”ï¸/g, '🏔️'],
   [/ðŸŽ¯/g, '🎯'],
   [/ðŸ“Š/g, '📊'],
@@ -19,9 +20,15 @@ const replacements = [
   [/ðŸšŒ/g, '🚄'],
   [/ðŸ¨/g, '🏨'],
   [/ðŸ’«/g, '💫'],
-  [/❌š¡/g, '⚠️'],
+  // Avalanche label used lightning
+  [/❌š¡/g, '⚡'],
   [/❌„¹ï¸/g, 'ℹ️'],
   [/❌œï¸/g, '✏️'],
+
+  // FI Basecamp tent
+  [/ðŸ•ï¸/g, '🏕️'],
+  // Extra Payment money bag
+  [/ðŸ’°/g, '💰'],
 
   // Generic fragments sometimes left over
   [/ï¸/g, ''],
