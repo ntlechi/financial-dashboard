@@ -1,38 +1,37 @@
-// Mapping of common mojibake sequences -> intended characters/text
+// Comprehensive mojibake cleanup for UTF-8 corruption
 const replacements = [
-  // Emoji corruption (UTF-8 seen as Windows-1252)
-  // Insurance/shield
-  [/ðŸ›¡ï¸/g, '🛡️'],
-  [/ðŸ”ï¸/g, '🏔️'],
+  // Most visible sequences from screenshot
+  [/ðŸ"ï¸/g, '🏔️'],
+  [/ðŸ›¡ï¸/g, '🛡️'],
+  [/✕/g, '✗'],
+  
+  // Other emoji corruption
   [/ðŸŽ¯/g, '🎯'],
-  [/ðŸ“Š/g, '📊'],
-  [/ðŸ“ˆ/g, '📈'],
-  [/ðŸ”®/g, '🔮'],
-  [/ðŸ’¡/g, '💡'],
-  [/ðŸ•Šï¸/g, '🕒'],
-  [/ðŸ“…/g, '🗓️'],
-  [/ðŸ—“ï¸/g, '📓'],
-  [/ðŸ“†/g, '📆'],
-  [/ðŸ“‹/g, '📋'],
+  [/ðŸ"Š/g, '📊'],
+  [/ðŸ"ˆ/g, '📈'],
+  [/ðŸ"®/g, '🔮'],
+  [/ðŸ'¡/g, '💡'],
+  [/ðŸ•Šï¸/g, '🕒'],
+  [/ðŸ"…/g, '🗓️'],
+  [/ðŸ—"ï¸/g, '📓'],
+  [/ðŸ"†/g, '📆'],
+  [/ðŸ"‹/g, '📋'],
   [/ðŸ›¡/g, '🛠'],
-  [/ðŸ›ï¸/g, '🛍️'],
-  [/ðŸ½ï¸/g, '🍽️'],
+  [/ðŸ›ï¸/g, '🛍️'],
+  [/ðŸ½ï¸/g, '🍽️'],
   [/ðŸšŒ/g, '🚄'],
-  [/ðŸ¨/g, '🏨'],
-  [/ðŸ’«/g, '💫'],
-  // Avalanche label used lightning
+  [/ðŸ¨/g, '🏨'],
+  [/ðŸ'«/g, '💫'],
+  [/ðŸ•ï¸/g, '🏕️'],
+  [/ðŸ'°/g, '💰'],
   [/❌š¡/g, '⚡'],
-  [/❌„¹ï¸/g, 'ℹ️'],
-  [/❌œï¸/g, '✏️'],
-
-  // FI Basecamp tent
-  [/ðŸ•ï¸/g, '🏕️'],
-  // Extra Payment money bag
-  [/ðŸ’°/g, '💰'],
-
-  // Generic fragments sometimes left over
-  [/ï¸/g, ''],
-  [/ðŸ/g, ''], // fallback cleanup; keep last to avoid over-removal earlier
+  [/❌„¹ï¸/g, 'ℹ️'],
+  [/❌œï¸/g, '✏️'],
+  
+  // Aggressive cleanup: any remaining mojibake
+  [/ðŸ[^\s]{0,10}/g, ''],
+  [/ï¸/g, ''],
+  [/â€[^\s]{0,3}/g, ''],
 ];
 
 function fixText(text) {
@@ -44,58 +43,72 @@ function fixText(text) {
   return result;
 }
 
-export function startMojibakeSanitizer() {
-  // Initial pass over existing DOM text nodes
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+function sanitizeAllText() {
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false
+  );
+  
   const textNodes = [];
-  while (walker.nextNode()) textNodes.push(walker.currentNode);
-  for (const node of textNodes) {
-    const fixed = fixText(node.nodeValue);
-    if (fixed !== node.nodeValue) node.nodeValue = fixed;
+  while (walker.nextNode()) {
+    textNodes.push(walker.currentNode);
   }
-
-  // Observe future mutations (tooltips, dynamic banners, tabs)
-  const observer = new MutationObserver((mutations) => {
-    for (const m of mutations) {
-      if (m.type === 'childList') {
-        m.addedNodes.forEach((n) => sanitizeNode(n));
-      } else if (m.type === 'characterData' && m.target?.nodeType === Node.TEXT_NODE) {
-        const fixed = fixText(m.target.nodeValue);
-        if (fixed !== m.target.nodeValue) m.target.nodeValue = fixed;
-      }
+  
+  textNodes.forEach((node) => {
+    const fixed = fixText(node.nodeValue);
+    if (fixed !== node.nodeValue) {
+      node.nodeValue = fixed;
     }
   });
-  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 }
 
-function sanitizeNode(node) {
-  if (node.nodeType === Node.TEXT_NODE) {
-    const fixed = fixText(node.nodeValue);
-    if (fixed !== node.nodeValue) node.nodeValue = fixed;
-    return;
+export function startMojibakeSanitizer() {
+  // Initial cleanup
+  if (document.body) {
+    sanitizeAllText();
   }
-  if (!(node instanceof Element)) return;
-  // Prioritize visible UI: navs, headers, banners, tabs
-  const prioritySelectors = ['nav', '[role="tablist"]', '.banner', '[data-banner]', 'header'];
-  if (prioritySelectors.some((sel) => node.matches?.(sel))) {
-    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach((t) => {
-      const fixed = fixText(t.nodeValue);
-      if (fixed !== t.nodeValue) t.nodeValue = fixed;
-    });
-  } else {
-    // Light-touch for other nodes: only fix direct text children
-    node.childNodes.forEach((child) => {
-      if (child.nodeType === Node.TEXT_NODE) {
-        const fixed = fixText(child.nodeValue);
-        if (fixed !== child.nodeValue) child.nodeValue = fixed;
+  
+  // Wait for React render and clean again
+  setTimeout(() => {
+    sanitizeAllText();
+  }, 100);
+  
+  setTimeout(() => {
+    sanitizeAllText();
+  }, 500);
+  
+  setTimeout(() => {
+    sanitizeAllText();
+  }, 1000);
+
+  // Observe future DOM changes
+  const observer = new MutationObserver((mutations) => {
+    let needsCleanup = false;
+    for (const m of mutations) {
+      if (m.type === 'childList' && m.addedNodes.length > 0) {
+        needsCleanup = true;
+        break;
       }
-    });
-  }
+      if (m.type === 'characterData') {
+        const fixed = fixText(m.target.nodeValue);
+        if (fixed !== m.target.nodeValue) {
+          m.target.nodeValue = fixed;
+        }
+      }
+    }
+    
+    if (needsCleanup) {
+      sanitizeAllText();
+    }
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
 }
 
 export default startMojibakeSanitizer;
-
-
