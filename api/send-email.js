@@ -41,26 +41,34 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log('📧 Email handler called:', { trigger: req.body.trigger, userId: req.body.userId });
+    
     const { userId, trigger, additionalData = {} } = req.body;
 
     if (!userId || !trigger) {
+      console.log('❌ Missing required fields');
       return res.status(400).json({ 
         error: 'Missing required fields: userId, trigger' 
       });
     }
 
+    console.log('🔍 Getting user data from Firebase...');
     // Get user data from Firebase
     const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
     
     if (!userDoc.exists) {
+      console.log('❌ User not found in Firebase');
       return res.status(404).json({ error: 'User not found' });
     }
 
     const userData = userDoc.data();
     const userEmail = userData.email;
     const userName = userData.displayName || userData.email?.split('@')[0];
-    const subscriptionTier = userData.subscription?.tier;
+    // Use subscriptionTier from additionalData first (webhook data), fallback to Firebase
+    const subscriptionTier = additionalData.subscriptionTier || userData.subscription?.tier;
+
+    console.log('📊 User data:', { email: userEmail, tier: subscriptionTier, trigger });
 
     // Prepare email data
     const emailData = {
@@ -72,6 +80,7 @@ export default async function handler(req, res) {
       ...additionalData
     };
 
+    console.log('📤 Calling sendEmailByTrigger...');
     // Send email based on trigger
     await sendEmailByTrigger(emailData);
 
@@ -83,7 +92,8 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('❌ Error in email handler:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ 
       error: 'Failed to send email',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -93,6 +103,7 @@ export default async function handler(req, res) {
 
 // Send email based on trigger type
 async function sendEmailByTrigger(emailData) {
+  console.log('📨 sendEmailByTrigger called:', { trigger: emailData.trigger, tier: emailData.subscriptionTier });
   const { email, name, trigger, subscriptionTier, productName } = emailData;
 
   // Email templates (you can customize these)
@@ -219,12 +230,17 @@ async function sendEmailByTrigger(emailData) {
     return;
   }
 
+  console.log('🔑 ConvertKit API key exists:', !!process.env.CONVERTKIT_API_KEY);
+  
   // Send via ConvertKit (recommended)
   if (process.env.CONVERTKIT_API_KEY) {
     try {
+      console.log('🚀 Calling sendViaConvertKit...');
       await sendViaConvertKit(email, name, trigger, subscriptionTier, productName);
+      console.log('✅ sendViaConvertKit completed successfully');
     } catch (convertKitError) {
-      console.error('ConvertKit error, falling back to logging:', convertKitError.message);
+      console.error('❌ ConvertKit error, falling back to logging:', convertKitError.message);
+      console.error('ConvertKit error stack:', convertKitError.stack);
       // Fallback: just log the email
       console.log('📧 Email to send:', {
         to: email,
