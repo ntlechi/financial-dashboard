@@ -824,8 +824,17 @@ async function handlePaymentSucceeded(invoice) {
 
           console.log(`✅ User ${userId} upgraded to Founder's Circle via subscription`);
           
-          // Send payment success email
-          await sendEmail(userId, 'payment_succeeded');
+          // Get subscription tier for ConvertKit tagging
+          const priceId = subscription.items.data[0]?.price.id;
+          const subscriptionTier = PLAN_MAPPING[priceId] || 'founders-circle';
+          const productName = getProductNameFromTier(subscriptionTier);
+          
+          // Send payment success email with tier for ConvertKit tagging
+          await sendEmail(userId, 'payment_succeeded', {
+            subscriptionTier,
+            planName: 'Founder\'s Circle',
+            productName: productName
+          });
           return;
           
         } catch (authError) {
@@ -840,6 +849,11 @@ async function handlePaymentSucceeded(invoice) {
     return;
   }
 
+  // Get subscription tier from price ID
+  const priceId = subscription.items.data[0]?.price.id;
+  const subscriptionTier = PLAN_MAPPING[priceId] || 'founders-circle';
+  const productName = getProductNameFromTier(subscriptionTier);
+  
   // Update last payment date
   await updateUserSubscription(userId, {
     lastPaymentDate: new Date().toISOString(),
@@ -848,8 +862,12 @@ async function handlePaymentSucceeded(invoice) {
 
   console.log(`✅ Payment succeeded for user ${userId}`);
   
-  // Send payment success email
-  await sendEmail(userId, 'payment_succeeded');
+  // Send payment success email with subscription tier for ConvertKit tagging
+  await sendEmail(userId, 'payment_succeeded', {
+    subscriptionTier,
+    planName: getProductNameFromTier(subscriptionTier),
+    productName: productName
+  });
   } catch (error) {
     console.error('❌ Error handling payment succeeded:', error);
   }
