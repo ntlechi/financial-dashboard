@@ -541,7 +541,8 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
     subscriptionTier,
     planName: 'Founder\'s Circle',
     productName: productName,
-    priceId: priceId || 'payment-link-default'
+    priceId: priceId || 'payment-link-default',
+    userEmail: customer?.email  // Pass email directly from Stripe
   });
 }
 
@@ -589,12 +590,24 @@ async function handleCheckoutCompleted(session) {
   // Get the product name for ConvertKit
   const productName = getProductNameFromTier(subscriptionTier);
   
+  // Get customer email for ConvertKit
+  let customerEmail = session.customer_details?.email;
+  if (!customerEmail && session.customer) {
+    try {
+      const customer = await stripe.customers.retrieve(session.customer);
+      customerEmail = customer.email;
+    } catch (e) {
+      console.log('Could not retrieve customer email:', e.message);
+    }
+  }
+  
   // Send welcome email with proper product information
   await sendEmail(userId, 'subscription_created', {
     subscriptionTier,
     planName: planName || productName,
     productName: productName,
-    priceId: priceId
+    priceId: priceId,
+    userEmail: customerEmail  // Pass email directly from Stripe
   });
 }
 

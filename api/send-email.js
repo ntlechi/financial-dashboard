@@ -63,12 +63,18 @@ export default async function handler(req, res) {
     }
 
     const userData = userDoc.data();
-    const userEmail = userData.email;
-    const userName = userData.displayName || userData.email?.split('@')[0];
+    // Use email from webhook data first (more reliable), fallback to Firebase
+    const userEmail = additionalData.userEmail || userData.email;
+    const userName = userData.displayName || userEmail?.split('@')[0];
     // Use subscriptionTier from additionalData first (webhook data), fallback to Firebase
     const subscriptionTier = additionalData.subscriptionTier || userData.subscription?.tier;
 
     console.log('📊 User data:', { email: userEmail, tier: subscriptionTier, trigger });
+    
+    if (!userEmail) {
+      console.error('❌ No email found for user:', userId);
+      return res.status(400).json({ error: 'User email not found' });
+    }
 
     // Prepare email data
     const emailData = {
