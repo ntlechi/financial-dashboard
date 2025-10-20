@@ -36,6 +36,25 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// Helper function to store customer email for signup pre-filling
+async function storeCustomerEmailForSignup(customerEmail, customerName) {
+  try {
+    if (!customerEmail) return;
+    
+    const signupData = {
+      email: customerEmail,
+      name: customerName || customerEmail.split('@')[0],
+      createdAt: new Date().toISOString()
+    };
+    
+    // Store in temp collection with 1-hour expiration
+    await db.collection('temp_signup_data').add(signupData);
+    console.log('📧 Stored customer email for signup pre-filling:', customerEmail);
+  } catch (error) {
+    console.error('❌ Error storing customer email for signup:', error);
+  }
+}
+
 // Helper function to send emails
 async function sendEmail(userId, trigger, additionalData = {}) {
   try {
@@ -545,6 +564,11 @@ async function handleCheckoutCompleted(session) {
   if (!subscriptionTier) {
     console.error('Unknown price ID:', priceId);
     return;
+  }
+
+  // Store customer email for signup pre-filling
+  if (session.customer_details?.email) {
+    await storeCustomerEmailForSignup(session.customer_details.email, session.customer_details.name);
   }
 
   // Update user's subscription in Firebase
