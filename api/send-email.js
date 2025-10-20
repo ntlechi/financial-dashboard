@@ -361,12 +361,9 @@ async function sendViaConvertKit(email, name, trigger, subscriptionTier, product
         },
         body: JSON.stringify({
           email_address: email,
-          first_name: name,
-          fields: {
-            subscription_tier: subscriptionTier,
-            trigger_event: trigger,
-            product_name: productName || subscriptionTier
-          }
+          first_name: name
+          // Note: V4 API doesn't accept custom fields in subscriber creation
+          // Fields must be added separately via the fields API endpoint
         })
       });
 

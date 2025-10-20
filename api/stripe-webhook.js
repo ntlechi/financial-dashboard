@@ -611,8 +611,8 @@ async function handleSubscriptionCreated(subscription) {
   await updateUserSubscription(userId, {
     stripeSubscriptionId: subscription.id,
     status: subscription.status,
-    currentPeriodStart: new Date(subscription.current_period_start * 1000).toISOString(),
-    currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+    currentPeriodStart: subscription.current_period_start ? new Date(subscription.current_period_start * 1000).toISOString() : null,
+    currentPeriodEnd: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
     lastUpdated: new Date().toISOString()
   });
 
@@ -636,8 +636,8 @@ async function handleSubscriptionUpdated(subscription) {
     tier: subscriptionTier,
     plan: subscriptionTier, // Add this for app compatibility
     status: subscription.status,
-    currentPeriodStart: new Date(subscription.current_period_start * 1000).toISOString(),
-    currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+    currentPeriodStart: subscription.current_period_start ? new Date(subscription.current_period_start * 1000).toISOString() : null,
+    currentPeriodEnd: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
     lastUpdated: new Date().toISOString()
   });
 
