@@ -7,13 +7,21 @@ const replacements = [
   [/✕/g, '✓'],  // X mark -> checkmark
   [/✗/g, '✓'],  // Another X variant
   
-  // Investment page sequences
-  [/1ðŸ"¥\s*/g, '1️⃣ '],
-  [/2ðŸ"ˆ\s*/g, '2️⃣ '],
-  [/3ðŸ'°\s*/g, '3️⃣ '],
-  [/ðŸ"¥/g, '🔥'],
-  [/ðŸ"ˆ/g, '📈'],
-  [/ðŸ'°/g, '💰'],
+  // Investment page sequences - exact patterns from screenshot
+  [/1ðŸ"¥\s*f£/g, '1️⃣ '],
+  [/2ðŸ"ˆ\s*f£/g, '2️⃣ '],
+  [/3ðŸ'°\s*f£/g, '3️⃣ '],
+  [/1ðŸ"¥/g, '1️⃣ '],
+  [/2ðŸ"ˆ/g, '2️⃣ '],
+  [/3ðŸ'°/g, '3️⃣ '],
+  [/ðŸ"¥/g, ''],
+  [/ðŸ"ˆ/g, ''],
+  [/ðŸ'°/g, ''],
+  [/f£/g, ''],  // Fragment cleanup
+  
+  // Bullet point corruption
+  [/✕\s*€\s*¢/g, '✓ '],
+  [/€\s*¢/g, '✓ '],
   
   // Other common emoji corruption - replace with text or simple icons
   [/ðŸŽ¯\s*/g, '🎯 '],
