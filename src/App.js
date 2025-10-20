@@ -30,6 +30,7 @@ import FixedModal from './components/FixedModal';
 import MomentsFeed from './components/MomentsFeed';
 import QuickStartGuide from './components/QuickStartGuide';
 import ForgotPassword from './components/ForgotPassword';
+import UpdateNotification from './components/UpdateNotification';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
@@ -16779,6 +16780,12 @@ const AppWithErrorBoundary = () => (
   <ErrorBoundary>
     <App />
   </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;
+
+
+ary>
 );
 
 export default AppWithErrorBoundary;
