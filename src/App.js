@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
@@ -67,12 +67,12 @@ import { httpsCallable } from "firebase/functions";
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
-// ðŸ§¹ PRODUCTION-READY LOGGING: Only log in development, silent in production
+// 🧹 PRODUCTION-READY LOGGING: Only log in development, silent in production
 const isDevelopment = process.env.NODE_ENV === 'development';
 const debugLog = isDevelopment ? console.log.bind(console) : () => {};
 const infoLog = isDevelopment ? console.log.bind(console) : () => {};
 
-// ðŸ¤– Smart Expense Categorization System
+// 🤖 Smart Expense Categorization System
 const expenseCategorizationRules = {
   housing: [
     'rent', 'mortgage', 'property tax', 'home insurance', 'hoa', 'utilities', 'electricity', 'gas bill', 
@@ -104,7 +104,7 @@ const expenseCategorizationRules = {
   ]
 };
 
-// ðŸŽ¯ Auto-categorize expense based on description
+// 🎯 Auto-categorize expense based on description
 const categorizeExpense = (description) => {
   const desc = description.toLowerCase();
   
@@ -124,7 +124,7 @@ const categorizeExpense = (description) => {
   };
 };
 
-// ðŸ’° Auto-categorize INCOME transactions
+// 💰 Auto-categorize INCOME transactions
 const categorizeIncome = (description) => {
   const desc = description.toLowerCase();
   
@@ -155,14 +155,14 @@ const categorizeIncome = (description) => {
   };
 };
 
-// ðŸ“… Recurring Expense Utilities
+// 📅 Recurring Expense Utilities
 const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, lastProcessed) => {
   const lastDate = new Date(lastProcessed);
   let nextDate = new Date(lastDate);
   
   switch (frequency) {
     case 'weekly':
-      // ðŸ”§ ENHANCED: Calculate next occurrence of the specified day of week
+      // 🔧 ENHANCED: Calculate next occurrence of the specified day of week
       const currentDay = lastDate.getDay();
       const targetDay = parseInt(dayOfWeek) || 0; // 0=Sunday, 1=Monday, ..., 6=Saturday
       let daysToAdd = targetDay - currentDay;
@@ -171,7 +171,7 @@ const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, las
       break;
       
     case 'bi-weekly':
-      // ðŸ†• NEW: Bi-weekly on specific day (e.g., "every other Thursday")
+      // 🆕 NEW: Bi-weekly on specific day (e.g., "every other Thursday")
       const currentDayBiWeekly = lastDate.getDay();
       const targetDayBiWeekly = parseInt(dayOfWeek) || 0;
       let daysToAddBiWeekly = targetDayBiWeekly - currentDayBiWeekly;
@@ -198,7 +198,7 @@ const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, las
   return nextDate.toISOString().split('T')[0];
 };
 
-// ðŸ”„ Process Due Recurring Expenses
+// 🔄 Process Due Recurring Expenses
 const processDueRecurringExpenses = (recurringExpenses, existingTransactions) => {
   const today = new Date();
   const newTransactions = [];
@@ -255,7 +255,7 @@ const processDueRecurringExpenses = (recurringExpenses, existingTransactions) =>
   };
 };
 
-// ðŸŽ¯ REALISTIC BEGINNER SAMPLE DATA
+// 🎯 REALISTIC BEGINNER SAMPLE DATA
 // Designed for someone just starting their financial journey
 const initialData = {
   financialFreedom: {
@@ -333,7 +333,7 @@ const initialData = {
     { id: 2, name: 'Pay Off Credit Card', targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
     { id: 3, name: 'Vacation Fund', targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
   ],
-  // ðŸ”§ FIX: No businesses in sample data (Side Hustle is Operator-only feature)
+  // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
   // FREE tier users shouldn't have phantom businesses affecting their calculations
   businesses: [],
   investments: {
@@ -364,7 +364,7 @@ const initialData = {
     ]
   },
   transactions: [
-    // ðŸ”§ FIX: Use relative dates (days ago from today) so sample data is ALWAYS in the past!
+    // 🔧 FIX: Use relative dates (days ago from today) so sample data is ALWAYS in the past!
     { id: 1, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
     { id: 2, date: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
     { id: 3, date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
@@ -426,7 +426,7 @@ const initialData = {
       tags: ['insurance', 'essential']
     }
   ],
-  // ðŸ”§ FIX: Monthly history updated to match realistic beginner sample data
+  // 🔧 FIX: Monthly history updated to match realistic beginner sample data
   monthlyHistory: [
     { 
       month: '2025-01', 
@@ -495,7 +495,7 @@ const initialData = {
       savingsRate: 29
     }
   ],
-  // ðŸ”§ FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
+  // 🔧 FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
   // FREE tier users shouldn't have phantom travel data, consistent with businesses fix
   travel: {
     totalSavings: 0,  // Just starting out - building travel fund
@@ -518,14 +518,14 @@ const initialData = {
       lastUpdated: "2025-01-15"
     },
     expenseCategories: [
-      { name: "accommodation", color: "bg-blue-500", icon: "ðŸ¨" },
-      { name: "food", color: "bg-green-500", icon: "ðŸ½ï¸" },
-      { name: "transport", color: "bg-yellow-500", icon: "ðŸšŒ" },
-      { name: "activities", color: "bg-purple-500", icon: "ðŸŽ¯" },
-      { name: "shopping", color: "bg-pink-500", icon: "ðŸ›ï¸" },
-      { name: "insurance", color: "bg-red-500", icon: "ðŸ›¡ï¸" },
-      { name: "visa", color: "bg-orange-500", icon: "ðŸ“‹" },
-      { name: "other", color: "bg-gray-500", icon: "ðŸ’«" }
+      { name: "accommodation", color: "bg-blue-500", icon: "🏨" },
+      { name: "food", color: "bg-green-500", icon: "🍽️" },
+      { name: "transport", color: "bg-yellow-500", icon: "🚌" },
+      { name: "activities", color: "bg-purple-500", icon: "🎯" },
+      { name: "shopping", color: "bg-pink-500", icon: "🛍️" },
+      { name: "insurance", color: "bg-red-500", icon: "🛡️" },
+      { name: "visa", color: "bg-orange-500", icon: "📋" },
+      { name: "other", color: "bg-gray-500", icon: "💫" }
     ]
   },
   budgetSettings: {
@@ -551,7 +551,7 @@ const Card = ({ children, className = '' }) => (
   </div>
 );
 
-// ðŸ”’ Locked Card Component - Shows upgrade prompt for locked dashboard cards
+// 🔒 Locked Card Component - Shows upgrade prompt for locked dashboard cards
 const LockedCard = ({ cardName, requiredTier, onUpgrade }) => (
   <div className="bg-gray-800/50 backdrop-blur-sm border-2 border-amber-500/30 rounded-2xl shadow-lg p-6 relative overflow-hidden col-span-1 md:col-span-2 lg:col-span-2">
     {/* Blur overlay */}
@@ -614,7 +614,7 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 
 // Financial Freedom Goal Card (SLATE - Premium)
 const FinancialFreedomCard = ({ data, onEdit }) => {
-  // ðŸ›¡ï¸ NULL SAFETY CHECK
+  // 🛡️ NULL SAFETY CHECK
   if (!data || !data.targetAmount) {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-slate-900/60 to-gray-900/60 border-amber-500/20">
@@ -679,7 +679,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
-          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo ❌€¢ 
+          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo ?�� 
           <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
@@ -689,7 +689,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
 
 // Savings Rate Card (SLATE GREEN - Growth/Progress)
 const SavingsRateCard = ({ data, onEdit }) => {
-  // ðŸ›¡ï¸ NULL SAFETY CHECK
+  // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -771,11 +771,11 @@ const SavingsRateCard = ({ data, onEdit }) => {
   );
 };
 
-// Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status ðŸŽ¯
+// Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status 🎯
 const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   const [showStatusLegend, setShowStatusLegend] = useState(false);
 
-  // ðŸ›¡ï¸ NULL SAFETY CHECK
+  // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 border-blue-500/20">
@@ -788,14 +788,14 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
     );
   }
 
-  // ðŸ”§ USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
-  const expensesTotal = expenses?.total || 0; // ðŸ›¡ï¸ FIX: No expenses = 0 (not $2000!)
+  // 🔧 USE MONTHLY EXPENSES FROM EXPENSES CARD (same calculation as dashboard)
+  const expensesTotal = expenses?.total || 0; // 🛡️ FIX: No expenses = 0 (not $2000!)
   // If in annual mode, divide by 12 to get actual monthly average
   const monthlyExpenses = viewMode === 'annual' ? expensesTotal / 12 : expensesTotal;
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = monthlyExpenses > 0 ? data.total / monthlyExpenses : 0;
   
-  // ðŸŽ® GAMIFIED RESILIENCE STATUS LOGIC (Color-coded by completion %)
+  // 🎮 GAMIFIED RESILIENCE STATUS LOGIC (Color-coded by completion %)
   const getResilienceStatus = (percentage) => {
     if (percentage > 90) return { 
       status: 'Secure', 
@@ -837,7 +837,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-400" />
             Rainy Day Fund
           </h2>
-          {/* ❌„¹ï¸ Status Legend Tooltip */}
+          {/* ?��️ Status Legend Tooltip */}
           <div className="relative">
             <button
               onMouseEnter={() => setShowStatusLegend(true)}
@@ -907,7 +907,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
           <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2 stealth-target">
             ${data.total.toLocaleString()}
           </div>
-          {/* ðŸŽ¯ DYNAMIC STATUS INDICATOR */}
+          {/* 🎯 DYNAMIC STATUS INDICATOR */}
           <div className={`text-base sm:text-lg font-bold ${resilience.textColor} mb-1`} style={{ color: resilience.color }}>
             {resilience.status}
           </div>
@@ -921,7 +921,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             <span>Current: <span className="stealth-target">${data.total.toLocaleString()}</span></span>
             <span>Goal: <span className="stealth-target">${data.goal.toLocaleString()}</span></span>
           </div>
-          {/* ðŸŽ¨ DYNAMIC COLOR PROGRESS BAR */}
+          {/* 🎨 DYNAMIC COLOR PROGRESS BAR */}
           <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
             <div 
               className={`h-3 rounded-full transition-all duration-500 ${resilience.bgColor}`}
@@ -972,7 +972,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
   // const getScoreProgress = (score) => (score / 850) * 100;
 
   // Create line chart for credit score history
-  // ðŸ›¡ï¸ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
+  // 🛡️ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
   useEffect(() => {
     if (!data || !data.history || data.history.length === 0 || !svgRef.current) return;
 
@@ -1118,7 +1118,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
   }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ðŸ›¡ï¸ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
+  // 🛡️ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
   if (!data || typeof data.current === 'undefined') {
     return (
       <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
@@ -1168,7 +1168,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
               <div className={`text-xs font-semibold flex items-center ${
                 scoreChange > 0 ? 'text-green-400' : scoreChange < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
-                {scoreChange > 0 ? '❌†—' : scoreChange < 0 ? '❌†˜' : '❌†’'} {Math.abs(scoreChange)}
+                {scoreChange > 0 ? '?��' : scoreChange < 0 ? '?��' : '?��'} {Math.abs(scoreChange)}
               </div>
             )}
           </div>
@@ -1177,7 +1177,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
         {/* Credit Score History Chart */}
         {data.history && data.history.length > 0 && (
           <div className="bg-gray-800/30 rounded-lg p-3">
-            <div className="text-sm text-gray-300 mb-2 font-semibold">ðŸ“ˆ Score History</div>
+            <div className="text-sm text-gray-300 mb-2 font-semibold">📈 Score History</div>
             <svg ref={svgRef}></svg>
           </div>
         )}
@@ -1206,7 +1206,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
   );
 };
 
-// ðŸŽ¯ Goals Card - CLIMBER+ Feature (Unlimited Goals)
+// 🎯 Goals Card - CLIMBER+ Feature (Unlimited Goals)
 const GoalsCard = ({ data, onEdit }) => {
   // Ensure data is always an array
   const goals = Array.isArray(data) ? data : [];
@@ -1284,7 +1284,7 @@ const GoalsCard = ({ data, onEdit }) => {
                   
                   <div className="text-center">
                     <div className={`text-lg font-bold ${isComplete ? 'text-green-400' : 'text-white'}`}>
-                      {isComplete ? 'ðŸŽ‰ Complete!' : `$${remaining.toLocaleString()}`}
+                      {isComplete ? '🎉 Complete!' : `$${remaining.toLocaleString()}`}
                     </div>
                     <div className="text-xs text-gray-400">
                       {isComplete ? 'Goal achieved!' : 'remaining'}
@@ -1310,7 +1310,7 @@ const GoalsCard = ({ data, onEdit }) => {
   );
 };
 
-// ðŸŽ¯ COMMAND CENTER: Net Worth Card with Donut Chart
+// 🎯 COMMAND CENTER: Net Worth Card with Donut Chart
 const NetWorthCard = ({ data, onEdit }) => {
   const netWorthChartRef = useRef(null);
   const [showAllAssets, setShowAllAssets] = useState(false);
@@ -1321,7 +1321,7 @@ const NetWorthCard = ({ data, onEdit }) => {
   const totalAssets = data?.breakdown?.filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0) || 0;
   const totalLiabilities = Math.abs(data?.breakdown?.filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0) || 0);
 
-  // ðŸ“Š D3.js Donut Chart Effect (MUST be before any returns)
+  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (netWorthChartRef.current && data && (totalAssets > 0 || totalLiabilities > 0)) {
       const svg = d3.select(netWorthChartRef.current);
@@ -1436,7 +1436,7 @@ const NetWorthCard = ({ data, onEdit }) => {
       </div>
     </div>
     
-    {/* ðŸ“‹ NET WORTH BREAKDOWN - Side by Side Layout */}
+    {/* 📋 NET WORTH BREAKDOWN - Side by Side Layout */}
     {data.breakdown && data.breakdown.length > 0 && (
       <div className="border-t border-sky-800/50 pt-4 mt-4">
         <h3 className="text-xs sm:text-sm font-semibold text-sky-300 uppercase tracking-wide mb-3">Breakdown</h3>
@@ -1445,7 +1445,7 @@ const NetWorthCard = ({ data, onEdit }) => {
           {/* Assets Section - Left Column */}
           {data.breakdown.filter(item => item.type === 'asset').length > 0 && (
             <div>
-              <h4 className="text-xs text-green-400 font-semibold mb-2">ðŸ’° Assets</h4>
+              <h4 className="text-xs text-green-400 font-semibold mb-2">💰 Assets</h4>
               <div className="space-y-2">
                 {(showAllAssets 
                   ? data.breakdown.filter(item => item.type === 'asset')
@@ -1475,7 +1475,7 @@ const NetWorthCard = ({ data, onEdit }) => {
           {/* Liabilities Section - Right Column */}
           {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
             <div>
-              <h4 className="text-xs text-red-400 font-semibold mb-2">ðŸ’³ Liabilities</h4>
+              <h4 className="text-xs text-red-400 font-semibold mb-2">💳 Liabilities</h4>
               <div className="space-y-2">
                 {(showAllLiabilities 
                   ? data.breakdown.filter(item => item.type === 'liability')
@@ -1510,7 +1510,7 @@ const NetWorthCard = ({ data, onEdit }) => {
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
-  // ðŸ›¡ï¸ NULL SAFETY CHECK
+  // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
       <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'radial-gradient(circle at top, rgba(251, 191, 36, 0.15), rgba(15, 23, 42, 0.95))'}}>
@@ -1554,10 +1554,10 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           const roomUsed = account.contributed;
           const roomAvailable = account.limit - account.contributed;
           
-          // ðŸŽ¨ PROJECT SUMMIT: Unique vibrant gradients per account type!
+          // 🎨 PROJECT SUMMIT: Unique vibrant gradients per account type!
           const isGoalReached = account.goal && account.contributed >= account.goal;
           
-          // ðŸŽ¨ BLUE THEME COMPLEMENT: Sky (TFSA) + Cyan (RRSP) - Clean & Elegant
+          // 🎨 BLUE THEME COMPLEMENT: Sky (TFSA) + Cyan (RRSP) - Clean & Elegant
           const isTFSA = account.name.toUpperCase().includes('TFSA') || account.name.toUpperCase().includes('TAX-FREE');
           const cardBg = isTFSA 
             ? 'from-sky-900/40 to-blue-900/40' // Sky blue (tax-free clarity)
@@ -1573,7 +1573,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                 <div>
                   <h4 className={`text-lg font-bold ${textColor} flex items-center gap-2`}>
                     {account.name}
-                    {isGoalReached && <span className="text-xs">ðŸ†</span>}
+                    {isGoalReached && <span className="text-xs">🏆</span>}
                   </h4>
                   <p className="text-xs text-gray-300 mt-1">{account.description}</p>
                 </div>
@@ -1611,7 +1611,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     <div className={`text-xs ${textColor} mb-1`}>Annual Goal</div>
                     <div className="text-lg font-bold text-white">${account.goal.toLocaleString()}</div>
                     <div className="text-[10px] text-gray-400 mt-1">
-                      {isGoalReached ? '✅ Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
+                      {isGoalReached ? '? Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
                     </div>
                   </div>
                 )}
@@ -1653,7 +1653,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
 
 // Debt Management Card
 const DebtCard = ({ data, onEdit }) => {
-  // ðŸ›¡ï¸ NULL SAFETY CHECK
+  // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
       <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
@@ -1709,7 +1709,7 @@ const DebtCard = ({ data, onEdit }) => {
               <div>
                 <span className="text-white font-medium">{account.name}</span>
                 <div className="text-gray-400 text-xs">
-                  {account.interestRate}% APR ❌€¢ Min: ${account.minPayment}
+                  {account.interestRate}% APR ?�� Min: ${account.minPayment}
                 </div>
               </div>
               <span className="text-red-400 font-semibold">${account.balance.toLocaleString()}</span>
@@ -1726,12 +1726,12 @@ const DebtCard = ({ data, onEdit }) => {
   );
 };
 
-// Cash on Hand Card - PREMIUM UPGRADE: Survival Runway Calculator ðŸŽ¯
+// Cash on Hand Card - PREMIUM UPGRADE: Survival Runway Calculator 🎯
 const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   const [showAllAccounts, setShowAllAccounts] = useState(false);
   const maxVisibleAccounts = 3;
   
-  // ðŸ›¡ï¸ NULL SAFETY CHECK
+  // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
@@ -1744,8 +1744,8 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     );
   }
 
-  // ðŸ“Š CALCULATE CURRENT MONTHLY EXPENSES (Same as Monthly Expenses Card!)
-  // ðŸ”§ CRITICAL FIX: Use CURRENT MONTH, not 3-month average!
+  // 📊 CALCULATE CURRENT MONTHLY EXPENSES (Same as Monthly Expenses Card!)
+  // 🔧 CRITICAL FIX: Use CURRENT MONTH, not 3-month average!
   const calculateCurrentMonthlyExpenses = () => {
     if (!transactions || transactions.length === 0) return 0;
     
@@ -1753,7 +1753,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
     
-    // ðŸ”§ CRITICAL FIX: Get CURRENT MONTH expenses only (matches Monthly Expenses card!)
+    // 🔧 CRITICAL FIX: Get CURRENT MONTH expenses only (matches Monthly Expenses card!)
     const currentMonthExpenses = transactions
       .filter(t => {
         const tDate = new Date(t.date);
@@ -1761,15 +1761,15 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       })
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
-    // ðŸ›¡ï¸ FIX: Round to 2 decimal places for display (e.g., $1,559.35)
+    // 🛡️ FIX: Round to 2 decimal places for display (e.g., $1,559.35)
     return Math.round(currentMonthExpenses * 100) / 100;
   };
 
-  // ðŸŽ¯ SURVIVAL RUNWAY CALCULATION (Using CURRENT month burn rate)
+  // 🎯 SURVIVAL RUNWAY CALCULATION (Using CURRENT month burn rate)
   const avgMonthlyExpenses = calculateCurrentMonthlyExpenses();
   const runwayMonths = avgMonthlyExpenses > 0 ? data.total / avgMonthlyExpenses : 0;
   
-  // ðŸš¨ STATUS INDICATOR LOGIC
+  // 🚨 STATUS INDICATOR LOGIC
   const getRunwayStatus = (months) => {
     if (months >= 6) return { label: 'Secure', color: '#14B8A6', bgColor: 'bg-teal-500', textColor: 'text-teal-400' };
     if (months >= 3) return { label: 'Good', color: '#38BDF8', bgColor: 'bg-sky-500', textColor: 'text-sky-400' };
@@ -1779,7 +1779,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   
   const status = getRunwayStatus(runwayMonths);
   
-  // ðŸ“Š PROGRESS BAR CALCULATION (against Rainy Day Fund goal)
+  // 📊 PROGRESS BAR CALCULATION (against Rainy Day Fund goal)
   const goalMonths = rainyDayGoal || 6; // Default to 6 months if no goal
   const progressPercent = Math.min((runwayMonths / goalMonths) * 100, 100);
 
@@ -1798,7 +1798,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </button>
     </div>
     
-    {/* ðŸŽ¯ HERO METRIC: Runway Time */}
+    {/* 🎯 HERO METRIC: Runway Time */}
     <div className="mb-2">
       <p className={`text-4xl sm:text-5xl font-extrabold ${status.textColor} mb-1`}>
         <span className="stealth-target">{runwayMonths.toFixed(1)}</span> <span className="text-2xl sm:text-3xl">months</span>
@@ -1808,12 +1808,12 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </p>
     </div>
     
-    {/* ðŸ’° Cash Amount (Secondary) */}
+    {/* 💰 Cash Amount (Secondary) */}
     <p className="text-lg text-gray-300 mb-4 stealth-target">
       ${data.total.toLocaleString()} cash on hand
     </p>
     
-    {/* ðŸ“Š RUNWAY PROGRESS BAR */}
+    {/* 📊 RUNWAY PROGRESS BAR */}
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2 text-xs sm:text-sm">
         <span className="text-gray-400">Runway Progress</span>
@@ -1833,7 +1833,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </div>
     </div>
     
-    {/* ðŸ“‹ ACCOUNT BREAKDOWN */}
+    {/* 📋 ACCOUNT BREAKDOWN */}
     <div className="border-t border-teal-800/50 pt-4">
       <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide mb-3">Account Breakdown</h3>
       <div className="space-y-2 mb-3">
@@ -1861,7 +1861,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </div>
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
-        <span>❌€¢</span>
+        <span>?��</span>
         <span>Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
       </div>
     </div>
@@ -1869,13 +1869,13 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   );
 };
 
-// ðŸŽ¯ COMMAND CENTER: Income Card with Donut Chart
+// 🎯 COMMAND CENTER: Income Card with Donut Chart
 const IncomeCard = ({ data, viewMode }) => {
   const incomeChartRef = useRef(null);
   const [showAllSources, setShowAllSources] = useState(false);
   const maxVisibleItems = 3;
   
-  // ðŸ“Š D3.js Donut Chart Effect (MUST be before any returns)
+  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (incomeChartRef.current && data.sources && data.sources.length > 0) {
       const svg = d3.select(incomeChartRef.current);
@@ -1935,7 +1935,7 @@ const IncomeCard = ({ data, viewMode }) => {
     }
   }, [data]);
 
-  // ðŸ›¡ï¸ NULL SAFETY CHECK (after hooks)
+  // 🛡️ NULL SAFETY CHECK (after hooks)
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -1992,13 +1992,13 @@ const IncomeCard = ({ data, viewMode }) => {
   );
 };
 
-// ðŸŽ¯ COMMAND CENTER: Expenses Card with Donut Chart
+// 🎯 COMMAND CENTER: Expenses Card with Donut Chart
 const ExpensesCard = ({ data, viewMode }) => {
   const expensesChartRef = useRef(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const maxVisibleItems = 3;
   
-  // ðŸ“Š D3.js Donut Chart Effect (MUST be before any returns)
+  // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (expensesChartRef.current && data.categories && data.categories.length > 0) {
       const svg = d3.select(expensesChartRef.current);
@@ -2058,7 +2058,7 @@ const ExpensesCard = ({ data, viewMode }) => {
     }
   }, [data]);
 
-  // ðŸ›¡ï¸ NULL SAFETY CHECK (after hooks)
+  // 🛡️ NULL SAFETY CHECK (after hooks)
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
@@ -2115,13 +2115,13 @@ const ExpensesCard = ({ data, viewMode }) => {
   );
 };
 
-// Cash Flow Card (TEAL - Positive Growth) - PREMIUM UPGRADE ðŸŽ¯
+// Cash Flow Card (TEAL - Positive Growth) - PREMIUM UPGRADE 🎯
 const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const chartRef = useRef(null);
   const tooltipRef = useRef(null); // DOM ref for tooltip (no React state!)
   const [chartKey, setChartKey] = useState(0); // For forcing re-render on resize
 
-  // ðŸ“Š CALCULATE 3-MONTH HISTORICAL CASH FLOW
+  // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
   const calculate3MonthTrend = () => {
     if (!transactions || transactions.length === 0) return [];
     const now = new Date();
@@ -2164,7 +2164,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   
   const trendData = calculate3MonthTrend();
 
-  // ðŸ“± Handle window resize for mobile responsiveness
+  // 📱 Handle window resize for mobile responsiveness
   useEffect(() => {
     let resizeTimer;
     const handleResize = () => {
@@ -2186,7 +2186,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
     };
   }, [trendData]);
 
-  // ðŸŽ¨ D3.js Mini Bar Chart - Mobile Responsive
+  // 🎨 D3.js Mini Bar Chart - Mobile Responsive
   useEffect(() => {
     if (!chartRef.current || trendData.length === 0) return;
 
@@ -2291,7 +2291,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
 
   }, [trendData, chartKey]); // Re-render on data change or manual resize trigger
 
-  // ðŸ›¡ï¸ NULL SAFETY CHECK - After hooks
+  // 🛡️ NULL SAFETY CHECK - After hooks
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
@@ -2324,7 +2324,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         <span className="stealth-target">{isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}</span>
       </p>
       
-      {/* ðŸ’° COMPONENT BREAKDOWN - Strategic Intelligence */}
+      {/* 💰 COMPONENT BREAKDOWN - Strategic Intelligence */}
       <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-6 mb-4 text-xs sm:text-sm">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
@@ -2338,7 +2338,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         </div>
       </div>
       
-      {/* ðŸ“ˆ 3-MONTH TREND CHART */}
+      {/* 📈 3-MONTH TREND CHART */}
       <div className="mt-4 border-t border-teal-800/50 pt-4">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
@@ -2556,16 +2556,16 @@ const FinancialFreedomCalculator = () => {
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>ðŸ“Š Enter Your Info:</strong> Input your current age, savings, and monthly contribution.</p>
-                <p><strong>ðŸŽ¯ Set Your Target:</strong> How much do you need to be financially free?</p>
-                <p><strong>ðŸ“ˆ Expected Return:</strong> Average annual investment return (7% is typical for stocks).</p>
-                <p><strong>ðŸ”® See Your Timeline:</strong> The chart shows when you'll reach financial freedom!</p>
-                <p className="text-blue-400 mt-2">ðŸ’¡ Tip: The higher your monthly contribution and return rate, the faster you reach freedom!</p>
+                <p><strong>📊 Enter Your Info:</strong> Input your current age, savings, and monthly contribution.</p>
+                <p><strong>🎯 Set Your Target:</strong> How much do you need to be financially free?</p>
+                <p><strong>📈 Expected Return:</strong> Average annual investment return (7% is typical for stocks).</p>
+                <p><strong>🔮 See Your Timeline:</strong> The chart shows when you'll reach financial freedom!</p>
+                <p className="text-blue-400 mt-2">💡 Tip: The higher your monthly contribution and return rate, the faster you reach freedom!</p>
               </div>
             </div>
           </div>
           </h3>
-          <p className="text-emerald-300/80 text-sm ml-9">ðŸ”ï¸ Calculate your trail to financial independence</p>
+          <p className="text-emerald-300/80 text-sm ml-9">🏔️ Calculate your trail to financial independence</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -2646,7 +2646,7 @@ const FinancialFreedomCalculator = () => {
                   ></div>
                 </div>
                 <div className="text-xs text-emerald-300 mt-1">
-                  {((savings / target) * 100).toFixed(1)}% to FI Basecamp ðŸ•ï¸
+                  {((savings / target) * 100).toFixed(1)}% to FI Basecamp 🏕️
                 </div>
               </div>
             </div>
@@ -2657,11 +2657,11 @@ const FinancialFreedomCalculator = () => {
         <div className="bg-gradient-to-r from-emerald-900/30 to-green-900/30 rounded-lg p-4 border border-emerald-500/30 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <div className="text-emerald-400 font-semibold mb-1">ðŸŽ¯ ETA to Freedom</div>
+              <div className="text-emerald-400 font-semibold mb-1">🎯 ETA to Freedom</div>
               <div className="text-2xl font-bold text-white">{yearsToFI} years (Age {targetAge})</div>
             </div>
             <div className="text-sm text-gray-300 max-w-md">
-              ❌š¡ Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
+              ?�� Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
             </div>
           </div>
         </div>
@@ -2880,14 +2880,14 @@ const DebtPayoffCalculator = () => {
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>ðŸ’³ Add Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
-                <p><strong>ðŸ’° Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
-                <p><strong>ðŸ”ï¸ Choose Strategy:</strong></p>
+                <p><strong>💳 Add Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
+                <p><strong>💰 Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
+                <p><strong>🏔️ Choose Strategy:</strong></p>
                 <ul className="ml-4 space-y-1">
-                  <li>❌€¢ <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
-                  <li>❌€¢ <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
+                  <li>?�� <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
+                  <li>?�� <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
                 </ul>
-                <p className="text-blue-400 mt-2">ðŸ’¡ Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
+                <p className="text-blue-400 mt-2">💡 Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
               </div>
             </div>
           </div>
@@ -2896,7 +2896,7 @@ const DebtPayoffCalculator = () => {
           {currentResult.payoffOrder.length > 0 && (
             <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 rounded-lg p-4 border border-red-500/30">
               <div className="flex items-center gap-3">
-                <div className="text-3xl">ðŸ”¥</div>
+                <div className="text-3xl">🔥</div>
                 <div>
                   <div className="text-red-400 font-semibold">Debt Liberation Countdown</div>
                   <div className="text-white text-sm">
@@ -2917,7 +2917,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'snowball' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ðŸ”ï¸ Debt Snowball (Smallest First)
+              🏔️ Debt Snowball (Smallest First)
             </button>
             <button
               onClick={() => setStrategy('avalanche')}
@@ -2925,7 +2925,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ❌š¡ Debt Avalanche (Highest Interest)
+              ?�� Debt Avalanche (Highest Interest)
             </button>
           </div>
           
@@ -2937,19 +2937,19 @@ const DebtPayoffCalculator = () => {
                 onClick={() => loadTemplate('credit-cards')}
                 className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
               >
-                ðŸ’³ Credit Cards
+                💳 Credit Cards
               </button>
               <button
                 onClick={() => loadTemplate('student-loans')}
                 className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
               >
-                ðŸŽ“ Student Loans
+                🎓 Student Loans
               </button>
               <button
                 onClick={() => loadTemplate('mixed')}
                 className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded transition-colors"
               >
-                ðŸ”„ Mixed Debts
+                🔄 Mixed Debts
               </button>
             </div>
           </div>
@@ -3098,7 +3098,7 @@ const DebtPayoffCalculator = () => {
           {/* Results */}
           <div>
             <h4 className="font-semibold text-white mb-3">
-              {strategy === 'snowball' ? 'ðŸ”ï¸ Snowball' : '❌š¡ Avalanche'} Results
+              {strategy === 'snowball' ? '🏔️ Snowball' : '?�� Avalanche'} Results
             </h4>
             
             <div className="space-y-4">
@@ -3127,10 +3127,10 @@ const DebtPayoffCalculator = () => {
 
               {/* Milestone Badges */}
               <div className="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg p-4 border border-orange-500/30">
-                <h5 className="text-orange-400 font-semibold mb-3">ðŸ† Liberation Milestones</h5>
+                <h5 className="text-orange-400 font-semibold mb-3">🏆 Liberation Milestones</h5>
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">ðŸ’¥</div>
+                    <div className="text-2xl">💥</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">First Debt Cleared</div>
                       <div className="text-gray-400 text-xs">
@@ -3141,7 +3141,7 @@ const DebtPayoffCalculator = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">❌š¡</div>
+                    <div className="text-2xl">?��</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">50% Debt Reduction</div>
                       <div className="text-gray-400 text-xs">
@@ -3150,7 +3150,7 @@ const DebtPayoffCalculator = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">ðŸ•Šï¸</div>
+                    <div className="text-2xl">🕊️</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">All Debts Paid - You're Free</div>
                       <div className="text-emerald-400 text-xs font-semibold">
@@ -3166,14 +3166,14 @@ const DebtPayoffCalculator = () => {
                 <h5 className="text-white font-semibold mb-3">Strategy Comparison</h5>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-blue-400">ðŸ”ï¸ Snowball:</span>
+                    <span className="text-blue-400">🏔️ Snowball:</span>
                     <span className="text-white">
                       {snowballResult.totalYears}y {snowballResult.remainingMonths}m 
                       (${Math.round(snowballResult.totalInterestPaid).toLocaleString()} interest)
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-400">❌š¡ Avalanche:</span>
+                    <span className="text-purple-400">?�� Avalanche:</span>
                     <span className="text-white">
                       {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
                       (${Math.round(avalancheResult.totalInterestPaid).toLocaleString()} interest)
@@ -3181,7 +3181,7 @@ const DebtPayoffCalculator = () => {
                   </div>
                   <div className="border-t border-gray-600 pt-2 mt-2">
                     <div className="text-emerald-400 font-semibold">
-                      ðŸ’° Avalanche saves: ${Math.round(snowballResult.totalInterestPaid - avalancheResult.totalInterestPaid).toLocaleString()}
+                      💰 Avalanche saves: ${Math.round(snowballResult.totalInterestPaid - avalancheResult.totalInterestPaid).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -3412,7 +3412,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-green-900/30 rounded-xl p-6 border-2 border-green-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-green-400">ðŸ’¡ Needs</h3>
+              <h3 className="text-2xl font-bold text-green-400">💡 Needs</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3430,7 +3430,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-yellow-900/30 rounded-xl p-6 border-2 border-yellow-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-yellow-400">ðŸŽ¯ Wants</h3>
+              <h3 className="text-2xl font-bold text-yellow-400">🎯 Wants</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3448,7 +3448,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-blue-400">ðŸ’° Savings</h3>
+              <h3 className="text-2xl font-bold text-blue-400">💰 Savings</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3470,7 +3470,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
       {budgetType === '6-jars' && (
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="bg-green-900/30 rounded-xl p-4 border-2 border-green-800/40 text-center">
-            <h4 className="text-sm font-bold text-green-400 mb-2">ðŸ  Necessities</h4>
+            <h4 className="text-sm font-bold text-green-400 mb-2">🏠 Necessities</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.necessities.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3485,7 +3485,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-purple-900/30 rounded-xl p-4 border-2 border-purple-800/40 text-center">
-            <h4 className="text-sm font-bold text-purple-400 mb-2">🚀 Freedom</h4>
+            <h4 className="text-sm font-bold text-purple-400 mb-2">?? Freedom</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.financialFreedom.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3500,7 +3500,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-4 border-2 border-blue-800/40 text-center">
-            <h4 className="text-sm font-bold text-blue-400 mb-2">ðŸŽ¯ Savings</h4>
+            <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 Savings</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.longTermSavings.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3515,7 +3515,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-amber-900/30 rounded-xl p-4 border-2 border-amber-800/40 text-center">
-            <h4 className="text-sm font-bold text-amber-400 mb-2">ðŸ“š Education</h4>
+            <h4 className="text-sm font-bold text-amber-400 mb-2">📚 Education</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.education.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3530,7 +3530,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-pink-900/30 rounded-xl p-4 border-2 border-pink-800/40 text-center">
-            <h4 className="text-sm font-bold text-pink-400 mb-2">ðŸŽ‰ Play</h4>
+            <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 Play</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.play.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3545,7 +3545,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-teal-900/30 rounded-xl p-4 border-2 border-teal-800/40 text-center">
-            <h4 className="text-sm font-bold text-teal-400 mb-2">❌¤ï¸ Give</h4>
+            <h4 className="text-sm font-bold text-teal-400 mb-2">?��️ Give</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.give.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3580,13 +3580,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
   
-  // ❌œï¸ EDIT ITEM - New Feature!
+  // ?��️ EDIT ITEM - New Feature!
   const [editingItem, setEditingItem] = useState(null);
   
-  // ❌œï¸ EDIT BUSINESS - New Feature!
+  // ?��️ EDIT BUSINESS - New Feature!
   const [editingBusiness, setEditingBusiness] = useState(null);
   
-  // ðŸ”„ RECURRING ITEMS - New Feature!
+  // 🔄 RECURRING ITEMS - New Feature!
   const [showAddRecurring, setShowAddRecurring] = useState(false);
   const [recurringType, setRecurringType] = useState('income');
   
@@ -3605,7 +3605,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       description: '',
       amount: '',
       date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-      isPassive: false // ðŸ”ï¸ NEW: Passive income flag
+      isPassive: false // 🏔️ NEW: Passive income flag
     };
   });
 
@@ -3616,18 +3616,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       amount: '',
       isPassive: false,
       frequency: 'monthly',
-      dayOfWeek: 1, // ðŸ†• For weekly/bi-weekly: 0=Sunday, 1=Monday, etc.
+      dayOfWeek: 1, // 🆕 For weekly/bi-weekly: 0=Sunday, 1=Monday, etc.
       startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
       category: ''
     };
   });
 
-  // ðŸ”§ EDGE CASE FIX: Null safety for empty businesses array
+  // 🔧 EDGE CASE FIX: Null safety for empty businesses array
   const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
   const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
-  // ðŸ”ï¸ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
+  // 🏔️ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
   const calculateFreedomMetrics = () => {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
@@ -3735,13 +3735,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   
   const freedomMetrics = calculateFreedomMetrics();
   
-  // ðŸ† FREEDOM MILESTONES STATE
+  // 🏆 FREEDOM MILESTONES STATE
   const [unlockedMilestones, setUnlockedMilestones] = useState([]);
   const [showMilestoneCelebration, setShowMilestoneCelebration] = useState(false);
   const [celebratingMilestone, setCelebratingMilestone] = useState(null);
   const [milestonesLoaded, setMilestonesLoaded] = useState(false);
 
-  // ðŸ”§ FIX: Load previously unlocked milestones on mount (ONE-TIME)
+  // 🔧 FIX: Load previously unlocked milestones on mount (ONE-TIME)
   useEffect(() => {
     const loadUnlockedMilestones = async () => {
       if (userId && db) {
@@ -3802,7 +3802,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -3834,7 +3834,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     const updatedBusinesses = [...data.businesses, business];
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -3862,7 +3862,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setShowAddBusiness(false);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -3904,7 +3904,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -3931,7 +3931,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setShowAddItem(false);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -3959,14 +3959,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     const updatedBusinesses = data.businesses.filter(business => business.id !== businessToDelete.id);
 
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
       
       setData({ ...data, businesses: updatedBusinesses });
       
-      // ðŸ›¡ï¸ ANTI-EXPLOIT: Deduct XP for deleting business
+      // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting business
       try {
         await deductXp(db, userId, 50);
         setXpRefreshTrigger(prev => prev + 1);
@@ -3978,7 +3978,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setShowDeleteConfirm(false);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4012,7 +4012,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4020,7 +4020,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setData({ ...data, businesses: updatedBusinesses });
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4032,7 +4032,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ❌œï¸ EDIT ITEM HANDLER
+  // ?��️ EDIT ITEM HANDLER
   const handleEditItem = async () => {
     if (!editingItem) return;
 
@@ -4075,7 +4075,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4084,7 +4084,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setEditingItem(null);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4096,7 +4096,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ðŸ”„ ADD RECURRING ITEM HANDLER
+  // 🔄 ADD RECURRING ITEM HANDLER
   const handleAddRecurringItem = async () => {
     if (!newRecurringItem.name || !newRecurringItem.amount || !selectedBusiness) return;
 
@@ -4124,7 +4124,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
 
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4136,14 +4136,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         amount: '',
         isPassive: false,
         frequency: 'monthly',
-        dayOfWeek: 1, // ðŸ†• Reset day of week
+        dayOfWeek: 1, // 🆕 Reset day of week
         startDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
         category: ''
       });
       setShowAddRecurring(false);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4155,7 +4155,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ðŸ”„ TOGGLE RECURRING ITEM ACTIVE/PAUSED
+  // 🔄 TOGGLE RECURRING ITEM ACTIVE/PAUSED
   const handleToggleRecurringItem = async (businessId, itemId) => {
     const updatedBusinesses = data.businesses.map(business => {
       if (business.id === businessId) {
@@ -4170,7 +4170,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
 
     try {
-      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+      // 🛡️ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4180,7 +4180,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4189,7 +4189,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   //   console.log('Share moment:', moment);
   // };
 
-  // ðŸ”„ DELETE RECURRING ITEM
+  // 🔄 DELETE RECURRING ITEM
   const handleDeleteRecurringItem = async (businessId, itemId) => {
     if (!window.confirm('Delete this recurring item?')) return;
 
@@ -4204,7 +4204,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     });
 
     try {
-      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+      // 🛡️ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         businesses: updatedBusinesses
       });
@@ -4214,7 +4214,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -4223,7 +4223,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   //   console.log('Share moment:', moment);
   // };
 
-  // ðŸ”„ PROCESS DUE RECURRING ITEMS - Automation Engine
+  // 🔄 PROCESS DUE RECURRING ITEMS - Automation Engine
   const processDueRecurringItems = () => {
     const today = new Date();
     let hasUpdates = false;
@@ -4320,7 +4320,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* ðŸ”ï¸ FREEDOM COMMAND CENTER - 4-Card Dashboard Header */}
+      {/* 🏔️ FREEDOM COMMAND CENTER - 4-Card Dashboard Header */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-teal-900/40 to-emerald-900/40 border-teal-500/30">
           <h3 className="text-sm font-semibold text-teal-200 mb-2 flex items-center">
@@ -4344,7 +4344,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <h3 className="text-sm font-semibold text-amber-200 mb-2 flex items-center">
             <DollarSign className="w-4 h-4 mr-2" />
             Passive Income
-            {/* ðŸŽ¯ OPERATOR'S INTEL TOOLTIP */}
+            {/* 🎯 OPERATOR'S INTEL TOOLTIP */}
             <div className="tooltip-container" style={{position: 'relative', display: 'inline-block', marginLeft: '6px'}}>
               <span 
                 className="tooltip-icon"
@@ -4363,7 +4363,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   transition: 'all 0.2s'
                 }}
               >
-                ❌“˜
+                ?��
               </span>
               <div 
                 className="tooltip-content"
@@ -4390,7 +4390,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 }}
               >
                 <div style={{marginBottom: '4px', fontWeight: '600', color: '#FBBF24', fontSize: '10px', letterSpacing: '0.5px'}}>
-                  ðŸ“¡ OPERATOR'S INTEL
+                  📡 OPERATOR'S INTEL
                 </div>
                 This is your total gross income from all passive and side hustle sources. It's used to calculate your Freedom Ratio against your personal monthly expenses. Your business's net profit is calculated in the Side Hustle Management section below.
                 {/* Tooltip arrow */}
@@ -4423,11 +4423,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </Card>
       </div>
 
-      {/* ðŸ”ï¸ FREEDOM RATIO CENTERPIECE CARD */}
+      {/* 🏔️ FREEDOM RATIO CENTERPIECE CARD */}
       <Card className="bg-gradient-to-br from-slate-900 to-gray-900 border-2" style={{ borderColor: freedomMetrics.progressColor }}>
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            ðŸ”ï¸ Freedom Ratio
+            🏔️ Freedom Ratio
           </h2>
           <p className="text-gray-400">Your passive income vs. monthly expenses</p>
         </div>
@@ -4515,7 +4515,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 text-center">
           <p className="text-gray-300 italic">
             {freedomMetrics.actualRatio >= 100 
-              ? "ðŸŽ‰ Congratulations! You've reached the summit. Your passive income covers your lifestyle!"
+              ? "🎉 Congratulations! You've reached the summit. Your passive income covers your lifestyle!"
               : freedomMetrics.actualRatio >= 75
               ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. You're almost there! Keep climbing.`
               : freedomMetrics.actualRatio >= 50
@@ -4530,11 +4530,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           </p>
         </div>
 
-        {/* ðŸ”® Freedom Forecast */}
+        {/* 🔮 Freedom Forecast */}
         {freedomMetrics.actualRatio < 100 && freedomMetrics.totalPassiveIncome > 0 && (
           <div className="mt-6 bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
             <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
-              ðŸ”® Freedom Forecast
+              🔮 Freedom Forecast
             </h3>
             <p className="text-gray-300 text-sm">
               {(() => {
@@ -4565,7 +4565,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         )}
       </Card>
 
-      {/* ðŸ† FREEDOM MILESTONES */}
+      {/* 🏆 FREEDOM MILESTONES */}
       <FreedomMilestones 
         freedomRatio={freedomMetrics.freedomRatio}
         unlockedMilestones={unlockedMilestones}
@@ -4650,7 +4650,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </Card>
       )}
 
-      {/* ❌œï¸ EDIT BUSINESS MODAL */}
+      {/* ?��️ EDIT BUSINESS MODAL */}
       {editingBusiness && (
         <Card className="border-amber-500/30">
           <div className="flex justify-between items-center mb-4">
@@ -4702,7 +4702,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   b.id === editingBusiness.id ? editingBusiness : b
                 );
                 try {
-                  // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+                  // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
                   await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
                     businesses: updatedBusinesses
                   });
@@ -4841,7 +4841,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </div>
             </div>
 
-            {/* ðŸ”„ RECURRING ITEMS SECTION - NEW! */}
+            {/* 🔄 RECURRING ITEMS SECTION - NEW! */}
             {business.recurringItems && business.recurringItems.length > 0 && (
               <div className="space-y-2 border-t border-gray-700 pt-4">
                 <h4 className="font-semibold text-blue-300 flex items-center gap-2">
@@ -4867,7 +4867,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                           </div>
                           <div className="flex items-center gap-3 text-xs text-gray-400">
                             <span className="capitalize">{recurring.frequency}</span>
-                            <span>❌€¢</span>
+                            <span>?��</span>
                             <span>Next: {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -4968,7 +4968,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 style={{ maxWidth: '100%' }}
               />
               
-              {/* ðŸ”ï¸ PASSIVE INCOME CHECKBOX - Freedom Ratio Feature! */}
+              {/* 🏔️ PASSIVE INCOME CHECKBOX - Freedom Ratio Feature! */}
               {itemType === 'income' && (
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -4981,7 +4981,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <span className="text-white font-semibold">Passive Income</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        ðŸ’¡ Passive income counts toward your Freedom Ratio (income you earn without active work)
+                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
                       </p>
                     </div>
                   </label>
@@ -5007,7 +5007,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* ❌œï¸ Edit Item Modal */}
+      {/* ?��️ Edit Item Modal */}
       {editingItem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-md border-blue-500/30">
@@ -5026,7 +5026,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <div className="space-y-4">
               <div className="bg-gray-700/30 rounded-lg p-3 text-center">
                 <span className={`text-sm font-semibold ${editingItem.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
-                  {editingItem.type === 'income' ? 'ðŸ“ˆ Income Item' : 'ðŸ“‰ Expense Item'}
+                  {editingItem.type === 'income' ? '📈 Income Item' : '📉 Expense Item'}
                 </span>
               </div>
               
@@ -5054,7 +5054,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 style={{ maxWidth: '100%' }}
               />
               
-              {/* ðŸ”ï¸ PASSIVE INCOME CHECKBOX - Only for Income Items */}
+              {/* 🏔️ PASSIVE INCOME CHECKBOX - Only for Income Items */}
               {editingItem.type === 'income' && (
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -5067,7 +5067,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <span className="text-white font-semibold">Passive Income</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        ðŸ’¡ Passive income counts toward your Freedom Ratio
+                        💡 Passive income counts toward your Freedom Ratio
                       </p>
                     </div>
                   </label>
@@ -5093,7 +5093,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* ðŸ”„ Add Recurring Item Modal */}
+      {/* 🔄 Add Recurring Item Modal */}
       {showAddRecurring && selectedBusiness && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-2xl border-blue-500/30">
@@ -5172,16 +5172,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     onChange={(e) => setNewRecurringItem({...newRecurringItem, frequency: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="weekly">ðŸ“… Weekly</option>
-                    <option value="bi-weekly">ðŸ“…ðŸ“… Bi-weekly (Every 2 Weeks)</option>
-                    <option value="monthly">ðŸ—“ï¸ Monthly</option>
-                    <option value="quarterly">ðŸ“Š Quarterly</option>
-                    <option value="annually">ðŸ“† Annually</option>
+                    <option value="weekly">📅 Weekly</option>
+                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
+                    <option value="monthly">🗓️ Monthly</option>
+                    <option value="quarterly">📊 Quarterly</option>
+                    <option value="annually">📆 Annually</option>
                   </select>
                 </div>
               </div>
 
-              {/* ðŸ†• Day of Week Selector (for weekly/bi-weekly) */}
+              {/* 🆕 Day of Week Selector (for weekly/bi-weekly) */}
               {(newRecurringItem.frequency === 'weekly' || newRecurringItem.frequency === 'bi-weekly') && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
@@ -5201,7 +5201,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <option value={6}>Saturday</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    ðŸ’¡ {newRecurringItem.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                    💡 {newRecurringItem.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
                   </p>
                 </div>
               )}
@@ -5234,7 +5234,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </div>
               </div>
 
-              {/* ðŸ”ï¸ Passive Income Checkbox - Only for Income */}
+              {/* 🏔️ Passive Income Checkbox - Only for Income */}
               {recurringType === 'income' && (
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -5247,7 +5247,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <span className="text-white font-semibold">Passive Income</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        ðŸ’¡ Passive income counts toward your Freedom Ratio (income you earn without active work)
+                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
                       </p>
                     </div>
                   </label>
@@ -5256,7 +5256,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
               <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
                 <p className="text-xs text-blue-200">
-                  ðŸ”„ This item will be automatically added to your business on schedule. You can pause or delete it anytime.
+                  🔄 This item will be automatically added to your business on schedule. You can pause or delete it anytime.
                 </p>
               </div>
             </div>
@@ -5358,7 +5358,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* ðŸŽ‰ MILESTONE CELEBRATION OVERLAY */}
+      {/* 🎉 MILESTONE CELEBRATION OVERLAY */}
       {showMilestoneCelebration && celebratingMilestone && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 pointer-events-none">
           <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-8 shadow-2xl transform animate-bounce">
@@ -5384,7 +5384,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [allocationView, setAllocationView] = useState('ticker'); // 'ticker' or 'category'
   const [hoveredInfo, setHoveredInfo] = useState(null);
 
-  // ❌„¹ï¸ Info Tooltip Component - Beginner-friendly explanations
+  // ?��️ Info Tooltip Component - Beginner-friendly explanations
   const InfoTooltip = ({ id, text, children }) => (
     <span className="relative inline-flex items-center gap-1 group">
       {children}
@@ -5422,7 +5422,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     category: 'US Stocks' // Default category
   });
 
-  // ðŸ”§ EDGE CASE FIX: Null safety for empty holdings array
+  // 🔧 EDGE CASE FIX: Null safety for empty holdings array
   const actualTotalValue = (data.investments?.holdings || []).reduce((sum, holding) => {
     return sum + ((holding.shares || 0) * (holding.currentPrice || 0));
   }, 0);
@@ -5431,7 +5431,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
-  // ðŸ“Š Calculate portfolio allocation by TICKER
+  // 📊 Calculate portfolio allocation by TICKER
   const calculateAllocationByTicker = () => {
     if (!data.investments?.holdings || data.investments.holdings.length === 0) {
       return [];
@@ -5465,7 +5465,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     return allocation.sort((a, b) => b.percentageNum - a.percentageNum);
   };
 
-  // ðŸ“Š Calculate portfolio allocation by CATEGORY
+  // 📊 Calculate portfolio allocation by CATEGORY
   const calculateAllocationByCategory = () => {
     if (!data.investments?.holdings || data.investments.holdings.length === 0) {
       return [];
@@ -5878,7 +5878,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
@@ -5897,7 +5897,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -5928,13 +5928,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
       } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -5964,13 +5964,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
       } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -6020,13 +6020,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     // Save to Firebase
     if (userId && db) {
       try {
-        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
           investments: updatedData.investments
         });
       } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -6184,7 +6184,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <Card style={{ backgroundColor: '#18212F' }} className="border-amber-500/30">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
             <Repeat className="w-6 h-6 mr-3 text-amber-400" />
-            ðŸ’° Dividend Income Tracker
+            💰 Dividend Income Tracker
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -6222,7 +6222,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       {/* Upcoming Dividends */}
             <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
               <h4 className="text-lg font-semibold text-amber-200 mb-3 flex items-center">
-                ðŸ“… Upcoming Dividends
+                📅 Upcoming Dividends
               </h4>
             <div className="space-y-3">
               {data.investments.holdings
@@ -6252,7 +6252,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           {/* DRIP Status */}
           <div style={{ backgroundColor: '#141F3B' }} className="rounded-lg p-4 border border-blue-500/30">
             <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-              ðŸ”„ DRIP Status
+              🔄 DRIP Status
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
@@ -6272,7 +6272,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         <Tooltip 
                           text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
                         >
-                          {holding.dripEnabled ? 'ðŸ”„ DRIP ON' : 'ðŸ’µ CASH'}
+                          {holding.dripEnabled ? '🔄 DRIP ON' : '💵 CASH'}
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
@@ -6291,7 +6291,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       <div className="mt-6" style={{ backgroundColor: '#141F3B' }}>
         <div className="rounded-lg p-4 border border-blue-500/30">
         <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-          ðŸ“Š Dividend Breakdown by Holding
+          📊 Dividend Breakdown by Holding
         </h4>
           <div className="space-y-2">
             {data.investments.holdings
@@ -6326,12 +6326,12 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           
                       <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
               <div className="text-sm text-purple-200 mb-2">
-                ðŸ’¡ <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
+                💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
-                in passive income - perfect for travel funding! ðŸŒ
+                in passive income - perfect for travel funding! 🌍
               </div>
               <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
-                ðŸ“… <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
+                📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
                 Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
               </div>
             </div>
@@ -6357,7 +6357,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 {/* Getting Started Guide */}
                 <div className="text-center mb-8">
                   <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-white mb-2">ðŸ’¼ Getting Started with Investing</h3>
+                  <h3 className="text-3xl font-bold text-white mb-2">💼 Getting Started with Investing</h3>
                   <p className="text-gray-300 text-lg">
                     New to investing? Don't worry! Here's everything you need to know.
                   </p>
@@ -6367,45 +6367,45 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 <div className="grid md:grid-cols-3 gap-4 mb-8">
                   {/* Step 1 */}
                   <div className="bg-gradient-to-br from-violet-900/40 to-violet-800/20 rounded-lg p-6 border border-violet-600/30">
-                    <div className="text-3xl mb-3">1ï¸❌ƒ£</div>
+                    <div className="text-3xl mb-3 font-bold text-violet-300">1</div>
                     <h4 className="text-lg font-bold text-white mb-2">Add Your Investment</h4>
                     <p className="text-sm text-gray-300 mb-3">
                       Click "Add Investment" and enter your stock info:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>❌€¢ <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
-                      <li>❌€¢ <strong>Shares:</strong> How many you own</li>
-                      <li>❌€¢ <strong>Price:</strong> What you paid per share</li>
+                      <li>� <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
+                      <li>� <strong>Shares:</strong> How many you own</li>
+                      <li>� <strong>Price:</strong> What you paid per share</li>
                     </ul>
                   </div>
 
                   {/* Step 2 */}
                   <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-lg p-6 border border-blue-600/30">
-                    <div className="text-3xl mb-3">2ï¸❌ƒ£</div>
+                    <div className="text-3xl mb-3 font-bold text-blue-300">2</div>
                     <h4 className="text-lg font-bold text-white mb-2">Track Your Growth</h4>
                     <p className="text-sm text-gray-300 mb-3">
                       Watch your portfolio come to life:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>❌€¢ See real-time value</li>
-                      <li>❌€¢ Track gains & losses</li>
-                      <li>❌€¢ View allocation charts</li>
-                      <li>❌€¢ Monitor dividends</li>
+                      <li>� See real-time value</li>
+                      <li>� Track gains & losses</li>
+                      <li>� View allocation charts</li>
+                      <li>� Monitor dividends</li>
                     </ul>
                   </div>
 
                   {/* Step 3 */}
                   <div className="bg-gradient-to-br from-green-900/40 to-green-800/20 rounded-lg p-6 border border-green-600/30">
-                    <div className="text-3xl mb-3">3ï¸❌ƒ£</div>
+                    <div className="text-3xl mb-3 font-bold text-green-300">3</div>
                     <h4 className="text-lg font-bold text-white mb-2">Build Wealth</h4>
                     <p className="text-sm text-gray-300 mb-3">
                       Enable DRIP to grow faster:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>❌€¢ Auto-reinvest dividends</li>
-                      <li>❌€¢ Compound your returns</li>
-                      <li>❌€¢ Build wealth passively</li>
-                      <li>❌€¢ Track your progress</li>
+                      <li>� Auto-reinvest dividends</li>
+                      <li>� Compound your returns</li>
+                      <li>� Build wealth passively</li>
+                      <li>� Track your progress</li>
                     </ul>
                   </div>
                 </div>
@@ -6421,22 +6421,22 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">ðŸ’¡ Start Small:</strong> You don't need thousands to start. Even one share counts!
+                        <strong className="text-white">💡 Start Small:</strong> You don't need thousands to start. Even one share counts!
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">ðŸ“š Learn As You Go:</strong> Each investment teaches you something new.
+                        <strong className="text-white">📚 Learn As You Go:</strong> Each investment teaches you something new.
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">ðŸŽ¯ Diversify:</strong> Don't put all eggs in one basket. Spread your investments.
+                        <strong className="text-white">🎯 Diversify:</strong> Don't put all eggs in one basket. Spread your investments.
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">❌³ Think Long-Term:</strong> Wealth builds over time. Be patient!
+                        <strong className="text-white">?�� Think Long-Term:</strong> Wealth builds over time. Be patient!
                       </p>
                     </div>
                   </div>
@@ -6452,7 +6452,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     Add Your First Investment
                   </button>
                   <p className="text-sm text-gray-400 mt-3">
-                    Ready to start? Click above to add your first investment! 🚀
+                    Ready to start? Click above to add your first investment! ??
                   </p>
                 </div>
               </div>
@@ -6511,7 +6511,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <div className="text-lg font-bold text-white">${holding.totalValue.toLocaleString()}</div>
                   <InfoTooltip 
                     id={`total-value-${holding.id}`}
-                    text="Total Value = Shares Ã— Current Price. This is what your investment is worth right now."
+                    text="Total Value = Shares × Current Price. This is what your investment is worth right now."
                   >
                     <div className="text-xs text-gray-400">Total Value</div>
                   </InfoTooltip>
@@ -6658,7 +6658,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <option value="Other">Other</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    ðŸ’¡ Group similar holdings for category view
+                    💡 Group similar holdings for category view
                   </p>
                 </div>
                 
@@ -6685,7 +6685,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                       <InfoTooltip 
                         id="avg-cost-info"
-                        text="Average Cost = The price you paid per share. If you bought at different times, calculate the average: Total Invested Ã· Total Shares."
+                        text="Average Cost = The price you paid per share. If you bought at different times, calculate the average: Total Invested ÷ Total Shares."
                       >
                         <span>Avg Cost per Share</span>
                       </InfoTooltip>
@@ -6812,7 +6812,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 {/* Auto-Generated Dividend Date Info */}
                 {parseFloat(newHolding.dividendYield) > 0 && (
                   <div className="p-3 bg-green-900/20 rounded-lg border border-green-600/30">
-                    <div className="text-green-400 font-semibold text-sm mb-1">ðŸ“… Auto-Generated Dividend Date</div>
+                    <div className="text-green-400 font-semibold text-sm mb-1">📅 Auto-Generated Dividend Date</div>
                     <div className="text-xs text-gray-300">
                       Next dividend date will be automatically estimated based on common payment schedules for {newHolding.symbol || 'this symbol'}. 
                       Major ETFs typically pay quarterly (Mar/Jun/Sep/Dec), while monthly dividend stocks use the 10th of each month.
@@ -6990,7 +6990,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   const [sortBy, setSortBy] = useState('date');
   const [showTransactionHistory, setShowTransactionHistory] = useState(false);
   
-  // ðŸ” UPGRADE 2: Advanced Search & Filter System
+  // 🔍 UPGRADE 2: Advanced Search & Filter System
   const [searchKeyword, setSearchKeyword] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState(['income', 'expense', 'transfer']);
@@ -7005,7 +7005,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     subcategory: '',
     date: getTodayInUserTimezone(),
     isRecurring: false,
-    isPassive: false, // ðŸ”ï¸ Freedom Ratio: Passive income flag
+    isPassive: false, // 🏔️ Freedom Ratio: Passive income flag
     frequency: 'monthly',
     dayOfMonth: 1,
     dayOfWeek: 1,
@@ -7029,7 +7029,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     // Auto-categorize if subcategory is empty
     let finalTransaction = { ...newTransaction };
     if (!finalTransaction.subcategory || finalTransaction.subcategory === '') {
-      // ðŸ”§ BUG FIX: Use correct categorization function based on transaction type
+      // 🔧 BUG FIX: Use correct categorization function based on transaction type
       const autoCategory = finalTransaction.type === 'income' 
         ? categorizeIncome(finalTransaction.description)
         : categorizeExpense(finalTransaction.description);
@@ -7082,7 +7082,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       const fieldsToUpdate = {
         transactions: updatedData.transactions,
         recentTransactions: updatedData.recentTransactions
@@ -7117,7 +7117,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         subcategory: '',
         date: new Date().toISOString().split('T')[0],
         isRecurring: false,
-        isPassive: false, // ðŸ”ï¸ Freedom Ratio: Reset passive income flag
+        isPassive: false, // 🏔️ Freedom Ratio: Reset passive income flag
         frequency: 'monthly',
         dayOfMonth: 1,
         dayOfWeek: 1,
@@ -7126,7 +7126,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setShowAddForm(false);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7138,7 +7138,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
   };
 
-  // ❌œï¸ EDIT RECURRING EXPENSE HANDLER
+  // ?��️ EDIT RECURRING EXPENSE HANDLER
   const handleEditRecurringExpense = async () => {
     if (!editingRecurring) return;
 
@@ -7153,7 +7153,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     );
 
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         recurringExpenses: updatedRecurring
       });
@@ -7162,7 +7162,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setEditingRecurring(null);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7191,7 +7191,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     );
     
     try {
-      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+      // 🛡️ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         transactions: updatedTransactions,
         recentTransactions: updatedRecentTransactions
@@ -7202,7 +7202,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         recentTransactions: updatedRecentTransactions
       });
       setEditingTransaction(null);
-      infoLog('✅ Transaction updated successfully');
+      infoLog('? Transaction updated successfully');
     } catch (error) {
       console.error('Error updating transaction:', error);
     }
@@ -7220,16 +7220,16 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     };
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         transactions: updatedTransactions,
         recentTransactions: updatedRecentTransactions
       });
       setData(updatedData);
-      infoLog('✅ Transaction deleted successfully');
+      infoLog('? Transaction deleted successfully');
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7242,10 +7242,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
   };
 
-  // ðŸ” UPGRADE 2: Advanced Filtering Logic with Search
-  debugLog('ðŸ” DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
-  debugLog('ðŸ” DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
-  debugLog('ðŸ” DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
+  // 🔍 UPGRADE 2: Advanced Filtering Logic with Search
+  debugLog('🔍 DEBUG TransactionsTab: data.recentTransactions length:', data?.recentTransactions?.length);
+  debugLog('🔍 DEBUG TransactionsTab: data.transactions length:', data?.transactions?.length);
+  debugLog('🔍 DEBUG TransactionsTab: Using array:', data.recentTransactions ? 'recentTransactions' : 'transactions');
   
   const filteredTransactions = (data.recentTransactions || data.transactions || [])
     // Keyword search (description)
@@ -7283,7 +7283,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       return new Date(b.date) - new Date(a.date); // default
     });
 
-  // ðŸ“Š UPGRADE 1: Calculate Spending by Category (Current Month)
+  // 📊 UPGRADE 1: Calculate Spending by Category (Current Month)
   const calculateSpendingByCategory = () => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -7350,13 +7350,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     .filter(t => t.amount < 0 && t.category === 'business')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-  // ðŸ“Š UPGRADE 1: D3.js Donut Chart for Spending by Category (Mobile Optimized)
+  // 📊 UPGRADE 1: D3.js Donut Chart for Spending by Category (Mobile Optimized)
   useEffect(() => {
     if (spendingChartRef.current && spendingByCategory && spendingByCategory.length > 0) {
       const svg = d3.select(spendingChartRef.current);
       svg.selectAll("*").remove();
       
-      // ðŸ“± Mobile-responsive sizing
+      // 📱 Mobile-responsive sizing
       const isMobile = window.innerWidth <= 768;
       const width = isMobile ? Math.min(window.innerWidth - 40, 280) : 300;
       const height = isMobile ? Math.min(window.innerWidth - 40, 280) : 300;
@@ -7658,8 +7658,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="expense">ðŸ’¸ Expense</option>
-                <option value="income">ðŸ’° Income</option>
+                <option value="expense">💸 Expense</option>
+                <option value="income">💰 Income</option>
               </select>
               
               <select
@@ -7667,8 +7667,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="personal">ðŸ‘¤ Personal</option>
-                <option value="business">ðŸ¢ Business</option>
+                <option value="personal">👤 Personal</option>
+                <option value="business">🏢 Business</option>
               </select>
               
               <select
@@ -7676,7 +7676,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="">ðŸ¤– Auto-categorize</option>
+                <option value="">🤖 Auto-categorize</option>
                 {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
                   <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                 ))}
@@ -7691,7 +7691,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               />
             </div>
 
-            {/* ðŸ”„ Recurring Expense Section */}
+            {/* 🔄 Recurring Expense Section */}
             <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
               <div className="flex items-center gap-3 mb-3">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -7701,7 +7701,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setNewTransaction({...newTransaction, isRecurring: e.target.checked})}
                     className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
                   />
-                  <span className="text-white font-semibold">ðŸ”„ Make this a recurring {newTransaction.type}</span>
+                  <span className="text-white font-semibold">🔄 Make this a recurring {newTransaction.type}</span>
                 </label>
               </div>
               
@@ -7712,10 +7712,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setNewTransaction({...newTransaction, frequency: e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                   >
-                    <option value="weekly">ðŸ“… Weekly</option>
-                    <option value="bi-weekly">ðŸ“…ðŸ“… Bi-weekly (Every 2 Weeks)</option>
-                    <option value="monthly">ðŸ—“ï¸ Monthly</option>
-                    <option value="yearly">ðŸ“† Yearly</option>
+                    <option value="weekly">📅 Weekly</option>
+                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
+                    <option value="monthly">🗓️ Monthly</option>
+                    <option value="yearly">📆 Yearly</option>
                   </select>
                   
                   {(newTransaction.frequency === 'weekly' || newTransaction.frequency === 'bi-weekly') && (
@@ -7815,12 +7815,12 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           </div>
       </FixedModal>
 
-      {/* ðŸ“Š UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
+      {/* 📊 UPGRADE 1: Spending by Category Visualization (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-indigo-900/40 to-blue-900/40 border-blue-500/30">
         <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex flex-wrap items-center gap-2">
           <div className="flex items-center">
             <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
-            ðŸ’° Spending by Category
+            💰 Spending by Category
           </div>
           <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
         </h3>
@@ -7954,7 +7954,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         r.id === recurring.id ? { ...r, isActive: !r.isActive } : r
                       );
                       try {
-                        // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+                        // 🛡️ USE updateDoc to prevent data loss
                         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
                           recurringExpenses: updatedRecurring
                         });
@@ -7963,7 +7963,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         console.error('Error updating recurring expense:', error);
                       }
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -7986,7 +7986,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       if (!window.confirm('Delete this recurring expense?')) return;
                       const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
                       try {
-                        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+                        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
                         await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
                           recurringExpenses: updatedRecurring
                         });
@@ -7994,7 +7994,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         setData({ ...data, recurringExpenses: updatedRecurring });
                       } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8016,7 +8016,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </Card>
       )}
 
-      {/* ❌œï¸ EDIT RECURRING EXPENSE MODAL */}
+      {/* ?��️ EDIT RECURRING EXPENSE MODAL */}
       {editingRecurring && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 rounded-lg max-w-2xl w-full border border-purple-500/30">
@@ -8087,14 +8087,14 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingRecurring({...editingRecurring, frequency: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                 >
-                  <option value="weekly">ðŸ“… Weekly</option>
-                  <option value="bi-weekly">ðŸ“…ðŸ“… Bi-weekly (Every 2 Weeks)</option>
-                  <option value="monthly">ðŸ—“ï¸ Monthly</option>
-                  <option value="yearly">ðŸ“† Yearly</option>
+                  <option value="weekly">📅 Weekly</option>
+                  <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
+                  <option value="monthly">🗓️ Monthly</option>
+                  <option value="yearly">📆 Yearly</option>
                 </select>
               </div>
               
-              {/* ðŸ†• Day of Week Selector (for weekly/bi-weekly) */}
+              {/* 🆕 Day of Week Selector (for weekly/bi-weekly) */}
               {(editingRecurring.frequency === 'weekly' || editingRecurring.frequency === 'bi-weekly') && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
@@ -8114,7 +8114,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     <option value={6}>Saturday</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    ðŸ’¡ {editingRecurring.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                    💡 {editingRecurring.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
                   </p>
                 </div>
               )}
@@ -8130,8 +8130,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value, subcategory: ''})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="personal">ðŸ‘¤ Personal</option>
-                    <option value="business">ðŸ¢ Business</option>
+                    <option value="personal">👤 Personal</option>
+                    <option value="business">🏢 Business</option>
                   </select>
                 </div>
                 <div>
@@ -8143,13 +8143,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setEditingRecurring({...editingRecurring, subcategory: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="">ðŸ¤– Auto-categorize</option>
+                    <option value="">🤖 Auto-categorize</option>
                     {subcategoryOptions[editingRecurring.category || 'personal']?.[editingRecurring.type || 'expense']?.map(sub => (
                       <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                     ))}
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    ðŸ’¡ Categorize for better tracking
+                    💡 Categorize for better tracking
                   </p>
                 </div>
               </div>
@@ -8203,7 +8203,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </div>
       )}
 
-      {/* ðŸ” UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
+      {/* 🔍 UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
       <Card className="bg-gradient-to-br from-slate-900/40 to-gray-900/40">
         <div className="space-y-4">
           {/* Search Bar & Filters Button - Mobile optimized */}
@@ -8212,13 +8212,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="ðŸ” Search transactions..."
+                placeholder="🔍 Search transactions..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className="w-full bg-gray-700/50 text-white px-4 py-4 md:py-3 pl-12 md:pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
               />
               <div className="absolute left-3 md:left-3 top-4 md:top-3.5 text-gray-400 text-lg md:text-base">
-                ðŸ”
+                🔍
               </div>
             </div>
             
@@ -8343,10 +8343,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
                   >
-                    <option value="date-desc">ðŸ“… Date (Newest First)</option>
-                    <option value="date-asc">ðŸ“… Date (Oldest First)</option>
-                    <option value="amount-desc">ðŸ’° Amount (High to Low)</option>
-                    <option value="amount-asc">ðŸ’° Amount (Low to High)</option>
+                    <option value="date-desc">📅 Date (Newest First)</option>
+                    <option value="date-asc">📅 Date (Oldest First)</option>
+                    <option value="amount-desc">💰 Amount (High to Low)</option>
+                    <option value="amount-asc">💰 Amount (Low to High)</option>
                   </select>
                 </div>
               </div>
@@ -8382,11 +8382,11 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     <h4 className="font-semibold text-white">{transaction.description}</h4>
                     <div className="text-sm text-gray-400">
-                      {formatDateForUser(transaction.date)} ❌€¢ 
+                      {formatDateForUser(transaction.date)} ?�� 
                       <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
                         {transaction.category}
                       </span>
-                      {transaction.subcategory && ` ❌€¢ ${transaction.subcategory}`}
+                      {transaction.subcategory && ` ?�� ${transaction.subcategory}`}
                     </div>
                   </div>
                 </div>
@@ -8462,8 +8462,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value, subcategory: ''})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
                 >
-                  <option value="expense">ðŸ’¸ Expense</option>
-                  <option value="income">ðŸ’° Income</option>
+                  <option value="expense">💸 Expense</option>
+                  <option value="income">💰 Income</option>
                 </select>
                 
                 <select
@@ -8471,8 +8471,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value, subcategory: ''})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
                 >
-                  <option value="personal">ðŸ‘¤ Personal</option>
-                  <option value="business">ðŸ¢ Business</option>
+                  <option value="personal">👤 Personal</option>
+                  <option value="business">🏢 Business</option>
                 </select>
               </div>
               
@@ -8481,7 +8481,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setEditingTransaction({...editingTransaction, subcategory: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="">ðŸ¤– Auto-categorize</option>
+                <option value="">🤖 Auto-categorize</option>
                 {subcategoryOptions[editingTransaction.category]?.[editingTransaction.type]?.map(sub => (
                   <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                 ))}
@@ -8527,7 +8527,7 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showRunwayCalculator, setShowRunwayCalculator] = useState(false); // NEW: Toggle for runway calculator
   const [hoveredCountry, setHoveredCountry] = useState(null);
   
-  // ðŸ’« NEW: Moment Modal States
+  // 💫 NEW: Moment Modal States
   const [showMomentModal, setShowMomentModal] = useState(false);
   const [momentText, setMomentText] = useState('');
   const [momentTrip, setMomentTrip] = useState(null);
@@ -8552,7 +8552,7 @@ const TravelTab = ({ data, setData, userId }) => {
     countryInput: ''
   });
 
-  // ðŸŒ Wishlist editing states
+  // 🌍 Wishlist editing states
   const [showAddWishlistCountry, setShowAddWishlistCountry] = useState(false);
   const [wishlistCountryInput, setWishlistCountryInput] = useState('');
 
@@ -8570,13 +8570,13 @@ const TravelTab = ({ data, setData, userId }) => {
     date: getTodayLocal() // FIX: Use local date instead of UTC
   });
 
-  // ðŸ”¤ Auto-capitalize first letter of country name
+  // 🔤 Auto-capitalize first letter of country name
   const capitalizeCountryName = (name) => {
     if (!name) return '';
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
-  // ðŸŒ Add country to wishlist
+  // 🌍 Add country to wishlist
   const handleAddWishlistCountry = async () => {
     if (!wishlistCountryInput.trim()) return;
     
@@ -8593,7 +8593,7 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
@@ -8602,7 +8602,7 @@ const TravelTab = ({ data, setData, userId }) => {
       setShowAddWishlistCountry(false);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8615,21 +8615,21 @@ const TravelTab = ({ data, setData, userId }) => {
     }
   };
 
-  // ðŸ—‘ï¸ Remove country from wishlist
+  // 🗑️ Remove country from wishlist
   const handleRemoveWishlistCountry = async (countryToRemove) => {
     const currentWishlist = data.travel?.wishlistCountries || [];
     const updatedWishlist = currentWishlist.filter(c => c !== countryToRemove);
     const updatedTravel = { ...data.travel, wishlistCountries: updatedWishlist };
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
       setData({ ...data, travel: updatedTravel });
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8728,7 +8728,7 @@ const TravelTab = ({ data, setData, userId }) => {
         }
       };
       
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedData.travel
       });
@@ -8745,7 +8745,7 @@ const TravelTab = ({ data, setData, userId }) => {
       }, 100);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8802,7 +8802,7 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedTransactions = [mainTransaction, ...data.transactions];
 
      try {
-       // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
          travel: updatedTravel,
          transactions: updatedTransactions
@@ -8832,7 +8832,7 @@ const TravelTab = ({ data, setData, userId }) => {
        }, 100);
      } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8864,7 +8864,7 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedTravel = { ...data.travel, trips: updatedTrips };
 
      try {
-       // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
          travel: updatedTravel
        });
@@ -8881,7 +8881,7 @@ const TravelTab = ({ data, setData, userId }) => {
        }, 100);
      } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -8911,7 +8911,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+     // 🛡️ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel
      });
@@ -8931,7 +8931,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // ðŸ—‘ï¸ DELETE TRIP HANDLER
+ // 🗑️ DELETE TRIP HANDLER
  const handleDeleteTrip = async (tripId) => {
    if (!window.confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
      return;
@@ -8941,7 +8941,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+     // 🛡️ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel
      });
@@ -8951,7 +8951,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // ðŸ—‘ï¸ DELETE EXPENSE FROM TRIP HANDLER
+ // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
  const handleDeleteExpense = async (tripId, expenseId) => {
    if (!window.confirm('Delete this expense?')) {
      return;
@@ -8970,7 +8970,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+     // 🛡️ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel
      });
@@ -8980,7 +8980,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // ðŸ’« NEW: ADD MOMENT TO TRIP HANDLER
+ // 💫 NEW: ADD MOMENT TO TRIP HANDLER
  const handleAddMomentToTrip = async () => {
    if (!momentText.trim() || !momentTrip) return;
 
@@ -9013,7 +9013,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+     // 🛡️ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel,
        moments: updatedMoments
@@ -9030,7 +9030,7 @@ const TravelTab = ({ data, setData, userId }) => {
    }
  };
 
- // ðŸ’« DELETE MOMENT FROM TRIP HANDLER
+ // 💫 DELETE MOMENT FROM TRIP HANDLER
  const handleDeleteTripMoment = async (tripId, momentId) => {
    if (!window.confirm('Delete this moment?')) return;
 
@@ -9051,7 +9051,7 @@ const TravelTab = ({ data, setData, userId }) => {
    const updatedTravel = { ...data.travel, trips: updatedTrips };
 
    try {
-     // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+     // 🛡️ USE updateDoc to prevent data loss
      await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
        travel: updatedTravel,
        moments: updatedMoments
@@ -9067,11 +9067,11 @@ const TravelTab = ({ data, setData, userId }) => {
 
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-      {/* ✅ Travel Runway Calculator MOVED to "Trip Planning & Budgets" section below! */}
+      {/* ? Travel Runway Calculator MOVED to "Trip Planning & Budgets" section below! */}
       {/* Now it's collapsible with a "Show Travel Runway" button - much cleaner! */}
-      {/* ðŸ—ºï¸ OPERATOR'S WORLD MAP - Now at TOP of page (no more scroll issues!) */}
+      {/* 🗺️ OPERATOR'S WORLD MAP - Now at TOP of page (no more scroll issues!) */}
       {(() => {
-        // ðŸŒ COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
+        // 🌍 COUNTRY NAME MAPPING - Maps user input to GeoJSON country names
         const normalizeCountryName = (userInput) => {
           const input = userInput.trim().toLowerCase();
           
@@ -9109,7 +9109,7 @@ const TravelTab = ({ data, setData, userId }) => {
             'burma': 'myanmar',
             
             // Africa
-            'ivory coast': "cÃ´te d'ivoire",
+            'ivory coast': "côte d'ivoire",
             'cape verde': 'cabo verde',
             'congo': 'republic of the congo',
             'drc': 'democratic republic of the congo',
@@ -9161,25 +9161,25 @@ const TravelTab = ({ data, setData, userId }) => {
             
             // Debug logging (can remove later)
             if (countries.length > 0) {
-              console.log(`ðŸ—ºï¸ Trip: "${trip.name}" | End: ${trip.endDate} | isPast: ${isPast}`);
+              console.log(`🗺️ Trip: "${trip.name}" | End: ${trip.endDate} | isPast: ${isPast}`);
             }
             
             countries.forEach(country => {
               const normalizedCountry = normalizeCountryName(country);
               if (isPast) {
-                // COMPLETED EXPEDITION ❌†’ AMBER/GOLD
+                // COMPLETED EXPEDITION ?�� AMBER/GOLD
                 if (!visitedCountries.has(normalizedCountry)) {
                   visitedCountries.set(normalizedCountry, []);
                 }
                 visitedCountries.get(normalizedCountry).push(trip);
-                console.log(`✅ COMPLETED: ${country} ❌†’ ${normalizedCountry} (AMBER)`);
+                console.log(`? COMPLETED: ${country} ?�� ${normalizedCountry} (AMBER)`);
               } else {
-                // FUTURE MISSION ❌†’ BLUE
+                // FUTURE MISSION ?�� BLUE
                 if (!plannedCountries.has(normalizedCountry)) {
                   plannedCountries.set(normalizedCountry, []);
                 }
                 plannedCountries.get(normalizedCountry).push(trip);
-                console.log(`ðŸ”µ PLANNED: ${country} ❌†’ ${normalizedCountry} (BLUE)`);
+                console.log(`🔵 PLANNED: ${country} ?�� ${normalizedCountry} (BLUE)`);
               }
             });
           });
@@ -9293,7 +9293,7 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
             ) : (
               <div className="bg-slate-800/40 rounded-lg p-4 md:p-6 border border-gray-700">
-                {/* ðŸ—ºï¸ VINTAGE EXPEDITION WORLD MAP */}
+                {/* 🗺️ VINTAGE EXPEDITION WORLD MAP */}
                 <div className="relative w-full mb-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border-2 border-amber-900/40 p-4 shadow-2xl">
                   {/* Decorative Compass Rose */}
                   <div className="absolute top-4 right-4 w-16 h-16 opacity-20 pointer-events-none">
@@ -9404,7 +9404,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   </ComposableMap>
                   </div>
                   
-                  {/* ðŸŒ Country Tooltip - Appears on Hover */}
+                  {/* 🌍 Country Tooltip - Appears on Hover */}
                   {hoveredCountry && (
                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-none z-50">
                       <div className="bg-gradient-to-r from-slate-900 to-gray-900 px-6 py-3 rounded-xl border-2 shadow-2xl animate-fadeIn"
@@ -9419,17 +9419,17 @@ const TravelTab = ({ data, setData, userId }) => {
                           <div className="flex items-center justify-center gap-2 text-sm">
                             {hoveredCountry.isVisited && (
                               <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/40 font-semibold">
-                                ✅ Completed Expedition
+                                ? Completed Expedition
                               </span>
                             )}
                             {hoveredCountry.isPlanned && (
                               <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/40 font-semibold">
-                                ðŸ”µ Future Mission
+                                🔵 Future Mission
                               </span>
                             )}
                             {!hoveredCountry.isVisited && !hoveredCountry.isPlanned && (
                               <span className="px-3 py-1 bg-gray-600/20 text-gray-400 rounded-full border border-gray-600/40">
-                                ðŸŒ Unexplored
+                                🌍 Unexplored
                               </span>
                             )}
                           </div>
@@ -9495,7 +9495,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-amber-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Completed ❌œ“</div>
+                                      <div className="text-gray-400">Status: Completed ?��</div>
                                     </div>
                                   ))}
                                 </div>
@@ -9532,7 +9532,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-blue-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Planned ðŸ“…</div>
+                                      <div className="text-gray-400">Status: Planned 📅</div>
                                     </div>
                                   ))}
                                 </div>
@@ -9544,7 +9544,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     </div>
                   )}
                   
-                  {/* ðŸŒ EDITABLE TRAVEL WISHLIST */}
+                  {/* 🌍 EDITABLE TRAVEL WISHLIST */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-lg font-semibold text-purple-400 flex items-center gap-2">
@@ -9607,7 +9607,7 @@ const TravelTab = ({ data, setData, userId }) => {
                       <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      <strong className="text-white">Pro Tip:</strong> Use the wishlist for quick dreaming, then create full trips when you're ready to plan! ðŸŒ
+                      <strong className="text-white">Pro Tip:</strong> Use the wishlist for quick dreaming, then create full trips when you're ready to plan! 🌍
                     </div>
                   </div>
                 </div>
@@ -9623,7 +9623,7 @@ const TravelTab = ({ data, setData, userId }) => {
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-2">
-              ðŸ—ºï¸ Trip Planning & Budgets
+              🗺️ Trip Planning & Budgets
             </h2>
             <p className="text-gray-400">Manage your travel budgets and track expenses by trip</p>
           </div>
@@ -9645,7 +9645,7 @@ const TravelTab = ({ data, setData, userId }) => {
           </div>
         </div>
         
-        {/* ðŸŒ TRAVEL RUNWAY CALCULATOR - Collapsible Section */}
+        {/* 🌍 TRAVEL RUNWAY CALCULATOR - Collapsible Section */}
         {showRunwayCalculator && (
           <div className="mt-6 pt-6 border-t border-gray-700">
             <div className="relative">
@@ -9659,11 +9659,11 @@ const TravelTab = ({ data, setData, userId }) => {
               
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 mb-2">
-                  <h3 className="text-2xl font-bold text-white">ðŸŒ Travel Runway Calculator</h3>
+                  <h3 className="text-2xl font-bold text-white">🌍 Travel Runway Calculator</h3>
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <p className="text-slate-300">Smart destination-based travel planning with cost tiers</p>
-                  {/* ðŸ’¡ Help Tooltip - Left side on mobile */}
+                  {/* 💡 Help Tooltip - Left side on mobile */}
                   <div className="group relative">
                     <button className="text-slate-400 hover:text-amber-400 transition-colors">
                       <HelpCircle className="w-5 h-5" />
@@ -9673,12 +9673,12 @@ const TravelTab = ({ data, setData, userId }) => {
                       <div className="space-y-2 text-xs text-gray-300">
                         <p><strong>1. Set Your Travel Savings:</strong> Enter your total travel fund (top right edit button)</p>
                         <p><strong>2. Plan Your Days:</strong> Allocate days to different cost tiers:
-                          <br />❌€¢ ðŸŸ¢ Cheap ($30/day): SE Asia, India, Eastern Europe
-                          <br />❌€¢ ðŸŸ¡ Moderate ($100/day): South America, Southern Europe
-                          <br />❌€¢ ðŸ”´ Expensive ($200/day): Western Europe, Japan, Scandinavia
+                          <br />?�� 🟢 Cheap ($30/day): SE Asia, India, Eastern Europe
+                          <br />?�� 🟡 Moderate ($100/day): South America, Southern Europe
+                          <br />?�� 🔴 Expensive ($200/day): Western Europe, Japan, Scandinavia
                         </p>
                         <p><strong>3. See Your Runway:</strong> Calculator shows total possible travel days and cost breakdown!</p>
-                        <p className="text-amber-300 font-semibold mt-2">ðŸ’¡ Pro Tip: Mix cheap and expensive destinations to maximize your travel time!</p>
+                        <p className="text-amber-300 font-semibold mt-2">💡 Pro Tip: Mix cheap and expensive destinations to maximize your travel time!</p>
                       </div>
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
                         <div className="border-8 border-transparent border-t-gray-900"></div>
@@ -9705,24 +9705,24 @@ const TravelTab = ({ data, setData, userId }) => {
 
                 {/* Destination Cost Breakdown */}
                 <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
-                  <h4 className="text-lg font-semibold text-slate-200 mb-4">ðŸŽ¯ Your Travel Plan</h4>
+                  <h4 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
-                      <div className="text-emerald-300 font-semibold">ðŸŸ¢ Cheap Destinations</div>
+                      <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
                       <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
                       <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
                       <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
                     </div>
                     <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
-                      <div className="text-amber-300 font-semibold">ðŸŸ¡ Moderate Destinations</div>
+                      <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
                       <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
                       <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
                       <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
                     </div>
                     <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
-                      <div className="text-rose-300 font-semibold">ðŸ”´ Expensive Destinations</div>
+                      <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
                       <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
                       <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
@@ -9750,7 +9750,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div className="text-xs text-slate-400 text-center">
-                  ðŸ’¡ Extend your journey by choosing cheaper destinations with remaining funds
+                  💡 Extend your journey by choosing cheaper destinations with remaining funds
                 </div>
               </div>
             </div>
@@ -9811,7 +9811,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   >
                     Add Expense
                   </button>
-                  {/* ðŸ’« NEW: Add Moment Button */}
+                  {/* 💫 NEW: Add Moment Button */}
                   <button
                     onClick={() => {
                       setMomentTrip(trip);
@@ -9821,7 +9821,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     style={{ backgroundColor: '#F59E0B' }}
                     title="Add Travel Moment"
                   >
-                    ðŸ’« Moment
+                    💫 Moment
                   </button>
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
@@ -9916,11 +9916,11 @@ const TravelTab = ({ data, setData, userId }) => {
                   </div>
                 )}
 
-                {/* ðŸ’« NEW: Quick Moments */}
+                {/* 💫 NEW: Quick Moments */}
                 {trip.moments && trip.moments.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-1" style={{ color: '#F59E0B' }}>
-                      ðŸ’« Travel Moments ({trip.moments.length})
+                      💫 Travel Moments ({trip.moments.length})
                     </h4>
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.moments.slice(0, 2).map(moment => (
@@ -10045,7 +10045,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
               </div>
 
-              {/* ðŸ—ºï¸ Countries Selector - For World Map */}
+              {/* 🗺️ Countries Selector - For World Map */}
               <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                 <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10089,13 +10089,13 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  ðŸ’¡ Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
                 </p>
                 {Array.isArray(newTrip.countries) && newTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {newTrip.countries.map((country, idx) => (
                       <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
-                        ðŸŒ {country}
+                        🌍 {country}
                         <button
                           type="button"
                           onClick={() => {
@@ -10104,7 +10104,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           }}
                           className="hover:text-red-400 transition-colors font-bold text-base"
                         >
-                          Ã—
+                          ×
                         </button>
                       </span>
                     ))}
@@ -10235,7 +10235,7 @@ const TravelTab = ({ data, setData, userId }) => {
               {newExpense.currency !== 'CAD' && newExpense.amount && (
                 <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
                   <div className="text-sm text-blue-200">
-                    ðŸ’± <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ❌‰ˆ 
+                    💱 <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ?�� 
                     <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
                   </div>
                   <div className="text-xs text-blue-300 mt-1">
@@ -10275,13 +10275,13 @@ const TravelTab = ({ data, setData, userId }) => {
          </div>
        )}
 
-       {/* ðŸ’« NEW: Add Moment Modal */}
+       {/* 💫 NEW: Add Moment Modal */}
        {showMomentModal && momentTrip && (
          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
            <Card className="w-full max-w-lg border-amber-500/30">
              <div className="flex justify-between items-center mb-4">
                <div>
-                 <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>ðŸ’« Add Travel Moment</h3>
+                 <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>💫 Add Travel Moment</h3>
                  <p className="text-sm text-gray-400">{momentTrip.name}</p>
                </div>
                <button
@@ -10300,7 +10300,7 @@ const TravelTab = ({ data, setData, userId }) => {
                {/* Inspiring Message */}
                <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
                  <p className="text-amber-200 text-sm italic text-center">
-                   ❌œ¨ "You didn't work for money. You worked for moments like this."
+                   ?�� "You didn't work for money. You worked for moments like this."
                  </p>
                </div>
 
@@ -10317,7 +10317,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    autoFocus
                  />
                  <p className="text-xs text-gray-500 mt-2">
-                   ðŸ’¡ Pro tip: Write about the emotions, the people, the unexpected surprises. These stories are your treasure!
+                   💡 Pro tip: Write about the emotions, the people, the unexpected surprises. These stories are your treasure!
                  </p>
                </div>
              </div>
@@ -10441,7 +10441,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 />
               </div>
 
-              {/* ðŸ—ºï¸ Countries Selector - For World Map */}
+              {/* 🗺️ Countries Selector - For World Map */}
               <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                 <label className="block text-sm font-semibold text-amber-200 mb-2 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10487,13 +10487,13 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  ðŸ’¡ Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
                 </p>
                 {Array.isArray(editingTrip.countries) && editingTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {editingTrip.countries.map((country, idx) => (
                       <span key={idx} className="px-3 py-1.5 bg-amber-600/30 text-amber-200 text-sm rounded-full border border-amber-500/50 flex items-center gap-2">
-                        ðŸŒ {country}
+                        🌍 {country}
                         <button
                           type="button"
                           onClick={() => {
@@ -10502,7 +10502,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           }}
                           className="hover:text-red-400 transition-colors font-bold text-base"
                         >
-                          Ã—
+                          ×
                         </button>
                       </span>
                     ))}
@@ -10555,7 +10555,7 @@ const TravelTab = ({ data, setData, userId }) => {
             <div className="space-y-4">
               <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
                 <p className="text-sm text-purple-200 mb-2">
-                  ❌œ¨ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
+                  ?�� <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
                 </p>
                 <p className="text-xs text-gray-400">
                   No need to create a full trip. Just type the country name and we'll add it to your wishlist.
@@ -10580,7 +10580,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   autoFocus
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  ðŸ’¡ First letter will be automatically capitalized
+                  💡 First letter will be automatically capitalized
                 </p>
               </div>
             </div>
@@ -10612,7 +10612,7 @@ const TravelTab = ({ data, setData, userId }) => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
           <Card className="w-full max-w-sm sm:max-w-2xl border-blue-500/30 my-4 sm:my-8 max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-3 sm:mb-4">
-                 <h3 className="text-lg sm:text-xl font-bold text-white">ðŸŒ Travel Runway Settings</h3>
+                 <h3 className="text-lg sm:text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
                <button
                  onClick={() => {
                    setShowRunwayModal(false);
@@ -10673,12 +10673,12 @@ const TravelTab = ({ data, setData, userId }) => {
 
                {/* Trip Planning by Destination Tiers */}
                <div className="bg-blue-900/20 rounded-lg p-3 sm:p-4 border border-blue-600/30">
-                 <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">ðŸŽ¯ Plan Your Travel by Destination Type</h4>
+                 <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🎯 Plan Your Travel by Destination Type</h4>
                  
                  <div className="space-y-2 sm:space-y-3">
                    <div className="bg-green-900/30 rounded-lg p-2 sm:p-3 border border-green-600/30">
                      <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-green-400 font-semibold text-sm">ðŸŸ¢ Cheap ($40/day)</span>
+                       <span className="text-green-400 font-semibold text-sm">🟢 Cheap ($40/day)</span>
                        <span className="text-green-300 text-xs sm:hidden">SE Asia, E.Europe</span>
                      </div>
                      <input
@@ -10700,7 +10700,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                    <div className="bg-yellow-900/30 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
                      <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-yellow-400 font-semibold text-sm">ðŸŸ¡ Moderate ($90/day)</span>
+                       <span className="text-yellow-400 font-semibold text-sm">🟡 Moderate ($90/day)</span>
                        <span className="text-yellow-300 text-xs sm:hidden">S.America, S.Europe</span>
                      </div>
                      <input
@@ -10722,7 +10722,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                    <div className="bg-red-900/30 rounded-lg p-2 sm:p-3 border border-red-600/30">
                      <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-red-400 font-semibold text-sm">ðŸ”´ Expensive ($160/day)</span>
+                       <span className="text-red-400 font-semibold text-sm">🔴 Expensive ($160/day)</span>
                        <span className="text-red-300 text-xs sm:hidden">W.Europe, Japan</span>
                      </div>
                      <input
@@ -10746,7 +10746,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                {/* Enhanced Preview */}
                <div className="bg-blue-900/20 rounded-lg p-2 sm:p-3 border border-blue-600/30">
-                 <div className="text-blue-200 text-sm font-semibold mb-2">ðŸ“Š Preview</div>
+                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Preview</div>
                  <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs">
                    <div className="text-center">
                      <div className="text-blue-300 font-bold text-sm">
@@ -10955,7 +10955,7 @@ function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  // ðŸ” PRODUCTION AUTHENTICATION ENABLED
+  // 🔐 PRODUCTION AUTHENTICATION ENABLED
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
@@ -10969,14 +10969,14 @@ function App() {
   const [existingUserWithPayment, setExistingUserWithPayment] = useState(null);
   const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
   
-  // ðŸŽ–ï¸ RANK-UP MODAL STATE (moved to top for scope access)
+  // 🎖️ RANK-UP MODAL STATE (moved to top for scope access)
   const [showRankUpModal, setShowRankUpModal] = useState(false);
   const [rankUpData, setRankUpData] = useState(null);
   
-  // ðŸ› ï¸ SECURE DEVELOPER PANEL (only for admins)
+  // 🛠️ SECURE DEVELOPER PANEL (only for admins)
   const [showDevPanel, setShowDevPanel] = useState(false);
   const [devOverridePlan, setDevOverridePlan] = useState(null);
-  const [devDemoMode, setDevDemoMode] = useState(false); // ðŸŽ­ Demo mode - hides real name
+  const [devDemoMode, setDevDemoMode] = useState(false); // 🎭 Demo mode - hides real name
   
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
@@ -10991,7 +10991,7 @@ function App() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   
   
-  // ðŸ“Š FEEDBACK SYSTEM - Bug Reports & Feature Requests
+  // 📊 FEEDBACK SYSTEM - Bug Reports & Feature Requests
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug'); // 'bug' or 'feature'
   const [feedbackData, setFeedbackData] = useState({
@@ -11005,12 +11005,12 @@ function App() {
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
   
-  // ðŸ–±ï¸ Desktop Tab Scroll
+  // 🖱️ Desktop Tab Scroll
   const tabContainerRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
   
-  // ðŸ”’ SECURE ADMIN CHECK - Only specific emails can use dev panel
+  // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
   const ADMIN_EMAILS = [
     'janara.nguon@gmail.com',
     // Add more admin emails here as needed
@@ -11018,7 +11018,7 @@ function App() {
   
   const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
   
-  // ðŸ” URL Parameter Dev Mode (Admin Only)
+  // 🔐 URL Parameter Dev Mode (Admin Only)
   React.useEffect(() => {
     if (isAdmin) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -11039,16 +11039,16 @@ function App() {
   const [editingCard, setEditingCard] = useState(null);
   const [tempCardData, setTempCardData] = useState({});
   
-  // ðŸ“… HELPER: Get today's date in local timezone (not UTC)
+  // 📅 HELPER: Get today's date in local timezone (not UTC)
   const getTodayLocal = () => {
     const today = new Date();
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   };
 
-  // ðŸŽ® XP Refresh Trigger - increment this to force MissionStatusBanner to reload
+  // 🎮 XP Refresh Trigger - increment this to force MissionStatusBanner to reload
   const [xpRefreshTrigger, setXpRefreshTrigger] = useState(0);
 
-  // ðŸŽ¯ First Climb Protocol states
+  // 🎯 First Climb Protocol states
   const [showFirstClimbProtocol, setShowFirstClimbProtocol] = useState(false);
   const [missions, setMissions] = useState({
     mission1: { completed: false, progress: 0, target: 10 },
@@ -11070,7 +11070,7 @@ function App() {
     date: getTodayInUserTimezone()
   });
   
-  // ðŸ”’ STEALTH MODE - Privacy Protection Feature (Free for everyone!)
+  // 🔒 STEALTH MODE - Privacy Protection Feature (Free for everyone!)
   const [stealthMode, setStealthMode] = useState(() => {
     // Check localStorage for saved preference
     const saved = localStorage.getItem('stealthMode');
@@ -11086,28 +11086,28 @@ function App() {
     });
   };
 
-  // ðŸ“ QUICK JOURNAL SYSTEM
+  // 📝 QUICK JOURNAL SYSTEM
   const [showQuickJournal, setShowQuickJournal] = useState(false);
   const [quickJournalNote, setQuickJournalNote] = useState('');
 
-  // ðŸ§³ OFFLINE SUPPORT FOR TRAVELERS
+  // 🧳 OFFLINE SUPPORT FOR TRAVELERS
   const [isOffline, setIsOffline] = useState(!isOnline());
   const [offlineSummary, setOfflineSummary] = useState(getOfflineSummary());
   const [showOfflineIndicator, setShowOfflineIndicator] = useState(false);
 
-  // ðŸ›¡ï¸ DATA SAFETY - Protecting user data like it's sacred
+  // 🛡️ DATA SAFETY - Protecting user data like it's sacred
   const [showDataRecoveryModal, setShowDataRecoveryModal] = useState(false);
   const [showDataImportModal, setShowDataImportModal] = useState(false);
   const [userBackups, setUserBackups] = useState([]);
   const [dataSafetySummary, setDataSafetySummary] = useState(null);
 
-  // ðŸ““ FREEDOM JOURNAL SYSTEM
+  // 📓 FREEDOM JOURNAL SYSTEM
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [selectedTripForJournal, setSelectedTripForJournal] = useState(null);
   const [showMissionCompleteModal, setShowMissionCompleteModal] = useState(false);
   const [completedTrip, setCompletedTrip] = useState(null);
 
-  // ðŸ’« MOMENTS SYSTEM
+  // 💫 MOMENTS SYSTEM
   const [showMomentModal, setShowMomentModal] = useState(false);
   const [editingMoment, setEditingMoment] = useState(null);
   const [newMoment, setNewMoment] = useState(() => {
@@ -11121,7 +11121,7 @@ function App() {
     };
   });
 
-  // ðŸŽ¯ PRICING PHASE STATE
+  // 🎯 PRICING PHASE STATE
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
 
@@ -11136,15 +11136,15 @@ function App() {
     setTimeout(() => setNotification(null), 3000);
   }, []);
 
-  // ðŸ“Š GOOGLE ANALYTICS - Track Events
+  // 📊 GOOGLE ANALYTICS - Track Events
   const trackEvent = useCallback((eventName, eventParams = {}) => {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', eventName, eventParams);
-      debugLog('ðŸ“Š Analytics Event:', eventName, eventParams);
+      debugLog('📊 Analytics Event:', eventName, eventParams);
     }
   }, []);
 
-  // ðŸ’« MOMENTS HANDLERS - Creating memories from financial milestones
+  // 💫 MOMENTS HANDLERS - Creating memories from financial milestones
   const handleEditMoment = (moment) => {
     if (moment) {
       // Edit existing moment
@@ -11172,7 +11172,7 @@ function App() {
 
   const handleShareMoment = (moment) => {
     // Create shareable text
-    const shareText = `${moment.title}\n\n${moment.story}\n\nðŸ“ ${moment.location || 'My Journey'}\nðŸ“… ${new Date(moment.timestamp).toLocaleDateString()}\n\n#FinancialFreedom #TheCompass`;
+    const shareText = `${moment.title}\n\n${moment.story}\n\n📍 ${moment.location || 'My Journey'}\n📅 ${new Date(moment.timestamp).toLocaleDateString()}\n\n#FinancialFreedom #TheCompass`;
     
     if (navigator.share) {
       navigator.share({
@@ -11182,7 +11182,7 @@ function App() {
     } else {
       // Fallback - copy to clipboard
       navigator.clipboard.writeText(shareText).then(() => {
-        showNotification('ðŸ“‹ Moment copied to clipboard!', 'success');
+        showNotification('📋 Moment copied to clipboard!', 'success');
       });
     }
   };
@@ -11193,10 +11193,10 @@ function App() {
       return;
     }
 
-    // ðŸ›¡ï¸ SAFETY CHECK: Prevent data loss!
+    // 🛡️ SAFETY CHECK: Prevent data loss!
     if (editingMoment && (!data.moments || data.moments.length === 0)) {
-      showNotification('❌š ï¸ Data error detected. Please refresh and try again.', 'error');
-      console.error('ðŸš¨ CRITICAL: Attempting to edit when moments array is empty!');
+      showNotification('?��️ Data error detected. Please refresh and try again.', 'error');
+      console.error('🚨 CRITICAL: Attempting to edit when moments array is empty!');
       return;
     }
 
@@ -11212,18 +11212,18 @@ function App() {
       // Update existing moment
       updatedMoments = (data.moments || []).map(m => m.id === editingMoment.id ? moment : m);
       
-      // ðŸ›¡ï¸ SAFETY: Verify moment was actually updated
+      // 🛡️ SAFETY: Verify moment was actually updated
       const updated = updatedMoments.find(m => m.id === editingMoment.id);
       if (!updated) {
-        showNotification('❌š ï¸ Update failed. Moment not found.', 'error');
-        console.error('ðŸš¨ CRITICAL: Moment to update not found!');
+        showNotification('?��️ Update failed. Moment not found.', 'error');
+        console.error('🚨 CRITICAL: Moment to update not found!');
         return;
       }
 
-      // ðŸ›¡ï¸ SAFETY: Never save if this would delete all moments
+      // 🛡️ SAFETY: Never save if this would delete all moments
       if (updatedMoments.length === 0) {
-        showNotification('❌š ï¸ Cannot save - this would delete all moments!', 'error');
-        console.error('ðŸš¨ CRITICAL: Save blocked - would delete all moments!');
+        showNotification('?��️ Cannot save - this would delete all moments!', 'error');
+        console.error('🚨 CRITICAL: Save blocked - would delete all moments!');
         return;
       }
     } else {
@@ -11231,19 +11231,19 @@ function App() {
       updatedMoments = [moment, ...(data.moments || [])];
     }
 
-    // ðŸ›¡ï¸ Deep clone to prevent reference issues
+    // 🛡️ Deep clone to prevent reference issues
     const updatedData = JSON.parse(JSON.stringify({
       ...data,
       moments: updatedMoments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
     }));
 
     try {
-      // ðŸ›¡ï¸ CREATE BACKUP BEFORE SAVE!
+      // 🛡️ CREATE BACKUP BEFORE SAVE!
       if (data.moments && data.moments.length > 0) {
         await createBackup(userId, data, 'before-moment-save');
       }
 
-      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+      // 🛡️ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         moments: updatedData.moments
       });
@@ -11257,7 +11257,7 @@ function App() {
         date: new Date().toISOString().split('T')[0],
         isAchievement: false
       });
-      showNotification(editingMoment ? '❌œ¨ Moment updated!' : 'ðŸ’« Moment created!', 'success');
+      showNotification(editingMoment ? '?�� Moment updated!' : '💫 Moment created!', 'success');
       
       // Award XP for creating moment
       if (!editingMoment) {
@@ -11280,29 +11280,29 @@ function App() {
   };
 
   const handleDeleteMoment = async (momentId) => {
-    if (!window.confirm('Delete this moment?\\n\\n❌š ï¸ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
+    if (!window.confirm('Delete this moment?\\n\\n?��️ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
 
     const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
      try {
-       // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+       // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
        await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
          moments: updatedMoments
        });
        
        setData({ ...data, moments: updatedMoments });
       
-      // ðŸ›¡ï¸ ANTI-EXPLOIT: Deduct XP for deleting moment
+      // 🛡️ ANTI-EXPLOIT: Deduct XP for deleting moment
       try {
         const result = await deductXp(db, userId, 10);
         setXpRefreshTrigger(prev => prev + 1);
         if (result.rankDown) {
-          showNotification(`ðŸ—‘ï¸ Moment deleted. -10 XP. Rank: ${result.newRank.name}`, 'warning');
+          showNotification(`🗑️ Moment deleted. -10 XP. Rank: ${result.newRank.name}`, 'warning');
         } else {
-          showNotification('ðŸ—‘ï¸ Moment deleted. -10 XP', 'warning');
+          showNotification('🗑️ Moment deleted. -10 XP', 'warning');
         }
       } catch (error) {
         console.warn('XP deduction failed (moment delete)', error);
-        showNotification('ðŸ—‘ï¸ Moment deleted', 'success');
+        showNotification('🗑️ Moment deleted', 'success');
       }
     } catch (error) {
       console.error('Error deleting moment:', error);
@@ -11310,7 +11310,7 @@ function App() {
     }
   };
 
-  // ðŸ“§ FEEDBACK SUBMISSION HANDLER
+  // 📧 FEEDBACK SUBMISSION HANDLER
   const handleSubmitFeedback = async () => {
     if (!feedbackData.message.trim()) {
       showNotification('Please enter a message', 'error');
@@ -11340,8 +11340,8 @@ function App() {
 
       showNotification(
         feedbackData.type === 'bug' 
-          ? 'ðŸ› Bug report submitted! Thank you!' 
-          : 'ðŸ’¡ Feature request submitted! Thank you!',
+          ? '🐛 Bug report submitted! Thank you!' 
+          : '💡 Feature request submitted! Thank you!',
         'success'
       );
 
@@ -11359,7 +11359,7 @@ function App() {
     }
   };
 
-  // ðŸ““ FREEDOM JOURNAL HANDLERS
+  // 📓 FREEDOM JOURNAL HANDLERS
   const handleSaveJournalEntry = async (entry) => {
     if (!selectedTripForJournal) return;
 
@@ -11376,12 +11376,12 @@ function App() {
     const updatedTravel = { ...data.travel, trips: updatedTrips };
 
     try {
-      // ðŸ›¡ï¸ USE updateDoc to prevent data loss
+      // 🛡️ USE updateDoc to prevent data loss
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         travel: updatedTravel
       });
       setData({ ...data, travel: updatedTravel });
-      showNotification('Journal entry saved! ðŸ““', 'success');
+      showNotification('Journal entry saved! 📓', 'success');
       
       // Award XP for journaling
       if (userId) {
@@ -11393,7 +11393,7 @@ function App() {
       }
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11416,7 +11416,7 @@ function App() {
     setSelectedTripForJournal(null);
   };
 
-  // ðŸŽ¯ MISSION COMPLETE AUTOMATION
+  // 🎯 MISSION COMPLETE AUTOMATION
   const checkForCompletedTrips = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -11451,7 +11451,7 @@ function App() {
     }
   };
 
-  // ðŸ“„ PDF EXPORT HANDLER
+  // 📄 PDF EXPORT HANDLER
   const handleExportPDF = async () => {
     if (currentUserPlan !== SUBSCRIPTION_TIERS.OPERATOR && currentUserPlan !== SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE) {
       setUpgradePromptData({
@@ -11463,7 +11463,7 @@ function App() {
     }
 
     // TODO: Implement PDF generation
-    showNotification('PDF export feature coming soon! 🚀', 'success');
+    showNotification('PDF export feature coming soon! ??', 'success');
   };
 
   // Feature gating and upgrade functions
@@ -11491,7 +11491,7 @@ function App() {
     }
 
     try {
-      console.log(`ðŸ›’ Initiating upgrade to ${planId} with ${billingCycle} billing${priceId ? ` (Price ID: ${priceId})` : ''}`);
+      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing${priceId ? ` (Price ID: ${priceId})` : ''}`);
       
       // Import Stripe utilities dynamically
       const { createCheckoutSession } = await import('./utils/stripeUtils');
@@ -11507,7 +11507,7 @@ function App() {
       
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11515,7 +11515,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('❌Œ Upgrade error:', error);
+      console.error('?�� Upgrade error:', error);
       showNotification(
         error.message || 'Failed to process upgrade. Please try again.',
         'error'
@@ -11523,7 +11523,7 @@ function App() {
     }
   }, [user, showNotification]);
 
-  // ðŸ–±ï¸ Desktop Tab Scroll Functions
+  // 🖱️ Desktop Tab Scroll Functions
   const scrollTabs = (direction) => {
     if (tabContainerRef.current) {
       const scrollAmount = 200;
@@ -11570,7 +11570,7 @@ function App() {
         'travel-mode': 'Travel Mode'
       };
       
-      // ðŸ“Š Track locked feature access attempt
+      // 📊 Track locked feature access attempt
       trackEvent('locked_feature_clicked', {
         feature_name: featureNames[requiredFeature] || tab,
         tab: tab,
@@ -11581,7 +11581,7 @@ function App() {
       return;
     }
     
-    // ðŸ“Š Track page view
+    // 📊 Track page view
     trackEvent('page_view', {
       page_title: tab,
       user_plan: currentUserPlan
@@ -11590,7 +11590,7 @@ function App() {
     setActiveTab(tab);
   }, [checkFeatureAccess, showUpgradePromptForFeature, trackEvent, currentUserPlan]);
 
-  // ðŸ”„ Process Recurring Expenses Function
+  // 🔄 Process Recurring Expenses Function
   const processRecurringExpenses = useCallback(async (userData, currentUserId) => {
     if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
       return;
@@ -11606,7 +11606,7 @@ function App() {
       
       try {
         const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
-        // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+        // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
         await updateDoc(docRef, {
           transactions: updatedTransactions,
           recurringExpenses: updatedRecurringExpenses
@@ -11619,9 +11619,9 @@ function App() {
         
         // Show notification about processed recurring expenses
         if (newTransactions.length === 1) {
-          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+          showNotification(`? Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
         } else {
-          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
+          showNotification(`? Processed ${newTransactions.length} recurring transactions`, 'success');
         }
       } catch (error) {
         console.error('Error processing recurring expenses:', error);
@@ -11630,7 +11630,7 @@ function App() {
     }
   }, [showNotification]);
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11639,18 +11639,18 @@ function App() {
   //   console.log('Share moment:', moment);
   // };
 
-    // ðŸ” PRODUCTION Authentication Effect
+    // 🔐 PRODUCTION Authentication Effect
   useEffect(() => {
     if (!auth) {
-      console.error('❌Œ Firebase auth not initialized');
+      console.error('?�� Firebase auth not initialized');
       setAuthLoading(false);
       setShowAuth(true);
       return;
     }
 
-    debugLog('ðŸ” Setting up authentication listener...');
+    debugLog('🔐 Setting up authentication listener...');
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      debugLog('ðŸ” Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
+      debugLog('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
       setAuthLoading(true);
       setIsLoading(true);
       
@@ -11674,10 +11674,10 @@ function App() {
             const userData = docSnap.data();
             setData(userData);
             
-            // ðŸ”„ Process recurring expenses on data load
+            // 🔄 Process recurring expenses on data load
             await processRecurringExpenses(userData, firebaseUser.uid);
           } else {
-            // ðŸ†• NEW USER - Show Quick Start Guide!
+            // 🆕 NEW USER - Show Quick Start Guide!
             // Check if they haven't dismissed it before
             const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
             
@@ -11699,7 +11699,7 @@ function App() {
           }
         } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11713,7 +11713,7 @@ function App() {
           setData(initialData);
         }
         
-        // ðŸ’³ Load user's subscription data
+        // 💳 Load user's subscription data
         try {
           const userDocRef = doc(db, 'users', firebaseUser.uid);
           const userDocSnap = await getDoc(userDocRef);
@@ -11723,19 +11723,19 @@ function App() {
             const subscription = userDoc.subscription;
             
             if (subscription && subscription.plan && subscription.status === 'active') {
-              console.log('✅ Active subscription found:', subscription.plan);
+              console.log('? Active subscription found:', subscription.plan);
               setUserPlan(subscription.plan);
             } else {
-              console.log('ðŸ“‹ No active subscription, using free tier');
+              console.log('📋 No active subscription, using free tier');
               setUserPlan(SUBSCRIPTION_TIERS.FREE);
             }
           } else {
-            debugLog('ðŸ“‹ No user document, using free tier');
+            debugLog('📋 No user document, using free tier');
             setUserPlan(SUBSCRIPTION_TIERS.FREE);
           }
         } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11773,7 +11773,7 @@ function App() {
     return () => unsubscribe();
   }, [processRecurringExpenses, showNotification]);
   
-  // ðŸ›¡ï¸ DAILY AUTO-BACKUP - Creates automatic backup every 24 hours
+  // 🛡️ DAILY AUTO-BACKUP - Creates automatic backup every 24 hours
   useEffect(() => {
     if (!userId || !data) return;
 
@@ -11785,12 +11785,12 @@ function App() {
       // Check if 24 hours have passed since last backup (or no backup exists)
       if (!lastBackup || (now - parseInt(lastBackup)) > 24 * 60 * 60 * 1000) {
         try {
-          console.log('ðŸ›¡ï¸ Creating daily auto-backup...');
+          console.log('🛡️ Creating daily auto-backup...');
           await createBackup(userId, data, 'daily-auto');
           localStorage.setItem(lastBackupKey, now.toString());
-          console.log('✅ Daily auto-backup created successfully');
+          console.log('? Daily auto-backup created successfully');
         } catch (error) {
-          console.error('❌Œ Daily auto-backup failed:', error);
+          console.error('?�� Daily auto-backup failed:', error);
         }
       }
     };
@@ -11803,7 +11803,7 @@ function App() {
     return () => clearInterval(interval);
   }, [userId, data]);
   
-  // ðŸ› ï¸ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
+  // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
   useEffect(() => {
     const handleKeyPress = (e) => {
       // Only works for admin emails
@@ -11826,7 +11826,7 @@ function App() {
   }, [isAdmin, showDevPanel]);
 
 
-  // ðŸ” Authentication Functions
+  // 🔐 Authentication Functions
   const handleSignUp = async () => {
     if (!authForm.email || !authForm.password || !authForm.name) {
       showNotification('Please fill in all fields', 'error');
@@ -11835,14 +11835,14 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // ðŸŒŠ FLOW LIKE WATER: Try signup first (handles Firebase Auth inconsistency)
-      console.log('ðŸŒŠ Creating new account for:', authForm.email);
+      // 🌊 FLOW LIKE WATER: Try signup first (handles Firebase Auth inconsistency)
+      console.log('🌊 Creating new account for:', authForm.email);
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
-      // 📧 TRIGGER EMAIL AUTOMATION FOR FREE USERS
+      // ?? TRIGGER EMAIL AUTOMATION FOR FREE USERS
       try {
-        console.log('📧 Triggering welcome email for free user:', userCredential.user.uid);
+        console.log('?? Triggering welcome email for free user:', userCredential.user.uid);
         const emailResponse = await fetch('/api/test-send-email', {
           method: 'POST',
           headers: {
@@ -11859,23 +11859,23 @@ function App() {
         });
         
         if (emailResponse.ok) {
-          console.log('✅ Welcome email triggered successfully for free user');
+          console.log('? Welcome email triggered successfully for free user');
         } else {
-          console.error('❌ Failed to trigger welcome email:', await emailResponse.text());
+          console.error('? Failed to trigger welcome email:', await emailResponse.text());
         }
       } catch (emailError) {
-        console.error('❌ Error triggering welcome email:', emailError);
+        console.error('? Error triggering welcome email:', emailError);
       }
       
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
-      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      // ?? Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('🚀 Showing Quick Start popup for new signup user');
+          console.log('?? Showing Quick Start popup for new signup user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
@@ -11883,8 +11883,8 @@ function App() {
       console.error('Signup error:', error);
       
       if (error.code === 'auth/email-already-in-use') {
-        // ðŸŒŠ FLOW LIKE WATER: Email exists (webhook created user), show password setup
-        console.log('ðŸŒŠ Email already exists - webhook created user, showing set password option');
+        // 🌊 FLOW LIKE WATER: Email exists (webhook created user), show password setup
+        console.log('🌊 Email already exists - webhook created user, showing set password option');
         setExistingUserWithPayment({
           email: authForm.email,
           name: authForm.name,
@@ -11921,19 +11921,19 @@ function App() {
       showNotification('Welcome back!', 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
-      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      // ?? Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('🚀 Showing Quick Start popup for new user');
+          console.log('?? Showing Quick Start popup for new user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
       
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11965,7 +11965,7 @@ function App() {
       showNotification('Signed out successfully', 'success');
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -11978,7 +11978,7 @@ function App() {
     }
   };
 
-  // ðŸŽ¯ SMART SIGNUP FLOW: Handle setting password for existing users with payments
+  // 🎯 SMART SIGNUP FLOW: Handle setting password for existing users with payments
   const handleSetPassword = async () => {
     if (!authForm.password) {
       showNotification('Please enter a password', 'error');
@@ -11987,8 +11987,8 @@ function App() {
 
     setAuthLoading(true);
     try {
-      // ðŸŒŠ FLOW LIKE WATER: Use our API to update the password
-      console.log('ðŸŒŠ Updating password for webhook-created user:', existingUserWithPayment.email);
+      // 🌊 FLOW LIKE WATER: Use our API to update the password
+      console.log('🌊 Updating password for webhook-created user:', existingUserWithPayment.email);
       
       const response = await fetch('/api/update-user-password', {
         method: 'POST',
@@ -12007,19 +12007,19 @@ function App() {
       }
 
       const result = await response.json();
-      console.log('✅ Password updated successfully:', result);
+      console.log('? Password updated successfully:', result);
       
       // Now sign in with the new password
       await signInWithEmailAndPassword(auth, existingUserWithPayment.email, authForm.password);
       
       showNotification(`Welcome ${existingUserWithPayment.name}! Your account is now set up.`, 'success');
       
-      // 🚀 Show Quick Start popup for new users after 2-3 seconds
+      // ?? Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('🚀 Showing Quick Start popup for new webhook-created user');
+          console.log('?? Showing Quick Start popup for new webhook-created user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
@@ -12052,7 +12052,7 @@ function App() {
       showNotification('Welcome! Signed in with Google.', 'success');
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12094,7 +12094,7 @@ function App() {
     };
   }, []);
 
-  // ðŸ”§ REMOVED: Aggressive scroll-to-top fix that was breaking UX
+  // 🔧 REMOVED: Aggressive scroll-to-top fix that was breaking UX
   // This was scrolling to top on EVERY input blur - breaking Side Hustle, Travel, etc.
   // Modern browsers (iOS 14+, Android 10+) handle mobile keyboards correctly
   // No manual intervention needed!
@@ -12103,7 +12103,7 @@ function App() {
   // useEffect(() => {
   //   const handleInputBlur = () => {
   //     setTimeout(() => {
-  //       window.scrollTo(0, 0); // ❌† THIS caused scroll-to-top on every input!
+  //       window.scrollTo(0, 0); // ?�� THIS caused scroll-to-top on every input!
   //     }, 100);
   //   };
   //   document.addEventListener('focusout', handleInputBlur);
@@ -12137,21 +12137,21 @@ function App() {
   }, [userId]);
 
 
-  // ðŸŽ¯ MISSION COMPLETE AUTOMATION - Check for completed trips
+  // 🎯 MISSION COMPLETE AUTOMATION - Check for completed trips
   useEffect(() => {
     if (data && data.travel && data.travel.trips) {
       checkForCompletedTrips();
     }
   }, [data]);
 
-  // ðŸ”” DEBT PAYMENT NOTIFICATIONS - Check for upcoming payments
+  // 🔔 DEBT PAYMENT NOTIFICATIONS - Check for upcoming payments
   useEffect(() => {
     if (data && data.debt && data.debt.accounts) {
       checkDebtPaymentNotifications();
     }
   }, [data]);
 
-  // ðŸŽ¯ LOAD PRICING PHASE DATA (OPTIONAL - Don't error if no access)
+  // 🎯 LOAD PRICING PHASE DATA (OPTIONAL - Don't error if no access)
   useEffect(() => {
     const loadPricingPhaseData = async () => {
       try {
@@ -12162,7 +12162,7 @@ function App() {
         if (foundersDoc.exists()) {
           const count = foundersDoc.data().subscriberCount || 0;
           setFoundersCircleCount(count);
-          infoLog(`ðŸ“Š Founder's Circle: ${count}/100 spots taken`);
+          infoLog(`📊 Founder's Circle: ${count}/100 spots taken`);
         }
 
         // Load Early Adopter count
@@ -12172,11 +12172,11 @@ function App() {
         if (earlyAdopterDoc.exists()) {
           const count = earlyAdopterDoc.data().subscriberCount || 0;
           setEarlyAdopterCount(count);
-          infoLog(`ðŸ“Š Early Adopter: ${count}/500 spots taken`);
+          infoLog(`📊 Early Adopter: ${count}/500 spots taken`);
         }
       } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12192,7 +12192,7 @@ function App() {
     loadPricingPhaseData();
   }, []);
 
-  // ðŸŽ¯ HANDLE LANDING PAGE REDIRECTS (Simplified - Optional)
+  // 🎯 HANDLE LANDING PAGE REDIRECTS (Simplified - Optional)
   useEffect(() => {
     // Only run after user authentication is complete
     if (authLoading || !user) return;
@@ -12204,7 +12204,7 @@ function App() {
 
     // Optional: Still support redirects for users who want to upgrade in-app
     if (upgradePlan) {
-      console.log('ðŸŽ¯ Landing redirect: Opening pricing modal for', upgradePlan);
+      console.log('🎯 Landing redirect: Opening pricing modal for', upgradePlan);
       setLandingRedirect({ type: 'upgrade', plan: upgradePlan });
       
       // Add small delay to ensure user data is loaded
@@ -12216,7 +12216,7 @@ function App() {
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (signup && plan) {
-      console.log('ðŸŽ¯ Landing redirect: User needs to signup for', plan);
+      console.log('🎯 Landing redirect: User needs to signup for', plan);
       setLandingRedirect({ type: 'signup', plan: plan });
       showNotification(`Welcome! You can upgrade to ${plan} after signing up.`, 'info');
       // Clean URL
@@ -12224,14 +12224,14 @@ function App() {
     }
   }, [authLoading, user]); // Run when loading state or user changes
 
-  // ðŸŒŠ FLOW LIKE WATER: Check for stored signup data from webhook
+  // 🌊 FLOW LIKE WATER: Check for stored signup data from webhook
   const checkForStoredSignupData = async () => {
     try {
       const response = await fetch('/api/get-signup-data');
       if (response.ok) {
         const data = await response.json();
         if (data.email) {
-          console.log('ðŸŒŠ Found stored signup data:', data.email);
+          console.log('🌊 Found stored signup data:', data.email);
           setAuthForm(prev => ({
             ...prev,
             email: data.email,
@@ -12240,11 +12240,11 @@ function App() {
         }
       }
     } catch (error) {
-      console.log('ðŸŒŠ No stored signup data found (this is normal for first-time users)');
+      console.log('🌊 No stored signup data found (this is normal for first-time users)');
     }
   };
 
-  // ðŸŒŠ FLOW LIKE WATER: Pre-detect user status on signup page load
+  // 🌊 FLOW LIKE WATER: Pre-detect user status on signup page load
   useEffect(() => {
     // Only run on signup page when not authenticated
     if (authLoading || user || !showAuth || authMode !== 'signup') return;
@@ -12261,16 +12261,16 @@ function App() {
     }
     
     if (emailToCheck) {
-      console.log('ðŸŒŠ Pre-detecting user status for:', emailToCheck);
+      console.log('🌊 Pre-detecting user status for:', emailToCheck);
       
       // Check if this email exists in Firebase Auth (webhook-created user)
       fetchSignInMethodsForEmail(auth, emailToCheck)
         .then(signInMethods => {
-          console.log('ðŸŒŠ Pre-detection result:', signInMethods);
+          console.log('🌊 Pre-detection result:', signInMethods);
           
           if (signInMethods.length > 0) {
             // Email exists - this is a webhook-created user, show password setup immediately
-            console.log('ðŸŒŠ User exists - showing password setup flow immediately');
+            console.log('🌊 User exists - showing password setup flow immediately');
             setExistingUserWithPayment({
               email: emailToCheck,
               name: authForm.name || '',
@@ -12284,7 +12284,7 @@ function App() {
               setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
             }
           } else {
-            console.log('ðŸŒŠ New user - showing normal signup form');
+            console.log('🌊 New user - showing normal signup form');
             // Pre-fill email from URL if available
             if (emailFromUrl) {
               setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
@@ -12292,7 +12292,7 @@ function App() {
           }
         })
         .catch(error => {
-          console.log('ðŸŒŠ Pre-detection failed, showing normal signup:', error);
+          console.log('🌊 Pre-detection failed, showing normal signup:', error);
           // Pre-fill email from URL if available
           if (emailFromUrl) {
             setAuthForm(prev => ({ ...prev, email: emailFromUrl }));
@@ -12361,7 +12361,7 @@ function App() {
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
-    // ðŸ”§ CRITICAL FIX: Prevent scroll and lock scroll position
+    // 🔧 CRITICAL FIX: Prevent scroll and lock scroll position
     const scrollY = window.scrollY;
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollY}px`;
@@ -12406,7 +12406,7 @@ function App() {
   };
 
   const closeCardEditor = () => {
-    // ðŸ”§ CRITICAL FIX: Restore scroll position (don't scroll to top!)
+    // 🔧 CRITICAL FIX: Restore scroll position (don't scroll to top!)
     const scrollY = document.body.style.top;
     document.body.style.position = '';
     document.body.style.top = '';
@@ -12429,7 +12429,7 @@ function App() {
     
     let convertedData;
     
-    // ðŸŽ¯ Special handling for array-based cards (goals, budgets, etc.)
+    // 🎯 Special handling for array-based cards (goals, budgets, etc.)
     if (Array.isArray(tempCardData)) {
       // For arrays, convert numbers within each object
       convertedData = tempCardData.map(item => {
@@ -12447,7 +12447,7 @@ function App() {
         return converted;
       });
     } else {
-      // ðŸ”§ Convert string values to numbers for object-based cards
+      // 🔧 Convert string values to numbers for object-based cards
       convertedData = {};
       Object.keys(tempCardData).forEach(key => {
         const value = tempCardData[key];
@@ -12478,7 +12478,7 @@ function App() {
     }
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         [editingCard]: convertedData
       });
@@ -12506,7 +12506,7 @@ function App() {
       closeCardEditor();
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12600,24 +12600,24 @@ function App() {
   };
 
   const confirmResetData = async () => {
-    debugLog('ðŸ”§ Reset Data: Function called');
-    debugLog('ðŸ”§ Reset Data: userId =', userId);
-    debugLog('ðŸ”§ Reset Data: resetType =', resetType);
+    debugLog('🔧 Reset Data: Function called');
+    debugLog('🔧 Reset Data: userId =', userId);
+    debugLog('🔧 Reset Data: resetType =', resetType);
     
     if (!userId) {
-      console.error('❌Œ Reset Data: No userId available!');
-      showNotification('❌Œ Please sign in to reset data', 'error');
+      console.error('?�� Reset Data: No userId available!');
+      showNotification('?�� Please sign in to reset data', 'error');
       return;
     }
 
     let resetData;
     
     if (resetType === 'sample-financial') {
-      // ðŸ“Š SAMPLE FINANCIAL DATA ONLY (FREE tier safe!)
+      // 📊 SAMPLE FINANCIAL DATA ONLY (FREE tier safe!)
       // Only populates transactions & dashboard - no businesses, travel, investments
       const startDate = new Date(resetStartDate);
       
-      // ðŸ›¡ï¸ PRESERVE non-financial data
+      // 🛡️ PRESERVE non-financial data
       const preservedData = {
         moments: data.moments || [],
         logbook: data.logbook || [],
@@ -12654,13 +12654,13 @@ function App() {
           income: initialData.income.total,
           expenses: initialData.expenses.total,
           cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
-          businessIncome: 0, // ✅ No business data in sample
+          businessIncome: 0, // ? No business data in sample
           businessExpenses: 0,
-          investmentValue: 0, // ✅ No investment data in sample
+          investmentValue: 0, // ? No investment data in sample
           savingsRate: initialData.savingsRate.current
         }],
         
-        // ✅ Override to remove premium features (FREE tier safe!)
+        // ? Override to remove premium features (FREE tier safe!)
         businesses: [], // No sample businesses
         investments: { totalValue: 0, totalGainLoss: 0, holdings: [], categories: [], monthlyData: [] },
         travel: {
@@ -12671,22 +12671,22 @@ function App() {
           runwayCalculation: { averageDailySpend: 0, totalAvailableFunds: 0, estimatedDaysRemaining: 0, lastUpdated: resetStartDate },
           tripPlan: { cheap: 90, moderate: 30, expensive: 15 },
           expenseCategories: [
-            { name: 'Accommodation', icon: 'ðŸ¨', color: 'bg-blue-500' },
-            { name: 'Food & Dining', icon: 'ðŸ½ï¸', color: 'bg-green-500' },
-            { name: 'Transportation', icon: 'ðŸš•', color: 'bg-yellow-500' },
-            { name: 'Activities', icon: 'ðŸŽ­', color: 'bg-purple-500' },
-            { name: 'Shopping', icon: 'ðŸ›ï¸', color: 'bg-pink-500' },
-            { name: 'Other', icon: 'ðŸ’µ', color: 'bg-gray-500' }
+            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
+            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
+            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
           ]
         },
         
-        // ðŸ›¡ï¸ PRESERVE non-financial data
+        // 🛡️ PRESERVE non-financial data
         ...preservedData
       };
     } else if (resetType === 'financial-only') {
-      // ðŸ’° RESET FINANCIAL DATA ONLY (keep moments, logbook, businesses, travel, etc.)
+      // 💰 RESET FINANCIAL DATA ONLY (keep moments, logbook, businesses, travel, etc.)
       
-      // ðŸ›¡ï¸ PRESERVE all non-financial data
+      // 🛡️ PRESERVE all non-financial data
       const preservedData = {
         moments: data.moments || [],
         logbook: data.logbook || [],
@@ -12706,7 +12706,7 @@ function App() {
         },
         creditScore: { current: 0, history: [] },
         cashOnHand: { total: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] },
-        rainyDayFund: { total: 0, goal: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] }, // ðŸ›¡ï¸ FIX: Start at 0, let users set their own goal!
+        rainyDayFund: { total: 0, goal: 0, accounts: [], history: [{ date: resetStartDate, total: 0 }] }, // 🛡️ FIX: Start at 0, let users set their own goal!
         debt: {
           total: 0,
           accounts: [
@@ -12739,11 +12739,11 @@ function App() {
           sixJars: { necessities: 55, education: 10, play: 10, longTermSavings: 10, financial: 10, give: 5 }
         },
         
-        // ðŸ›¡ï¸ PRESERVE all non-financial data
+        // 🛡️ PRESERVE all non-financial data
         ...preservedData
       };
     } else {
-      // ðŸ—‘ï¸ RESET WHOLE APP (everything goes - nuclear option)
+      // 🗑️ RESET WHOLE APP (everything goes - nuclear option)
       resetData = {
         financialFreedom: {
           targetAmount: 2000000,
@@ -12762,7 +12762,7 @@ function App() {
         },
         rainyDayFund: {
           total: 0,
-          goal: 0, // ðŸ›¡ï¸ FIX: Start at 0, let users set their own goal!
+          goal: 0, // 🛡️ FIX: Start at 0, let users set their own goal!
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
@@ -12868,12 +12868,12 @@ function App() {
             expensive: 15
           },
           expenseCategories: [
-            { name: 'Accommodation', icon: 'ðŸ¨', color: 'bg-blue-500' },
-            { name: 'Food & Dining', icon: 'ðŸ½ï¸', color: 'bg-green-500' },
-            { name: 'Transportation', icon: 'ðŸš•', color: 'bg-yellow-500' },
-            { name: 'Activities', icon: 'ðŸŽ­', color: 'bg-purple-500' },
-            { name: 'Shopping', icon: 'ðŸ›ï¸', color: 'bg-pink-500' },
-            { name: 'Other', icon: 'ðŸ’µ', color: 'bg-gray-500' }
+            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
+            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
+            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
           ]
         },
         budgetSettings: {
@@ -12895,13 +12895,13 @@ function App() {
     }
 
     try {
-      debugLog('ðŸ”§ Reset Data: Starting Firebase write...');
+      debugLog('🔧 Reset Data: Starting Firebase write...');
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
-      debugLog('✅ Reset Data: Firebase write successful');
+      debugLog('? Reset Data: Firebase write successful');
       
-      // ðŸŽ® Reset XP only for sample-financial and whole-app (not financial-only)
+      // 🎮 Reset XP only for sample-financial and whole-app (not financial-only)
       if (resetType === 'sample-financial' || resetType === 'whole-app') {
-        debugLog('ðŸŽ® Resetting XP profile to Recruit (0 XP)...');
+        debugLog('🎮 Resetting XP profile to Recruit (0 XP)...');
         const initialProfile = {
           xpPoints: 0,
           rank: 'Recruit',
@@ -12910,30 +12910,30 @@ function App() {
           createdAt: new Date().toISOString()
         };
         await setDoc(doc(db, 'userProfiles', userId), initialProfile);
-        debugLog('✅ XP profile reset successful');
+        debugLog('? XP profile reset successful');
       } else {
-        debugLog('❌„¹ï¸ Financial-only reset - XP preserved');
+        debugLog('?��️ Financial-only reset - XP preserved');
       }
       
       setData(resetData);
-      debugLog('✅ Reset Data: Local state updated');
+      debugLog('? Reset Data: Local state updated');
       
       // Trigger MissionStatusBanner refresh by changing state
       setXpRefreshTrigger(prev => prev + 1);
       
       setShowResetModal(false);
       setResetType('financial-only');
-      debugLog('✅ Reset Data: Modal closed');
+      debugLog('? Reset Data: Modal closed');
       
       const resetTypeMessages = {
-        'financial-only': '✅ Financial data reset successfully!',
-        'sample-financial': '✅ Sample financial data loaded! XP reset to 0.',
-        'whole-app': '✅ All data reset successfully! XP reset to 0.'
+        'financial-only': '? Financial data reset successfully!',
+        'sample-financial': '? Sample financial data loaded! XP reset to 0.',
+        'whole-app': '? All data reset successfully! XP reset to 0.'
       };
-      showNotification(resetTypeMessages[resetType] || '✅ Data reset successfully!', 'success');
+      showNotification(resetTypeMessages[resetType] || '? Data reset successfully!', 'success');
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -12941,9 +12941,9 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('❌Œ Reset Data Error:', error);
-      console.error('❌Œ Reset Data Error Details:', error.message, error.code);
-      showNotification(`❌Œ Failed to reset data: ${error.message}`, 'error');
+      console.error('?�� Reset Data Error:', error);
+      console.error('?�� Reset Data Error Details:', error.message, error.code);
+      showNotification(`?�� Failed to reset data: ${error.message}`, 'error');
     }
   };
 
@@ -12978,7 +12978,7 @@ function App() {
     setTimeout(resetMobileViewport, 100);
   };
 
-  // ðŸ›¡ï¸ DATA SAFETY FUNCTIONS - Protecting user data like it's sacred
+  // 🛡️ DATA SAFETY FUNCTIONS - Protecting user data like it's sacred
   const loadDataSafetyInfo = async () => {
     if (!userId) return;
     
@@ -12992,7 +12992,7 @@ function App() {
       setDataSafetySummary(summary);
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13000,7 +13000,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('ðŸ›¡ï¸ Failed to load data safety info:', error);
+      console.error('🛡️ Failed to load data safety info:', error);
     }
   };
 
@@ -13011,8 +13011,8 @@ function App() {
     }
     
     try {
-      // ðŸ“¦ Try ZIP export via Cloud Function first (premium experience)
-      showNotification('ðŸ“¦ Preparing your complete archive...', 'info');
+      // 📦 Try ZIP export via Cloud Function first (premium experience)
+      showNotification('📦 Preparing your complete archive...', 'info');
       
       try {
         const exportFunction = httpsCallable(functions, 'exportUserData');
@@ -13027,7 +13027,7 @@ function App() {
           link.click();
           document.body.removeChild(link);
           
-          showNotification(`✅ Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
+          showNotification(`? Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
           
           // Track last export for reminder widget
           localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
@@ -13037,17 +13037,17 @@ function App() {
         console.warn('Cloud Function export unavailable, using JSON fallback:', cloudError);
       }
       
-      // ðŸ’¾ Fallback to JSON export (always works, no dependencies)
-      console.log('ðŸ“¥ Using JSON export fallback...');
+      // 💾 Fallback to JSON export (always works, no dependencies)
+      console.log('📥 Using JSON export fallback...');
       exportUserData(data);
-      showNotification('✅ Backup downloaded as JSON!', 'success');
+      showNotification('? Backup downloaded as JSON!', 'success');
       
       // Track last export for reminder widget
       localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
       
     } catch (error) {
       console.error('Export error:', error);
-      showNotification('❌Œ Export failed. Please try again.', 'error');
+      showNotification('?�� Export failed. Please try again.', 'error');
     }
   };
 
@@ -13070,12 +13070,12 @@ function App() {
       if (userId) {
         await setDoc(doc(db, `users/${userId}/financials`, 'data'), importedData);
         setData(importedData);
-        showNotification('ðŸ“ Data imported successfully!', 'success');
+        showNotification('📁 Data imported successfully!', 'success');
         setShowDataImportModal(false);
       }
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13083,7 +13083,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('ðŸ›¡ï¸ Data import failed:', error);
+      console.error('🛡️ Data import failed:', error);
       showNotification('Import failed', 'error');
     }
   };
@@ -13094,23 +13094,23 @@ function App() {
     try {
       const success = await restoreFromBackup(userId, backupId);
       if (success) {
-        showNotification('ðŸ›¡ï¸ Data recovered successfully! Reloading...', 'success');
+        showNotification('🛡️ Data recovered successfully! Reloading...', 'success');
         
-        // ðŸ›¡ï¸ CRITICAL FIX: Reload the actual financial data from Firebase!
+        // 🛡️ CRITICAL FIX: Reload the actual financial data from Firebase!
         try {
           const docRef = doc(db, `users/${userId}/financials`, 'data');
           const docSnap = await getDoc(docRef);
           
           if (docSnap.exists()) {
             const restoredData = docSnap.data();
-            setData(restoredData); // ✅ Update React state with restored data!
-            showNotification('✅ Data restored and loaded successfully!', 'success');
+            setData(restoredData); // ? Update React state with restored data!
+            showNotification('? Data restored and loaded successfully!', 'success');
           } else {
-            showNotification('❌š ï¸ Data restored but reload failed. Please refresh page.', 'warning');
+            showNotification('?��️ Data restored but reload failed. Please refresh page.', 'warning');
           }
         } catch (reloadError) {
           console.error('Error reloading data after recovery:', reloadError);
-          showNotification('❌š ï¸ Data restored but reload failed. Please refresh page.', 'warning');
+          showNotification('?��️ Data restored but reload failed. Please refresh page.', 'warning');
         }
         
         setShowDataRecoveryModal(false);
@@ -13120,12 +13120,12 @@ function App() {
         showNotification('Recovery failed', 'error');
       }
     } catch (error) {
-      console.error('ðŸ›¡ï¸ Data recovery failed:', error);
+      console.error('🛡️ Data recovery failed:', error);
       showNotification('Recovery failed', 'error');
     }
   };
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13134,7 +13134,7 @@ function App() {
   //   console.log('Share moment:', moment);
   // };
 
-  // ❌š¡ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
+  // ?�� QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
   const confirmQuickExpense = async (expense) => {
     if (!expense.description || !expense.amount || !userId) return;
 
@@ -13143,7 +13143,7 @@ function App() {
 
     // CRITICAL FIX: Ensure data is valid before proceeding
     if (!data || typeof data !== 'object') {
-      console.error('❌Œ Quick Expense Error: data is invalid:', data);
+      console.error('?�� Quick Expense Error: data is invalid:', data);
       showNotification('Error: Data not loaded. Please refresh the page.', 'error');
       return;
     }
@@ -13184,12 +13184,12 @@ function App() {
     };
 
     try {
-      debugLog('ðŸ” DEBUG: Quick Expense Transaction:', transaction);
-      debugLog('ðŸ” DEBUG: Updated transactions array length:', updatedTransactions.length);
-      debugLog('ðŸ” DEBUG: Updated recentTransactions array length:', updatedTransactions.length);
-      debugLog('ðŸ” DEBUG: First item in recentTransactions:', updatedTransactions[0]);
+      debugLog('🔍 DEBUG: Quick Expense Transaction:', transaction);
+      debugLog('🔍 DEBUG: Updated transactions array length:', updatedTransactions.length);
+      debugLog('🔍 DEBUG: Updated recentTransactions array length:', updatedTransactions.length);
+      debugLog('🔍 DEBUG: First item in recentTransactions:', updatedTransactions[0]);
       
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         transactions: updatedTransactions,
         expenses: updatedExpenses,
@@ -13204,10 +13204,10 @@ function App() {
         recentTransactions: updatedTransactions
       });
       
-      debugLog('✅ DEBUG: Data saved to Firebase and state updated');
-      debugLog('ðŸ” DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
+      debugLog('? DEBUG: Data saved to Firebase and state updated');
+      debugLog('🔍 DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
       
-      showNotification('❌š¡ Quick expense logged!', 'success');
+      showNotification('?�� Quick expense logged!', 'success');
       
       // Award XP for logging expense
       try {
@@ -13224,7 +13224,7 @@ function App() {
       }
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13232,12 +13232,12 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('❌Œ ERROR adding quick expense:', error);
+      console.error('?�� ERROR adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
   };
 
-  // ðŸ“ QUICK JOURNAL HANDLERS
+  // 📝 QUICK JOURNAL HANDLERS
   const openQuickJournal = () => {
     setShowQuickJournal(true);
   };
@@ -13262,7 +13262,7 @@ function App() {
     const updatedQuickJournal = [...(data.quickJournalEntries || []), journalEntry];
     
     try {
-      // ðŸ›¡ï¸ CRITICAL FIX: Use updateDoc to prevent data loss!
+      // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
       await updateDoc(doc(db, `users/${userId}/financials`, 'data'), {
         quickJournalEntries: updatedQuickJournal
       });
@@ -13272,7 +13272,7 @@ function App() {
         quickJournalEntries: updatedQuickJournal
       });
       closeQuickJournal();
-      showNotification('ðŸ“ Quick note saved!', 'success');
+      showNotification('📝 Quick note saved!', 'success');
       
       // Award XP for journaling
       try {
@@ -13288,7 +13288,7 @@ function App() {
       }
     } catch (error) {
 
-  // ðŸ’« MOMENTS HANDLERS
+  // 💫 MOMENTS HANDLERS
   // const handleEditMoment = (moment) => {
   //   console.log('Edit moment:', moment);
   // };
@@ -13307,7 +13307,7 @@ function App() {
       transactions = [];
     }
 
-    // ðŸ”§ FIX: Calculate from CURRENT MONTH only (not all transactions ever!)
+    // 🔧 FIX: Calculate from CURRENT MONTH only (not all transactions ever!)
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -13331,14 +13331,14 @@ function App() {
     const totalBusinessIncome = businesses.reduce((sum, business) => 
       sum + (business.totalIncome || business.income || 0), 0);
 
-    // ðŸ”§ FIX: Calculate business expenses (CRITICAL BUG FIX!)
+    // 🔧 FIX: Calculate business expenses (CRITICAL BUG FIX!)
     const totalBusinessExpenses = businesses.reduce((sum, business) => 
       sum + (business.totalExpenses || business.expenses || 0), 0);
 
     // Combine transaction and business income
     const totalIncome = totalTransactionIncome + totalBusinessIncome;
 
-    // ðŸ”§ FIX: Combine transaction and business expenses
+    // 🔧 FIX: Combine transaction and business expenses
     const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
 
     // Group income by subcategory (from CURRENT MONTH transactions only)
@@ -13373,7 +13373,7 @@ function App() {
         expensesByCategory[category] += Math.abs(t.amount);
       });
 
-    // ðŸ”§ FIX: Add business expenses as separate categories
+    // 🔧 FIX: Add business expenses as separate categories
     businesses.forEach((business, index) => {
       if ((business.totalExpenses || business.expenses || 0) > 0) {
         const businessKey = `${business.name || `Business ${index + 1}`} Expenses`;
@@ -13412,7 +13412,7 @@ function App() {
   const getAnnualizedData = () => {
     if (!data) return data;
     
-    // ðŸ”§ EDGE CASE FIX: Null safety for transactions and businesses
+    // 🔧 EDGE CASE FIX: Null safety for transactions and businesses
     const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     
     return {
@@ -13448,7 +13448,7 @@ function App() {
   const getDisplayData = () => {
     if (!data) return data;
     
-    // ðŸ”§ EDGE CASE FIX: Ensure all required data structures exist
+    // 🔧 EDGE CASE FIX: Ensure all required data structures exist
     const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     const actualInvestmentTotal = calculateInvestmentTotal(data.investments?.holdings || []);
     
@@ -13482,13 +13482,13 @@ function App() {
       },
       savingsRate: { 
         ...data.savingsRate,
-        // ðŸ”§ EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
+        // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
         current: calculatedData.income.total > 0 ? 
           Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
       },
-      // ðŸ”§ FIX: Ensure goals are included in displayData
+      // 🔧 FIX: Ensure goals are included in displayData
       goals: data.goals || [],
-      // ðŸ”§ FIX: Ensure financialFreedom is included in displayData
+      // 🔧 FIX: Ensure financialFreedom is included in displayData
       financialFreedom: data.financialFreedom || {
         targetAmount: 500000,
         currentInvestments: 0,
@@ -13502,13 +13502,13 @@ function App() {
 
   const displayData = getDisplayData();
 
-  // ðŸ§³ OFFLINE EVENT LISTENERS - Perfect for travelers
+  // 🧳 OFFLINE EVENT LISTENERS - Perfect for travelers
   React.useEffect(() => {
     const handleOnline = () => {
       setIsOffline(false);
       setShowOfflineIndicator(false);
       setOfflineSummary(getOfflineSummary());
-      debugLog('ðŸ§³ Back online! Syncing offline data...');
+      debugLog('🧳 Back online! Syncing offline data...');
       
       // TODO: Implement sync of pending offline data
       // syncPendingOfflineData();
@@ -13518,7 +13518,7 @@ function App() {
       setIsOffline(true);
       setShowOfflineIndicator(true);
       setOfflineSummary(getOfflineSummary());
-      debugLog('ðŸ§³ Gone offline! Storing data locally...');
+      debugLog('🧳 Gone offline! Storing data locally...');
     };
 
     // Add event listeners
@@ -13559,26 +13559,26 @@ function App() {
         }`}>
           <div className="flex items-center gap-2">
             {notification.type === 'success' ? (
-              <span className="text-green-200">✅</span>
+              <span className="text-green-200">?</span>
             ) : (
-              <span className="text-red-200">❌Œ</span>
+              <span className="text-red-200">?��</span>
             )}
             <span className="font-medium">{notification.message}</span>
           </div>
         </div>
       )}
 
-      {/* ðŸ§³ OFFLINE INDICATOR - Perfect for travelers */}
+      {/* 🧳 OFFLINE INDICATOR - Perfect for travelers */}
       {isOffline && (
         <div className="fixed top-4 left-4 right-4 z-50 p-3 rounded-lg shadow-lg bg-orange-600 text-white border border-orange-500">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-orange-200">ðŸ§³</span>
+            <span className="text-orange-200">🧳</span>
             <span className="font-medium">Offline Mode</span>
-            <span className="text-orange-200">❌€¢</span>
+            <span className="text-orange-200">?��</span>
             <span className="text-sm">Data will sync when connected</span>
             {offlineSummary.pendingSync > 0 && (
               <>
-                <span className="text-orange-200">❌€¢</span>
+                <span className="text-orange-200">?��</span>
                 <span className="text-sm bg-orange-700 px-2 py-1 rounded">
                   {offlineSummary.pendingSync} pending
                 </span>
@@ -13588,7 +13588,7 @@ function App() {
         </div>
       )}
 
-      {/* ðŸŽ¯ PRICING PHASE BANNER - REMOVED FOR CLEAN UI */}
+      {/* 🎯 PRICING PHASE BANNER - REMOVED FOR CLEAN UI */}
       
       {/* Show loading screen while checking authentication */}
       {authLoading && (
@@ -13630,7 +13630,7 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                {/* ðŸŽ¯ SMART SIGNUP FLOW: Show different UI based on user status */}
+                {/* 🎯 SMART SIGNUP FLOW: Show different UI based on user status */}
                 {showSetPassword ? (
                   // Show "Set Password" flow for existing users with payments
                   <div className="space-y-4">
@@ -13773,7 +13773,7 @@ function App() {
           {/* Mission Status Banner */}
           <MissionStatusBanner userId={userId} refreshTrigger={xpRefreshTrigger} />
           
-          {/* ðŸ›¡ï¸ Data Safety & Export Reminder Widget */}
+          {/* 🛡️ Data Safety & Export Reminder Widget */}
           {data && userId && (() => {
             const lastBackupKey = `lastAutoBackup_${userId}`;
             const lastExportKey = `lastExport_${userId}`;
@@ -13797,7 +13797,7 @@ function App() {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-green-400 font-semibold text-sm">ðŸ›¡ï¸ Data Protected</p>
+                        <p className="text-green-400 font-semibold text-sm">🛡️ Data Protected</p>
                         <p className="text-green-200 text-xs">
                           {backupAge !== null 
                             ? `Last backup: ${backupAge < 1 ? 'Less than 1 hour ago' : `${backupAge} hour${backupAge > 1 ? 's' : ''} ago`}`
@@ -13812,7 +13812,7 @@ function App() {
                       }}
                       className="text-green-400 hover:text-green-300 text-xs font-medium px-3 py-1 rounded bg-green-600/20 hover:bg-green-600/30 transition-colors"
                     >
-                      View ❌†’
+                      View ?��
                     </button>
                   </div>
                 </div>
@@ -13828,7 +13828,7 @@ function App() {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-blue-400 font-semibold text-sm">ðŸ’¾ Export Recommended</p>
+                          <p className="text-blue-400 font-semibold text-sm">💾 Export Recommended</p>
                           <p className="text-blue-200 text-xs">
                             {exportAge !== null 
                               ? `Last export: ${exportAge} day${exportAge > 1 ? 's' : ''} ago`
@@ -13843,7 +13843,7 @@ function App() {
                         }}
                         className="text-blue-400 hover:text-blue-300 text-xs font-medium px-3 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
                       >
-                        Export ❌†’
+                        Export ?��
                       </button>
                     </div>
                   </div>
@@ -13879,7 +13879,7 @@ function App() {
                 <Plus className="w-5 h-5" />
               </button>
               
-              {/* Quick Journal Button - FREE FOR EVERYONE! ðŸŽ - BRIGHT BLUE! */}
+              {/* Quick Journal Button - FREE FOR EVERYONE! 🎁 - BRIGHT BLUE! */}
               <button
                 onClick={() => setShowQuickJournal(true)}
                 className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
@@ -13888,7 +13888,7 @@ function App() {
                 <Edit3 className="w-5 h-5" />
               </button>
               
-              {/* ðŸ”’ STEALTH MODE Toggle - Free for Everyone! */}
+              {/* 🔒 STEALTH MODE Toggle - Free for Everyone! */}
               <button
                 onClick={toggleStealthMode}
                 className={`${
@@ -13978,7 +13978,7 @@ function App() {
                           </span>
                           {/* Timezone Indicator */}
                           <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded">
-                            ðŸŒ {getTimezoneInfo().displayName}
+                            🌍 {getTimezoneInfo().displayName}
                           </span>
                         </div>
                       </div>
@@ -14025,9 +14025,9 @@ function App() {
                         
                         <div className="border-t border-gray-700 my-2"></div>
                         
-                        {/* ðŸ›¡ï¸ DATA SAFETY SECTION */}
+                        {/* 🛡️ DATA SAFETY SECTION */}
                         <div className="px-4 py-2">
-                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">ðŸ›¡ï¸ Data Safety</p>
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">🛡️ Data Safety</p>
                         </div>
                         
                         {/* Export Data */}
@@ -14091,9 +14091,9 @@ function App() {
                               return;
                             }
                             try {
-                              showNotification('ðŸ’¾ Creating backup...', 'info');
+                              showNotification('💾 Creating backup...', 'info');
                               await createBackup(userId, data, 'manual-backup');
-                              showNotification('✅ Backup created successfully!', 'success');
+                              showNotification('? Backup created successfully!', 'success');
                             } catch (error) {
                               console.error('Manual backup failed:', error);
                               showNotification('Backup failed', 'error');
@@ -14170,7 +14170,7 @@ function App() {
             )}
             
             <div className="bg-gray-800 rounded-full p-1 overflow-hidden relative">
-              {/* ðŸ–±ï¸ Desktop-Only Left Scroll Arrow */}
+              {/* 🖱️ Desktop-Only Left Scroll Arrow */}
               {showLeftScroll && (
                 <button
                   onClick={() => scrollTabs('left')}
@@ -14181,7 +14181,7 @@ function App() {
                 </button>
               )}
 
-              {/* ðŸ–±ï¸ Desktop-Only Right Scroll Arrow */}
+              {/* 🖱️ Desktop-Only Right Scroll Arrow */}
               {showRightScroll && (
                 <button
                   onClick={() => scrollTabs('right')}
@@ -14227,11 +14227,11 @@ function App() {
                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    ðŸŒ Travel
+                    🌍 Travel
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('moments')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'moments' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    ðŸ’« Moments
+                    💫 Moments
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
@@ -14287,11 +14287,11 @@ function App() {
                 </FinancialErrorBoundary>
               )}
               
-              {/* ðŸŽ¯ OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
+              {/* 🎯 OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
               
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Cash Flow - FREE+ (Left) */}
               <StealthCard>
@@ -14304,15 +14304,15 @@ function App() {
                 />
               </StealthCard>
               
-              {/* Rainy Day Fund - ðŸŽ NOW FREE! (Emergency fund tracking) */}
+              {/* Rainy Day Fund - 🎁 NOW FREE! (Emergency fund tracking) */}
               <StealthCard>
                 <RainyDayFundCard data={displayData?.rainyDayFund} expenses={displayData?.expenses} viewMode={viewMode} onEdit={openCardEditor} />
               </StealthCard>
               </div>
               
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Monthly Income - FREE+ (Left) */}
               <StealthCard>
@@ -14325,9 +14325,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Net Worth - FREE+ (Left) */}
               <StealthCard>
@@ -14336,7 +14336,7 @@ function App() {
                 </FinancialErrorBoundary>
               </StealthCard>
               
-              {/* Survival Runway - ðŸŽ NOW FREE! (Financial Runway Tracker) */}
+              {/* Survival Runway - 🎁 NOW FREE! (Financial Runway Tracker) */}
               <StealthCard>
                 <FinancialErrorBoundary componentName="Cash Management">
                   <CashOnHandCard 
@@ -14349,9 +14349,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Financial Freedom Goal - CLIMBER+ (Left) */}
               <StealthCard>
@@ -14372,9 +14372,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               {/* FULL-WIDTH CARDS: Detailed Intelligence */}
-              {/* ❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌•❌• */}
+              {/* ?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?��?�� */}
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
@@ -14435,7 +14435,7 @@ function App() {
           
           {activeTab === 'budget' && (
             <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
-              {/* ðŸ“¦ Supply Crate System - Climber+ Feature */}
+              {/* 📦 Supply Crate System - Climber+ Feature */}
               {checkFeatureAccess('financial-calculators') ? (
                 <SupplyCrateSystem
                   data={data}
@@ -14450,17 +14450,17 @@ function App() {
                   <div className="w-16 h-16 mx-auto mb-4 bg-green-600/20 rounded-full flex items-center justify-center">
                     <Package className="w-8 h-8 text-green-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">ðŸ“¦ Supply Crate System</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">📦 Supply Crate System</h3>
                   <p className="text-gray-300 mb-4 max-w-lg mx-auto">
                     Real-time budget management that shows you EXACTLY what you can spend, right now. 
                     Like envelope budgeting, but gamified!
                   </p>
                   <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30 mb-6 max-w-md mx-auto">
                     <div className="text-sm text-green-200 space-y-2">
-                      <p>✅ Assign monthly supplies to each category</p>
-                      <p>✅ Track burn rate in real-time</p>
-                      <p>✅ Visual warnings before overspending</p>
-                      <p>✅ The discipline tool you've been missing!</p>
+                      <p>? Assign monthly supplies to each category</p>
+                      <p>? Track burn rate in real-time</p>
+                      <p>? Visual warnings before overspending</p>
+                      <p>? The discipline tool you've been missing!</p>
                     </div>
                   </div>
                   <button
@@ -14517,7 +14517,7 @@ function App() {
             </FinancialErrorBoundary>
           )}
 
-          {/* ðŸ’« Moments - OPERATOR+ ONLY */}
+          {/* 💫 Moments - OPERATOR+ ONLY */}
           {activeTab === 'moments' && (
             checkFeatureAccess('travel-mode') ? (
               <div className="col-span-1 md:col-span-6 lg:col-span-6">
@@ -14531,7 +14531,7 @@ function App() {
                   <div className="w-16 h-16 mx-auto mb-4 bg-pink-600/20 rounded-full flex items-center justify-center">
                     <Crown className="w-8 h-8 text-pink-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">ðŸ’« Moments - Operator Feature</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">💫 Moments - Operator Feature</h3>
                   <p className="text-gray-300 mb-6 max-w-lg mx-auto">
                     Capture and celebrate your financial milestones with stories and achievements. 
                     Document your journey from start to freedom!
@@ -14548,7 +14548,7 @@ function App() {
             )
           )}
 
-          {/* ðŸŽ¯ MISSION CONTROL - The Heart of The Compass (CLIMBER+ Feature) */}
+          {/* 🎯 MISSION CONTROL - The Heart of The Compass (CLIMBER+ Feature) */}
           {activeTab === 'mission-control' && (
             checkFeatureAccess('goal-tracking') ? (
               <FinancialErrorBoundary componentName="Mission Control">
@@ -14566,7 +14566,7 @@ function App() {
                   <Target className="w-20 h-20 text-purple-400" />
                 </div>
                 <h2 className="text-4xl font-black text-white mb-4">
-                  ðŸŽ¯ Mission Control
+                  🎯 Mission Control
                 </h2>
                 <p className="text-xl text-purple-200 mb-6 max-w-2xl mx-auto">
                   Your strategic flight plan. Connect your daily actions to your ultimate life goals.
@@ -14574,19 +14574,19 @@ function App() {
                 <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-500/30 mb-8 max-w-2xl mx-auto">
                   <div className="text-lg text-blue-200 space-y-3 text-left">
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">❌­</span>
+                      <span className="text-2xl">?��</span>
                       <span><strong>North Star:</strong> Set your ultimate life goal and track progress</span>
                     </p>
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">ðŸŽ¯</span>
+                      <span className="text-2xl">🎯</span>
                       <span><strong>Active Missions:</strong> See all your sub-goals in one strategic view</span>
                     </p>
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">ðŸ§­</span>
+                      <span className="text-2xl">🧭</span>
                       <span><strong>Your "Why":</strong> Write your personal mission statement</span>
                     </p>
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">ðŸ“…</span>
+                      <span className="text-2xl">📅</span>
                       <span><strong>Projected Freedom Date:</strong> See when you'll reach your North Star</span>
                     </p>
                   </div>
@@ -14605,7 +14605,7 @@ function App() {
             )
           )}
 
-          {/* ðŸŽ Field Notes - NOW FREE FOR EVERYONE! Export PDF = Operator+ */}
+          {/* 🎁 Field Notes - NOW FREE FOR EVERYONE! Export PDF = Operator+ */}
           {activeTab === 'reflections' && (
             <FinancialErrorBoundary componentName="Field Notes Archive">
               <ReflectionsPage 
@@ -14662,7 +14662,7 @@ function App() {
             onSave={saveQuickJournal}
           />
 
-          {/* ðŸŽ¯ First Climb Protocol - Week 1 Missions */}
+          {/* 🎯 First Climb Protocol - Week 1 Missions */}
           {showFirstClimbProtocol && (
             <FirstClimbProtocol
               userId={userId}
@@ -14676,7 +14676,7 @@ function App() {
             />
           )}
 
-          {/* ðŸ’« Moments Modal - Add/Edit Moments */}
+          {/* 💫 Moments Modal - Add/Edit Moments */}
           {showMomentModal && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
               <div className="bg-gray-800 rounded-lg w-full max-w-2xl border border-purple-500/30 shadow-xl">
@@ -14722,7 +14722,7 @@ function App() {
                       className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-4 rounded-xl border-2 border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-amber-500/50 resize-none leading-relaxed"
                     />
                     <p className="text-xs text-gray-400 mt-1">
-                      ðŸ’¡ Tip: Be specific! Future you will love reading this.
+                      💡 Tip: Be specific! Future you will love reading this.
                     </p>
                   </div>
 
@@ -14764,14 +14764,14 @@ function App() {
                       className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500"
                     />
                     <label htmlFor="isAchievement" className="text-sm text-purple-200 font-medium cursor-pointer">
-                      ðŸ† Mark as Achievement (shows special badge)
+                      🏆 Mark as Achievement (shows special badge)
                     </label>
                   </div>
 
                   {/* Info Box */}
                   <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4">
                     <p className="text-sm text-purple-200">
-                      <strong>ðŸ’« What are Moments?</strong>
+                      <strong>💫 What are Moments?</strong>
                     </p>
                     <p className="text-xs text-gray-400 mt-2">
                       Moments capture the emotional side of your financial journey. They're not just numbers - 
@@ -15043,7 +15043,7 @@ function App() {
                                 <label className="block text-xs text-gray-400 mb-1">
                                   Current Balance
                                   {account.balance === 0 && (
-                                    <span className="ml-2 text-green-400 font-bold">ðŸŽ‰ PAID OFF!</span>
+                                    <span className="ml-2 text-green-400 font-bold">🎉 PAID OFF!</span>
                                   )}
                                 </label>
                               <input
@@ -15059,7 +15059,7 @@ function App() {
                                     updatedAccounts[index] = {...account, balance: currentBalance, amountPaid};
                                   setTempCardData({...currentData, accounts: updatedAccounts});
                                   
-                                  // ðŸŽ‰ CELEBRATE DEBT PAYOFF!
+                                  // 🎉 CELEBRATE DEBT PAYOFF!
                                   if (currentBalance === 0 && account.balance > 0) {
                                     // Award XP for paying off debt
                                     if (userId) {
@@ -15078,7 +15078,7 @@ function App() {
                                     }
                                     
                                     // Show celebration notification
-                                    showNotification('ðŸŽ‰ DEBT PAID OFF! You earned 50 XP!', 'success');
+                                    showNotification('🎉 DEBT PAID OFF! You earned 50 XP!', 'success');
                                   }
                                 }}
                                 className={`w-full px-2 py-1 rounded text-sm border focus:outline-none ${
@@ -15203,7 +15203,7 @@ function App() {
                                 }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
-                                          ❌†
+                                          ?��
                                         </button>
                                         <span className="text-white font-semibold">
                                           {new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth())).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
@@ -15218,7 +15218,7 @@ function App() {
                                           }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
-                                          ❌†’
+                                          ?��
                               </button>
                             </div>
                                       
@@ -15433,11 +15433,11 @@ function App() {
                     />
                     <div className="mt-2 text-xs text-gray-400">
                       <div className="grid grid-cols-1 gap-1">
-                        <div>ðŸ’¡ <strong>Common targets:</strong></div>
-                        <div>❌€¢ 20% - Traditional advice</div>
-                        <div>❌€¢ 30-40% - Aggressive saving</div>
-                        <div>❌€¢ 50%+ - FIRE/Early retirement</div>
-                        <div>❌€¢ 60%+ - Digital nomad lifestyle</div>
+                        <div>💡 <strong>Common targets:</strong></div>
+                        <div>?�� 20% - Traditional advice</div>
+                        <div>?�� 30-40% - Aggressive saving</div>
+                        <div>?�� 50%+ - FIRE/Early retirement</div>
+                        <div>?�� 60%+ - Digital nomad lifestyle</div>
                       </div>
                     </div>
                   </div>
@@ -15544,7 +15544,7 @@ function App() {
                   {tempCardData.history && tempCardData.history.length > 0 && (
                     <div className="bg-indigo-900/20 rounded-lg p-3 border border-indigo-600/30">
                       <div className="flex justify-between items-center mb-3">
-                        <h5 className="text-indigo-200 font-semibold">ðŸ“ˆ Score History</h5>
+                        <h5 className="text-indigo-200 font-semibold">📈 Score History</h5>
                         <div className="text-xs text-indigo-300">
                           {tempCardData.history.length} entries
                         </div>
@@ -15589,7 +15589,7 @@ function App() {
                       </div>
                       
                       <div className="mt-3 p-2 bg-indigo-800/20 rounded text-xs text-indigo-200">
-                        ðŸ’¡ <strong>Tip:</strong> Check your credit score monthly to track improvements from paying down debt and maintaining good credit habits.
+                        💡 <strong>Tip:</strong> Check your credit score monthly to track improvements from paying down debt and maintaining good credit habits.
                       </div>
                     </div>
                   )}
@@ -15715,7 +15715,7 @@ function App() {
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} ❌€¢ 
+                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} ?�� 
                         Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0)).toLocaleString()}
                       </div>
                     </div>
@@ -15920,10 +15920,10 @@ function App() {
                               {/* Account Type Badge */}
                               <div className="flex justify-center">
                                 <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-600/30 font-semibold">
-                                  {account.type === 'tax-free' && 'ðŸ’° Tax-Free'}
-                                  {account.type === 'tax-deferred' && 'ðŸ“Š Tax-Deferred'}
-                                  {account.type === 'pension' && 'ðŸ›ï¸ Pension'}
-                                  {account.type === 'savings' && 'ðŸ’µ Savings'}
+                                  {account.type === 'tax-free' && '💰 Tax-Free'}
+                                  {account.type === 'tax-deferred' && '📊 Tax-Deferred'}
+                                  {account.type === 'pension' && '🏛️ Pension'}
+                                  {account.type === 'savings' && '💵 Savings'}
                                 </span>
                               </div>
                             </div>
@@ -16071,7 +16071,7 @@ function App() {
                   {(tempCardData || []).length > 0 && (
                     <div className="mt-4 p-3 bg-amber-900/20 rounded-lg border border-amber-600/30">
                       <div className="text-sm text-amber-200">
-                        <strong>ðŸ’¡ Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
+                        <strong>💡 Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
                         Breaking big goals into smaller milestones helps maintain motivation!
                       </div>
                     </div>
@@ -16144,7 +16144,7 @@ function App() {
                     />
                     <div>
                       <div className="text-white font-medium flex items-center gap-2">
-                        ðŸ’° Financial Data Only
+                        💰 Financial Data Only
                         <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Recommended</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
@@ -16162,7 +16162,7 @@ function App() {
                       className="mt-1 text-amber-400"
                     />
                     <div>
-                      <div className="text-white font-medium">ðŸ“Š Sample Financial Data (FREE tier safe)</div>
+                      <div className="text-white font-medium">📊 Sample Financial Data (FREE tier safe)</div>
                       <div className="text-xs text-gray-400 mt-1">
                         Example transactions & dashboard only. No phantom data. Perfect for learning!
                       </div>
@@ -16179,7 +16179,7 @@ function App() {
                     />
                     <div>
                       <div className="text-white font-medium flex items-center gap-2">
-                        ðŸ—‘ï¸ Reset Whole App
+                        🗑️ Reset Whole App
                         <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Nuclear</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
@@ -16208,39 +16208,39 @@ function App() {
 
               <div className="bg-gray-700/30 rounded-lg p-3">
                 <h5 className="text-white font-medium mb-2">
-                  {resetType === 'financial-only' && 'ðŸ’° Will Reset:'}
-                  {resetType === 'sample-financial' && 'ðŸ“Š Will Load:'}
-                  {resetType === 'whole-app' && 'ðŸ—‘ï¸ Will Delete:'}
+                  {resetType === 'financial-only' && '💰 Will Reset:'}
+                  {resetType === 'sample-financial' && '📊 Will Load:'}
+                  {resetType === 'whole-app' && '🗑️ Will Delete:'}
                 </h5>
                 <div className="text-sm space-y-1 text-gray-300">
                   {resetType === 'financial-only' && (
                     <>
-                      <div>❌€¢ Transactions & recurring expenses</div>
-                      <div>❌€¢ Dashboard cards (cash, debt, goals)</div>
-                      <div>❌€¢ Financial metrics & history</div>
-                      <div className="text-green-400 mt-2">✅ KEEPS: Moments, logbook, businesses, travel, investments</div>
-                      <div className="text-green-400">✅ KEEPS: Your XP and rank!</div>
+                      <div>?�� Transactions & recurring expenses</div>
+                      <div>?�� Dashboard cards (cash, debt, goals)</div>
+                      <div>?�� Financial metrics & history</div>
+                      <div className="text-green-400 mt-2">? KEEPS: Moments, logbook, businesses, travel, investments</div>
+                      <div className="text-green-400">? KEEPS: Your XP and rank!</div>
                     </>
                   )}
                   {resetType === 'sample-financial' && (
                     <>
-                      <div>❌€¢ Sample transactions (last month)</div>
-                      <div>❌€¢ Sample dashboard data</div>
-                      <div>❌€¢ Example financial metrics</div>
-                      <div className="text-green-400 mt-2">✅ KEEPS: Moments, logbook</div>
-                      <div className="text-amber-400">❌š ï¸ RESETS: XP to 0</div>
+                      <div>?�� Sample transactions (last month)</div>
+                      <div>?�� Sample dashboard data</div>
+                      <div>?�� Example financial metrics</div>
+                      <div className="text-green-400 mt-2">? KEEPS: Moments, logbook</div>
+                      <div className="text-amber-400">?��️ RESETS: XP to 0</div>
                     </>
                   )}
                   {resetType === 'whole-app' && (
                     <>
-                      <div>❌€¢ All transactions & financial data</div>
-                      <div>❌€¢ Investment portfolio & holdings</div>
-                      <div>❌€¢ Business income/expense records</div>
-                      <div>❌€¢ All moments & logbook entries</div>
-                      <div>❌€¢ Travel plans & journal</div>
-                      <div>❌€¢ Dashboard metrics & history</div>
-                      <div className="text-red-400 mt-2">❌š ï¸ DELETES: EVERYTHING!</div>
-                      <div className="text-red-400">❌š ï¸ RESETS: XP to 0</div>
+                      <div>?�� All transactions & financial data</div>
+                      <div>?�� Investment portfolio & holdings</div>
+                      <div>?�� Business income/expense records</div>
+                      <div>?�� All moments & logbook entries</div>
+                      <div>?�� Travel plans & journal</div>
+                      <div>?�� Dashboard metrics & history</div>
+                      <div className="text-red-400 mt-2">?��️ DELETES: EVERYTHING!</div>
+                      <div className="text-red-400">?��️ RESETS: XP to 0</div>
                     </>
                   )}
                 </div>
@@ -16302,7 +16302,7 @@ function App() {
                 Terms of Service
               </button>
               <span className="text-gray-500">
-                Â© {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. All rights reserved.
+                © {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. All rights reserved.
               </span>
             </div>
           </div>
@@ -16331,7 +16331,7 @@ function App() {
         />
       )}
 
-      {/* ðŸ†• Quick Start Guide - Auto-shows for new users, accessible from Help menu */}
+      {/* 🆕 Quick Start Guide - Auto-shows for new users, accessible from Help menu */}
       {showQuickStart && (
         <QuickStartGuide 
           onClose={() => {
@@ -16378,25 +16378,25 @@ function App() {
         />
       )}
       
-      {/* ðŸ› ï¸ SECURE DEVELOPER PANEL - Only visible to admin emails */}
+      {/* 🛠️ SECURE DEVELOPER PANEL - Only visible to admin emails */}
       {showDevPanel && isAdmin && (
         <div className="fixed bottom-4 right-4 bg-gray-900 border-2 border-amber-500 rounded-lg shadow-2xl p-6 z-50 min-w-[300px]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
-              <h3 className="text-white font-bold text-sm">ðŸ› ï¸ DEVELOPER MODE</h3>
+              <h3 className="text-white font-bold text-sm">🛠️ DEVELOPER MODE</h3>
             </div>
             <button
               onClick={() => setShowDevPanel(false)}
               className="text-gray-400 hover:text-white transition-colors"
             >
-              ❌œ•
+              ?��
             </button>
           </div>
           
           <div className="space-y-3">
             <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <span className="text-green-400">❌—</span>
+              <span className="text-green-400">?��</span>
               Admin: {devDemoMode ? 'demo@example.com' : user?.email}
             </div>
             
@@ -16417,15 +16417,15 @@ function App() {
                 }}
                 className="w-full bg-gray-800 text-white border border-gray-700 hover:border-amber-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
               >
-                <option value="none">ðŸ”„ Use Real Subscription</option>
-                <option value={SUBSCRIPTION_TIERS.FREE}>ðŸ†“ FREE (Recon Kit)</option>
-                <option value={SUBSCRIPTION_TIERS.CLIMBER}>ðŸ§— CLIMBER ($7.99/mo)</option>
-                <option value={SUBSCRIPTION_TIERS.OPERATOR}>❌š™ï¸ OPERATOR ($14.99/mo)</option>
-                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>ðŸ‘‘ FOUNDER'S CIRCLE ($7.49/mo)</option>
+                <option value="none">🔄 Use Real Subscription</option>
+                <option value={SUBSCRIPTION_TIERS.FREE}>🆓 FREE (Recon Kit)</option>
+                <option value={SUBSCRIPTION_TIERS.CLIMBER}>🧗 CLIMBER ($7.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.OPERATOR}>?��️ OPERATOR ($14.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
               </select>
             </div>
             
-            {/* ðŸŽ­ DEMO MODE TOGGLE */}
+            {/* 🎭 DEMO MODE TOGGLE */}
             <div className="pt-3 border-t border-gray-700">
               <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-all">
                 <input
@@ -16435,13 +16435,13 @@ function App() {
                   className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-800"
                 />
                 <div className="flex-1">
-                  <span className="text-white font-semibold text-sm block">ðŸŽ­ Demo Mode</span>
+                  <span className="text-white font-semibold text-sm block">🎭 Demo Mode</span>
                   <span className="text-gray-400 text-xs">Hide real name & email</span>
                 </div>
               </label>
               {devDemoMode && (
                 <div className="mt-2 text-xs text-purple-400 bg-purple-500/10 rounded px-3 py-2">
-                  ❌œ¨ Demo Mode ON: Shows "Demo User" & "demo@example.com"
+                  ?�� Demo Mode ON: Shows "Demo User" & "demo@example.com"
                 </div>
               )}
             </div>
@@ -16458,7 +16458,7 @@ function App() {
                 </div>
                 {devOverridePlan && (
                   <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
-                    ❌š ï¸ Dev Override Active
+                    ?��️ Dev Override Active
                   </div>
                 )}
               </div>
@@ -16471,9 +16471,9 @@ function App() {
         </div>
       )}
 
-      {/* ðŸ’¬ FEEDBACK BUTTON - Moved to User Menu Dropdown (cleaner UX) */}
+      {/* 💬 FEEDBACK BUTTON - Moved to User Menu Dropdown (cleaner UX) */}
 
-      {/* ðŸ’¬ FEEDBACK MODAL */}
+      {/* 💬 FEEDBACK MODAL */}
       {showFeedbackModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
           <Card className="w-full max-w-lg border-blue-500/30 animate-fade-in">
@@ -16533,8 +16533,8 @@ function App() {
                   feedbackType === 'bug' ? 'text-red-300' : 'text-amber-300'
                 }`}>
                   {feedbackType === 'bug' 
-                    ? 'ðŸ› Found a bug? Let us know! We\'ll fix it ASAP.' 
-                    : 'ðŸ’¡ Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
+                    ? '🐛 Found a bug? Let us know! We\'ll fix it ASAP.' 
+                    : '💡 Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
                 </p>
               </div>
 
@@ -16604,7 +16604,7 @@ function App() {
         </div>
       )}
 
-      {/* ðŸŽ–ï¸ RANK-UP CELEBRATION MODAL */}
+      {/* 🎖️ RANK-UP CELEBRATION MODAL */}
       <RankUpModal
         isOpen={showRankUpModal}
         onClose={() => setShowRankUpModal(false)}
@@ -16613,13 +16613,13 @@ function App() {
         xpGained={rankUpData?.xpGained}
       />
 
-      {/* ðŸ““ FREEDOM JOURNAL MODAL */}
+      {/* 📓 FREEDOM JOURNAL MODAL */}
       {showJournalModal && selectedTripForJournal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl my-auto">
             <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">ðŸ““ Freedom Journal - {selectedTripForJournal.name}</h3>
+                <h3 className="text-xl font-bold text-white">📓 Freedom Journal - {selectedTripForJournal.name}</h3>
                 <button
                   onClick={handleCloseJournal}
                   className="text-gray-400 hover:text-white"
@@ -16638,7 +16638,7 @@ function App() {
         </div>
       )}
 
-      {/* ðŸŽ¯ MISSION COMPLETE MODAL */}
+      {/* 🎯 MISSION COMPLETE MODAL */}
       {showMissionCompleteModal && completedTrip && (
         <MissionCompleteModal
           trip={completedTrip}
@@ -16647,13 +16647,13 @@ function App() {
         />
       )}
 
-      {/* ðŸ›¡ï¸ DATA RECOVERY MODAL */}
+      {/* 🛡️ DATA RECOVERY MODAL */}
       {showDataRecoveryModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl my-auto">
             <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">ðŸ›¡ï¸ Data Recovery</h3>
+                <h3 className="text-xl font-bold text-white">🛡️ Data Recovery</h3>
                 <button
                   onClick={() => setShowDataRecoveryModal(false)}
                   className="text-gray-400 hover:text-white"
@@ -16665,7 +16665,7 @@ function App() {
               <div className="space-y-4">
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-amber-400">❌š ï¸</span>
+                    <span className="text-amber-400">?��️</span>
                     <span className="font-semibold text-amber-400">Recovery Warning</span>
                   </div>
                   <p className="text-sm text-amber-200">
@@ -16685,7 +16685,7 @@ function App() {
                               {new Date(backup.backupDate).toLocaleString()}
                             </p>
                             <p className="text-sm text-gray-400">
-                              Type: {backup.backupType} ❌€¢ ID: {backup.id}
+                              Type: {backup.backupType} ?�� ID: {backup.id}
                             </p>
                           </div>
                           <button
@@ -16712,13 +16712,13 @@ function App() {
         </div>
       )}
 
-      {/* ðŸ›¡ï¸ DATA IMPORT MODAL */}
+      {/* 🛡️ DATA IMPORT MODAL */}
       {showDataImportModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl my-auto">
             <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">ðŸ›¡ï¸ Import Data</h3>
+                <h3 className="text-xl font-bold text-white">🛡️ Import Data</h3>
                 <button
                   onClick={() => setShowDataImportModal(false)}
                   className="text-gray-400 hover:text-white"
@@ -16730,7 +16730,7 @@ function App() {
               <div className="space-y-4">
                 <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-blue-400">❌„¹ï¸</span>
+                    <span className="text-blue-400">?��️</span>
                     <span className="font-semibold text-blue-400">Import Information</span>
                   </div>
                   <p className="text-sm text-blue-200">
@@ -16781,3 +16781,4 @@ const AppWithErrorBoundary = () => (
 );
 
 export default AppWithErrorBoundary;
+
