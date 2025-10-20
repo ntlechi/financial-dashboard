@@ -95,7 +95,7 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
         {
           id: 10,
           question: 'What is The Founder\'s Circle?',
-          answer: 'The Founder\'s Circle is an exclusive group of our first 100 users who get full Operator-level features ($14.99 USD value) for just $7.49 USD/month. This price is locked in for life as long as your subscription remains active. Founders get lifetime priority support, early access to new features, exclusive Founder badge, and access to our private Founder-only Discord channel.',
+          answer: 'The Founder\'s Circle is an exclusive group of our first 100 users who get full Operator-level features ($14.99 USD value) for just $7.49 USD/month. This price is locked in for life as long as your subscription remains active. Founders get lifetime priority support, early access to new features, and an exclusive Founder badge.',
           tags: ['founders circle', 'exclusive', 'benefits', 'lifetime pricing'],
           popular: true
         },

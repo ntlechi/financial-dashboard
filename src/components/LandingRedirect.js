@@ -53,3 +53,4 @@ const LandingRedirect = ({ planId = 'founders-circle' }) => {
 };
 
 export default LandingRedirect;
+image.png

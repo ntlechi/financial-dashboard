@@ -31,7 +31,7 @@ export const pricingPlans = {
         'Export Freedom Story',
         'A permanent price lock',
         'Exclusive Founder badge',
-        'Private Discord community',
+        'Early access to new features',
         'Monthly billing only - less friction!'
       ],
       cta: 'Claim Your Founder\'s Spot',
