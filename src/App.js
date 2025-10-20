@@ -8382,11 +8382,11 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     <h4 className="font-semibold text-white">{transaction.description}</h4>
                     <div className="text-sm text-gray-400">
-                      {formatDateForUser(transaction.date)} ?�� 
+                      {formatDateForUser(transaction.date)} • 
                       <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
                         {transaction.category}
                       </span>
-                      {transaction.subcategory && ` ?�� ${transaction.subcategory}`}
+                      {transaction.subcategory && ` • ${transaction.subcategory}`}
                     </div>
                   </div>
                 </div>
