@@ -679,7 +679,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
-          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo ?€¢ 
+          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo ?ï¿½ï¿½ 
           <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
@@ -837,7 +837,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-400" />
             Rainy Day Fund
           </h2>
-          {/* ?„¹ï¸ Status Legend Tooltip */}
+          {/* ?ï¿½ï¿½ï¸ Status Legend Tooltip */}
           <div className="relative">
             <button
               onMouseEnter={() => setShowStatusLegend(true)}
@@ -1168,7 +1168,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
               <div className={`text-xs font-semibold flex items-center ${
                 scoreChange > 0 ? 'text-green-400' : scoreChange < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
-                {scoreChange > 0 ? '?†—' : scoreChange < 0 ? '?†˜' : '?†’'} {Math.abs(scoreChange)}
+                {scoreChange > 0 ? '?ï¿½ï¿½' : scoreChange < 0 ? '?ï¿½ï¿½' : '?ï¿½ï¿½'} {Math.abs(scoreChange)}
               </div>
             )}
           </div>
@@ -1709,7 +1709,7 @@ const DebtCard = ({ data, onEdit }) => {
               <div>
                 <span className="text-white font-medium">{account.name}</span>
                 <div className="text-gray-400 text-xs">
-                  {account.interestRate}% APR ?€¢ Min: ${account.minPayment}
+                  {account.interestRate}% APR ?ï¿½ï¿½ Min: ${account.minPayment}
                 </div>
               </div>
               <span className="text-red-400 font-semibold">${account.balance.toLocaleString()}</span>
@@ -1861,7 +1861,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </div>
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
-        <span>?€¢</span>
+        <span>?ï¿½ï¿½</span>
         <span>Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
       </div>
     </div>
@@ -2661,7 +2661,7 @@ const FinancialFreedomCalculator = () => {
               <div className="text-2xl font-bold text-white">{yearsToFI} years (Age {targetAge})</div>
             </div>
             <div className="text-sm text-gray-300 max-w-md">
-              ?š¡ Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
+              ?ï¿½ï¿½ Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
             </div>
           </div>
         </div>
@@ -2884,8 +2884,8 @@ const DebtPayoffCalculator = () => {
                 <p><strong>ğŸ’° Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
                 <p><strong>ğŸ”ï¸ Choose Strategy:</strong></p>
                 <ul className="ml-4 space-y-1">
-                  <li>?€¢ <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
-                  <li>?€¢ <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
+                  <li>?ï¿½ï¿½ <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
+                  <li>?ï¿½ï¿½ <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
                 </ul>
                 <p className="text-blue-400 mt-2">ğŸ’¡ Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
               </div>
@@ -2925,7 +2925,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ?š¡ Debt Avalanche (Highest Interest)
+              ?ï¿½ï¿½ Debt Avalanche (Highest Interest)
             </button>
           </div>
           
@@ -3098,7 +3098,7 @@ const DebtPayoffCalculator = () => {
           {/* Results */}
           <div>
             <h4 className="font-semibold text-white mb-3">
-              {strategy === 'snowball' ? 'ğŸ”ï¸ Snowball' : '?š¡ Avalanche'} Results
+              {strategy === 'snowball' ? 'ğŸ”ï¸ Snowball' : '?ï¿½ï¿½ Avalanche'} Results
             </h4>
             
             <div className="space-y-4">
@@ -3141,7 +3141,7 @@ const DebtPayoffCalculator = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">?š¡</div>
+                    <div className="text-2xl">?ï¿½ï¿½</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">50% Debt Reduction</div>
                       <div className="text-gray-400 text-xs">
@@ -3173,7 +3173,7 @@ const DebtPayoffCalculator = () => {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-400">?š¡ Avalanche:</span>
+                    <span className="text-purple-400">?ï¿½ï¿½ Avalanche:</span>
                     <span className="text-white">
                       {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
                       (${Math.round(avalancheResult.totalInterestPaid).toLocaleString()} interest)
@@ -3545,7 +3545,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-teal-900/30 rounded-xl p-4 border-2 border-teal-800/40 text-center">
-            <h4 className="text-sm font-bold text-teal-400 mb-2">?¤ï¸ Give</h4>
+            <h4 className="text-sm font-bold text-teal-400 mb-2">?ï¿½ï¿½ï¸ Give</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.give.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3580,10 +3580,10 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
   
-  // ?œï¸ EDIT ITEM - New Feature!
+  // ?ï¿½ï¿½ï¸ EDIT ITEM - New Feature!
   const [editingItem, setEditingItem] = useState(null);
   
-  // ?œï¸ EDIT BUSINESS - New Feature!
+  // ?ï¿½ï¿½ï¸ EDIT BUSINESS - New Feature!
   const [editingBusiness, setEditingBusiness] = useState(null);
   
   // ğŸ”„ RECURRING ITEMS - New Feature!
@@ -4032,7 +4032,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
-  // ?œï¸ EDIT ITEM HANDLER
+  // ?ï¿½ï¿½ï¸ EDIT ITEM HANDLER
   const handleEditItem = async () => {
     if (!editingItem) return;
 
@@ -4363,7 +4363,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   transition: 'all 0.2s'
                 }}
               >
-                ?“˜
+                ?ï¿½ï¿½
               </span>
               <div 
                 className="tooltip-content"
@@ -4650,7 +4650,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </Card>
       )}
 
-      {/* ?œï¸ EDIT BUSINESS MODAL */}
+      {/* ?ï¿½ï¿½ï¸ EDIT BUSINESS MODAL */}
       {editingBusiness && (
         <Card className="border-amber-500/30">
           <div className="flex justify-between items-center mb-4">
@@ -4867,7 +4867,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                           </div>
                           <div className="flex items-center gap-3 text-xs text-gray-400">
                             <span className="capitalize">{recurring.frequency}</span>
-                            <span>?€¢</span>
+                            <span>?ï¿½ï¿½</span>
                             <span>Next: {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -5007,7 +5007,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         </div>
       )}
 
-      {/* ?œï¸ Edit Item Modal */}
+      {/* ?ï¿½ï¿½ï¸ Edit Item Modal */}
       {editingItem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-md border-blue-500/30">
@@ -5384,7 +5384,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [allocationView, setAllocationView] = useState('ticker'); // 'ticker' or 'category'
   const [hoveredInfo, setHoveredInfo] = useState(null);
 
-  // ?„¹ï¸ Info Tooltip Component - Beginner-friendly explanations
+  // ?ï¿½ï¿½ï¸ Info Tooltip Component - Beginner-friendly explanations
   const InfoTooltip = ({ id, text, children }) => (
     <span className="relative inline-flex items-center gap-1 group">
       {children}
@@ -6373,9 +6373,9 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       Click "Add Investment" and enter your stock info:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>• <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
-                      <li>• <strong>Shares:</strong> How many you own</li>
-                      <li>• <strong>Price:</strong> What you paid per share</li>
+                      <li>â—† <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
+                      <li>â—† <strong>Shares:</strong> How many you own</li>
+                      <li>â—† <strong>Price:</strong> What you paid per share</li>
                     </ul>
                   </div>
 
@@ -6387,10 +6387,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       Watch your portfolio come to life:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>• See real-time value</li>
-                      <li>• Track gains & losses</li>
-                      <li>• View allocation charts</li>
-                      <li>• Monitor dividends</li>
+                      <li>â—† See real-time value</li>
+                      <li>â—† Track gains & losses</li>
+                      <li>â—† View allocation charts</li>
+                      <li>â—† Monitor dividends</li>
                     </ul>
                   </div>
 
@@ -6402,10 +6402,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       Enable DRIP to grow faster:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>• Auto-reinvest dividends</li>
-                      <li>• Compound your returns</li>
-                      <li>• Build wealth passively</li>
-                      <li>• Track your progress</li>
+                      <li>â—† Auto-reinvest dividends</li>
+                      <li>â—† Compound your returns</li>
+                      <li>â—† Build wealth passively</li>
+                      <li>â—† Track your progress</li>
                     </ul>
                   </div>
                 </div>
@@ -6436,7 +6436,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">?³ Think Long-Term:</strong> Wealth builds over time. Be patient!
+                        <strong className="text-white">?ï¿½ï¿½ Think Long-Term:</strong> Wealth builds over time. Be patient!
                       </p>
                     </div>
                   </div>
@@ -7138,7 +7138,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
     }
   };
 
-  // ?œï¸ EDIT RECURRING EXPENSE HANDLER
+  // ?ï¿½ï¿½ï¸ EDIT RECURRING EXPENSE HANDLER
   const handleEditRecurringExpense = async () => {
     if (!editingRecurring) return;
 
@@ -8016,7 +8016,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </Card>
       )}
 
-      {/* ?œï¸ EDIT RECURRING EXPENSE MODAL */}
+      {/* ?ï¿½ï¿½ï¸ EDIT RECURRING EXPENSE MODAL */}
       {editingRecurring && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 rounded-lg max-w-2xl w-full border border-purple-500/30">
@@ -8382,11 +8382,11 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     <h4 className="font-semibold text-white">{transaction.description}</h4>
                     <div className="text-sm text-gray-400">
-                      {formatDateForUser(transaction.date)} ?€¢ 
+                      {formatDateForUser(transaction.date)} ?ï¿½ï¿½ 
                       <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
                         {transaction.category}
                       </span>
-                      {transaction.subcategory && ` ?€¢ ${transaction.subcategory}`}
+                      {transaction.subcategory && ` ?ï¿½ï¿½ ${transaction.subcategory}`}
                     </div>
                   </div>
                 </div>
@@ -9167,19 +9167,19 @@ const TravelTab = ({ data, setData, userId }) => {
             countries.forEach(country => {
               const normalizedCountry = normalizeCountryName(country);
               if (isPast) {
-                // COMPLETED EXPEDITION ?†’ AMBER/GOLD
+                // COMPLETED EXPEDITION ?ï¿½ï¿½ AMBER/GOLD
                 if (!visitedCountries.has(normalizedCountry)) {
                   visitedCountries.set(normalizedCountry, []);
                 }
                 visitedCountries.get(normalizedCountry).push(trip);
-                console.log(`? COMPLETED: ${country} ?†’ ${normalizedCountry} (AMBER)`);
+                console.log(`? COMPLETED: ${country} ?ï¿½ï¿½ ${normalizedCountry} (AMBER)`);
               } else {
-                // FUTURE MISSION ?†’ BLUE
+                // FUTURE MISSION ?ï¿½ï¿½ BLUE
                 if (!plannedCountries.has(normalizedCountry)) {
                   plannedCountries.set(normalizedCountry, []);
                 }
                 plannedCountries.get(normalizedCountry).push(trip);
-                console.log(`ğŸ”µ PLANNED: ${country} ?†’ ${normalizedCountry} (BLUE)`);
+                console.log(`ğŸ”µ PLANNED: ${country} ?ï¿½ï¿½ ${normalizedCountry} (BLUE)`);
               }
             });
           });
@@ -9495,7 +9495,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-amber-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Completed ?œ“</div>
+                                      <div className="text-gray-400">Status: Completed ?ï¿½ï¿½</div>
                                     </div>
                                   ))}
                                 </div>
@@ -9673,9 +9673,9 @@ const TravelTab = ({ data, setData, userId }) => {
                       <div className="space-y-2 text-xs text-gray-300">
                         <p><strong>1. Set Your Travel Savings:</strong> Enter your total travel fund (top right edit button)</p>
                         <p><strong>2. Plan Your Days:</strong> Allocate days to different cost tiers:
-                          <br />?€¢ ğŸŸ¢ Cheap ($30/day): SE Asia, India, Eastern Europe
-                          <br />?€¢ ğŸŸ¡ Moderate ($100/day): South America, Southern Europe
-                          <br />?€¢ ğŸ”´ Expensive ($200/day): Western Europe, Japan, Scandinavia
+                          <br />?ï¿½ï¿½ ğŸŸ¢ Cheap ($30/day): SE Asia, India, Eastern Europe
+                          <br />?ï¿½ï¿½ ğŸŸ¡ Moderate ($100/day): South America, Southern Europe
+                          <br />?ï¿½ï¿½ ğŸ”´ Expensive ($200/day): Western Europe, Japan, Scandinavia
                         </p>
                         <p><strong>3. See Your Runway:</strong> Calculator shows total possible travel days and cost breakdown!</p>
                         <p className="text-amber-300 font-semibold mt-2">ğŸ’¡ Pro Tip: Mix cheap and expensive destinations to maximize your travel time!</p>
@@ -10235,7 +10235,7 @@ const TravelTab = ({ data, setData, userId }) => {
               {newExpense.currency !== 'CAD' && newExpense.amount && (
                 <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
                   <div className="text-sm text-blue-200">
-                    ğŸ’± <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ?‰ˆ 
+                    ğŸ’± <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ?ï¿½ï¿½ 
                     <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
                   </div>
                   <div className="text-xs text-blue-300 mt-1">
@@ -10300,7 +10300,7 @@ const TravelTab = ({ data, setData, userId }) => {
                {/* Inspiring Message */}
                <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
                  <p className="text-amber-200 text-sm italic text-center">
-                   ?œ¨ "You didn't work for money. You worked for moments like this."
+                   ?ï¿½ï¿½ "You didn't work for money. You worked for moments like this."
                  </p>
                </div>
 
@@ -10555,7 +10555,7 @@ const TravelTab = ({ data, setData, userId }) => {
             <div className="space-y-4">
               <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
                 <p className="text-sm text-purple-200 mb-2">
-                  ?œ¨ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
+                  ?ï¿½ï¿½ <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
                 </p>
                 <p className="text-xs text-gray-400">
                   No need to create a full trip. Just type the country name and we'll add it to your wishlist.
@@ -11195,7 +11195,7 @@ function App() {
 
     // ğŸ›¡ï¸ SAFETY CHECK: Prevent data loss!
     if (editingMoment && (!data.moments || data.moments.length === 0)) {
-      showNotification('?š ï¸ Data error detected. Please refresh and try again.', 'error');
+      showNotification('?ï¿½ï¿½ï¸ Data error detected. Please refresh and try again.', 'error');
       console.error('ğŸš¨ CRITICAL: Attempting to edit when moments array is empty!');
       return;
     }
@@ -11215,14 +11215,14 @@ function App() {
       // ğŸ›¡ï¸ SAFETY: Verify moment was actually updated
       const updated = updatedMoments.find(m => m.id === editingMoment.id);
       if (!updated) {
-        showNotification('?š ï¸ Update failed. Moment not found.', 'error');
+        showNotification('?ï¿½ï¿½ï¸ Update failed. Moment not found.', 'error');
         console.error('ğŸš¨ CRITICAL: Moment to update not found!');
         return;
       }
 
       // ğŸ›¡ï¸ SAFETY: Never save if this would delete all moments
       if (updatedMoments.length === 0) {
-        showNotification('?š ï¸ Cannot save - this would delete all moments!', 'error');
+        showNotification('?ï¿½ï¿½ï¸ Cannot save - this would delete all moments!', 'error');
         console.error('ğŸš¨ CRITICAL: Save blocked - would delete all moments!');
         return;
       }
@@ -11257,7 +11257,7 @@ function App() {
         date: new Date().toISOString().split('T')[0],
         isAchievement: false
       });
-      showNotification(editingMoment ? '?œ¨ Moment updated!' : 'ğŸ’« Moment created!', 'success');
+      showNotification(editingMoment ? '?ï¿½ï¿½ Moment updated!' : 'ğŸ’« Moment created!', 'success');
       
       // Award XP for creating moment
       if (!editingMoment) {
@@ -11280,7 +11280,7 @@ function App() {
   };
 
   const handleDeleteMoment = async (momentId) => {
-    if (!window.confirm('Delete this moment?\\n\\n?š ï¸ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
+    if (!window.confirm('Delete this moment?\\n\\n?ï¿½ï¿½ï¸ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
 
     const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
      try {
@@ -11515,7 +11515,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('?Œ Upgrade error:', error);
+      console.error('?ï¿½ï¿½ Upgrade error:', error);
       showNotification(
         error.message || 'Failed to process upgrade. Please try again.',
         'error'
@@ -11642,7 +11642,7 @@ function App() {
     // ğŸ” PRODUCTION Authentication Effect
   useEffect(() => {
     if (!auth) {
-      console.error('?Œ Firebase auth not initialized');
+      console.error('?ï¿½ï¿½ Firebase auth not initialized');
       setAuthLoading(false);
       setShowAuth(true);
       return;
@@ -11790,7 +11790,7 @@ function App() {
           localStorage.setItem(lastBackupKey, now.toString());
           console.log('? Daily auto-backup created successfully');
         } catch (error) {
-          console.error('?Œ Daily auto-backup failed:', error);
+          console.error('?ï¿½ï¿½ Daily auto-backup failed:', error);
         }
       }
     };
@@ -12103,7 +12103,7 @@ function App() {
   // useEffect(() => {
   //   const handleInputBlur = () => {
   //     setTimeout(() => {
-  //       window.scrollTo(0, 0); // ?† THIS caused scroll-to-top on every input!
+  //       window.scrollTo(0, 0); // ?ï¿½ï¿½ THIS caused scroll-to-top on every input!
   //     }, 100);
   //   };
   //   document.addEventListener('focusout', handleInputBlur);
@@ -12605,8 +12605,8 @@ function App() {
     debugLog('ğŸ”§ Reset Data: resetType =', resetType);
     
     if (!userId) {
-      console.error('?Œ Reset Data: No userId available!');
-      showNotification('?Œ Please sign in to reset data', 'error');
+      console.error('?ï¿½ï¿½ Reset Data: No userId available!');
+      showNotification('?ï¿½ï¿½ Please sign in to reset data', 'error');
       return;
     }
 
@@ -12912,7 +12912,7 @@ function App() {
         await setDoc(doc(db, 'userProfiles', userId), initialProfile);
         debugLog('? XP profile reset successful');
       } else {
-        debugLog('?„¹ï¸ Financial-only reset - XP preserved');
+        debugLog('?ï¿½ï¿½ï¸ Financial-only reset - XP preserved');
       }
       
       setData(resetData);
@@ -12941,9 +12941,9 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('?Œ Reset Data Error:', error);
-      console.error('?Œ Reset Data Error Details:', error.message, error.code);
-      showNotification(`?Œ Failed to reset data: ${error.message}`, 'error');
+      console.error('?ï¿½ï¿½ Reset Data Error:', error);
+      console.error('?ï¿½ï¿½ Reset Data Error Details:', error.message, error.code);
+      showNotification(`?ï¿½ï¿½ Failed to reset data: ${error.message}`, 'error');
     }
   };
 
@@ -13047,7 +13047,7 @@ function App() {
       
     } catch (error) {
       console.error('Export error:', error);
-      showNotification('?Œ Export failed. Please try again.', 'error');
+      showNotification('?ï¿½ï¿½ Export failed. Please try again.', 'error');
     }
   };
 
@@ -13106,11 +13106,11 @@ function App() {
             setData(restoredData); // ? Update React state with restored data!
             showNotification('? Data restored and loaded successfully!', 'success');
           } else {
-            showNotification('?š ï¸ Data restored but reload failed. Please refresh page.', 'warning');
+            showNotification('?ï¿½ï¿½ï¸ Data restored but reload failed. Please refresh page.', 'warning');
           }
         } catch (reloadError) {
           console.error('Error reloading data after recovery:', reloadError);
-          showNotification('?š ï¸ Data restored but reload failed. Please refresh page.', 'warning');
+          showNotification('?ï¿½ï¿½ï¸ Data restored but reload failed. Please refresh page.', 'warning');
         }
         
         setShowDataRecoveryModal(false);
@@ -13134,7 +13134,7 @@ function App() {
   //   console.log('Share moment:', moment);
   // };
 
-  // ?š¡ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
+  // ?ï¿½ï¿½ QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
   const confirmQuickExpense = async (expense) => {
     if (!expense.description || !expense.amount || !userId) return;
 
@@ -13143,7 +13143,7 @@ function App() {
 
     // CRITICAL FIX: Ensure data is valid before proceeding
     if (!data || typeof data !== 'object') {
-      console.error('?Œ Quick Expense Error: data is invalid:', data);
+      console.error('?ï¿½ï¿½ Quick Expense Error: data is invalid:', data);
       showNotification('Error: Data not loaded. Please refresh the page.', 'error');
       return;
     }
@@ -13207,7 +13207,7 @@ function App() {
       debugLog('? DEBUG: Data saved to Firebase and state updated');
       debugLog('ğŸ” DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
       
-      showNotification('?š¡ Quick expense logged!', 'success');
+      showNotification('?ï¿½ï¿½ Quick expense logged!', 'success');
       
       // Award XP for logging expense
       try {
@@ -13232,7 +13232,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('?Œ ERROR adding quick expense:', error);
+      console.error('?ï¿½ï¿½ ERROR adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
   };
@@ -13561,7 +13561,7 @@ function App() {
             {notification.type === 'success' ? (
               <span className="text-green-200">?</span>
             ) : (
-              <span className="text-red-200">?Œ</span>
+              <span className="text-red-200">?ï¿½ï¿½</span>
             )}
             <span className="font-medium">{notification.message}</span>
           </div>
@@ -13574,11 +13574,11 @@ function App() {
           <div className="flex items-center justify-center gap-2">
             <span className="text-orange-200">ğŸ§³</span>
             <span className="font-medium">Offline Mode</span>
-            <span className="text-orange-200">?€¢</span>
+            <span className="text-orange-200">?ï¿½ï¿½</span>
             <span className="text-sm">Data will sync when connected</span>
             {offlineSummary.pendingSync > 0 && (
               <>
-                <span className="text-orange-200">?€¢</span>
+                <span className="text-orange-200">?ï¿½ï¿½</span>
                 <span className="text-sm bg-orange-700 px-2 py-1 rounded">
                   {offlineSummary.pendingSync} pending
                 </span>
@@ -13812,7 +13812,7 @@ function App() {
                       }}
                       className="text-green-400 hover:text-green-300 text-xs font-medium px-3 py-1 rounded bg-green-600/20 hover:bg-green-600/30 transition-colors"
                     >
-                      View ?†’
+                      View
                     </button>
                   </div>
                 </div>
@@ -13843,7 +13843,7 @@ function App() {
                         }}
                         className="text-blue-400 hover:text-blue-300 text-xs font-medium px-3 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
                       >
-                        Export ?†’
+                        Export
                       </button>
                     </div>
                   </div>
@@ -14289,9 +14289,9 @@ function App() {
               
               {/* ğŸ¯ OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
               
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Cash Flow - FREE+ (Left) */}
               <StealthCard>
@@ -14310,9 +14310,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Monthly Income - FREE+ (Left) */}
               <StealthCard>
@@ -14325,9 +14325,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Net Worth - FREE+ (Left) */}
               <StealthCard>
@@ -14349,9 +14349,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Financial Freedom Goal - CLIMBER+ (Left) */}
               <StealthCard>
@@ -14372,9 +14372,9 @@ function App() {
               </StealthCard>
               </div>
               
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               {/* FULL-WIDTH CARDS: Detailed Intelligence */}
-              {/* ?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?•?• */}
+              {/* ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ */}
               
               {/* Debt Payoff Progress Tracker - CLIMBER+ (Full Width) */}
               {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
@@ -14574,7 +14574,7 @@ function App() {
                 <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-500/30 mb-8 max-w-2xl mx-auto">
                   <div className="text-lg text-blue-200 space-y-3 text-left">
                     <p className="flex items-start gap-3">
-                      <span className="text-2xl">?­</span>
+                      <span className="text-2xl">?ï¿½ï¿½</span>
                       <span><strong>North Star:</strong> Set your ultimate life goal and track progress</span>
                     </p>
                     <p className="flex items-start gap-3">
@@ -15203,7 +15203,7 @@ function App() {
                                 }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
-                                          ?†
+                                          ?ï¿½ï¿½
                                         </button>
                                         <span className="text-white font-semibold">
                                           {new Date(account.calendarYear || new Date().getFullYear(), (account.calendarMonth || new Date().getMonth())).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
@@ -15218,7 +15218,7 @@ function App() {
                                           }}
                                           className="text-gray-400 hover:text-white p-1"
                                         >
-                                          ?†’
+                                          ?ï¿½ï¿½
                               </button>
                             </div>
                                       
@@ -15434,10 +15434,10 @@ function App() {
                     <div className="mt-2 text-xs text-gray-400">
                       <div className="grid grid-cols-1 gap-1">
                         <div>ğŸ’¡ <strong>Common targets:</strong></div>
-                        <div>?€¢ 20% - Traditional advice</div>
-                        <div>?€¢ 30-40% - Aggressive saving</div>
-                        <div>?€¢ 50%+ - FIRE/Early retirement</div>
-                        <div>?€¢ 60%+ - Digital nomad lifestyle</div>
+                        <div>?ï¿½ï¿½ 20% - Traditional advice</div>
+                        <div>?ï¿½ï¿½ 30-40% - Aggressive saving</div>
+                        <div>?ï¿½ï¿½ 50%+ - FIRE/Early retirement</div>
+                        <div>?ï¿½ï¿½ 60%+ - Digital nomad lifestyle</div>
                       </div>
                     </div>
                   </div>
@@ -15715,7 +15715,7 @@ function App() {
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} ?€¢ 
+                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} ?ï¿½ï¿½ 
                         Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0)).toLocaleString()}
                       </div>
                     </div>
@@ -16215,32 +16215,32 @@ function App() {
                 <div className="text-sm space-y-1 text-gray-300">
                   {resetType === 'financial-only' && (
                     <>
-                      <div>?€¢ Transactions & recurring expenses</div>
-                      <div>?€¢ Dashboard cards (cash, debt, goals)</div>
-                      <div>?€¢ Financial metrics & history</div>
+                      <div>?ï¿½ï¿½ Transactions & recurring expenses</div>
+                      <div>?ï¿½ï¿½ Dashboard cards (cash, debt, goals)</div>
+                      <div>?ï¿½ï¿½ Financial metrics & history</div>
                       <div className="text-green-400 mt-2">? KEEPS: Moments, logbook, businesses, travel, investments</div>
                       <div className="text-green-400">? KEEPS: Your XP and rank!</div>
                     </>
                   )}
                   {resetType === 'sample-financial' && (
                     <>
-                      <div>?€¢ Sample transactions (last month)</div>
-                      <div>?€¢ Sample dashboard data</div>
-                      <div>?€¢ Example financial metrics</div>
+                      <div>?ï¿½ï¿½ Sample transactions (last month)</div>
+                      <div>?ï¿½ï¿½ Sample dashboard data</div>
+                      <div>?ï¿½ï¿½ Example financial metrics</div>
                       <div className="text-green-400 mt-2">? KEEPS: Moments, logbook</div>
-                      <div className="text-amber-400">?š ï¸ RESETS: XP to 0</div>
+                      <div className="text-amber-400">?ï¿½ï¿½ï¸ RESETS: XP to 0</div>
                     </>
                   )}
                   {resetType === 'whole-app' && (
                     <>
-                      <div>?€¢ All transactions & financial data</div>
-                      <div>?€¢ Investment portfolio & holdings</div>
-                      <div>?€¢ Business income/expense records</div>
-                      <div>?€¢ All moments & logbook entries</div>
-                      <div>?€¢ Travel plans & journal</div>
-                      <div>?€¢ Dashboard metrics & history</div>
-                      <div className="text-red-400 mt-2">?š ï¸ DELETES: EVERYTHING!</div>
-                      <div className="text-red-400">?š ï¸ RESETS: XP to 0</div>
+                      <div>?ï¿½ï¿½ All transactions & financial data</div>
+                      <div>?ï¿½ï¿½ Investment portfolio & holdings</div>
+                      <div>?ï¿½ï¿½ Business income/expense records</div>
+                      <div>?ï¿½ï¿½ All moments & logbook entries</div>
+                      <div>?ï¿½ï¿½ Travel plans & journal</div>
+                      <div>?ï¿½ï¿½ Dashboard metrics & history</div>
+                      <div className="text-red-400 mt-2">?ï¿½ï¿½ï¸ DELETES: EVERYTHING!</div>
+                      <div className="text-red-400">?ï¿½ï¿½ï¸ RESETS: XP to 0</div>
                     </>
                   )}
                 </div>
@@ -16390,13 +16390,13 @@ function App() {
               onClick={() => setShowDevPanel(false)}
               className="text-gray-400 hover:text-white transition-colors"
             >
-              ?œ•
+              ?ï¿½ï¿½
             </button>
           </div>
           
           <div className="space-y-3">
             <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <span className="text-green-400">?—</span>
+              <span className="text-green-400">?ï¿½ï¿½</span>
               Admin: {devDemoMode ? 'demo@example.com' : user?.email}
             </div>
             
@@ -16420,7 +16420,7 @@ function App() {
                 <option value="none">ğŸ”„ Use Real Subscription</option>
                 <option value={SUBSCRIPTION_TIERS.FREE}>ğŸ†“ FREE (Recon Kit)</option>
                 <option value={SUBSCRIPTION_TIERS.CLIMBER}>ğŸ§— CLIMBER ($7.99/mo)</option>
-                <option value={SUBSCRIPTION_TIERS.OPERATOR}>?š™ï¸ OPERATOR ($14.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.OPERATOR}>?ï¿½ï¿½ï¸ OPERATOR ($14.99/mo)</option>
                 <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>ğŸ‘‘ FOUNDER'S CIRCLE ($7.49/mo)</option>
               </select>
             </div>
@@ -16441,7 +16441,7 @@ function App() {
               </label>
               {devDemoMode && (
                 <div className="mt-2 text-xs text-purple-400 bg-purple-500/10 rounded px-3 py-2">
-                  ?œ¨ Demo Mode ON: Shows "Demo User" & "demo@example.com"
+                  ?ï¿½ï¿½ Demo Mode ON: Shows "Demo User" & "demo@example.com"
                 </div>
               )}
             </div>
@@ -16458,7 +16458,7 @@ function App() {
                 </div>
                 {devOverridePlan && (
                   <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
-                    ?š ï¸ Dev Override Active
+                    ?ï¿½ï¿½ï¸ Dev Override Active
                   </div>
                 )}
               </div>
@@ -16665,7 +16665,7 @@ function App() {
               <div className="space-y-4">
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-amber-400">?š ï¸</span>
+                    <span className="text-amber-400">?ï¿½ï¿½ï¸</span>
                     <span className="font-semibold text-amber-400">Recovery Warning</span>
                   </div>
                   <p className="text-sm text-amber-200">
@@ -16685,7 +16685,7 @@ function App() {
                               {new Date(backup.backupDate).toLocaleString()}
                             </p>
                             <p className="text-sm text-gray-400">
-                              Type: {backup.backupType} ?€¢ ID: {backup.id}
+                              Type: {backup.backupType} ?ï¿½ï¿½ ID: {backup.id}
                             </p>
                           </div>
                           <button
@@ -16730,7 +16730,7 @@ function App() {
               <div className="space-y-4">
                 <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-blue-400">?„¹ï¸</span>
+                    <span className="text-blue-400">?ï¿½ï¿½ï¸</span>
                     <span className="font-semibold text-blue-400">Import Information</span>
                   </div>
                   <p className="text-sm text-blue-200">
@@ -16781,4 +16781,5 @@ const AppWithErrorBoundary = () => (
 );
 
 export default AppWithErrorBoundary;
+
 
