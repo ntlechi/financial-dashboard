@@ -12224,6 +12224,26 @@ function App() {
     }
   }, [authLoading, user]); // Run when loading state or user changes
 
+  // ðŸŒŠ FLOW LIKE WATER: Check for stored signup data from webhook
+  const checkForStoredSignupData = async () => {
+    try {
+      const response = await fetch('/api/get-signup-data');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.email) {
+          console.log('ðŸŒŠ Found stored signup data:', data.email);
+          setAuthForm(prev => ({
+            ...prev,
+            email: data.email,
+            name: data.name || data.email.split('@')[0]
+          }));
+        }
+      }
+    } catch (error) {
+      console.log('ðŸŒŠ No stored signup data found (this is normal for first-time users)');
+    }
+  };
+
   // ðŸŒŠ FLOW LIKE WATER: Pre-detect user status on signup page load
   useEffect(() => {
     // Only run on signup page when not authenticated
@@ -12233,6 +12253,12 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const emailFromUrl = urlParams.get('email');
     const emailToCheck = emailFromUrl || authForm.email;
+    
+    // If no email in URL, check for stored signup data from webhook
+    if (!emailFromUrl && !authForm.email) {
+      checkForStoredSignupData();
+      return;
+    }
     
     if (emailToCheck) {
       console.log('ðŸŒŠ Pre-detecting user status for:', emailToCheck);
