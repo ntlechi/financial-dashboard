@@ -1861,7 +1861,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       </div>
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
-        <span>?��</span>
+        <span>•</span>
         <span>Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
       </div>
     </div>
@@ -4363,7 +4363,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   transition: 'all 0.2s'
                 }}
               >
-                ?��
+                i
               </span>
               <div 
                 className="tooltip-content"
@@ -4867,7 +4867,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                           </div>
                           <div className="flex items-center gap-3 text-xs text-gray-400">
                             <span className="capitalize">{recurring.frequency}</span>
-                            <span>?��</span>
+                            <span>•</span>
                             <span>Next: {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -6436,7 +6436,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">?�� Think Long-Term:</strong> Wealth builds over time. Be patient!
+                        <strong className="text-white">⏳ Think Long-Term:</strong> Wealth builds over time. Be patient!
                       </p>
                     </div>
                   </div>
