@@ -30,6 +30,7 @@ import FixedModal from './components/FixedModal';
 import MomentsFeed from './components/MomentsFeed';
 import QuickStartGuide from './components/QuickStartGuide';
 import ForgotPassword from './components/ForgotPassword';
+import UpdateNotification from './components/UpdateNotification';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
@@ -13551,6 +13552,9 @@ function App() {
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
+      {/* 🎉 Update Notification - Shows when new app version available */}
+      <UpdateNotification />
+      
       {/* Notification System */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
