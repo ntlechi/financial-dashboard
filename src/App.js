@@ -680,7 +680,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
-          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo ?�� 
+          Investing <span className="text-green-400 font-semibold">${data.monthlyContribution.toLocaleString()}</span>/mo → 
           <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
         </div>
       </div>
@@ -838,7 +838,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-400" />
             Rainy Day Fund
           </h2>
-          {/* ?��️ Status Legend Tooltip */}
+          {/* 📊 Status Legend Tooltip */}
           <div className="relative">
             <button
               onMouseEnter={() => setShowStatusLegend(true)}
@@ -1710,7 +1710,7 @@ const DebtCard = ({ data, onEdit }) => {
               <div>
                 <span className="text-white font-medium">{account.name}</span>
                 <div className="text-gray-400 text-xs">
-                  {account.interestRate}% APR ?�� Min: ${account.minPayment}
+                  {account.interestRate}% APR • Min: ${account.minPayment}
                 </div>
               </div>
               <span className="text-red-400 font-semibold">${account.balance.toLocaleString()}</span>
@@ -2662,7 +2662,7 @@ const FinancialFreedomCalculator = () => {
               <div className="text-2xl font-bold text-white">{yearsToFI} years (Age {targetAge})</div>
             </div>
             <div className="text-sm text-gray-300 max-w-md">
-              ?�� Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
+              💡 Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
             </div>
           </div>
         </div>
@@ -2885,8 +2885,8 @@ const DebtPayoffCalculator = () => {
                 <p><strong>💰 Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
                 <p><strong>🏔️ Choose Strategy:</strong></p>
                 <ul className="ml-4 space-y-1">
-                  <li>?�� <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
-                  <li>?�� <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
+                  <li>❄️ <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
+                  <li>🔥 <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
                 </ul>
                 <p className="text-blue-400 mt-2">💡 Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
               </div>
@@ -2926,7 +2926,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ?�� Debt Avalanche (Highest Interest)
+              🔥 Debt Avalanche (Highest Interest)
             </button>
           </div>
           
@@ -3099,7 +3099,7 @@ const DebtPayoffCalculator = () => {
           {/* Results */}
           <div>
             <h4 className="font-semibold text-white mb-3">
-              {strategy === 'snowball' ? '🏔️ Snowball' : '?�� Avalanche'} Results
+              {strategy === 'snowball' ? '🏔️ Snowball' : '🔥 Avalanche'} Results
             </h4>
             
             <div className="space-y-4">
@@ -3486,7 +3486,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-purple-900/30 rounded-xl p-4 border-2 border-purple-800/40 text-center">
-            <h4 className="text-sm font-bold text-purple-400 mb-2">?? Freedom</h4>
+            <h4 className="text-sm font-bold text-purple-400 mb-2">💰 Freedom</h4>
             <div className="text-xl font-bold text-white mb-1">${sixJars.financialFreedom.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -6453,7 +6453,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     Add Your First Investment
                   </button>
                   <p className="text-sm text-gray-400 mt-3">
-                    Ready to start? Click above to add your first investment! ??
+                    Ready to start? Click above to add your first investment! 📈
                   </p>
                 </div>
               </div>
@@ -11465,7 +11465,7 @@ function App() {
     }
 
     // TODO: Implement PDF generation
-    showNotification('PDF export feature coming soon! ??', 'success');
+    showNotification('PDF export feature coming soon! 📄', 'success');
   };
 
   // Feature gating and upgrade functions
@@ -11842,9 +11842,9 @@ function App() {
       const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
       await updateProfile(userCredential.user, { displayName: authForm.name });
       
-      // ?? TRIGGER EMAIL AUTOMATION FOR FREE USERS
+      // 📧 TRIGGER EMAIL AUTOMATION FOR FREE USERS
       try {
-        console.log('?? Triggering welcome email for free user:', userCredential.user.uid);
+        console.log('📧 Triggering welcome email for free user:', userCredential.user.uid);
         const emailResponse = await fetch('/api/test-send-email', {
           method: 'POST',
           headers: {
@@ -11872,12 +11872,12 @@ function App() {
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
-      // ?? Show Quick Start popup for new users after 2-3 seconds
+      // ✨ Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('?? Showing Quick Start popup for new signup user');
+          console.log('✨ Showing Quick Start popup for new signup user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
@@ -11923,12 +11923,12 @@ function App() {
       showNotification('Welcome back!', 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
-      // ?? Show Quick Start popup for new users after 2-3 seconds
+      // ✨ Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('?? Showing Quick Start popup for new user');
+          console.log('✨ Showing Quick Start popup for new user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
@@ -12016,12 +12016,12 @@ function App() {
       
       showNotification(`Welcome ${existingUserWithPayment.name}! Your account is now set up.`, 'success');
       
-      // ?? Show Quick Start popup for new users after 2-3 seconds
+      // ✨ Show Quick Start popup for new users after 2-3 seconds
       setTimeout(() => {
         // Check if user has seen Quick Start before
         const hasSeenQuickStart = localStorage.getItem('hasSeenQuickStart');
         if (!hasSeenQuickStart) {
-          console.log('?? Showing Quick Start popup for new webhook-created user');
+          console.log('✨ Showing Quick Start popup for new webhook-created user');
           setShowQuickStart(true);
         }
       }, 2500); // 2.5 second delay
