@@ -147,3 +147,11 @@ self.addEventListener('sync', (event) => {
     );
   }
 });
+
+// Listen for skip waiting message (from UpdateNotification component)
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('📱 Service Worker: Skipping waiting and activating new version');
+    self.skipWaiting();
+  }
+});
