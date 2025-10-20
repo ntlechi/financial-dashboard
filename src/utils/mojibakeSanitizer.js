@@ -1,37 +1,46 @@
-// Comprehensive mojibake cleanup for UTF-8 corruption
+// Comprehensive mojibake cleanup - replace with clean text labels
 const replacements = [
-  // Most visible sequences from screenshot
-  [/ðŸ"ï¸/g, '🏔️'],
-  [/ðŸ›¡ï¸/g, '🛡️'],
-  [/✕/g, '✗'],
+  // Replace corrupted sequences with clean text equivalents
+  // Most visible sequences from screenshots
+  [/ðŸ"ï¸\s*/g, ''],  // Mountain/compass icon - remove, keep just "Freedom Ratio"
+  [/ðŸ›¡ï¸\s*/g, '🛡️ '],  // Shield
+  [/✕/g, '✓'],  // X mark -> checkmark
+  [/✗/g, '✓'],  // Another X variant
   
-  // Other emoji corruption
-  [/ðŸŽ¯/g, '🎯'],
-  [/ðŸ"Š/g, '📊'],
+  // Investment page sequences
+  [/1ðŸ"¥\s*/g, '1️⃣ '],
+  [/2ðŸ"ˆ\s*/g, '2️⃣ '],
+  [/3ðŸ'°\s*/g, '3️⃣ '],
+  [/ðŸ"¥/g, '🔥'],
   [/ðŸ"ˆ/g, '📈'],
-  [/ðŸ"®/g, '🔮'],
-  [/ðŸ'¡/g, '💡'],
-  [/ðŸ•Šï¸/g, '🕒'],
-  [/ðŸ"…/g, '🗓️'],
-  [/ðŸ—"ï¸/g, '📓'],
-  [/ðŸ"†/g, '📆'],
-  [/ðŸ"‹/g, '📋'],
-  [/ðŸ›¡/g, '🛠'],
-  [/ðŸ›ï¸/g, '🛍️'],
-  [/ðŸ½ï¸/g, '🍽️'],
-  [/ðŸšŒ/g, '🚄'],
-  [/ðŸ¨/g, '🏨'],
-  [/ðŸ'«/g, '💫'],
-  [/ðŸ•ï¸/g, '🏕️'],
   [/ðŸ'°/g, '💰'],
-  [/❌š¡/g, '⚡'],
-  [/❌„¹ï¸/g, 'ℹ️'],
-  [/❌œï¸/g, '✏️'],
   
-  // Aggressive cleanup: any remaining mojibake
+  // Other common emoji corruption - replace with text or simple icons
+  [/ðŸŽ¯\s*/g, '🎯 '],
+  [/ðŸ"Š\s*/g, '📊 '],
+  [/ðŸ"®\s*/g, ''],
+  [/ðŸ'¡\s*/g, '💡 '],
+  [/ðŸ•Šï¸\s*/g, '⏰ '],
+  [/ðŸ"…\s*/g, '📅 '],
+  [/ðŸ—"ï¸\s*/g, '📓 '],
+  [/ðŸ"†\s*/g, '📆 '],
+  [/ðŸ"‹\s*/g, '📋 '],
+  [/ðŸ›¡\s*/g, '🛡️ '],
+  [/ðŸ›ï¸\s*/g, '🛍️ '],
+  [/ðŸ½ï¸\s*/g, '🍽️ '],
+  [/ðŸšŒ\s*/g, '🚌 '],
+  [/ðŸ¨\s*/g, '🏨 '],
+  [/ðŸ'«\s*/g, '✨ '],
+  [/ðŸ•ï¸\s*/g, '⛺ '],
+  [/❌š¡\s*/g, '⚡ '],
+  [/❌„¹ï¸\s*/g, 'ℹ️ '],
+  [/❌œï¸\s*/g, '✏️ '],
+  
+  // Catch-all for remaining mojibake - just remove it
   [/ðŸ[^\s]{0,10}/g, ''],
-  [/ï¸/g, ''],
+  [/ï¸\s*/g, ''],
   [/â€[^\s]{0,3}/g, ''],
+  [/¢\s*€\s*/g, '✓ '],  // Check mark corruption
 ];
 
 function fixText(text) {
@@ -40,6 +49,8 @@ function fixText(text) {
   for (const [pattern, replacement] of replacements) {
     result = result.replace(pattern, replacement);
   }
+  // Clean up multiple spaces
+  result = result.replace(/\s{2,}/g, ' ').trim();
   return result;
 }
 
@@ -56,15 +67,24 @@ function sanitizeAllText() {
     textNodes.push(walker.currentNode);
   }
   
+  let changesCount = 0;
   textNodes.forEach((node) => {
-    const fixed = fixText(node.nodeValue);
-    if (fixed !== node.nodeValue) {
+    const original = node.nodeValue;
+    const fixed = fixText(original);
+    if (fixed !== original) {
       node.nodeValue = fixed;
+      changesCount++;
     }
   });
+  
+  if (changesCount > 0) {
+    console.log(`🧹 Sanitizer cleaned ${changesCount} text nodes`);
+  }
 }
 
 export function startMojibakeSanitizer() {
+  console.log('🧹 Mojibake Sanitizer starting...');
+  
   // Initial cleanup
   if (document.body) {
     sanitizeAllText();
@@ -81,7 +101,7 @@ export function startMojibakeSanitizer() {
   
   setTimeout(() => {
     sanitizeAllText();
-  }, 1000);
+  }, 1500);
 
   // Observe future DOM changes
   const observer = new MutationObserver((mutations) => {
@@ -100,7 +120,11 @@ export function startMojibakeSanitizer() {
     }
     
     if (needsCleanup) {
-      sanitizeAllText();
+      // Debounce multiple mutations
+      clearTimeout(window.mojibakeCleanupTimer);
+      window.mojibakeCleanupTimer = setTimeout(() => {
+        sanitizeAllText();
+      }, 50);
     }
   });
   
@@ -109,6 +133,8 @@ export function startMojibakeSanitizer() {
     subtree: true,
     characterData: true
   });
+  
+  console.log('✅ Mojibake Sanitizer active');
 }
 
 export default startMojibakeSanitizer;
