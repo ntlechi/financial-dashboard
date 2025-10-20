@@ -1168,7 +1168,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
               <div className={`text-xs font-semibold flex items-center ${
                 scoreChange > 0 ? 'text-green-400' : scoreChange < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
-                {scoreChange > 0 ? '?��' : scoreChange < 0 ? '?��' : '?��'} {Math.abs(scoreChange)}
+                {scoreChange > 0 ? '↑' : scoreChange < 0 ? '↓' : '→'} {Math.abs(scoreChange)}
               </div>
             )}
           </div>
@@ -8382,11 +8382,12 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     <h4 className="font-semibold text-white">{transaction.description}</h4>
                     <div className="text-sm text-gray-400">
-                      {formatDateForUser(transaction.date)} • 
-                      <span className={`ml-1 ${transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}`}>
+                      {formatDateForUser(transaction.date)}
+                      <span className="mx-2">•</span>
+                      <span className={transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}>
                         {transaction.category}
                       </span>
-                      {transaction.subcategory && ` • ${transaction.subcategory}`}
+                      {transaction.subcategory && <><span className="mx-2">•</span>{transaction.subcategory}</>}
                     </div>
                   </div>
                 </div>
