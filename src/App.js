@@ -13564,9 +13564,9 @@ function App() {
         }`}>
           <div className="flex items-center gap-2">
             {notification.type === 'success' ? (
-              <span className="text-green-200">?</span>
+              <span className="text-green-200">✓</span>
             ) : (
-              <span className="text-red-200">?��</span>
+              <span className="text-red-200">⚠</span>
             )}
             <span className="font-medium">{notification.message}</span>
           </div>
