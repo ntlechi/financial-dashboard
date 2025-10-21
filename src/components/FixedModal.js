@@ -131,7 +131,8 @@ export const FixedInput = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400 transition-all ${className}`}
+      className={`w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400 transition-all ${className}`}
+      style={type === 'date' ? { width: '100%', maxWidth: '100%' } : undefined}
       onFocus={(e) => {
         // Prevent page scroll when input is focused
         e.target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
