@@ -15,25 +15,30 @@ const UpdateNotification = () => {
       navigator.serviceWorker.ready.then((reg) => {
         setRegistration(reg);
 
-        // Check for updates every 30 minutes
+        // Check for updates every 15 minutes (more frequent)
         const checkForUpdates = () => {
+          console.log('🔄 Checking for app updates...');
           reg.update();
         };
 
         checkForUpdates(); // Check immediately
-        const interval = setInterval(checkForUpdates, 30 * 60 * 1000); // Every 30 min
+        const interval = setInterval(checkForUpdates, 15 * 60 * 1000); // Every 15 min
 
         // Listen for updates
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New version available!
-              console.log('🎉 New version available!');
-              setShowUpdatePrompt(true);
-            }
-          });
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              console.log('🔄 Service worker state:', newWorker.state);
+              
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New version available!
+                console.log('🎉 New version available!');
+                setShowUpdatePrompt(true);
+              }
+            });
+          }
         });
 
         return () => clearInterval(interval);
@@ -42,9 +47,19 @@ const UpdateNotification = () => {
       // Listen for controller change (when new SW takes over)
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('🔄 Controller changed, reloading...');
         if (!refreshing) {
           refreshing = true;
+          // Clear any stale state before reloading
+          sessionStorage.setItem('app-updated', 'true');
           window.location.reload();
+        }
+      });
+
+      // Listen for SW messages
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'SW_ACTIVATED') {
+          console.log('✅ New service worker activated:', event.data.version);
         }
       });
     }
