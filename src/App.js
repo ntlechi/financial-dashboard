@@ -11197,7 +11197,7 @@ function App() {
 
     // 🛡️ SAFETY CHECK: Prevent data loss!
     if (editingMoment && (!data.moments || data.moments.length === 0)) {
-      showNotification('?��️ Data error detected. Please refresh and try again.', 'error');
+      showNotification('⚠️ Data error detected. Please refresh and try again.', 'error');
       console.error('🚨 CRITICAL: Attempting to edit when moments array is empty!');
       return;
     }
@@ -11217,14 +11217,14 @@ function App() {
       // 🛡️ SAFETY: Verify moment was actually updated
       const updated = updatedMoments.find(m => m.id === editingMoment.id);
       if (!updated) {
-        showNotification('?��️ Update failed. Moment not found.', 'error');
+        showNotification('⚠️ Update failed. Moment not found.', 'error');
         console.error('🚨 CRITICAL: Moment to update not found!');
         return;
       }
 
       // 🛡️ SAFETY: Never save if this would delete all moments
       if (updatedMoments.length === 0) {
-        showNotification('?��️ Cannot save - this would delete all moments!', 'error');
+        showNotification('⚠️ Cannot save - this would delete all moments!', 'error');
         console.error('🚨 CRITICAL: Save blocked - would delete all moments!');
         return;
       }
@@ -11259,7 +11259,7 @@ function App() {
         date: new Date().toISOString().split('T')[0],
         isAchievement: false
       });
-      showNotification(editingMoment ? '?�� Moment updated!' : '💫 Moment created!', 'success');
+      showNotification(editingMoment ? '✨ Moment updated!' : '💫 Moment created!', 'success');
       
       // Award XP for creating moment
       if (!editingMoment) {
@@ -11861,12 +11861,12 @@ function App() {
         });
         
         if (emailResponse.ok) {
-          console.log('? Welcome email triggered successfully for free user');
+          console.log('✅ Welcome email triggered successfully for free user');
         } else {
-          console.error('? Failed to trigger welcome email:', await emailResponse.text());
+          console.error('❌ Failed to trigger welcome email:', await emailResponse.text());
         }
       } catch (emailError) {
-        console.error('? Error triggering welcome email:', emailError);
+        console.error('❌ Error triggering welcome email:', emailError);
       }
       
       showNotification(`Welcome ${authForm.name?.split(' ')[0] || authForm.name}! Your account has been created.`, 'success');
@@ -12608,7 +12608,7 @@ function App() {
     
     if (!userId) {
       console.error('?�� Reset Data: No userId available!');
-      showNotification('?�� Please sign in to reset data', 'error');
+      showNotification('🔒 Please sign in to reset data', 'error');
       return;
     }
 
@@ -14462,7 +14462,7 @@ function App() {
                   </p>
                   <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30 mb-6 max-w-md mx-auto">
                     <div className="text-sm text-green-200 space-y-2">
-                      <p>? Assign monthly supplies to each category</p>
+                      <p>💰 Assign monthly supplies to each category</p>
                       <p>? Track burn rate in real-time</p>
                       <p>? Visual warnings before overspending</p>
                       <p>? The discipline tool you've been missing!</p>
