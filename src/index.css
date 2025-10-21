@@ -30,38 +30,78 @@ code {
   transition: filter 0.3s ease-in-out;
 }
 
-/* 📱 MOBILE DATE INPUT FIX - Premium Visual Polish */
-/* Ensures date inputs match other input widths on mobile */
+/* 📱 MOBILE DATE INPUT FIX - ULTRA-AGGRESSIVE FIX */
+/* Forces date inputs to NEVER exceed button width on ANY device */
+input[type="date"] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  font-size: 16px !important; /* Prevents zoom on iOS */
+}
+
+/* Shrink and constrain calendar picker icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 16px !important;
+  max-width: 16px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* Force date text to ellipsis if too long */
+input[type="date"]::-webkit-datetime-edit {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: calc(100% - 24px) !important;
+  flex-shrink: 1 !important;
+  white-space: nowrap !important;
+}
+
+/* Constrain ALL internal wrappers */
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding: 0 !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-text {
+  padding: 0 2px !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-year-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field {
+  padding: 0 2px !important;
+  min-width: 0 !important;
+}
+
+/* Extra mobile constraints */
 @media (max-width: 768px) {
   input[type="date"] {
-    min-width: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    font-size: 16px !important; /* Prevents zoom on iOS */
+    font-size: 14px !important;
   }
   
-  /* Fix for date picker icon spacing on mobile */
   input[type="date"]::-webkit-calendar-picker-indicator {
-    margin-left: 4px;
-    margin-right: 0;
-    padding: 0;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
+    width: 14px !important;
+    height: 14px !important;
+    min-width: 14px !important;
   }
   
-  /* Ensure date input doesn't overflow */
   input[type="date"]::-webkit-datetime-edit {
-    padding: 0;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Constrain date field wrapper */
-  input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-    max-width: calc(100% - 30px);
+    max-width: calc(100% - 20px) !important;
   }
 }
 
