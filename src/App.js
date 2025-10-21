@@ -11517,7 +11517,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('?�� Upgrade error:', error);
+      console.error('❌ Upgrade error:', error);
       showNotification(
         error.message || 'Failed to process upgrade. Please try again.',
         'error'
@@ -11621,9 +11621,9 @@ function App() {
         
         // Show notification about processed recurring expenses
         if (newTransactions.length === 1) {
-          showNotification(`? Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
         } else {
-          showNotification(`? Processed ${newTransactions.length} recurring transactions`, 'success');
+          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
         }
       } catch (error) {
         console.error('Error processing recurring expenses:', error);
@@ -11644,7 +11644,7 @@ function App() {
     // 🔐 PRODUCTION Authentication Effect
   useEffect(() => {
     if (!auth) {
-      console.error('?�� Firebase auth not initialized');
+      console.error('❌ Firebase auth not initialized');
       setAuthLoading(false);
       setShowAuth(true);
       return;
@@ -11725,7 +11725,7 @@ function App() {
             const subscription = userDoc.subscription;
             
             if (subscription && subscription.plan && subscription.status === 'active') {
-              console.log('? Active subscription found:', subscription.plan);
+              console.log('✅ Active subscription found:', subscription.plan);
               setUserPlan(subscription.plan);
             } else {
               console.log('📋 No active subscription, using free tier');
@@ -11790,9 +11790,9 @@ function App() {
           console.log('🛡️ Creating daily auto-backup...');
           await createBackup(userId, data, 'daily-auto');
           localStorage.setItem(lastBackupKey, now.toString());
-          console.log('? Daily auto-backup created successfully');
+          console.log('✅ Daily auto-backup created successfully');
         } catch (error) {
-          console.error('?�� Daily auto-backup failed:', error);
+          console.error('❌ Daily auto-backup failed:', error);
         }
       }
     };
@@ -12009,7 +12009,7 @@ function App() {
       }
 
       const result = await response.json();
-      console.log('? Password updated successfully:', result);
+      console.log('✅ Password updated successfully:', result);
       
       // Now sign in with the new password
       await signInWithEmailAndPassword(auth, existingUserWithPayment.email, authForm.password);
@@ -12607,7 +12607,7 @@ function App() {
     debugLog('🔧 Reset Data: resetType =', resetType);
     
     if (!userId) {
-      console.error('?�� Reset Data: No userId available!');
+      console.error('❌ Reset Data: No userId available!');
       showNotification('🔒 Please sign in to reset data', 'error');
       return;
     }
@@ -12930,9 +12930,9 @@ function App() {
       const resetTypeMessages = {
         'financial-only': '? Financial data reset successfully!',
         'sample-financial': '? Sample financial data loaded! XP reset to 0.',
-        'whole-app': '? All data reset successfully! XP reset to 0.'
+        'whole-app': '🗑️ All data reset successfully! XP reset to 0.'
       };
-      showNotification(resetTypeMessages[resetType] || '? Data reset successfully!', 'success');
+      showNotification(resetTypeMessages[resetType] || '✅ Data reset successfully!', 'success');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -12943,9 +12943,9 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('?�� Reset Data Error:', error);
-      console.error('?�� Reset Data Error Details:', error.message, error.code);
-      showNotification(`?�� Failed to reset data: ${error.message}`, 'error');
+      console.error('❌ Reset Data Error:', error);
+      console.error('❌ Reset Data Error Details:', error.message, error.code);
+      showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
     }
   };
 
@@ -13029,7 +13029,7 @@ function App() {
           link.click();
           document.body.removeChild(link);
           
-          showNotification(`? Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
+          showNotification(`✅ Export complete! Downloaded ${result.data.fileName} (${result.data.filesCount} CSV files)`, 'success');
           
           // Track last export for reminder widget
           localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
@@ -13042,14 +13042,14 @@ function App() {
       // 💾 Fallback to JSON export (always works, no dependencies)
       console.log('📥 Using JSON export fallback...');
       exportUserData(data);
-      showNotification('? Backup downloaded as JSON!', 'success');
+      showNotification('💾 Backup downloaded as JSON!', 'success');
       
       // Track last export for reminder widget
       localStorage.setItem(`lastExport_${userId}`, Date.now().toString());
       
     } catch (error) {
       console.error('Export error:', error);
-      showNotification('?�� Export failed. Please try again.', 'error');
+      showNotification('❌ Export failed. Please try again.', 'error');
     }
   };
 
@@ -13106,9 +13106,9 @@ function App() {
           if (docSnap.exists()) {
             const restoredData = docSnap.data();
             setData(restoredData); // ? Update React state with restored data!
-            showNotification('? Data restored and loaded successfully!', 'success');
+            showNotification('✅ Data restored and loaded successfully!', 'success');
           } else {
-            showNotification('?��️ Data restored but reload failed. Please refresh page.', 'warning');
+            showNotification('⚠️ Data restored but reload failed. Please refresh page.', 'warning');
           }
         } catch (reloadError) {
           console.error('Error reloading data after recovery:', reloadError);
@@ -13145,7 +13145,7 @@ function App() {
 
     // CRITICAL FIX: Ensure data is valid before proceeding
     if (!data || typeof data !== 'object') {
-      console.error('?�� Quick Expense Error: data is invalid:', data);
+      console.error('❌ Quick Expense Error: data is invalid:', data);
       showNotification('Error: Data not loaded. Please refresh the page.', 'error');
       return;
     }
@@ -13209,7 +13209,7 @@ function App() {
       debugLog('? DEBUG: Data saved to Firebase and state updated');
       debugLog('🔍 DEBUG: Current data.recentTransactions:', updatedTransactions.slice(0, 3));
       
-      showNotification('?�� Quick expense logged!', 'success');
+      showNotification('✅ Quick expense logged!', 'success');
       
       // Award XP for logging expense
       try {
@@ -13234,7 +13234,7 @@ function App() {
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
   // };
-      console.error('?�� ERROR adding quick expense:', error);
+      console.error('❌ ERROR adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
   };
@@ -14098,7 +14098,7 @@ function App() {
                             try {
                               showNotification('💾 Creating backup...', 'info');
                               await createBackup(userId, data, 'manual-backup');
-                              showNotification('? Backup created successfully!', 'success');
+                              showNotification('✅ Backup created successfully!', 'success');
                             } catch (error) {
                               console.error('Manual backup failed:', error);
                               showNotification('Backup failed', 'error');
