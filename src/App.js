@@ -6969,8 +6969,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   Save Changes
                 </button>
               </div>
-            </Card>
-          </div>
+          </FixedModal>
         )}
       </div>
     );
@@ -8013,24 +8012,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         </Card>
       )}
 
-      {/* ?��️ EDIT RECURRING EXPENSE MODAL */}
+      {/* ✏️ EDIT RECURRING EXPENSE MODAL */}
       {editingRecurring && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg max-w-2xl w-full border border-purple-500/30">
-            <div className="flex justify-between items-center p-4 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Edit className="w-5 h-5 text-purple-400" />
-                Edit Recurring {editingRecurring.type === 'income' ? 'Income' : 'Expense'}
-              </h3>
-              <button
-                onClick={() => setEditingRecurring(null)}
-                className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+        <FixedModal
+          isOpen={!!editingRecurring}
+          onClose={() => setEditingRecurring(null)}
+          title={`Edit Recurring ${editingRecurring.type === 'income' ? 'Income' : 'Expense'}`}
+          size="lg"
+        >
+          <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               {/* Description */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
