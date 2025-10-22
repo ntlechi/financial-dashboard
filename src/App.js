@@ -4907,21 +4907,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
       {/* Add Item Modal */}
       {showAddItem && selectedBusiness && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-violet-500/30">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">
-                Add Item to {selectedBusiness.name}
-              </h3>
-              <button
-                onClick={() => setShowAddItem(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={showAddItem}
+          onClose={() => setShowAddItem(false)}
+          title={`Add Item to ${selectedBusiness.name}`}
+          size="md"
+        >
+          <div className="space-y-4">
               <div className="flex gap-2">
                 <button
                   onClick={() => setItemType('income')}
@@ -5004,27 +4996,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 Add {itemType === 'income' ? 'Income' : 'Expense'}
               </button>
             </div>
-          </Card>
-        </div>
+        </FixedModal>
       )}
 
-      {/* ?��️ Edit Item Modal */}
+      {/* ✏️ Edit Item Modal */}
       {editingItem && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-blue-500/30">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">
-                Edit {editingItem.type === 'income' ? 'Income' : 'Expense'} Item
-              </h3>
-              <button
-                onClick={() => setEditingItem(null)}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={!!editingItem}
+          onClose={() => setEditingItem(null)}
+          title={`Edit ${editingItem.type === 'income' ? 'Income' : 'Expense'} Item`}
+          size="md"
+        >
+          <div className="space-y-4">
               <div className="bg-gray-700/30 rounded-lg p-3 text-center">
                 <span className={`text-sm font-semibold ${editingItem.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
                   {editingItem.type === 'income' ? '📈 Income Item' : '📉 Expense Item'}
@@ -5090,28 +5073,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 Save Changes
               </button>
             </div>
-          </Card>
-        </div>
+        </FixedModal>
       )}
 
       {/* 🔄 Add Recurring Item Modal */}
       {showAddRecurring && selectedBusiness && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl border-blue-500/30">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Repeat className="w-5 h-5 text-blue-400" />
-                Add Recurring Item to {selectedBusiness.name}
-              </h3>
-              <button
-                onClick={() => setShowAddRecurring(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={showAddRecurring}
+          onClose={() => setShowAddRecurring(false)}
+          title={`Add Recurring Item to ${selectedBusiness.name}`}
+          size="lg"
+        >
+          <div className="space-y-4">
               {/* Type Selector */}
               <div className="flex gap-2">
                 <button
@@ -5277,8 +5250,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 Add Recurring {recurringType === 'income' ? 'Income' : 'Expense'}
               </button>
             </div>
-          </Card>
-        </div>
+        </FixedModal>
       )}
 
       {/* Delete Confirmation Modal */}
