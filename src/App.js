@@ -16016,9 +16016,7 @@ function App() {
                 Save Changes
               </button>
             </div>
-          </Card>
-          </div>
-        </div>
+        </FixedModal>
       )}
 
       {/* Reset Data Modal */}
