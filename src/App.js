@@ -10099,9 +10099,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 Create Trip
               </button>
             </div>
-          </Card>
-          </div>
-        </div>
+        </FixedModal>
       )}
 
       {/* Add Expense Modal */}
@@ -10481,9 +10479,7 @@ const TravelTab = ({ data, setData, userId }) => {
                  Save Changes
                </button>
              </div>
-           </Card>
-           </div>
-         </div>
+         </FixedModal>
        )}
 
       {/* Add Wishlist Country Modal */}
