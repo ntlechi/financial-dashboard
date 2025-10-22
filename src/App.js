@@ -3142,7 +3142,7 @@ const DebtPayoffCalculator = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
-                    <div className="text-2xl">?��</div>
+                    <div className="text-2xl">🎯</div>
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">50% Debt Reduction</div>
                       <div className="text-gray-400 text-xs">
@@ -3174,7 +3174,7 @@ const DebtPayoffCalculator = () => {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-400">?�� Avalanche:</span>
+                    <span className="text-purple-400">🔥 Avalanche:</span>
                     <span className="text-white">
                       {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
                       (${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()} interest)
@@ -6220,7 +6220,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             
             <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
               <div className="text-2xl font-bold text-amber-300">
-                {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
+                {((parseFloat(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)) || 0) / (parseFloat(actualTotalValue) || 1) * 100).toFixed(2)}%
               </div>
               <div className="text-sm text-amber-200">Portfolio Yield</div>
             </div>
