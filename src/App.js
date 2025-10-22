@@ -16604,9 +16604,7 @@ function App() {
                   </div>
                 )}
               </div>
-            </Card>
-          </div>
-        </div>
+        </FixedModal>
       )}
 
       {/* 🛡️ DATA IMPORT MODAL */}
