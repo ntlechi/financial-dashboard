@@ -16504,8 +16504,7 @@ function App() {
                 Send {feedbackType === 'bug' ? 'Bug Report' : 'Feature Request'}
               </button>
             </div>
-          </Card>
-        </div>
+        </FixedModal>
       )}
 
       {/* 🎖️ RANK-UP CELEBRATION MODAL */}
