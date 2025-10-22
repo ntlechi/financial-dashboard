@@ -16528,11 +16528,13 @@ function App() {
 
       {/* 📓 FREEDOM JOURNAL MODAL */}
       {showJournalModal && selectedTripForJournal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-2xl my-auto">
-            <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">📓 Freedom Journal - {selectedTripForJournal.name}</h3>
+        <FixedModal
+          isOpen={showJournalModal}
+          onClose={handleCloseJournal}
+          title={`📓 Freedom Journal - ${selectedTripForJournal.name}`}
+          size="lg"
+        >
+          <div className="max-h-[70vh] overflow-y-auto">
                 <button
                   onClick={handleCloseJournal}
                   className="text-gray-400 hover:text-white"
