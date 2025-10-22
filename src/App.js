@@ -14736,7 +14736,7 @@ function App() {
                   </button>
                 </div>
               </div>
-            </div>
+            </FixedModal>
           )}
         </>
       )}
@@ -16176,8 +16176,7 @@ function App() {
                 Reset Data
               </button>
             </div>
-          </Card>
-        </div>
+        </FixedModal>
       )}
 
       {/* Subscription Manager Modal */}
@@ -16540,9 +16539,7 @@ function App() {
                 onSaveEntry={handleSaveJournalEntry}
                 onClose={handleCloseJournal}
               />
-            </Card>
-          </div>
-        </div>
+        </FixedModal>
       )}
 
       {/* 🎯 MISSION COMPLETE MODAL */}
