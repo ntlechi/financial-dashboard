@@ -8185,8 +8185,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 Save Changes
               </button>
             </div>
-          </div>
-        </div>
+        </FixedModal>
       )}
 
       {/* 🔍 UPGRADE 2: Advanced Search & Filter System (Mobile Optimized) */}
@@ -8491,8 +8490,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 Save Changes
               </button>
             </div>
-          </Card>
-        </div>
+        </FixedModal>
       )}
     </div>
   );
