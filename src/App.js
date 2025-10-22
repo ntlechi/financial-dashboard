@@ -10109,32 +10109,16 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* Add Expense Modal */}
       {showExpenseModal && selectedTrip && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-green-500/30">
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-white">Add Expense</h3>
-                <p className="text-sm text-gray-400">{selectedTrip.name}</p>
-              </div>
-              <button
-                onClick={() => {
-                  setShowExpenseModal(false);
-                  setSelectedTrip(null);
-                  // Force viewport cleanup after modal close
-                  setTimeout(() => {
-                    window.scrollTo(0, 0);
-                    document.body.style.overflow = '';
-                    document.body.style.position = '';
-                    document.body.style.height = '';
-                  }, 100);
-                }}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={showExpenseModal}
+          onClose={() => {
+            setShowExpenseModal(false);
+            setSelectedTrip(null);
+          }}
+          title={`Add Expense - ${selectedTrip.name}`}
+          size="md"
+        >
+          <div className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Description</label>
                 <input
@@ -10507,27 +10491,16 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* Add Wishlist Country Modal */}
       {showAddWishlistCountry && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-purple-500/30">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                Add Country to Wishlist
-              </h3>
-              <button
-                onClick={() => {
-                  setShowAddWishlistCountry(false);
-                  setWishlistCountryInput('');
-                }}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={showAddWishlistCountry}
+          onClose={() => {
+            setShowAddWishlistCountry(false);
+            setWishlistCountryInput('');
+          }}
+          title="⭐ Add Country to Wishlist"
+          size="md"
+        >
+          <div className="space-y-4">
               <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
                 <p className="text-sm text-purple-200 mb-2">
                   ?�� <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
@@ -14778,39 +14751,21 @@ function App() {
 
       {/* Card Editing Modals */}
       {editingCard && (
-        <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
-          onClick={(e) => {
-            // Close if clicking backdrop
-            if (e.target === e.currentTarget) {
-              closeCardEditor();
-            }
-          }}
-        >
-          <div className="w-full max-w-2xl my-auto">
-            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">
-                Edit {editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
+        <FixedModal
+          isOpen={!!editingCard}
+          onClose={closeCardEditor}
+          title={`Edit ${editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
                      editingCard === 'savingsRateTarget' ? 'Savings Rate Target' :
                      editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
                      editingCard === 'creditScore' ? 'Credit Score' :
                      editingCard === 'netWorth' ? 'Net Worth' :
                      editingCard === 'cashOnHand' ? 'Survival Runway' :
                      editingCard === 'debt' ? 'Debt Management' :
-
                      editingCard === 'registeredAccounts' ? 'Registered Accounts' :
-                     editingCard === 'goals' ? 'Financial Goals' : editingCard}
-              </h3>
-              <button
-                onClick={closeCardEditor}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+                     editingCard === 'goals' ? 'Financial Goals' : editingCard}`}
+          size="lg"
+        >
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto">
               {/* Financial Freedom Goal Modal */}
               {editingCard === 'financialFreedom' && (
                 <>
@@ -16665,20 +16620,13 @@ function App() {
 
       {/* 🛡️ DATA IMPORT MODAL */}
       {showDataImportModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-2xl my-auto">
-            <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">🛡️ Import Data</h3>
-                <button
-                  onClick={() => setShowDataImportModal(false)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
+        <FixedModal
+          isOpen={showDataImportModal}
+          onClose={() => setShowDataImportModal(false)}
+          title="🛡️ Import Data"
+          size="lg"
+        >
+          <div className="space-y-4">
                 <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-blue-400">?��️</span>
