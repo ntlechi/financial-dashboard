@@ -5365,16 +5365,20 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
       {/* 🎉 MILESTONE CELEBRATION OVERLAY */}
       {showMilestoneCelebration && celebratingMilestone && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 pointer-events-none">
-          <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-8 shadow-2xl transform animate-bounce">
+        <FixedModal
+          isOpen={showMilestoneCelebration}
+          onClose={() => setShowMilestoneCelebration(false)}
+          title="🎉 Milestone Unlocked!"
+          size="md"
+        >
+          <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-8 shadow-2xl">
             <div className="text-center">
               <div className="text-6xl mb-4">{celebratingMilestone.icon}</div>
-              <h3 className="text-2xl font-bold text-white mb-2">Milestone Unlocked!</h3>
               <p className="text-xl text-amber-100">{celebratingMilestone.title}</p>
               <p className="text-sm text-amber-200 mt-2">{celebratingMilestone.description}</p>
             </div>
           </div>
-        </div>
+        </FixedModal>
       )}
     </div>
   );
