@@ -16653,9 +16653,7 @@ function App() {
                   </label>
                 </div>
               </div>
-            </Card>
-          </div>
-        </div>
+        </FixedModal>
       )}
     </div>
   );
