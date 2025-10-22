@@ -3878,7 +3878,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const handleAddItem = async () => {
     if (!newItem.description || !newItem.amount || !selectedBusiness) return;
     
-    const amount = parseFloat(newItem.amount);
+    const amount = parseFloat(newItem.amount) || 0;
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount greater than 0');
+      return;
+    }
     const item = {
       id: Date.now(),
       ...newItem,
@@ -3892,13 +3896,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         
         if (itemType === 'income') {
           updatedBusiness.incomeItems = [item, ...business.incomeItems];
-          updatedBusiness.totalIncome = business.totalIncome + amount;
+          const currentTotal = parseFloat(business.totalIncome) || 0;
+          updatedBusiness.totalIncome = currentTotal + amount;
         } else {
           updatedBusiness.expenseItems = [item, ...business.expenseItems];
-          updatedBusiness.totalExpenses = business.totalExpenses + amount;
+          const currentTotal = parseFloat(business.totalExpenses) || 0;
+          updatedBusiness.totalExpenses = currentTotal + amount;
         }
         
-        updatedBusiness.netProfit = updatedBusiness.totalIncome - updatedBusiness.totalExpenses;
+        // Calculate net profit with safety checks
+        const totalIncome = parseFloat(updatedBusiness.totalIncome) || 0;
+        const totalExpenses = parseFloat(updatedBusiness.totalExpenses) || 0;
+        updatedBusiness.netProfit = totalIncome - totalExpenses;
         return updatedBusiness;
       }
       return business;
@@ -4037,8 +4046,20 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const handleEditItem = async () => {
     if (!editingItem) return;
 
-    const { businessId, itemId, type, oldAmount } = editingItem;
-    const newAmount = parseFloat(editingItem.amount);
+    const { businessId, itemId, type } = editingItem;
+    const oldAmount = parseFloat(editingItem.oldAmount) || 0;
+    const newAmount = parseFloat(editingItem.amount) || 0;
+    
+    if (isNaN(newAmount) || newAmount <= 0) {
+      alert('Please enter a valid amount greater than 0');
+      return;
+    }
+    
+    if (isNaN(oldAmount)) {
+      console.error('Invalid oldAmount:', editingItem.oldAmount);
+      alert('Error: Invalid previous amount. Please refresh and try again.');
+      return;
+    }
 
     const updatedBusinesses = data.businesses.map(business => {
       if (business.id === businessId) {
@@ -4065,11 +4086,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               date: editingItem.date
             } : item
           );
-          // Recalculate total expenses
-          updatedBusiness.totalExpenses = business.totalExpenses - oldAmount + newAmount;
+          // Recalculate total expenses (with safety checks)
+          const currentTotal = parseFloat(business.totalExpenses) || 0;
+          updatedBusiness.totalExpenses = currentTotal - oldAmount + newAmount;
         }
         
-        updatedBusiness.netProfit = updatedBusiness.totalIncome - updatedBusiness.totalExpenses;
+        // Calculate net profit with safety checks
+        const totalIncome = parseFloat(updatedBusiness.totalIncome) || 0;
+        const totalExpenses = parseFloat(updatedBusiness.totalExpenses) || 0;
+        updatedBusiness.netProfit = totalIncome - totalExpenses;
         return updatedBusiness;
       }
       return business;
@@ -4101,7 +4126,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const handleAddRecurringItem = async () => {
     if (!newRecurringItem.name || !newRecurringItem.amount || !selectedBusiness) return;
 
-    const amount = parseFloat(newRecurringItem.amount);
+    const amount = parseFloat(newRecurringItem.amount) || 0;
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount greater than 0');
+      return;
+    }
     const recurringItem = {
       id: Date.now(),
       ...newRecurringItem,
