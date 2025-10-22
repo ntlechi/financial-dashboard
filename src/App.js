@@ -10577,15 +10577,19 @@ const TravelTab = ({ data, setData, userId }) => {
                 <Plus className="w-5 h-5" />
                 Add to Wishlist
               </button>
-            </div>
-          </Card>
-        </div>
+             </div>
+        </FixedModal>
       )}
 
              {/* Travel Runway Settings Modal */}
       {showRunwayModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
-          <Card className="w-full max-w-sm sm:max-w-2xl border-blue-500/30 my-4 sm:my-8 max-h-[90vh] overflow-y-auto">
+        <FixedModal
+          isOpen={showRunwayModal}
+          onClose={() => setShowRunwayModal(false)}
+          title="Travel Runway Settings"
+          size="lg"
+        >
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-3 sm:mb-4">
                  <h3 className="text-lg sm:text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
                <button
