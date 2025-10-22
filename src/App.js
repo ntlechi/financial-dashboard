@@ -14737,7 +14737,6 @@ function App() {
                     {editingMoment ? 'Update Moment' : 'Create Moment'}
                   </button>
                 </div>
-              </div>
             </FixedModal>
           )}
         </>
