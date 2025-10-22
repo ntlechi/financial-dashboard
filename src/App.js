@@ -6838,8 +6838,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   Add Holding
                 </button>
               </div>
-            </Card>
-          </div>
+          </FixedModal>
         )}
 
         {/* Edit Holding Modal */}
