@@ -1612,7 +1612,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     <div className={`text-xs ${textColor} mb-1`}>Annual Goal</div>
                     <div className="text-lg font-bold text-white">${(parseFloat(account.goal) || 0).toLocaleString()}</div>
                     <div className="text-[10px] text-gray-400 mt-1">
-                      {isGoalReached ? '? Goal Reached!' : `$${(parseFloat(account.goal) || 0) - (parseFloat(account.contributed) || 0)).toLocaleString()} to go`}
+                      {isGoalReached ? '✓ Goal Reached!' : `$${((parseFloat(account.goal) || 0) - (parseFloat(account.contributed) || 0)).toLocaleString()} to go`}
                     </div>
                   </div>
                 )}
