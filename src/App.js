@@ -14660,22 +14660,13 @@ function App() {
 
           {/* 💫 Moments Modal - Add/Edit Moments */}
           {showMomentModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <div className="bg-gray-800 rounded-lg w-full max-w-2xl border border-purple-500/30 shadow-xl">
-                <div className="flex justify-between items-center p-6 border-b border-gray-700">
-                  <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-                    <Award className="w-6 h-6 text-purple-400" />
-                    {editingMoment ? 'Edit Moment' : 'Create New Moment'}
-                  </h3>
-                  <button
-                    onClick={() => setShowMomentModal(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+            <FixedModal
+              isOpen={showMomentModal}
+              onClose={() => setShowMomentModal(false)}
+              title={editingMoment ? '✏️ Edit Moment' : '💫 Create New Moment'}
+              size="lg"
+            >
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                   {/* Title */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
