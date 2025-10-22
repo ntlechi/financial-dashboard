@@ -10246,14 +10246,22 @@ const TravelTab = ({ data, setData, userId }) => {
                  Add Expense
                </button>
              </div>
-           </Card>
-         </div>
-       )}
+        </FixedModal>
+      )}
 
        {/* 💫 NEW: Add Moment Modal */}
        {showMomentModal && momentTrip && (
-         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-           <Card className="w-full max-w-lg border-amber-500/30">
+         <FixedModal
+           isOpen={showMomentModal}
+           onClose={() => {
+             setShowMomentModal(false);
+             setMomentText('');
+             setMomentTrip(null);
+           }}
+           title={`💫 Capture a Moment - ${momentTrip.name}`}
+           size="md"
+         >
+           <div className="space-y-4">
              <div className="flex justify-between items-center mb-4">
                <div>
                  <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>💫 Add Travel Moment</h3>
