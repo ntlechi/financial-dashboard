@@ -6098,7 +6098,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()}
           </p>
           <p className="text-sm text-gray-300 mt-2">
-            {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / data.investments.totalValue * 100).toFixed(2)}% yield
+            {((parseFloat(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)) || 0) / (parseFloat(data.investments.totalValue) || 1) * 100).toFixed(2)}% yield
           </p>
         </Card>
         
