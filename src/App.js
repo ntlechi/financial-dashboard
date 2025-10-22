@@ -10740,6 +10740,7 @@ const TravelTab = ({ data, setData, userId }) => {
                  Save Settings
                </button>
              </div>
+           </div>
         </FixedModal>
        )}
      </div>
