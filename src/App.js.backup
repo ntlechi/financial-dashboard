@@ -1273,8 +1273,8 @@ const GoalsCard = ({ data, onEdit }) => {
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between text-sm text-gray-300 mb-1">
-                      <span>${(parseFloat(goal.currentAmount) || 0).toLocaleString()}</span>
-                      <span>${(parseFloat(goal.targetAmount) || 0).toLocaleString()}</span>
+                      <span>${goal.currentAmount?.toLocaleString() || '0'}</span>
+                      <span>${goal.targetAmount?.toLocaleString() || '0'}</span>
                     </div>
                     <ProgressBar 
                       value={goal.currentAmount || 0} 
@@ -1285,7 +1285,7 @@ const GoalsCard = ({ data, onEdit }) => {
                   
                   <div className="text-center">
                     <div className={`text-lg font-bold ${isComplete ? 'text-green-400' : 'text-white'}`}>
-                      {isComplete ? '🎉 Complete!' : `$${(parseFloat(remaining) || 0).toLocaleString()}`}
+                      {isComplete ? '🎉 Complete!' : `$${remaining.toLocaleString()}`}
                     </div>
                     <div className="text-xs text-gray-400">
                       {isComplete ? 'Goal achieved!' : 'remaining'}
@@ -1416,7 +1416,7 @@ const NetWorthCard = ({ data, onEdit }) => {
         <Edit className="w-4 h-4" />
       </button>
     </div>
-    <p className="text-5xl font-extrabold text-white stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white stealth-target">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center">
@@ -1426,12 +1426,12 @@ const NetWorthCard = ({ data, onEdit }) => {
       <div className="mt-3 flex gap-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#84CC16'}}></div>
-          <span className="text-sm text-gray-300">Assets: <span className="stealth-target">${(parseFloat(totalAssets) || 0).toLocaleString()}</span></span>
+          <span className="text-sm text-gray-300">Assets: <span className="stealth-target">${totalAssets.toLocaleString()}</span></span>
         </div>
         {totalLiabilities > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#F43F5E'}}></div>
-            <span className="text-sm text-gray-300">Liabilities: <span className="stealth-target">${(parseFloat(totalLiabilities) || 0).toLocaleString()}</span></span>
+            <span className="text-sm text-gray-300">Liabilities: <span className="stealth-target">${totalLiabilities.toLocaleString()}</span></span>
           </div>
         )}
       </div>
@@ -1454,7 +1454,7 @@ const NetWorthCard = ({ data, onEdit }) => {
                 ).map(item => (
                   <div key={item.id} className="flex justify-between items-center text-xs">
                     <span className="text-white font-medium truncate mr-1">{item.name}</span>
-                    <span className="text-green-400 font-semibold whitespace-nowrap stealth-target">${(parseFloat(item.value) || 0).toLocaleString()}</span>
+                    <span className="text-green-400 font-semibold whitespace-nowrap stealth-target">${item.value.toLocaleString()}</span>
                   </div>
                 ))}
                 {data.breakdown.filter(item => item.type === 'asset').length > maxVisibleItems && (
@@ -1484,7 +1484,7 @@ const NetWorthCard = ({ data, onEdit }) => {
                 ).map(item => (
                   <div key={item.id} className="flex justify-between items-center text-xs">
                     <span className="text-white font-medium truncate mr-1">{item.name}</span>
-                    <span className="text-red-400 font-semibold whitespace-nowrap stealth-target">-${Math.abs(parseFloat(item.value) || 0).toLocaleString()}</span>
+                    <span className="text-red-400 font-semibold whitespace-nowrap stealth-target">-${Math.abs(item.value).toLocaleString()}</span>
                   </div>
                 ))}
                 {data.breakdown.filter(item => item.type === 'liability').length > maxVisibleItems && (
@@ -1586,15 +1586,15 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
               <div className="space-y-4">
                 <div className={`text-center ${bgColor} rounded-lg p-4 border ${borderColor}`}>
                   <div className="text-3xl font-bold text-white mb-1">
-                    ${(parseFloat(account.contributed) || 0).toLocaleString()}
+                    ${account.contributed.toLocaleString()}
                   </div>
                   <div className={`text-sm ${textColor}`}>Total Contributed</div>
                 </div>
                 
                 <div>
                   <div className="flex justify-between text-xs text-gray-300 mb-2">
-                    <span>Contributed: ${(parseFloat(roomUsed) || 0).toLocaleString()}</span>
-                    <span>Limit: ${(parseFloat(account.limit) || 0).toLocaleString()}</span>
+                    <span>Contributed: ${roomUsed.toLocaleString()}</span>
+                    <span>Limit: ${account.limit.toLocaleString()}</span>
                   </div>
                   <ProgressBar 
                     value={roomUsed} 
@@ -1603,16 +1603,16 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     height="h-3"
                   />
                   <div className={`text-xs ${textColor} mt-2 text-center font-semibold`}>
-                    ${(parseFloat(roomAvailable) || 0).toLocaleString()} room remaining
+                    ${roomAvailable.toLocaleString()} room remaining
                   </div>
                 </div>
                 
                 {account.goal && account.goal > 0 && (
                   <div className={`${bgColor} border ${borderColor} rounded-lg p-3 text-center`}>
                     <div className={`text-xs ${textColor} mb-1`}>Annual Goal</div>
-                    <div className="text-lg font-bold text-white">${(parseFloat(account.goal) || 0).toLocaleString()}</div>
+                    <div className="text-lg font-bold text-white">${account.goal.toLocaleString()}</div>
                     <div className="text-[10px] text-gray-400 mt-1">
-                      {isGoalReached ? '? Goal Reached!' : `$${(parseFloat(account.goal) || 0) - (parseFloat(account.contributed) || 0)).toLocaleString()} to go`}
+                      {isGoalReached ? '? Goal Reached!' : `$${(account.goal - account.contributed).toLocaleString()} to go`}
                     </div>
                   </div>
                 )}
@@ -1626,11 +1626,11 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
         <div className="mt-6 bg-blue-900/30 rounded-lg p-4 border border-blue-500/30">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-blue-400">${(parseFloat(totalContributed) || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-blue-400">${totalContributed.toLocaleString()}</div>
               <div className="text-xs text-gray-300 mt-1">Total Contributed</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">${(parseFloat(totalRoom) || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">${totalRoom.toLocaleString()}</div>
               <div className="text-xs text-gray-300 mt-1">Total Room Available</div>
             </div>
             <div>
@@ -1686,12 +1686,12 @@ const DebtCard = ({ data, onEdit }) => {
         <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
         Total Debt
       </h2>
-      <p className="text-5xl font-extrabold text-white">${(parseFloat(totalDebt) || 0).toLocaleString()}</p>
+      <p className="text-5xl font-extrabold text-white">${totalDebt.toLocaleString()}</p>
       
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-rose-800/20 rounded-lg p-3">
           <p className="text-rose-300 text-sm">Min. Payment</p>
-          <p className="text-white font-bold">${(parseFloat(totalMinPayment) || 0).toLocaleString()}/mo</p>
+          <p className="text-white font-bold">${totalMinPayment.toLocaleString()}/mo</p>
         </div>
         <div className="bg-orange-800/20 rounded-lg p-3">
           <p className="text-orange-300 text-sm">Avg. Interest</p>
@@ -1713,7 +1713,7 @@ const DebtCard = ({ data, onEdit }) => {
                   {account.interestRate}% APR • Min: ${account.minPayment}
                 </div>
               </div>
-              <span className="text-red-400 font-semibold">${(parseFloat(account.balance) || 0).toLocaleString()}</span>
+              <span className="text-red-400 font-semibold">${account.balance.toLocaleString()}</span>
             </div>
           ))}
           {data.accounts.length > 3 && (
@@ -1811,7 +1811,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     
     {/* 💰 Cash Amount (Secondary) */}
     <p className="text-lg text-gray-300 mb-4 stealth-target">
-      ${(parseFloat(data.total) || 0).toLocaleString()} cash on hand
+      ${data.total.toLocaleString()} cash on hand
     </p>
     
     {/* 📊 RUNWAY PROGRESS BAR */}
@@ -1844,7 +1844,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
               <span className="text-white font-medium">{account.name}</span>
               <span className="text-gray-400 ml-2 text-[10px] sm:text-xs">({account.type})</span>
             </div>
-            <span className="text-teal-300 font-semibold stealth-target">${(parseFloat(account.balance) || 0).toLocaleString()}</span>
+            <span className="text-teal-300 font-semibold stealth-target">${account.balance.toLocaleString()}</span>
           </div>
         ))}
         {data.accounts.length > maxVisibleAccounts && (
@@ -1863,7 +1863,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
         <span>{data.accounts.length} accounts</span>
         <span>•</span>
-        <span>Current month expenses: <span className="stealth-target">${(parseFloat(avgMonthlyExpenses) || 0).toLocaleString()}/mo</span></span>
+        <span>Current month expenses: <span className="stealth-target">${avgMonthlyExpenses.toLocaleString()}/mo</span></span>
       </div>
     </div>
   </Card>
@@ -1958,7 +1958,7 @@ const IncomeCard = ({ data, viewMode }) => {
       <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
       {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
     </h2>
-    <p className="text-5xl font-extrabold text-white stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white stealth-target">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center flex-1">
@@ -1971,7 +1971,7 @@ const IncomeCard = ({ data, viewMode }) => {
           return (
             <div key={source.id} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
-              <span className="text-xs text-gray-300">{source.name}: <span className="stealth-target">${(parseFloat(source.amount) || 0).toLocaleString()}</span></span>
+              <span className="text-xs text-gray-300">{source.name}: <span className="stealth-target">${source.amount.toLocaleString()}</span></span>
             </div>
           );
         })}
@@ -2081,7 +2081,7 @@ const ExpensesCard = ({ data, viewMode }) => {
       <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
       {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
     </h2>
-    <p className="text-5xl font-extrabold text-white stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</p>
+    <p className="text-5xl font-extrabold text-white stealth-target">${data.total.toLocaleString()}</p>
     
     {/* Donut Chart */}
     <div className="mt-4 flex flex-col items-center flex-1">
@@ -2094,7 +2094,7 @@ const ExpensesCard = ({ data, viewMode }) => {
           return (
             <div key={cat.id} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: vibrantColors[idx % vibrantColors.length] }}></div>
-              <span className="text-xs text-gray-300">{cat.name}: <span className="stealth-target">${(parseFloat(cat.amount) || 0).toLocaleString()}</span></span>
+              <span className="text-xs text-gray-300">{cat.name}: <span className="stealth-target">${cat.amount.toLocaleString()}</span></span>
             </div>
           );
         })}
@@ -2322,7 +2322,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       <p className={`text-4xl sm:text-5xl font-extrabold mb-3 ${isPositive ? 'text-lime-500' : 'text-rose-500'}`} style={{
         color: isPositive ? '#84CC16' : '#F43F5E'
       }}>
-        <span className="stealth-target">{isPositive ? '+' : '-'}${Math.abs(parseFloat(data.total) || 0).toLocaleString()}</span>
+        <span className="stealth-target">{isPositive ? '+' : '-'}${Math.abs(data.total).toLocaleString()}</span>
       </p>
       
       {/* 💰 COMPONENT BREAKDOWN - Strategic Intelligence */}
@@ -2330,12 +2330,12 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
           <span className="text-gray-300">Income:</span>
-          <span className="text-white font-semibold stealth-target">${(parseFloat(monthlyIncome) || 0).toLocaleString()}</span>
+          <span className="text-white font-semibold stealth-target">${monthlyIncome.toLocaleString()}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-400"></div>
           <span className="text-gray-300">Expenses:</span>
-          <span className="text-white font-semibold stealth-target">${(parseFloat(monthlyExpenses) || 0).toLocaleString()}</span>
+          <span className="text-white font-semibold stealth-target">${monthlyExpenses.toLocaleString()}</span>
         </div>
       </div>
       
@@ -2670,7 +2670,7 @@ const FinancialFreedomCalculator = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-600/30">
             <h4 className="text-emerald-400 font-semibold mb-2">Financial Independence</h4>
-            <div className="text-2xl font-bold text-white">${(parseFloat(target) || 0).toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${target.toLocaleString()}</div>
             <div className="text-sm text-gray-300">Target amount needed</div>
             {/* Progress Bar Under Card */}
             <div className="mt-3">
@@ -2688,12 +2688,12 @@ const FinancialFreedomCalculator = () => {
           </div>
           <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
             <h4 className="text-blue-400 font-semibold mb-2">Monthly Passive Needed</h4>
-            <div className="text-2xl font-bold text-white">${(parseFloat(monthlyPassiveNeeded) || 0).toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${monthlyPassiveNeeded.toLocaleString()}</div>
             <div className="text-sm text-gray-300">To cover expenses</div>
           </div>
           <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
             <h4 className="text-purple-400 font-semibold mb-2">4% Rule Amount</h4>
-            <div className="text-2xl font-bold text-white">${Math.round(parseFloat(requiredAmountFor4Percent) || 0).toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${Math.round(requiredAmountFor4Percent).toLocaleString()}</div>
             <div className="text-sm text-gray-300">For current lifestyle</div>
           </div>
         </div>
@@ -3107,11 +3107,11 @@ const DebtPayoffCalculator = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-400">Total Debt</p>
-                    <p className="text-red-400 font-bold text-lg">${(parseFloat(totalDebt) || 0).toLocaleString()}</p>
+                    <p className="text-red-400 font-bold text-lg">${totalDebt.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-gray-400">Min Payments</p>
-                    <p className="text-white font-bold">${(parseFloat(totalMinPayment) || 0).toLocaleString()}/mo</p>
+                    <p className="text-white font-bold">${totalMinPayment.toLocaleString()}/mo</p>
                   </div>
                   <div>
                     <p className="text-gray-400">Payoff Time</p>
@@ -3121,7 +3121,7 @@ const DebtPayoffCalculator = () => {
                   </div>
                   <div>
                     <p className="text-gray-400">Interest Paid</p>
-                    <p className="text-orange-400 font-bold">${Math.round(parseFloat(currentResult.totalInterestPaid) || 0).toLocaleString()}</p>
+                    <p className="text-orange-400 font-bold">${Math.round(currentResult.totalInterestPaid).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -3170,19 +3170,19 @@ const DebtPayoffCalculator = () => {
                     <span className="text-blue-400">🏔️ Snowball:</span>
                     <span className="text-white">
                       {snowballResult.totalYears}y {snowballResult.remainingMonths}m 
-                      (${Math.round(parseFloat(snowballResult.totalInterestPaid) || 0).toLocaleString()} interest)
+                      (${Math.round(snowballResult.totalInterestPaid).toLocaleString()} interest)
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-purple-400">?�� Avalanche:</span>
                     <span className="text-white">
                       {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
-                      (${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()} interest)
+                      (${Math.round(avalancheResult.totalInterestPaid).toLocaleString()} interest)
                     </span>
                   </div>
                   <div className="border-t border-gray-600 pt-2 mt-2">
                     <div className="text-emerald-400 font-semibold">
-                      💰 Avalanche saves: ${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()}
+                      💰 Avalanche saves: ${Math.round(snowballResult.totalInterestPaid - avalancheResult.totalInterestPaid).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -3216,7 +3216,7 @@ const DebtPayoffCalculator = () => {
                 <div key={debt.id}>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-300">{debt.name}</span>
-                    <span className="text-red-400">${(parseFloat(debt.balance) || 0).toLocaleString()}</span>
+                    <span className="text-red-400">${debt.balance.toLocaleString()}</span>
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-2">
                     <div 
@@ -3381,14 +3381,14 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         
         <div className="bg-green-900/20 rounded-xl p-6 border-2 border-green-800/40">
           <label className="block text-green-400 text-lg font-bold mb-4">Monthly Income</label>
-          <div className="text-3xl font-bold text-white mb-2">${(parseFloat(income) || 0).toLocaleString()}</div>
+          <div className="text-3xl font-bold text-white mb-2">${income.toLocaleString()}</div>
           <p className="text-gray-400">Ready for budgeting</p>
         </div>
         
         <div className="bg-blue-900/20 rounded-xl p-6 border-2 border-blue-800/40">
           <label className="block text-blue-400 text-lg font-bold mb-4">After Budgeting</label>
           <div className={`text-3xl font-bold mb-2 ${remainingBalance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-            ${Math.abs(parseFloat(remainingBalance) || 0).toLocaleString()}
+            ${Math.abs(remainingBalance).toLocaleString()}
           </div>
           <p className="text-gray-400">
             {remainingBalance >= 0 ? 'Remaining balance' : 'Over budget by'}
@@ -3427,7 +3427,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
               </div>
             </div>
             <p className="text-gray-300 mb-4">Essential expenses</p>
-            <div className="text-4xl font-bold text-white">${(parseFloat(fiftyThirtyTwenty.needs) || 0).toLocaleString()}</div>
+            <div className="text-4xl font-bold text-white">${fiftyThirtyTwenty.needs.toLocaleString()}</div>
           </div>
           <div className="bg-yellow-900/30 rounded-xl p-6 border-2 border-yellow-800/40">
             <div className="flex items-center justify-between mb-3">
@@ -3445,7 +3445,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
               </div>
             </div>
             <p className="text-gray-300 mb-4">Discretionary spending</p>
-            <div className="text-4xl font-bold text-white">${(parseFloat(fiftyThirtyTwenty.wants) || 0).toLocaleString()}</div>
+            <div className="text-4xl font-bold text-white">${fiftyThirtyTwenty.wants.toLocaleString()}</div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40">
             <div className="flex items-center justify-between mb-3">
@@ -3463,7 +3463,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
               </div>
             </div>
             <p className="text-gray-300 mb-4">Future & investments</p>
-            <div className="text-4xl font-bold text-white">${(parseFloat(fiftyThirtyTwenty.savings) || 0).toLocaleString()}</div>
+            <div className="text-4xl font-bold text-white">${fiftyThirtyTwenty.savings.toLocaleString()}</div>
           </div>
         </div>
       )}
@@ -3472,7 +3472,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="bg-green-900/30 rounded-xl p-4 border-2 border-green-800/40 text-center">
             <h4 className="text-sm font-bold text-green-400 mb-2">🏠 Necessities</h4>
-            <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.necessities) || 0).toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mb-1">${sixJars.necessities.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
                 type="number"
@@ -3487,7 +3487,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-purple-900/30 rounded-xl p-4 border-2 border-purple-800/40 text-center">
             <h4 className="text-sm font-bold text-purple-400 mb-2">💰 Freedom</h4>
-            <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.financialFreedom) || 0).toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mb-1">${sixJars.financialFreedom.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
                 type="number"
@@ -3502,7 +3502,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-blue-900/30 rounded-xl p-4 border-2 border-blue-800/40 text-center">
             <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 Savings</h4>
-            <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.longTermSavings) || 0).toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mb-1">${sixJars.longTermSavings.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
                 type="number"
@@ -3517,7 +3517,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-amber-900/30 rounded-xl p-4 border-2 border-amber-800/40 text-center">
             <h4 className="text-sm font-bold text-amber-400 mb-2">📚 Education</h4>
-            <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.education) || 0).toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mb-1">${sixJars.education.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
                 type="number"
@@ -3532,7 +3532,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-pink-900/30 rounded-xl p-4 border-2 border-pink-800/40 text-center">
             <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 Play</h4>
-            <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.play) || 0).toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mb-1">${sixJars.play.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
                 type="number"
@@ -3547,7 +3547,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-teal-900/30 rounded-xl p-4 border-2 border-teal-800/40 text-center">
             <h4 className="text-sm font-bold text-teal-400 mb-2">?��️ Give</h4>
-            <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.give) || 0).toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mb-1">${sixJars.give.toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
                 type="number"
@@ -4362,7 +4362,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <TrendingUp className="w-4 h-4 mr-2" />
             Side Hustle Income
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${(parseFloat(freedomMetrics.sideHustleIncomeThisMonth) || 0).toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.sideHustleIncomeThisMonth.toLocaleString()}</p>
           <p className="text-xs text-teal-300 mt-1">This Month</p>
         </Card>
         
@@ -4371,7 +4371,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <ArrowDown className="w-4 h-4 mr-2" />
             Side Hustle Expenses
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${(parseFloat(freedomMetrics.sideHustleExpensesThisMonth) || 0).toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.sideHustleExpensesThisMonth.toLocaleString()}</p>
           <p className="text-xs text-rose-300 mt-1">This Month</p>
         </Card>
         
@@ -4444,7 +4444,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </div>
             </div>
           </h3>
-          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${(parseFloat(freedomMetrics.totalPassiveIncome) || 0).toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${freedomMetrics.totalPassiveIncome.toLocaleString()}</p>
           <p className="text-xs text-amber-300 mt-1">Last 30 Days</p>
         </Card>
         
@@ -4537,11 +4537,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
             <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
               <div className="text-sm text-amber-300 mb-1">Passive Income (30 days)</div>
-              <div className="text-2xl font-bold text-amber-400">${(parseFloat(freedomMetrics.totalPassiveIncome) || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-amber-400">${freedomMetrics.totalPassiveIncome.toLocaleString()}</div>
             </div>
             <div className="bg-rose-900/20 rounded-lg p-4 border border-rose-500/30">
               <div className="text-sm text-rose-300 mb-1">Monthly Expenses (30 days)</div>
-              <div className="text-2xl font-bold text-rose-400">${(parseFloat(freedomMetrics.totalMonthlyExpenses) || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-rose-400">${freedomMetrics.totalMonthlyExpenses.toLocaleString()}</div>
             </div>
           </div>
         </div>
@@ -4850,7 +4850,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-semibold ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
-                            {isIncome ? '+' : '-'}${(parseFloat(item.amount) || 0).toLocaleString()}
+                            {isIncome ? '+' : '-'}${item.amount.toLocaleString()}
                           </span>
                           <button
                             onClick={() => setEditingItem({
@@ -4912,7 +4912,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-bold ${recurring.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
-                            {recurring.type === 'income' ? '+' : '-'}${(parseFloat(recurring.amount) || 0).toLocaleString()}
+                            {recurring.type === 'income' ? '+' : '-'}${recurring.amount.toLocaleString()}
                           </span>
                         </div>
                       </div>
@@ -5328,16 +5328,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Total Income:</span>
-                    <span className="text-green-400">${(parseFloat(businessToDelete.totalIncome) || 0).toLocaleString()}</span>
+                    <span className="text-green-400">${businessToDelete.totalIncome.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Total Expenses:</span>
-                    <span className="text-red-400">${(parseFloat(businessToDelete.totalExpenses) || 0).toLocaleString()}</span>
+                    <span className="text-red-400">${businessToDelete.totalExpenses.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Net Profit:</span>
                     <span className={`${businessToDelete.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      ${(parseFloat(businessToDelete.netProfit) || 0).toLocaleString()}
+                      ${businessToDelete.netProfit.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -6064,7 +6064,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <span>Total Value</span>
             </InfoTooltip>
           </h3>
-          <p className="text-3xl font-bold text-blue-400 stealth-target">${(parseFloat(actualTotalValue) || 0).toLocaleString()}</p>
+          <p className="text-3xl font-bold text-blue-400 stealth-target">${actualTotalValue.toLocaleString()}</p>
           <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} holdings</p>
         </Card>
         
@@ -6079,7 +6079,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             </InfoTooltip>
           </h3>
           <p className={`text-2xl font-bold stealth-target ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-            {totalGainLoss >= 0 ? '+' : ''}${(parseFloat(totalGainLoss) || 0).toLocaleString()}
+            {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toLocaleString()}
           </p>
           <p className={`text-sm mt-2 stealth-target ${totalGainLossPercent >= 0 ? 'text-green-300' : 'text-red-300'}`}>
             {totalGainLossPercent >= 0 ? '+' : ''}{totalGainLossPercent.toFixed(2)}%
@@ -6097,7 +6097,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             </InfoTooltip>
           </h3>
           <p className="text-2xl font-bold text-cyan-400 stealth-target">
-            ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()}
+            ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()}
           </p>
           <p className="text-sm text-gray-300 mt-2">
             {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / data.investments.totalValue * 100).toFixed(2)}% yield
@@ -6118,7 +6118,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             {data.investments.holdings.filter(h => h.dripEnabled).length} Active
           </p>
           <p className="text-sm text-gray-300 mt-2 stealth-target">
-            ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.dividendAccumulated) || 0), 0)).toLocaleString()} accumulated
+            ${data.investments.holdings.reduce((sum, h) => sum + h.dividendAccumulated, 0).toLocaleString()} accumulated
           </p>
         </Card>
       </div>
@@ -6323,7 +6323,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       </div>
                       <div className="text-right">
                         <div className="font-semibold text-white">
-                          ${(parseFloat(holding.annualDividend) || 0).toLocaleString()}
+                          ${holding.annualDividend.toLocaleString()}
                         </div>
                         <div className="text-xs text-gray-400">
                           {percentage.toFixed(1)}% of total
@@ -6337,7 +6337,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           
                       <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
               <div className="text-sm text-purple-200 mb-2">
-                💡 <strong>Income Strategy:</strong> Your ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()} annual dividend income provides 
+                💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
                 in passive income - perfect for travel funding! 🌍
               </div>
@@ -6519,7 +6519,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-lg font-bold text-white">${(parseFloat(holding.totalValue) || 0).toLocaleString()}</div>
+                  <div className="text-lg font-bold text-white">${holding.totalValue.toLocaleString()}</div>
                   <InfoTooltip 
                     id={`total-value-${holding.id}`}
                     text="Total Value = Shares × Current Price. This is what your investment is worth right now."
@@ -6529,7 +6529,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-lg font-bold text-cyan-400">${(parseFloat(holding.annualDividend) || 0).toLocaleString()}</div>
+                  <div className="text-lg font-bold text-cyan-400">${holding.annualDividend.toLocaleString()}</div>
                   <InfoTooltip 
                     id={`dividend-${holding.id}`}
                     text="Annual Dividend = Money the company pays you each year for owning shares. Like rent from your investment!"
@@ -7453,10 +7453,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
             Total Income
           </h3>
-          <p className="text-2xl font-bold text-green-400 stealth-target">${(parseFloat(totalIncome) || 0).toLocaleString()}</p>
+          <p className="text-2xl font-bold text-green-400 stealth-target">${totalIncome.toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div className="stealth-target">Personal: ${(parseFloat(personalIncome) || 0).toLocaleString()}</div>
-            <div className="stealth-target">Business: ${(parseFloat(businessIncome) || 0).toLocaleString()}</div>
+            <div className="stealth-target">Personal: ${personalIncome.toLocaleString()}</div>
+            <div className="stealth-target">Business: ${businessIncome.toLocaleString()}</div>
           </div>
         </Card>
         
@@ -7465,10 +7465,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
             Total Expenses
           </h3>
-          <p className="text-2xl font-bold text-red-400 stealth-target">${(parseFloat(totalExpenses) || 0).toLocaleString()}</p>
+          <p className="text-2xl font-bold text-red-400 stealth-target">${totalExpenses.toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div className="stealth-target">Personal: ${(parseFloat(personalExpenses) || 0).toLocaleString()}</div>
-            <div className="stealth-target">Business: ${(parseFloat(businessExpenses) || 0).toLocaleString()}</div>
+            <div className="stealth-target">Personal: ${personalExpenses.toLocaleString()}</div>
+            <div className="stealth-target">Business: ${businessExpenses.toLocaleString()}</div>
           </div>
         </Card>
         
@@ -7478,7 +7478,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             Net Flow
           </h3>
           <p className={`text-2xl font-bold stealth-target ${(totalIncome - totalExpenses) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-            ${((parseFloat(totalIncome) || 0) - (parseFloat(totalExpenses) || 0)).toLocaleString()}
+            ${(totalIncome - totalExpenses).toLocaleString()}
           </p>
           <div className="mt-2 text-sm text-gray-300">
             {data.transactions.length} transactions
@@ -7591,10 +7591,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         {new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                       </h4>
                       <div className="flex gap-4 text-sm">
-                        <span className="text-green-400">Income: ${(parseFloat(monthIncome) || 0).toLocaleString()}</span>
-                        <span className="text-red-400">Expenses: ${(parseFloat(monthExpenses) || 0).toLocaleString()}</span>
+                        <span className="text-green-400">Income: ${monthIncome.toLocaleString()}</span>
+                        <span className="text-red-400">Expenses: ${monthExpenses.toLocaleString()}</span>
                         <span className={`font-semibold ${monthNet >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                          Net: ${(parseFloat(monthNet) || 0).toLocaleString()}
+                          Net: ${monthNet.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -7606,7 +7606,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                             <span className="text-gray-300">{transaction.description}</span>
                           </div>
                           <span className={`font-semibold ${transaction.amount > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {transaction.amount > 0 ? '+' : '-'}${Math.abs(parseFloat(transaction.amount) || 0).toLocaleString()}
+                            {transaction.amount > 0 ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
                           </span>
                         </div>
                       ))}
@@ -7856,7 +7856,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     <span className="text-sm md:text-sm text-gray-200 capitalize">{item.category}</span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-3">
-                    <span className="text-sm font-semibold text-white">${(parseFloat(item.amount) || 0).toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-white">${item.amount.toLocaleString()}</span>
                     <span className="text-sm text-blue-400 font-semibold min-w-[3rem] text-right">
                       {item.percentage}%
                     </span>
@@ -7867,7 +7867,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-300">Total Spending This Month:</span>
                   <span className="text-lg font-bold text-red-400">
-                    ${(spendingByCategory.reduce((sum, cat) => sum + (parseFloat(cat.amount) || 0), 0)).toLocaleString()}
+                    ${spendingByCategory.reduce((sum, cat) => sum + cat.amount, 0).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -7913,7 +7913,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     <p className={`text-lg font-bold ${
                       recurring.type === 'expense' ? 'text-red-400' : 'text-green-400'
                     }`}>
-                      {recurring.type === 'expense' ? '-' : '+'}${(parseFloat(recurring.amount) || 0).toLocaleString()}
+                      {recurring.type === 'expense' ? '-' : '+'}${recurring.amount.toLocaleString()}
                     </p>
                   </div>
                   <div className={`px-2 py-1 rounded text-xs font-semibold ${
@@ -8408,7 +8408,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 <div className={`text-lg font-bold ${
                   transaction.amount > 0 ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {transaction.amount > 0 ? '+' : '-'}${Math.abs(parseFloat(transaction.amount) || 0).toLocaleString()}
+                  {transaction.amount > 0 ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
                 </div>
                 
                 <div className="flex gap-1">
@@ -9723,21 +9723,21 @@ const TravelTab = ({ data, setData, userId }) => {
                       <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
                       <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
-                      <div className="text-emerald-200">Total: ${(parseFloat(runway.plannedCosts.cheap) || 0).toLocaleString()}</div>
+                      <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
                       <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
                     </div>
                     <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
                       <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
                       <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
-                      <div className="text-amber-200">Total: ${(parseFloat(runway.plannedCosts.moderate) || 0).toLocaleString()}</div>
+                      <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
                       <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
                     </div>
                     <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
                       <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
                       <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
                       <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
-                      <div className="text-rose-200">Total: ${(parseFloat(runway.plannedCosts.expensive) || 0).toLocaleString()}</div>
+                      <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
                       <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
                     </div>
                   </div>
@@ -9747,16 +9747,16 @@ const TravelTab = ({ data, setData, userId }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
                     <div className="text-slate-300">Total Travel Funds</div>
-                    <div className="text-xl font-bold text-white">${(parseFloat(runway.totalFunds) || 0).toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
+                    <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
                   </div>
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
                     <div className="text-slate-300">Planned Trip Cost</div>
-                    <div className="text-xl font-bold text-white">${(parseFloat(runway.totalPlannedCost) || 0).toLocaleString()}</div>
+                    <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
                     <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
                     <div className="text-emerald-200">Remaining Funds</div>
-                    <div className="text-xl font-bold text-emerald-400">${(parseFloat(runway.remainingFunds) || 0).toLocaleString()}</div>
+                    <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
                     <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
                   </div>
                 </div>
@@ -9865,8 +9865,8 @@ const TravelTab = ({ data, setData, userId }) => {
                     ></div>
                   </div>
                   <div className="flex justify-between text-xs text-gray-400 mt-1">
-                    <span>${(parseFloat(trip.currentSavings) || 0).toLocaleString()}</span>
-                    <span>${(parseFloat(trip.targetBudget) || 0).toLocaleString()}</span>
+                    <span>${trip.currentSavings.toLocaleString()}</span>
+                    <span>${trip.targetBudget.toLocaleString()}</span>
                   </div>
                 </div>
 
@@ -9882,7 +9882,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <div className="bg-gray-700/30 rounded-lg p-2">
                     <div className="text-sm text-gray-400">Remaining</div>
                     <div className={`font-medium ${remainingBudget >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      ${(parseFloat(remainingBudget) || 0).toLocaleString()}
+                      ${remainingBudget.toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -12351,19 +12351,19 @@ function App() {
         if (daysUntilDue === notificationDays) {
           showNotification(
             `Payment Reminder: ${account.name}`,
-            `Your ${account.name} payment of $${(parseFloat(account.minPayment) || 0).toLocaleString()} is due in ${daysUntilDue} days (${dueDate}th of the month).`,
+            `Your ${account.name} payment of $${account.minPayment.toLocaleString()} is due in ${daysUntilDue} days (${dueDate}th of the month).`,
             'info'
           );
         } else if (daysUntilDue === 0) {
           showNotification(
             `Payment Due Today: ${account.name}`,
-            `Your ${account.name} payment of $${(parseFloat(account.minPayment) || 0).toLocaleString()} is due today!`,
+            `Your ${account.name} payment of $${account.minPayment.toLocaleString()} is due today!`,
             'warning'
           );
         } else if (daysUntilDue < 0) {
           showNotification(
             `Payment Overdue: ${account.name}`,
-            `Your ${account.name} payment of $${(parseFloat(account.minPayment) || 0).toLocaleString()} is ${Math.abs(daysUntilDue)} days overdue!`,
+            `Your ${account.name} payment of $${account.minPayment.toLocaleString()} is ${Math.abs(daysUntilDue)} days overdue!`,
             'error'
           );
         }
@@ -14284,14 +14284,14 @@ function App() {
                         {data.monthlyHistory.map(month => (
                           <tr key={month.month} className="border-b border-gray-700/50 hover:bg-gray-700/20">
                             <td className="py-2 text-white font-semibold">{month.month}</td>
-                            <td className="py-2 text-right text-emerald-400 font-semibold">${(parseFloat(month.netWorth) || 0).toLocaleString()}</td>
-                            <td className="py-2 text-right text-blue-400">${(parseFloat(month.income) || 0).toLocaleString()}</td>
-                            <td className="py-2 text-right text-red-400">${(parseFloat(month.expenses) || 0).toLocaleString()}</td>
+                            <td className="py-2 text-right text-emerald-400 font-semibold">${month.netWorth.toLocaleString()}</td>
+                            <td className="py-2 text-right text-blue-400">${month.income.toLocaleString()}</td>
+                            <td className="py-2 text-right text-red-400">${month.expenses.toLocaleString()}</td>
                             <td className={`py-2 text-right font-semibold ${month.cashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                              ${(parseFloat(month.cashflow) || 0).toLocaleString()}
+                              ${month.cashflow.toLocaleString()}
                             </td>
-                            <td className="py-2 text-right text-violet-400">${((parseFloat(month.businessIncome) || 0) - (parseFloat(month.businessExpenses) || 0)).toLocaleString()}</td>
-                            <td className="py-2 text-right text-purple-400">${(parseFloat(month.investmentValue) || 0).toLocaleString()}</td>
+                            <td className="py-2 text-right text-violet-400">${(month.businessIncome - month.businessExpenses).toLocaleString()}</td>
+                            <td className="py-2 text-right text-purple-400">${month.investmentValue.toLocaleString()}</td>
                             <td className="py-2 text-right text-amber-400">{month.savingsRate}%</td>
                           </tr>
                         ))}
@@ -14992,7 +14992,7 @@ function App() {
                     
                     <div className="mt-3 p-3 bg-teal-900/20 rounded-lg border border-teal-600/30">
                       <div className="text-teal-400 font-semibold">
-                        Total Cash on Hand: ${((parseFloat(tempCardData.total) || 0)).toLocaleString()}
+                        Total Cash on Hand: ${(tempCardData.total || 0).toLocaleString()}
                       </div>
                     </div>
                   </div>
@@ -15156,7 +15156,7 @@ function App() {
                               <div className="col-span-3">
                                 <label className="block text-xs text-gray-400 mb-1">Amount Paid (Auto-calculated)</label>
                                 <div className="w-full bg-gray-700 text-green-400 px-2 py-1 rounded text-sm border border-gray-500 flex items-center justify-between">
-                                  <span>${((parseFloat(account.initialDebt) || 0) - (parseFloat(account.balance) || 0)).toLocaleString()}</span>
+                                  <span>${((account.initialDebt || 0) - (account.balance || 0)).toLocaleString()}</span>
                                   <span className="text-xs text-gray-400">Auto</span>
                                 </div>
                               </div>
@@ -15378,7 +15378,7 @@ function App() {
                             {(account.initialDebt || 0) > 0 && (
                               <div className="mt-2">
                                 <div className="flex justify-between text-xs text-gray-400 mb-1">
-                                  <span>Progress: ${((parseFloat(account.amountPaid) || 0)).toLocaleString()} paid of ${((parseFloat(account.initialDebt) || 0)).toLocaleString()}</span>
+                                  <span>Progress: ${(account.amountPaid || 0).toLocaleString()} paid of ${(account.initialDebt || 0).toLocaleString()}</span>
                                   <span>{Math.round(((account.amountPaid || 0) / (account.initialDebt || 1)) * 100)}%</span>
                                 </div>
                                 <div className="w-full bg-gray-700 rounded-full h-2">
@@ -15398,17 +15398,17 @@ function App() {
                       <div className="grid grid-cols-2 gap-4 text-sm mb-3">
                         <div>
                           <div className="text-red-400 font-semibold">
-                            Current Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0).toLocaleString()}
+                            Current Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.balance || 0), 0).toLocaleString()}
                           </div>
                         </div>
                         <div>
                           <div className="text-green-400 font-semibold">
-                            Total Paid: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.amountPaid) || 0), 0).toLocaleString()}
+                            Total Paid: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.amountPaid || 0), 0).toLocaleString()}
                           </div>
                         </div>
                         <div>
                           <div className="text-orange-400 font-semibold">
-                            Min Payment: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.minPayment) || 0), 0).toLocaleString()}/mo
+                            Min Payment: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (acc.minPayment || 0), 0).toLocaleString()}/mo
                           </div>
                         </div>
                         <div>
@@ -15726,12 +15726,12 @@ function App() {
                       <div className="flex justify-between items-center">
                         <span className="text-emerald-400 font-semibold">Total Net Worth:</span>
                         <span className="text-2xl font-bold text-white">
-                          ${((parseFloat(tempCardData.total) || 0)).toLocaleString()}
+                          ${(tempCardData.total || 0).toLocaleString()}
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Assets: ${((tempCardData.breakdown || []).filter(item => item.type === "asset").reduce((sum, item) => sum + (parseFloat(item.value) || 0), 0)).toLocaleString()} ?�� 
-                        Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === "liability").reduce((sum, item) => sum + (parseFloat(item.value) || 0), 0)).toLocaleString()}
+                        Assets: ${(tempCardData.breakdown || []).filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0).toLocaleString()} ?�� 
+                        Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0)).toLocaleString()}
                       </div>
                     </div>
                   </div>
@@ -16073,8 +16073,8 @@ function App() {
                                 ></div>
                               </div>
                               <div className="flex justify-between text-xs text-gray-400 mt-1">
-                                <span>${(parseFloat(goal.currentAmount) || 0).toLocaleString()}</span>
-                                <span>${(parseFloat(goal.targetAmount) || 0).toLocaleString()}</span>
+                                <span>${goal.currentAmount.toLocaleString()}</span>
+                                <span>${goal.targetAmount.toLocaleString()}</span>
                               </div>
                             </div>
                           )}
