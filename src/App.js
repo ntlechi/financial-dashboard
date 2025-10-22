@@ -10318,26 +10318,18 @@ const TravelTab = ({ data, setData, userId }) => {
                  Save Moment
                </button>
              </div>
-           </Card>
-         </div>
+         </FixedModal>
        )}
 
        {/* Edit Trip Modal */}
        {editingTrip && (
-         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-           <div className="w-full max-w-2xl my-auto">
-           <Card className="border-blue-500/30 max-h-[85vh] overflow-y-auto">
-             <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-               <h3 className="text-xl font-bold text-white">Edit Trip</h3>
-               <button
-                 onClick={() => setEditingTrip(null)}
-                 className="text-gray-400 hover:text-white"
-               >
-                 <X className="w-5 h-5" />
-               </button>
-             </div>
-             
-             <div className="space-y-4">
+         <FixedModal
+           isOpen={!!editingTrip}
+           onClose={() => setEditingTrip(null)}
+           title="Edit Trip"
+           size="lg"
+         >
+           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div>
                    <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
