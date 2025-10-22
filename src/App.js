@@ -3777,29 +3777,34 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             unlockedMilestones
           );
           
-          if (newMilestones.length > 0) {
+          // ✨ CRITICAL FIX: Always update state, even if milestones were removed!
+          // This ensures milestones adjust down when ratio drops
+          if (JSON.stringify(updatedMilestones) !== JSON.stringify(unlockedMilestones)) {
             setUnlockedMilestones(updatedMilestones);
             
-            // Trigger celebration for the highest unlocked milestone
-            const latestMilestone = newMilestones[newMilestones.length - 1];
-            setCelebratingMilestone(latestMilestone);
-            setShowMilestoneCelebration(true);
-            
-            // Track milestone unlock in analytics
-            if (window.gtag) {
-              window.gtag('event', 'milestone_unlocked', {
-                milestone_id: latestMilestone.id,
-                milestone_title: latestMilestone.title,
-                freedom_ratio: freedomMetrics.freedomRatio,
-                threshold: latestMilestone.threshold
-              });
+            // Only celebrate if NEW milestones were unlocked (not if removed)
+            if (newMilestones.length > 0) {
+              // Trigger celebration for the highest unlocked milestone
+              const latestMilestone = newMilestones[newMilestones.length - 1];
+              setCelebratingMilestone(latestMilestone);
+              setShowMilestoneCelebration(true);
+              
+              // Track milestone unlock in analytics
+              if (window.gtag) {
+                window.gtag('event', 'milestone_unlocked', {
+                  milestone_id: latestMilestone.id,
+                  milestone_title: latestMilestone.title,
+                  freedom_ratio: freedomMetrics.freedomRatio,
+                  threshold: latestMilestone.threshold
+                });
+              }
+              
+              // Hide celebration after 4 seconds
+              setTimeout(() => {
+                setShowMilestoneCelebration(false);
+                setCelebratingMilestone(null);
+              }, 4000);
             }
-            
-            // Hide celebration after 4 seconds
-            setTimeout(() => {
-              setShowMilestoneCelebration(false);
-              setCelebratingMilestone(null);
-            }, 4000);
           }
         } catch (error) {
 
@@ -4800,16 +4805,20 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             {/* Business Summary */}
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-green-900/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-green-400">${business.totalIncome.toLocaleString()}</div>
+                <div className="text-lg font-bold text-green-400">
+                  ${(parseFloat(business.totalIncome) || 0).toLocaleString()}
+                </div>
                 <div className="text-xs text-green-300">Income</div>
               </div>
               <div className="bg-red-900/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-red-400">${business.totalExpenses.toLocaleString()}</div>
+                <div className="text-lg font-bold text-red-400">
+                  ${(parseFloat(business.totalExpenses) || 0).toLocaleString()}
+                </div>
                 <div className="text-xs text-red-300">Expenses</div>
               </div>
               <div className="bg-blue-900/30 rounded-lg p-3">
-                <div className={`text-lg font-bold ${business.netProfit >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                  ${business.netProfit.toLocaleString()}
+                <div className={`text-lg font-bold ${(parseFloat(business.netProfit) || 0) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                  ${(parseFloat(business.netProfit) || 0).toLocaleString()}
                 </div>
                 <div className="text-xs text-blue-300">Net Profit</div>
               </div>

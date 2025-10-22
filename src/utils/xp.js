@@ -96,29 +96,44 @@ export const FREEDOM_MILESTONES = [
 ];
 
 // Check for new milestone unlocks based on Freedom Ratio
+// ✨ NOW SUPPORTS DYNAMIC RECALCULATION - milestones adjust up AND down!
 export async function checkMilestoneUnlocks(db, userId, freedomRatio, currentUnlockedMilestones = []) {
   if (!db || !userId || freedomRatio < 0) return { newMilestones: [], updatedMilestones: currentUnlockedMilestones };
 
   const newMilestones = [];
-  const updatedMilestones = [...currentUnlockedMilestones];
+  const correctMilestones = []; // Milestones that SHOULD be unlocked based on current ratio
+  const removedMilestones = []; // Milestones that should be removed
 
-  // Check each milestone threshold
+  // Calculate which milestones SHOULD be unlocked based on CURRENT ratio
   for (const milestone of FREEDOM_MILESTONES) {
-    // Check if user has reached this threshold and hasn't unlocked it yet
-    if (freedomRatio >= milestone.threshold && !updatedMilestones.includes(milestone.id)) {
-      newMilestones.push(milestone);
-      updatedMilestones.push(milestone.id);
+    if (freedomRatio >= milestone.threshold) {
+      correctMilestones.push(milestone.id);
+      // Check if this is a NEW unlock (wasn't unlocked before)
+      if (!currentUnlockedMilestones.includes(milestone.id)) {
+        newMilestones.push(milestone);
+      }
     }
   }
 
-  // Update user profile with new milestones if any were unlocked
-  if (newMilestones.length > 0) {
-    // FIX: Use userProfiles collection with userId as document ID (2 segments)
-    const profileRef = doc(db, 'userProfiles', userId);
-    await setDoc(profileRef, { unlockedMilestones: updatedMilestones }, { merge: true });
+  // Find milestones that were unlocked but are no longer valid (ratio dropped)
+  for (const unlockedId of currentUnlockedMilestones) {
+    if (!correctMilestones.includes(unlockedId)) {
+      removedMilestones.push(unlockedId);
+    }
   }
 
-  return { newMilestones, updatedMilestones };
+  // Only update profile if milestones changed (either added or removed)
+  if (newMilestones.length > 0 || removedMilestones.length > 0) {
+    const profileRef = doc(db, 'userProfiles', userId);
+    await setDoc(profileRef, { unlockedMilestones: correctMilestones }, { merge: true });
+    
+    // Log milestone changes for debugging
+    if (removedMilestones.length > 0) {
+      console.log(`🔄 Milestones adjusted: Removed ${removedMilestones.length}, ratio dropped below threshold`);
+    }
+  }
+
+  return { newMilestones, updatedMilestones: correctMilestones };
 }
 
 
