@@ -6844,19 +6844,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
         {/* Edit Holding Modal */}
         {editingHolding && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-            <Card className="w-full max-w-md border-blue-500/30 my-8 max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-white">Edit {editingHolding.symbol}</h3>
-                <button
-                  onClick={() => setEditingHolding(null)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
+          <FixedModal
+            isOpen={!!editingHolding}
+            onClose={() => setEditingHolding(null)}
+            title={`Edit ${editingHolding.symbol}`}
+            size="md"
+          >
+            <div className="space-y-4">
                 <input
                   type="text"
                   placeholder="Company Name"
