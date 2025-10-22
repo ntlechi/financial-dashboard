@@ -10305,6 +10305,7 @@ const TravelTab = ({ data, setData, userId }) => {
                  Save Moment
                </button>
              </div>
+           </div>
          </FixedModal>
        )}
 
