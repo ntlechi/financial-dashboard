@@ -16076,19 +16076,13 @@ function App() {
 
       {/* Reset Data Modal */}
       {showResetModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md border-red-500/30">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">Reset Dashboard Data</h3>
-              <button
-                onClick={closeResetModal}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={showResetModal}
+          onClose={closeResetModal}
+          title="🔄 Reset Dashboard Data"
+          size="md"
+        >
+          <div className="space-y-4">
               <div className="p-4 bg-red-900/20 rounded-lg border border-red-600/30">
                 <div className="flex items-start gap-3">
                   <div className="text-red-400 mt-0.5">
@@ -16448,22 +16442,13 @@ function App() {
 
       {/* 💬 FEEDBACK MODAL */}
       {showFeedbackModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
-          <Card className="w-full max-w-lg border-blue-500/30 animate-fade-in">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-                <MessageCircle className="w-6 h-6 text-blue-400" />
-                Send Feedback
-              </h3>
-              <button
-                onClick={() => setShowFeedbackModal(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
+        <FixedModal
+          isOpen={showFeedbackModal}
+          onClose={() => setShowFeedbackModal(false)}
+          title="💬 Send Feedback"
+          size="md"
+        >
+          <div className="space-y-4">
               {/* Type Selector */}
               <div className="flex gap-3">
                 <button
@@ -16622,20 +16607,13 @@ function App() {
 
       {/* 🛡️ DATA RECOVERY MODAL */}
       {showDataRecoveryModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-2xl my-auto">
-            <Card className="border-amber-500/30 max-h-[85vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-800 z-10 pb-4 border-b border-gray-700">
-                <h3 className="text-xl font-bold text-white">🛡️ Data Recovery</h3>
-                <button
-                  onClick={() => setShowDataRecoveryModal(false)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
+        <FixedModal
+          isOpen={showDataRecoveryModal}
+          onClose={() => setShowDataRecoveryModal(false)}
+          title="🛡️ Data Recovery"
+          size="lg"
+        >
+          <div className="space-y-4">
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-amber-400">?��️</span>
