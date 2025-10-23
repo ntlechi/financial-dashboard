@@ -397,12 +397,3 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
 };
 
 export default MomentsFeed;
-);
-          })}
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default MomentsFeed;
