@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import SubscriptionManager from './SubscriptionManager';
 import ErrorBoundary from './components/ErrorBoundary';
 import FinancialErrorBoundary from './components/FinancialErrorBoundary';
@@ -3587,6 +3588,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // State for editing business
   const [editingBusiness, setEditingBusiness] = useState(null);
 
+  // 📊 ANALYTICS TAB STATE - NEW!
+  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' or 'analytics'
+  const [analyticsTimeFilter, setAnalyticsTimeFilter] = useState('last12mo'); // 'year', 'last12mo', 'alltime'
+  const [showIncome, setShowIncome] = useState(true);
+  const [showExpenses, setShowExpenses] = useState(true);
+  const [showProfit, setShowProfit] = useState(true);
+
   // 💫 MOMENTS SYSTEM STATE - Passed down from App component
   // (state defined in main App component, accessed here via closure)
   
@@ -3612,6 +3620,112 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       isPassive: false // 🏔️ NEW: Passive income flag
     };
   });
+
+  // 📊 ANALYTICS DATA PROCESSING - Calculate monthly totals for charts
+  const calculateMonthlyData = (business) => {
+    if (!business) return [];
+    
+    const monthlyTotals = {};
+    
+    // Process income items
+    (business.incomeItems || []).forEach(item => {
+      const month = item.date.substring(0, 7); // "2024-03"
+      if (!monthlyTotals[month]) {
+        monthlyTotals[month] = { month, income: 0, expenses: 0, profit: 0 };
+      }
+      monthlyTotals[month].income += parseFloat(item.amount) || 0;
+    });
+    
+    // Process expense items
+    (business.expenseItems || []).forEach(item => {
+      const month = item.date.substring(0, 7);
+      if (!monthlyTotals[month]) {
+        monthlyTotals[month] = { month, income: 0, expenses: 0, profit: 0 };
+      }
+      monthlyTotals[month].expenses += parseFloat(item.amount) || 0;
+    });
+    
+    // Calculate profit and convert to array
+    const dataArray = Object.values(monthlyTotals).map(m => ({
+      ...m,
+      profit: m.income - m.expenses
+    })).sort((a, b) => a.month.localeCompare(b.month));
+    
+    return dataArray;
+  };
+
+  // 📊 FILTER DATA BY TIME RANGE
+  const filterDataByTimeRange = (data, filter) => {
+    if (!data || data.length === 0) return [];
+    
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    
+    if (filter === 'year') {
+      // Current year only
+      return data.filter(d => d.month.startsWith(currentYear.toString()));
+    } else if (filter === 'last12mo') {
+      // Last 12 months
+      const twelveMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 12, 1);
+      return data.filter(d => new Date(d.month + '-01') >= twelveMonthsAgo);
+    } else {
+      // All time
+      return data;
+    }
+  };
+
+  // 📊 CALCULATE KPI METRICS
+  const calculateKPIs = (data) => {
+    if (!data || data.length === 0) {
+      return { totalRevenue: 0, totalExpenses: 0, totalProfit: 0, avgMonthly: 0, growth: 0 };
+    }
+    
+    const totalRevenue = data.reduce((sum, m) => sum + m.income, 0);
+    const totalExpenses = data.reduce((sum, m) => sum + m.expenses, 0);
+    const totalProfit = totalRevenue - totalExpenses;
+    const avgMonthly = data.length > 0 ? totalProfit / data.length : 0;
+    
+    // Calculate growth (current month vs previous month)
+    let growth = 0;
+    if (data.length >= 2) {
+      const currentMonth = data[data.length - 1];
+      const previousMonth = data[data.length - 2];
+      if (previousMonth.profit !== 0) {
+        growth = ((currentMonth.profit - previousMonth.profit) / Math.abs(previousMonth.profit)) * 100;
+      }
+    }
+    
+    return { totalRevenue, totalExpenses, totalProfit, avgMonthly, growth };
+  };
+
+  // 📊 YEAR-OVER-YEAR COMPARISON
+  const getYoYComparison = (data) => {
+    if (!data || data.length === 0) return null;
+    
+    const today = new Date();
+    const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+    const lastYearMonth = `${today.getFullYear() - 1}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+    
+    const currentData = data.find(d => d.month === currentMonth);
+    const lastYearData = data.find(d => d.month === lastYearMonth);
+    
+    if (!currentData || !lastYearData) return null;
+    
+    const revenueGrowth = ((currentData.income - lastYearData.income) / (lastYearData.income || 1)) * 100;
+    const expenseGrowth = ((currentData.expenses - lastYearData.expenses) / (lastYearData.expenses || 1)) * 100;
+    const profitGrowth = ((currentData.profit - lastYearData.profit) / (Math.abs(lastYearData.profit) || 1)) * 100;
+    
+    return {
+      current: currentData,
+      lastYear: lastYearData,
+      growth: {
+        revenue: revenueGrowth,
+        expenses: expenseGrowth,
+        profit: profitGrowth
+      }
+    };
+  };
 
   const [newRecurringItem, setNewRecurringItem] = useState(() => {
     const today = new Date();
