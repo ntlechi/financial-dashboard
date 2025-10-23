@@ -752,22 +752,53 @@ export default function MyLogbook({
       {/* 💎 PHASE 3: STATS BAR - BLUE THEME with WHITE Numbers! */}
       {entries.length > 0 && (
         <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl p-8 border border-blue-500/30 shadow-lg">
-          <div className="grid grid-cols-3 gap-6 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div className="text-5xl font-black text-white mb-2">{totalEntries}</div>
               <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Total Entries</div>
             </div>
             <div>
+              <div className="text-5xl font-black text-purple-400 mb-2">{promptProgress.answered}</div>
+              <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Prompts Answered</div>
+            </div>
+            <div>
+              <div className="text-5xl font-black text-blue-400 mb-2">{promptProgress.streak}</div>
+              <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Day Streak 🔥</div>
+            </div>
+            <div>
               <div className="text-5xl font-black text-white mb-2">{totalTags}</div>
               <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Unique Tags</div>
             </div>
-            <div>
-              <div className="text-5xl font-black text-white mb-2">{entriesWithTags}</div>
-              <div className="text-gray-400 text-sm font-medium tracking-wide uppercase">Tagged Entries</div>
-            </div>
           </div>
+          
+          {/* Progress toward completion */}
+          {promptProgress.answered > 0 && (
+            <div className="mt-6 bg-gray-800/50 rounded-lg p-4 border border-purple-500/20">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-300 font-semibold">Journey to 365</span>
+                <span className="text-sm text-purple-400 font-bold">{Math.round(promptProgress.answered / 365 * 100)}% Complete</span>
+              </div>
+              <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500"
+                  style={{ width: `${(promptProgress.answered / 365 * 100)}%` }}
+                />
+              </div>
+              {promptProgress.answered >= 365 && (
+                <div className="mt-3 text-center">
+                  <div className="text-2xl mb-2">🎉</div>
+                  <p className="text-purple-300 font-bold">Congratulations! Cycle {promptProgress.cycle} complete!</p>
+                  <p className="text-xs text-gray-400 mt-1">Starting fresh with reshuffled prompts...</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
+
+      {/* 💎 ACTION BUTTONS ONLY - Moved header to ReflectionsPage! */}
+      <div className="bg-gray-800/40 rounded-lg p-4 border border-gray-700/50 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
 
       {/* 💎 Add/Edit Entry Modal - Premium Gold! */}
       {showAddEntryModal && (
