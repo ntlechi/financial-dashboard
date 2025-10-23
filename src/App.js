@@ -706,12 +706,6 @@ const SavingsRateCard = ({ data, onEdit }) => {
     );
   }
 
-  const getRateColor = (rate) => {
-    if (rate >= 50) return 'text-emerald-400';
-    if (rate >= 30) return 'text-yellow-400';
-    return 'text-red-400';
-  };
-
   const getRateStatus = (rate) => {
     if (rate >= 50) return 'Excellent';
     if (rate >= 30) return 'Good';
@@ -1647,81 +1641,6 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           <ShieldCheck className="w-12 h-12 mx-auto text-gray-400 mb-3" />
           <p className="text-gray-400">No retirement accounts configured</p>
           <p className="text-sm text-gray-500 mt-1">Click edit to add your retirement accounts</p>
-        </div>
-      )}
-    </Card>
-  );
-};
-
-// Debt Management Card
-const DebtCard = ({ data, onEdit }) => {
-  // 🛡️ NULL SAFETY CHECK
-  if (!data || !data.accounts) {
-    return (
-      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
-          Total Debt
-        </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
-      </Card>
-    );
-  }
-
-  const totalDebt = data.accounts?.reduce((sum, account) => sum + account.balance, 0) || 0;
-  const totalMinPayment = data.accounts?.reduce((sum, account) => sum + account.minPayment, 0) || 0;
-  const avgInterestRate = data.accounts?.length > 0 ? 
-    data.accounts.reduce((sum, account) => sum + account.interestRate, 0) / data.accounts.length : 0;
-
-  return (
-    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40 relative">
-      <button
-        onClick={() => onEdit('debt', data)}
-        className="absolute top-4 right-4 p-2 bg-rose-700/20 hover:bg-rose-600/30 rounded-lg transition-colors"
-        title="Edit Debt"
-      >
-        <Edit className="w-4 h-4 text-rose-300" />
-      </button>
-
-      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
-        <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
-        Total Debt
-      </h2>
-      <p className="text-5xl font-extrabold text-white">${(parseFloat(totalDebt) || 0).toLocaleString()}</p>
-      
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-rose-800/20 rounded-lg p-3">
-          <p className="text-rose-300 text-sm">Min. Payment</p>
-          <p className="text-white font-bold">${(parseFloat(totalMinPayment) || 0).toLocaleString()}/mo</p>
-        </div>
-        <div className="bg-orange-800/20 rounded-lg p-3">
-          <p className="text-orange-300 text-sm">Avg. Interest</p>
-          <p className="text-white font-bold">{avgInterestRate.toFixed(1)}%</p>
-        </div>
-        <div className="bg-yellow-800/20 rounded-lg p-3">
-          <p className="text-yellow-300 text-sm">Accounts</p>
-          <p className="text-white font-bold">{data.accounts?.length || 0}</p>
-        </div>
-      </div>
-
-      {data.accounts && data.accounts.length > 0 && (
-        <div className="mt-4 space-y-2">
-          {data.accounts.slice(0, 3).map((account) => (
-            <div key={account.id} className="flex items-center justify-between text-sm bg-gray-800/30 rounded-lg p-2">
-              <div>
-                <span className="text-white font-medium">{account.name}</span>
-                <div className="text-gray-400 text-xs">
-                  {account.interestRate}% APR • Min: ${account.minPayment}
-                </div>
-              </div>
-              <span className="text-red-400 font-semibold">${(parseFloat(account.balance) || 0).toLocaleString()}</span>
-            </div>
-          ))}
-          {data.accounts.length > 3 && (
-            <p className="text-gray-400 text-xs text-center">
-              +{data.accounts.length - 3} more accounts
-            </p>
-          )}
         </div>
       )}
     </Card>
@@ -3747,7 +3666,6 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // 🔧 EDGE CASE FIX: Null safety for empty businesses array
   const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
   const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
-  const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
   // 🏔️ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
   const calculateFreedomMetrics = () => {
@@ -11084,7 +11002,6 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
-  const [editingRecurring, setEditingRecurring] = useState(null); // For editing recurring expenses
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   
@@ -11174,12 +11091,6 @@ function App() {
 
   // 🎯 First Climb Protocol states
   const [showFirstClimbProtocol, setShowFirstClimbProtocol] = useState(false);
-  const [missions, setMissions] = useState({
-    mission1: { completed: false, progress: 0, target: 10 },
-    mission2: { completed: false, progress: 0, target: 3 },
-    mission3: { completed: false, progress: 0, target: 1 },
-    mission4: { completed: false, progress: 0, target: 1 }
-  });
 
   // Reset data states
   const [showResetModal, setShowResetModal] = useState(false);
@@ -11248,8 +11159,10 @@ function App() {
   });
 
   // 🎯 PRICING PHASE STATE
-  const [foundersCircleCount, setFoundersCircleCount] = useState(0);
-  const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [foundersCircleCount, setFoundersCircleCount] = useState(0); // Used by PricingModal
+  // eslint-disable-next-line no-unused-vars
+  const [earlyAdopterCount, setEarlyAdopterCount] = useState(0); // Used by PricingModal
 
   // Stealth removed (fresh start)
 
@@ -16747,4 +16660,6 @@ const AppWithErrorBoundary = () => (
 );
 
 export default AppWithErrorBoundary;
+
+port default AppWithErrorBoundary;
 
