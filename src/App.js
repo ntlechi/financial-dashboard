@@ -15160,7 +15160,10 @@ function App() {
       {editingCard && (
         <FixedModal
           isOpen={!!editingCard}
-          onClose={closeCardEditor}
+          onClose={() => {
+            setEditingCard(null);
+            setTempCardData({});
+          }}
           title={`Edit ${editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
                      editingCard === 'savingsRateTarget' ? 'Savings Rate Target' :
                      editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
