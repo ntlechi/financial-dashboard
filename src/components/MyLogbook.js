@@ -1,9 +1,10 @@
 // 🎯 MY LOGBOOK - Unified Journal System with Tags, Search & Collapsible Cards
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Tag, Calendar, Copy, Edit3, Trash2, ChevronDown, ChevronUp, X, Save, Filter, BookOpen, Download } from 'lucide-react';
+import { Plus, Search, Tag, Calendar, Copy, Edit3, Trash2, ChevronDown, ChevronUp, X, Save, Filter, BookOpen, Download, Sparkles, TrendingUp } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { createBackup } from '../utils/dataSafetyUtils';
+import { journalPrompts, getTodayPrompt } from '../utils/journalPrompts';
 
 export default function MyLogbook({ 
   data, 
