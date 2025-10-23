@@ -12726,20 +12726,7 @@ function App() {
   };
 
   const closeCardEditor = () => {
-    // 🔧 CRITICAL FIX: Restore scroll position (don't scroll to top!)
-    const scrollY = document.body.style.top;
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    document.body.style.height = '';
-    
-    // Restore the scroll position we saved when opening
-    if (scrollY) {
-      const scrollValue = parseInt(scrollY.replace('px', '').replace('-', '')) || 0;
-      window.scrollTo(0, scrollValue);
-    }
-    
+    // ✅ FIX: Let FixedModal handle body styles (no conflict!)
     setEditingCard(null);
     setTempCardData({});
   };
