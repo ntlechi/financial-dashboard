@@ -12681,13 +12681,7 @@ function App() {
 
   // Card editing functions
   const openCardEditor = (cardType, currentData) => {
-    // 🔧 CRITICAL FIX: Prevent scroll and lock scroll position
-    const scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-    
+    // ✅ Simple like other pages - let FixedModal handle everything!
     setEditingCard(cardType);
     
     // Provide safe defaults for different card types
@@ -12723,27 +12717,6 @@ function App() {
       // NOTE: Removed viewport meta manipulation as it can cause issues
       // Scroll position is now handled by openCardEditor/closeCardEditor
     }
-  };
-
-  const closeCardEditor = () => {
-    // ✅ CRITICAL: Force restore body styles (backup cleanup!)
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    document.body.style.height = '';
-    document.body.style.touchAction = '';
-    
-    // Also restore html element
-    document.documentElement.style.overflow = '';
-    document.documentElement.style.position = '';
-    document.documentElement.style.width = '';
-    document.documentElement.style.height = '';
-    
-    setEditingCard(null);
-    setTempCardData({});
   };
 
   const saveCardData = async () => {
@@ -16422,7 +16395,10 @@ function App() {
             
             <div className="mt-6 flex justify-end gap-2">
               <button
-                onClick={closeCardEditor}
+                onClick={() => {
+                  setEditingCard(null);
+                  setTempCardData({});
+                }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Cancel
