@@ -2,7 +2,7 @@
 // Project: Freedom Journal Transformation
 
 import React, { useState, useEffect } from 'react';
-import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp, Copy } from 'lucide-react';
+import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp, Copy, Briefcase } from 'lucide-react';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
