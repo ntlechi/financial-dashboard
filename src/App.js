@@ -3573,7 +3573,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
 };
 
 // Side Hustle Management Component
-const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger }) => {
+const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger, showMomentModal, setShowMomentModal, editingMoment, setEditingMoment, newMoment, setNewMoment }) => {
   const [showAddBusiness, setShowAddBusiness] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [showAddItem, setShowAddItem] = useState(false);
@@ -14469,7 +14469,20 @@ function App() {
           
           {activeTab === 'side-hustle' && (
             <FinancialErrorBoundary componentName="Side Hustle Management">
-              <SideHustleTab data={data} setData={setData} userId={userId} setRankUpData={setRankUpData} setShowRankUpModal={setShowRankUpModal} setXpRefreshTrigger={setXpRefreshTrigger} />
+              <SideHustleTab 
+                data={data} 
+                setData={setData} 
+                userId={userId} 
+                setRankUpData={setRankUpData} 
+                setShowRankUpModal={setShowRankUpModal} 
+                setXpRefreshTrigger={setXpRefreshTrigger}
+                showMomentModal={showMomentModal}
+                setShowMomentModal={setShowMomentModal}
+                editingMoment={editingMoment}
+                setEditingMoment={setEditingMoment}
+                newMoment={newMoment}
+                setNewMoment={setNewMoment}
+              />
             </FinancialErrorBoundary>
           )}
           
