@@ -514,6 +514,81 @@ export default function MyLogbook({
         </div>
       )}
 
+      {/* 💫 DAILY PROMPT CARD */}
+      {todayPrompt && showPromptCard && (
+        <div className="bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-cyan-900/30 rounded-xl p-6 border-2 border-purple-500/30 shadow-2xl mb-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-6 h-6 text-purple-400 animate-pulse" />
+              <div>
+                <h3 className="text-lg font-bold text-white">💭 Today's Reflection</h3>
+                <p className="text-xs text-gray-400">Day {promptProgress.answered + 1} of 365 • Cycle {promptProgress.cycle}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowPromptCard(false)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="bg-gray-800/60 rounded-lg p-5 mb-4 border border-purple-400/20">
+            <p className="text-white text-lg leading-relaxed italic">
+              "{todayPrompt.text}"
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <Tag className="w-3 h-3 text-purple-400" />
+              <span className="text-xs text-purple-300 font-semibold uppercase tracking-wider">
+                {todayPrompt.category}
+              </span>
+            </div>
+          </div>
+          
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-gray-400 mb-2">
+              <span>Progress</span>
+              <span>{promptProgress.answered}/365 ({Math.round(promptProgress.answered / 365 * 100)}%)</span>
+            </div>
+            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 transition-all duration-500"
+                style={{ width: `${(promptProgress.answered / 365 * 100)}%` }}
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="bg-gray-800/60 rounded-lg p-3 text-center border border-blue-500/20">
+              <div className="text-2xl font-bold text-blue-400">{promptProgress.streak}</div>
+              <div className="text-xs text-gray-400">Day Streak 🔥</div>
+            </div>
+            <div className="bg-gray-800/60 rounded-lg p-3 text-center border border-purple-500/20">
+              <div className="text-2xl font-bold text-purple-400">{365 - promptProgress.answered}</div>
+              <div className="text-xs text-gray-400">To Complete ⭐</div>
+            </div>
+          </div>
+          
+          <button
+            onClick={answerPrompt}
+            className="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-700 text-white px-6 py-4 rounded-lg font-black text-lg transition-all flex items-center justify-center gap-3 shadow-2xl transform hover:scale-105"
+          >
+            <Edit3 className="w-5 h-5" />
+            Answer This Prompt
+          </button>
+        </div>
+      )}
+      
+      {!showPromptCard && todayPrompt && (
+        <button
+          onClick={() => setShowPromptCard(true)}
+          className="w-full bg-purple-900/20 hover:bg-purple-900/40 border-2 border-purple-500/30 text-purple-300 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 mb-6"
+        >
+          <Sparkles className="w-5 h-5" />
+          Show Today's Prompt
+        </button>
+      )}
+
       {/* 💎 ACTION BUTTONS ONLY - Moved header to ReflectionsPage! */}
       <div className="bg-gray-800/40 rounded-lg p-4 border border-gray-700/50 mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
