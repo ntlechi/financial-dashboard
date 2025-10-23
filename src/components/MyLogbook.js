@@ -736,7 +736,8 @@ export default function MyLogbook({
                     <div className="flex-1 min-w-0">
                       {/* 💎 PHASE 2: Bolder, Larger Entry Titles */}
                       {hasTitle && (
-                        <h3 className="text-xl font-bold text-amber-400 mb-2">
+                        <h3 className="text-xl font-bold text-amber-400 mb-2 flex items-center gap-2">
+                          {entry.promptId && <Sparkles className="w-4 h-4 text-purple-400" />}
                           {entry.title}
                         </h3>
                       )}
