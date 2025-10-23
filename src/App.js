@@ -12798,7 +12798,8 @@ function App() {
         console.warn('XP award failed (card save)', e);
       }
       setData(updatedData);
-      closeCardEditor();
+      setEditingCard(null);
+      setTempCardData({});
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
