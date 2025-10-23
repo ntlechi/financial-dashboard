@@ -84,10 +84,60 @@ export default function MyLogbook({
     setAllTags(Array.from(tagsSet).sort());
   }, [data]);
 
+  // Calculate streak (consecutive days with entries)
+  const calculateStreak = (entries) => {
+    if (entries.length === 0) return 0;
+    
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Check if there's an entry today or yesterday (to keep streak alive)
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const hasRecentEntry = entries.some(e => {
+      const entryDate = new Date(e.createdAt);
+      entryDate.setHours(0, 0, 0, 0);
+      return entryDate.getTime() === today.getTime() || entryDate.getTime() === yesterday.getTime();
+    });
+    
+    if (!hasRecentEntry) return 0;
+    
+    // Count consecutive days backwards
+    let checkDate = new Date(today);
+    while (true) {
+      const hasEntry = entries.some(e => {
+        const entryDate = new Date(e.createdAt);
+        entryDate.setHours(0, 0, 0, 0);
+        return entryDate.getTime() === checkDate.getTime();
+      });
+      
+      if (!hasEntry) break;
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+      
+      if (streak > 365) break; // Safety limit
+    }
+    
+    return streak;
+  };
+
   // Show notification
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+  
+  // 💫 NEW: Answer today's prompt
+  const answerPrompt = () => {
+    if (todayPrompt) {
+      setEntryTitle(`Prompt: ${todayPrompt.text.substring(0, 50)}...`);
+      setEntryContent('');
+      setEntryDate(new Date().toISOString().split('T')[0]);
+      setEntryTags(todayPrompt.category);
+      setShowAddEntryModal(true);
+    }
   };
 
   // Toggle entry expansion
@@ -288,13 +338,18 @@ export default function MyLogbook({
       // ADD NEW ENTRY
       // Use custom date if provided, otherwise use now
       const entryTimestamp = entryDate ? new Date(entryDate).toISOString() : now;
+      
+      // 💫 Check if this entry answers today's prompt
+      const isAnsweringPrompt = todayPrompt && entryTitle.includes('Prompt:');
+      
       const newEntry = {
         id: Date.now(),
         title: entryTitle.trim(),
         text: entryContent.trim(),
         tags: parsedTags,
         timestamp: entryTimestamp,
-        createdAt: new Date(entryTimestamp).toLocaleString()
+        createdAt: new Date(entryTimestamp).toLocaleString(),
+        promptId: isAnsweringPrompt ? todayPrompt.id : null
       };
       
       updatedFieldNotes = [newEntry, ...updatedFieldNotes];
