@@ -47,7 +47,13 @@ const FixedModal = ({
         // Override inline background to use Tailwind classes instead
         backgroundColor: undefined,
       }}
-      onClick={closeOnBackdropClick ? handleBackdropClick : undefined}
+      onClick={closeOnBackdropClick ? (e) => {
+        // 🚨 CRITICAL: Blur active element before closing
+        if (document.activeElement && document.activeElement.blur) {
+          document.activeElement.blur();
+        }
+        handleBackdropClick(e);
+      } : undefined}
       onWheel={preventModalScroll}
       onTouchMove={preventModalScroll}
       {...props}
@@ -247,6 +253,12 @@ export const FixedButton = ({
       {...props}
     >
       {children}
+    </button>
+  );
+};
+
+export default FixedModal;
+ildren}
     </button>
   );
 };

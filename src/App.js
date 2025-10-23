@@ -12370,22 +12370,42 @@ function App() {
   };
 
   const closeCardEditor = () => {
-    // 🔧 CRITICAL FIX: Restore scroll position (don't scroll to top!)
-    const scrollY = document.body.style.top;
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    document.body.style.height = '';
-    
-    // Restore the scroll position we saved when opening
-    if (scrollY) {
-      const scrollValue = parseInt(scrollY.replace('px', '').replace('-', '')) || 0;
-      window.scrollTo(0, scrollValue);
+    // 🚨 CRITICAL FIX: Dismiss mobile keyboard FIRST to prevent freeze!
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
     }
     
-    setEditingCard(null);
-    setTempCardData({});
+    // Small delay to let keyboard close before cleaning up
+    setTimeout(() => {
+      // 🔧 Restore scroll position (don't scroll to top!)
+      const scrollY = document.body.style.top;
+      
+      // Clean up ALL body/html styles to prevent freeze
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.touchAction = '';
+      document.body.style.pointerEvents = ''; // ✅ CRITICAL: Re-enable clicks!
+      
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.position = '';
+      document.documentElement.style.width = '';
+      document.documentElement.style.height = '';
+      
+      // Restore the scroll position we saved when opening
+      if (scrollY) {
+        const scrollValue = parseInt(scrollY.replace('px', '').replace('-', '')) || 0;
+        window.scrollTo(0, scrollValue);
+      }
+      
+      // Clear modal state
+      setEditingCard(null);
+      setTempCardData({});
+    }, 100); // Small delay for keyboard to dismiss
   };
 
   const saveCardData = async () => {
