@@ -2,7 +2,7 @@
 // The strategic flight plan connecting daily actions to ultimate life goals
 
 import React, { useState, useEffect } from 'react';
-import { Target, Calendar, Edit, Save, TrendingUp, Award, Rocket, CheckCircle, Circle, DollarSign } from 'lucide-react';
+import { Target, Calendar, Edit, Save, TrendingUp, Award, Rocket, CheckCircle, Circle } from 'lucide-react';
 
 const MissionControl = ({ 
   data, 

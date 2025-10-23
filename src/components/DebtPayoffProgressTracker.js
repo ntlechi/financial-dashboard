@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { TrendingDown, Edit, Plus, Trash2 } from 'lucide-react';
+import React from 'react';
+import { TrendingDown, Edit, Plus } from 'lucide-react';
 
 export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUpgrade }) {
   // Calculate total debt and progress
