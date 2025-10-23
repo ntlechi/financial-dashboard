@@ -3587,21 +3587,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // State for editing business
   const [editingBusiness, setEditingBusiness] = useState(null);
 
-  // 💫 MOMENTS SYSTEM STATE (needed early for Side Hustle integration)
-  const [showMomentModal, setShowMomentModal] = useState(false);
-  const [editingMoment, setEditingMoment] = useState(null);
-  const [newMoment, setNewMoment] = useState(() => {
-    const today = new Date();
-    return {
-      title: '',
-      story: '',
-      location: '',
-      date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-      isAchievement: false,
-      category: 'personal',
-      linkedTransaction: null
-    };
-  });
+  // 💫 MOMENTS SYSTEM STATE - Passed down from App component
+  // (state defined in main App component, accessed here via closure)
   
   // 🔄 RECURRING ITEMS - New Feature!
   const [showAddRecurring, setShowAddRecurring] = useState(false);
@@ -11094,6 +11081,20 @@ function App() {
   const [completedTrip, setCompletedTrip] = useState(null);
 
   // 💫 MOMENTS SYSTEM (state moved up earlier for Side Hustle integration)
+  const [showMomentModal, setShowMomentModal] = useState(false);
+  const [editingMoment, setEditingMoment] = useState(null);
+  const [newMoment, setNewMoment] = useState(() => {
+    const today = new Date();
+    return {
+      title: '',
+      story: '',
+      location: '',
+      date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+      isAchievement: false,
+      category: 'personal',
+      linkedTransaction: null
+    };
+  });
 
   // 🎯 PRICING PHASE STATE
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
