@@ -3,7 +3,7 @@
 // Each mission teaches a core financial habit and awards XP
 
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Target, TrendingUp, BookOpen, Award, X, ArrowRight, Zap } from 'lucide-react';
+import { CheckCircle, Circle, Target, TrendingUp, BookOpen, Award, X, ArrowRight, Zap } from 'lucide-react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -20,7 +20,6 @@ export default function FirstClimbProtocol({ userId, data, onComplete, onClose, 
   // Load mission progress from Firebase
   useEffect(() => {
     loadMissionProgress();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   // Update progress based on user data
@@ -28,7 +27,6 @@ export default function FirstClimbProtocol({ userId, data, onComplete, onClose, 
     if (data) {
       updateMissionProgress();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const loadMissionProgress = async () => {

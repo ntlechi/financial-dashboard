@@ -22,16 +22,6 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
 
   // Initialize with random prompt
   useEffect(() => {
-    const journalPrompts = [
-      "What did this adventure teach you?",
-      "What was your favorite moment?",
-      "What did you leave behind on this climb?",
-      "How did this trip bring you closer to freedom?",
-      "What surprised you most about this journey?",
-      "How has this experience changed your perspective?",
-      "What would you do differently next time?",
-      "What memories will you treasure most?"
-    ];
     const randomPrompt = journalPrompts[Math.floor(Math.random() * journalPrompts.length)];
     setCurrentPrompt(randomPrompt);
   }, []);
@@ -136,7 +126,7 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
           <div className="relative">
             <img
               src={photoPreview}
-              alt="Travel journal entry"
+              alt="Journal photo"
               className="w-full h-32 object-cover rounded-lg border border-amber-500/30"
             />
             <button

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -705,6 +705,12 @@ const SavingsRateCard = ({ data, onEdit }) => {
       </Card>
     );
   }
+
+  const getRateColor = (rate) => {
+    if (rate >= 50) return 'text-emerald-400';
+    if (rate >= 30) return 'text-yellow-400';
+    return 'text-red-400';
+  };
 
   const getRateStatus = (rate) => {
     if (rate >= 50) return 'Excellent';
@@ -1641,6 +1647,81 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           <ShieldCheck className="w-12 h-12 mx-auto text-gray-400 mb-3" />
           <p className="text-gray-400">No retirement accounts configured</p>
           <p className="text-sm text-gray-500 mt-1">Click edit to add your retirement accounts</p>
+        </div>
+      )}
+    </Card>
+  );
+};
+
+// Debt Management Card
+const DebtCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
+          Total Debt
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  const totalDebt = data.accounts?.reduce((sum, account) => sum + account.balance, 0) || 0;
+  const totalMinPayment = data.accounts?.reduce((sum, account) => sum + account.minPayment, 0) || 0;
+  const avgInterestRate = data.accounts?.length > 0 ? 
+    data.accounts.reduce((sum, account) => sum + account.interestRate, 0) / data.accounts.length : 0;
+
+  return (
+    <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40 relative">
+      <button
+        onClick={() => onEdit('debt', data)}
+        className="absolute top-4 right-4 p-2 bg-rose-700/20 hover:bg-rose-600/30 rounded-lg transition-colors"
+        title="Edit Debt"
+      >
+        <Edit className="w-4 h-4 text-rose-300" />
+      </button>
+
+      <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+        <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
+        Total Debt
+      </h2>
+      <p className="text-5xl font-extrabold text-white">${(parseFloat(totalDebt) || 0).toLocaleString()}</p>
+      
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-rose-800/20 rounded-lg p-3">
+          <p className="text-rose-300 text-sm">Min. Payment</p>
+          <p className="text-white font-bold">${(parseFloat(totalMinPayment) || 0).toLocaleString()}/mo</p>
+        </div>
+        <div className="bg-orange-800/20 rounded-lg p-3">
+          <p className="text-orange-300 text-sm">Avg. Interest</p>
+          <p className="text-white font-bold">{avgInterestRate.toFixed(1)}%</p>
+        </div>
+        <div className="bg-yellow-800/20 rounded-lg p-3">
+          <p className="text-yellow-300 text-sm">Accounts</p>
+          <p className="text-white font-bold">{data.accounts?.length || 0}</p>
+        </div>
+      </div>
+
+      {data.accounts && data.accounts.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {data.accounts.slice(0, 3).map((account) => (
+            <div key={account.id} className="flex items-center justify-between text-sm bg-gray-800/30 rounded-lg p-2">
+              <div>
+                <span className="text-white font-medium">{account.name}</span>
+                <div className="text-gray-400 text-xs">
+                  {account.interestRate}% APR • Min: ${account.minPayment}
+                </div>
+              </div>
+              <span className="text-red-400 font-semibold">${(parseFloat(account.balance) || 0).toLocaleString()}</span>
+            </div>
+          ))}
+          {data.accounts.length > 3 && (
+            <p className="text-gray-400 text-xs text-center">
+              +{data.accounts.length - 3} more accounts
+            </p>
+          )}
         </div>
       )}
     </Card>
@@ -3666,6 +3747,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   // 🔧 EDGE CASE FIX: Null safety for empty businesses array
   const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
   const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
+  const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
   // 🏔️ FREEDOM RATIO CALCULATIONS (Mission-Critical!)
   const calculateFreedomMetrics = () => {
@@ -3846,7 +3928,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             }
           }
         } catch (error) {
-          console.error('Error checking milestone unlocks:', error);
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
 
   // const handleShareMoment = (moment) => {
   //   console.log('Share moment:', moment);
@@ -3902,8 +3988,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setNewBusiness({ name: '', description: '', startDate: localDate });
       setShowAddBusiness(false);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error adding business:', error);
-      alert('Failed to add business. Please try again.');
     }
   };
 
@@ -3972,8 +4066,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setNewItem({ description: '', amount: '', date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`, isPassive: false });
       setShowAddItem(false);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error adding item:', error);
-      alert('Error', 'Failed to add item. Please try again.', 'error');
     }
   };
 
@@ -4011,8 +4113,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setBusinessToDelete(null);
       setShowDeleteConfirm(false);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error deleting business:', error);
-      alert('Failed to delete business. Please try again.', 'error');
     }
   };
 
@@ -4045,8 +4155,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       
       setData({ ...data, businesses: updatedBusinesses });
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error deleting item:', error);
-      alert('Failed to delete item. Please try again.', 'error');
     }
   };
 
@@ -4117,9 +4235,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       setData({ ...data, businesses: updatedBusinesses });
       setEditingItem(null);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error editing item:', error);
-      setEditingItem(null); // ✅ CRITICAL FIX: Close modal on error
-      alert('Failed to edit item. Please try again.', 'error');
     }
   };
 
@@ -4173,9 +4298,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       });
       setShowAddRecurring(false);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error adding recurring item:', error);
-      setShowAddRecurring(false); // ✅ CRITICAL FIX: Close modal on error
-      alert('Failed to add recurring item. Please try again.', 'error');
     }
   };
 
@@ -4204,6 +4336,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     }
   };
 
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
+
   // 🔄 DELETE RECURRING ITEM
   const handleDeleteRecurringItem = async (businessId, itemId) => {
     if (!window.confirm('Delete this recurring item?')) return;
@@ -4228,6 +4369,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       console.error('Error deleting recurring item:', error);
     }
   };
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
 
   // 🔄 PROCESS DUE RECURRING ITEMS - Automation Engine
   const processDueRecurringItems = () => {
@@ -6121,8 +6271,16 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           }
         } catch (e) { console.warn('XP award failed (add holding)', e); }
       } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
         console.error('Error saving to Firebase:', error);
-        alert('Failed to add holding. Please try again.', 'error');
       }
     }
   };
@@ -6150,6 +6308,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           investments: updatedData.investments
         });
       } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
         console.error('Error saving to Firebase:', error);
       }
     }
@@ -6177,8 +6344,16 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           investments: updatedData.investments
         });
       } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
         console.error('Error saving to Firebase:', error);
-        alert('Error', 'Failed to update price. Please try again.', 'error');
       }
     }
   };
@@ -6225,6 +6400,15 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           investments: updatedData.investments
         });
       } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
         console.error('Error saving to Firebase:', error);
       }
     }
@@ -7302,9 +7486,16 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       });
       setShowAddForm(false);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error adding transaction:', error);
-      setShowAddForm(false); // ✅ CRITICAL FIX: Close modal on error
-      alert('Error', 'Failed to add transaction. Please try again.', 'error');
     }
   };
 
@@ -7331,9 +7522,16 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setData({ ...data, recurringExpenses: updatedRecurring });
       setEditingRecurring(null);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error updating recurring expense:', error);
-      setEditingRecurring(null); // ✅ CRITICAL FIX: Close modal on error
-      alert('Error', 'Failed to update recurring expense. Please try again.', 'error');
     }
   };
 
@@ -7391,6 +7589,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       setData(updatedData);
       infoLog('? Transaction deleted successfully');
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error deleting transaction:', error);
       alert('Failed to delete transaction');
     }
@@ -8116,6 +8323,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       } catch (error) {
                         console.error('Error updating recurring expense:', error);
                       }
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
                     }}
                     className={`flex-1 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
                       recurring.isActive
@@ -8138,6 +8354,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         
                         setData({ ...data, recurringExpenses: updatedRecurring });
                       } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
                         console.error('Error deleting recurring expense:', error);
                       }
                     }}
@@ -8721,6 +8946,15 @@ const TravelTab = ({ data, setData, userId }) => {
       setWishlistCountryInput('');
       setShowAddWishlistCountry(false);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error adding wishlist country:', error);
       alert('Failed to add country. Please try again.');
     }
@@ -8739,6 +8973,15 @@ const TravelTab = ({ data, setData, userId }) => {
       });
       setData({ ...data, travel: updatedTravel });
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error removing wishlist country:', error);
       alert('Failed to remove country. Please try again.');
     }
@@ -8846,6 +9089,15 @@ const TravelTab = ({ data, setData, userId }) => {
         document.body.style.height = '';
       }, 100);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error saving runway settings:', error);
     }
   };
@@ -8924,6 +9176,15 @@ const TravelTab = ({ data, setData, userId }) => {
          document.body.style.height = '';
        }, 100);
      } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
        console.error('Error adding expense:', error);
      }
    };
@@ -8964,6 +9225,15 @@ const TravelTab = ({ data, setData, userId }) => {
          document.body.style.height = '';
        }, 100);
      } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
        console.error('Error editing trip:', error);
      }
    };
@@ -11002,6 +11272,7 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [editingRecurring, setEditingRecurring] = useState(null); // For editing recurring expenses
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
   
@@ -11091,6 +11362,12 @@ function App() {
 
   // 🎯 First Climb Protocol states
   const [showFirstClimbProtocol, setShowFirstClimbProtocol] = useState(false);
+  const [missions, setMissions] = useState({
+    mission1: { completed: false, progress: 0, target: 10 },
+    mission2: { completed: false, progress: 0, target: 3 },
+    mission3: { completed: false, progress: 0, target: 1 },
+    mission4: { completed: false, progress: 0, target: 1 }
+  });
 
   // Reset data states
   const [showResetModal, setShowResetModal] = useState(false);
@@ -11159,10 +11436,8 @@ function App() {
   });
 
   // 🎯 PRICING PHASE STATE
-  // eslint-disable-next-line no-unused-vars
-  const [foundersCircleCount, setFoundersCircleCount] = useState(0); // Used by PricingModal
-  // eslint-disable-next-line no-unused-vars
-  const [earlyAdopterCount, setEarlyAdopterCount] = useState(0); // Used by PricingModal
+  const [foundersCircleCount, setFoundersCircleCount] = useState(0);
+  const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
 
   // Stealth removed (fresh start)
 
@@ -11437,6 +11712,15 @@ function App() {
         }
       }
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error saving journal entry:', error);
       showNotification('Error saving journal entry', 'error');
     }
@@ -11542,6 +11826,15 @@ function App() {
       // Subscription update happens via webhook after successful payment
       
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('❌ Upgrade error:', error);
       showNotification(
         error.message || 'Failed to process upgrade. Please try again.',
@@ -11657,6 +11950,15 @@ function App() {
     }
   }, [showNotification]);
 
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
+
     // 🔐 PRODUCTION Authentication Effect
   useEffect(() => {
     if (!auth) {
@@ -11716,6 +12018,15 @@ function App() {
             showNotification('Welcome! Your financial dashboard is ready.', 'success');
           }
         } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
           console.error('Error loading user data:', error);
           showNotification('Error loading your data. Please try refreshing.', 'error');
           // Fallback to initial data
@@ -11743,6 +12054,15 @@ function App() {
             setUserPlan(SUBSCRIPTION_TIERS.FREE);
           }
         } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
           console.error('Error loading subscription:', error);
           setUserPlan(SUBSCRIPTION_TIERS.FREE);
         }
@@ -11932,6 +12252,15 @@ function App() {
       }, 2500); // 2.5 second delay
       
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Signin error:', error);
       let errorMessage = 'Failed to sign in';
       
@@ -11955,6 +12284,15 @@ function App() {
       await signOut(auth);
       showNotification('Signed out successfully', 'success');
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Signout error:', error);
       showNotification('Error signing out', 'error');
     }
@@ -12033,6 +12371,15 @@ function App() {
       await signInWithPopup(auth, provider);
       showNotification('Welcome! Signed in with Google.', 'success');
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Google signin error:', error);
       let errorMessage = 'Failed to sign in with Google';
       
@@ -12148,6 +12495,15 @@ function App() {
           infoLog(`📊 Early Adopter: ${count}/500 spots taken`);
         }
       } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
         // SILENT: Pricing phase data is optional - don't show error to users
         // (Firestore permissions may restrict access to app-config collection)
       }
@@ -12469,9 +12825,16 @@ function App() {
       setData(updatedData);
       closeCardEditor();
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error saving card data:', error);
-      closeCardEditor(); // ✅ CRITICAL FIX: Always close modal even on error!
-      showNotification('Error', 'Failed to save changes. Please try again.', 'error');
     }
   };
 
@@ -12889,6 +13252,15 @@ function App() {
       };
       showNotification(resetTypeMessages[resetType] || '✅ Data reset successfully!', 'success');
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('❌ Reset Data Error:', error);
       console.error('❌ Reset Data Error Details:', error.message, error.code);
       showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
@@ -12939,6 +13311,15 @@ function App() {
       setUserBackups(backups);
       setDataSafetySummary(summary);
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('🛡️ Failed to load data safety info:', error);
     }
   };
@@ -13013,6 +13394,15 @@ function App() {
         setShowDataImportModal(false);
       }
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('🛡️ Data import failed:', error);
       showNotification('Import failed', 'error');
     }
@@ -13054,6 +13444,15 @@ function App() {
       showNotification('Recovery failed', 'error');
     }
   };
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
 
   // ?�� QUICK EXPENSE HANDLER - CRITICAL: Must show in Recent Transactions!
   const confirmQuickExpense = async (expense) => {
@@ -13144,6 +13543,15 @@ function App() {
         console.warn('XP award failed (quick expense)', e);
       }
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('❌ ERROR adding quick expense:', error);
       showNotification('Error logging expense', 'error');
     }
@@ -13199,6 +13607,15 @@ function App() {
         console.warn('XP award failed (quick journal)', e);
       }
     } catch (error) {
+
+  // 💫 MOMENTS HANDLERS
+  // const handleEditMoment = (moment) => {
+  //   console.log('Edit moment:', moment);
+  // };
+
+  // const handleShareMoment = (moment) => {
+  //   console.log('Share moment:', moment);
+  // };
       console.error('Error saving quick journal:', error);
       showNotification('Error saving note', 'error');
     }
