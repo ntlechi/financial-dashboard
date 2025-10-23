@@ -8534,7 +8534,8 @@ const TravelTab = ({ data, setData, userId }) => {
   const [showRunwayCalculator, setShowRunwayCalculator] = useState(false); // NEW: Toggle for runway calculator
   const [hoveredCountry, setHoveredCountry] = useState(null);
   
-  // 💫 NEW: Travel Moment Modal States (main Moments state moved up earlier)
+  // 💫 NEW: Travel Moment Modal States (separate from main Moments system)
+  const [showMomentModal, setShowMomentModal] = useState(false);
   const [momentText, setMomentText] = useState('');
   const [momentTrip, setMomentTrip] = useState(null);
   const [runwaySettings, setRunwaySettings] = useState({
