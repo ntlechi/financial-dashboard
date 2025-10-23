@@ -6,7 +6,7 @@ import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Cal
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const [moments, setMoments] = useState([]);
-  const [filter, setFilter] = useState('all'); // 'all', 'travel', 'achievements', 'expenses'
+  const [filter, setFilter] = useState('all'); // 'all', 'travel', 'business', 'achievements', 'expenses'
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedMoments, setExpandedMoments] = useState(new Set()); // NEW: Collapsible state
@@ -102,10 +102,11 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
   };
 
   const getMomentSourceBadge = (moment) => {
-    if (moment.isTravel) return <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><MapPin className="w-3 h-3"/>Travel</span>;
+    if (moment.category === 'business') return <span className="bg-purple-600/20 text-purple-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Briefcase className="w-3 h-3"/>Business</span>;
+    if (moment.isTravel || moment.category === 'travel') return <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><MapPin className="w-3 h-3"/>Travel</span>;
     if (moment.isAchievement) return <span className="bg-green-600/20 text-green-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Award className="w-3 h-3"/>Achievement</span>;
     if (moment.expenseLink) return <span className="bg-red-600/20 text-red-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><DollarSign className="w-3 h-3"/>Expense</span>;
-    return <span className="bg-gray-600/20 text-gray-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Tag className="w-3 h-3"/>General</span>;
+    return <span className="bg-gray-600/20 text-gray-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Tag className="w-3 h-3"/>Personal</span>;
   };
 
   return (
@@ -188,6 +189,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
             <div className="absolute z-10 mt-2 w-48 bg-gray-800 rounded-lg shadow-2xl border border-gray-700">
               <button onClick={() => { setFilter('all'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-t-lg">All</button>
               <button onClick={() => { setFilter('travel'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">Travel</button>
+              <button onClick={() => { setFilter('business'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 flex items-center gap-2"><Briefcase className="w-3 h-3 text-purple-400"/>Business</button>
               <button onClick={() => { setFilter('achievements'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">Achievements</button>
               <button onClick={() => { setFilter('expenses'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-b-lg">Expenses Linked</button>
             </div>
@@ -229,7 +231,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
             return (
               <div 
                 key={moment.id} 
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg border border-amber-500/10 overflow-hidden hover:border-amber-400 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300"
+                className={`bg-gradient-to-br ${moment.category === 'business' ? 'from-purple-900/20 to-gray-900/50 border-purple-500/20 hover:border-purple-400 hover:shadow-purple-500/20' : 'from-gray-800/50 to-gray-900/50 border-amber-500/10 hover:border-amber-400 hover:shadow-amber-500/20'} rounded-lg border overflow-hidden hover:shadow-2xl transition-all duration-300`}
               >
                 {/* Card - Click to Expand (EXACT Logbook Structure!) */}
                 <div
@@ -302,6 +304,21 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                     )}
                   </div>
                   
+                  {/* 💼 Business Moment Info */}
+                  {moment.linkedTransaction && (
+                    <div className="mt-3 bg-purple-900/20 border border-purple-500/30 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-4 h-4 text-purple-400" />
+                          <span className="text-sm font-semibold text-purple-300">{moment.linkedTransaction.businessName}</span>
+                        </div>
+                        <span className={`text-sm font-bold ${moment.linkedTransaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
+                          {moment.linkedTransaction.type === 'income' ? '+' : '-'}${(parseFloat(moment.linkedTransaction.amount) || 0).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Source Badge - Amber/Gold */}
                   <div className="mt-2">
                     {getMomentSourceBadge(moment)}
@@ -372,6 +389,15 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                 )}
               </div>
             );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MomentsFeed;
+);
           })}
         </div>
       )}

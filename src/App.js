@@ -4853,6 +4853,31 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                             {isIncome ? '+' : '-'}${(parseFloat(item.amount) || 0).toLocaleString()}
                           </span>
                           <button
+                            onClick={() => {
+                              // Open moment modal with pre-filled business data
+                              setEditingMoment(null);
+                              setNewMoment({
+                                title: item.description,
+                                story: '',
+                                location: business.name,
+                                date: item.date,
+                                isAchievement: false,
+                                category: 'business',
+                                linkedTransaction: {
+                                  businessId: business.id,
+                                  businessName: business.name,
+                                  amount: item.amount,
+                                  type: isIncome ? 'income' : 'expense'
+                                }
+                              });
+                              setShowMomentModal(true);
+                            }}
+                            className="text-gray-400 hover:text-purple-400 p-1"
+                            title="Create Business Moment"
+                          >
+                            <BookOpen className="w-3 h-3" />
+                          </button>
+                          <button
                             onClick={() => setEditingItem({
                               businessId: business.id,
                               itemId: item.id,
@@ -11063,7 +11088,9 @@ function App() {
       story: '',
       location: '',
       date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-      isAchievement: false
+      isAchievement: false,
+      category: 'personal', // 'personal', 'travel', 'business'
+      linkedTransaction: null
     };
   });
 
@@ -11100,7 +11127,9 @@ function App() {
         story: moment.story || '',
         location: moment.location || '',
         date: moment.timestamp ? new Date(moment.timestamp).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        isAchievement: moment.isAchievement || false
+        isAchievement: moment.isAchievement || false,
+        category: moment.category || 'personal',
+        linkedTransaction: moment.linkedTransaction || null
       });
     } else {
       // Create new moment
@@ -11110,7 +11139,9 @@ function App() {
         story: '',
         location: '',
         date: new Date().toISOString().split('T')[0],
-        isAchievement: false
+        isAchievement: false,
+        category: 'personal',
+        linkedTransaction: null
       });
     }
     setShowMomentModal(true);
@@ -11201,7 +11232,9 @@ function App() {
         story: '',
         location: '',
         date: new Date().toISOString().split('T')[0],
-        isAchievement: false
+        isAchievement: false,
+        category: 'personal',
+        linkedTransaction: null
       });
       showNotification(editingMoment ? '✨ Moment updated!' : '💫 Moment created!', 'success');
       
@@ -14707,6 +14740,31 @@ function App() {
                       🏆 Mark as Achievement (shows special badge)
                     </label>
                   </div>
+
+                  {/* Business Moment Info */}
+                  {newMoment.linkedTransaction && (
+                    <div className="bg-purple-900/30 border-2 border-purple-500/40 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Briefcase className="w-5 h-5 text-purple-400" />
+                        <h4 className="text-sm font-bold text-purple-300">💼 Business Moment</h4>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <p className="text-gray-400 text-xs">Business</p>
+                          <p className="text-white font-semibold">{newMoment.linkedTransaction.businessName}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 text-xs">Amount</p>
+                          <p className={`font-bold ${newMoment.linkedTransaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
+                            {newMoment.linkedTransaction.type === 'income' ? '+' : '-'}${(parseFloat(newMoment.linkedTransaction.amount) || 0).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-purple-200 mt-3">
+                        ✨ This moment is linked to your business activity
+                      </p>
+                    </div>
+                  )}
 
                   {/* Info Box */}
                   <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4">
