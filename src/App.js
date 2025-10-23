@@ -12726,7 +12726,22 @@ function App() {
   };
 
   const closeCardEditor = () => {
-    // ✅ FIX: Let FixedModal handle body styles (no conflict!)
+    // ✅ CRITICAL: Force restore body styles (backup cleanup!)
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+    document.body.style.touchAction = '';
+    
+    // Also restore html element
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.position = '';
+    document.documentElement.style.width = '';
+    document.documentElement.style.height = '';
+    
     setEditingCard(null);
     setTempCardData({});
   };
