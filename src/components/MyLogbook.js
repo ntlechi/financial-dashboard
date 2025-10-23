@@ -34,57 +34,13 @@ export default function MyLogbook({
   
   // Notification State
   const [notification, setNotification] = useState(null);
+  
+  // 💫 NEW: Daily Prompt State
+  const [todayPrompt, setTodayPrompt] = useState(null);
+  const [promptProgress, setPromptProgress] = useState({ answered: 0, total: 365, streak: 0, cycle: 1 });
+  const [showPromptCard, setShowPromptCard] = useState(true);
 
-  // Load and unify all journal entries
-  useEffect(() => {
-    const unifiedEntries = [];
-    
-    // Load from fieldNotes (the "Add Note" entries)
-    if (data?.fieldNotes && Array.isArray(data.fieldNotes)) {
-      data.fieldNotes.forEach(note => {
-        unifiedEntries.push({
-          id: note.id,
-          title: note.title || '',
-          content: note.text,
-          createdAt: note.timestamp || note.createdAt,
-          updatedAt: note.lastEdited || note.timestamp,
-          tags: note.tags || [],
-          source: 'fieldNotes'
-        });
-      });
-    }
-    
-    // Load from quickJournalEntries (the Quick Journal button entries)
-    if (data?.quickJournalEntries && Array.isArray(data.quickJournalEntries)) {
-      data.quickJournalEntries.forEach(entry => {
-        unifiedEntries.push({
-          id: entry.id,
-          title: entry.title || '',
-          content: entry.text,
-          createdAt: entry.timestamp,
-          updatedAt: entry.lastEdited || entry.timestamp,
-          tags: entry.tags || [],
-          source: 'quickJournal'
-        });
-      });
-    }
-    
-    // Sort by date (newest first)
-    unifiedEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
-    setEntries(unifiedEntries);
-    
-    // Extract all unique tags
-    const tagsSet = new Set();
-    unifiedEntries.forEach(entry => {
-      if (entry.tags && Array.isArray(entry.tags)) {
-        entry.tags.forEach(tag => tagsSet.add(tag));
-      }
-    });
-    setAllTags(Array.from(tagsSet).sort());
-  }, [data]);
-
-  // Calculate streak (consecutive days with entries)
+  // Calculate streak (consecutive days with entries) - DEFINED BEFORE useEffect
   const calculateStreak = (entries) => {
     if (entries.length === 0) return 0;
     
@@ -122,6 +78,77 @@ export default function MyLogbook({
     
     return streak;
   };
+
+  // Load and unify all journal entries
+  useEffect(() => {
+    const unifiedEntries = [];
+    
+    // Load from fieldNotes (the "Add Note" entries)
+    if (data?.fieldNotes && Array.isArray(data.fieldNotes)) {
+      data.fieldNotes.forEach(note => {
+        unifiedEntries.push({
+          id: note.id,
+          title: note.title || '',
+          content: note.text,
+          createdAt: note.timestamp || note.createdAt,
+          updatedAt: note.lastEdited || note.timestamp,
+          tags: note.tags || [],
+          promptId: note.promptId || null,
+          source: 'fieldNotes'
+        });
+      });
+    }
+    
+    // Load from quickJournalEntries (the Quick Journal button entries)
+    if (data?.quickJournalEntries && Array.isArray(data.quickJournalEntries)) {
+      data.quickJournalEntries.forEach(entry => {
+        unifiedEntries.push({
+          id: entry.id,
+          title: entry.title || '',
+          content: entry.text,
+          createdAt: entry.timestamp,
+          updatedAt: entry.lastEdited || entry.timestamp,
+          tags: entry.tags || [],
+          promptId: entry.promptId || null,
+          source: 'quickJournal'
+        });
+      });
+    }
+    
+    // Sort by date (newest first)
+    unifiedEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    setEntries(unifiedEntries);
+    
+    // Extract all unique tags
+    const tagsSet = new Set();
+    unifiedEntries.forEach(entry => {
+      if (entry.tags && Array.isArray(entry.tags)) {
+        entry.tags.forEach(tag => tagsSet.add(tag));
+      }
+    });
+    setAllTags(Array.from(tagsSet).sort());
+    
+    // 💫 NEW: Load today's prompt
+    const answeredPromptIds = unifiedEntries
+      .filter(e => e.promptId)
+      .map(e => e.promptId);
+    
+    const userSeed = userId || 'default';
+    const prompt = getTodayPrompt(answeredPromptIds, userSeed);
+    setTodayPrompt(prompt);
+    
+    // Calculate progress
+    const uniqueAnswered = new Set(answeredPromptIds);
+    const completionCycles = Math.floor(uniqueAnswered.size / 365);
+    
+    setPromptProgress({
+      answered: uniqueAnswered.size % 365 || (uniqueAnswered.size > 0 ? 365 : 0),
+      total: 365,
+      streak: calculateStreak(unifiedEntries),
+      cycle: completionCycles > 0 ? completionCycles : 1
+    });
+  }, [data, userId]);
 
   // Show notification
   const showNotification = (message, type = 'success') => {
