@@ -258,9 +258,3 @@ export const FixedButton = ({
 };
 
 export default FixedModal;
-ildren}
-    </button>
-  );
-};
-
-export default FixedModal;
