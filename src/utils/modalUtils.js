@@ -62,31 +62,38 @@ export const useScrollPrevention = (isOpen) => {
     return () => {
       if (!document.body) return;
       
+      // 🚨 CRITICAL FIX: Blur active element to dismiss keyboard FIRST!
+      if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+      }
+      
       // Get stored scroll position
       const storedScrollY = document.body.getAttribute('data-scroll-y');
       
-      // Restore body scroll when modal is closed
-      document.body.style.overflow = originalOverflow;
-      document.body.style.position = originalPosition;
-      document.body.style.top = originalTop;
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = originalWidth;
-      document.body.style.touchAction = '';
-      
-      // Restore html element
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.position = '';
-      document.documentElement.style.width = '';
-      document.documentElement.style.height = '';
-      
-      // Restore scroll position with small delay for keyboard
-      if (storedScrollY) {
-        requestAnimationFrame(() => {
+      // Small delay to let keyboard close before restoring
+      setTimeout(() => {
+        // Restore body scroll when modal is closed
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = originalWidth;
+        document.body.style.touchAction = '';
+        document.body.style.pointerEvents = ''; // ✅ CRITICAL: Re-enable clicks!
+        
+        // Restore html element
+        document.documentElement.style.overflow = '';
+        document.documentElement.style.position = '';
+        document.documentElement.style.width = '';
+        document.documentElement.style.height = '';
+        
+        // Restore scroll position
+        if (storedScrollY) {
           window.scrollTo(0, parseInt(storedScrollY));
           document.body.removeAttribute('data-scroll-y');
-        });
-      }
+        }
+      }, 50); // Small delay for keyboard dismissal
     };
   }, [isOpen]);
 };
