@@ -47,13 +47,7 @@ const FixedModal = ({
         // Override inline background to use Tailwind classes instead
         backgroundColor: undefined,
       }}
-      onClick={closeOnBackdropClick ? (e) => {
-        // 🚨 CRITICAL: Blur active element before closing
-        if (document.activeElement && document.activeElement.blur) {
-          document.activeElement.blur();
-        }
-        handleBackdropClick(e);
-      } : undefined}
+      onClick={closeOnBackdropClick ? handleBackdropClick : undefined}
       onWheel={preventModalScroll}
       onTouchMove={preventModalScroll}
       {...props}
