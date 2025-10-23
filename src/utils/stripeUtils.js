@@ -172,7 +172,7 @@ export function isStripeConfigured() {
   return hasPublishableKey && hasPriceIds;
 }
 
-export default {
+const stripeUtilsModule = {
   createCheckoutSession,
   createPortalSession,
   formatPrice,
@@ -180,3 +180,5 @@ export default {
   isStripeConfigured,
   STRIPE_PRICE_IDS,
 };
+
+export default stripeUtilsModule;

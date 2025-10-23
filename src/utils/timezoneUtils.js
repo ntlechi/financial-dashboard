@@ -212,7 +212,7 @@ export const getDayOfWeek = (dateString, format = 'long') => {
 };
 
 // 🎯 Export all utilities
-export default {
+const timezoneUtilsModule = {
   getUserTimezone,
   getTimezoneOffset,
   formatDateForUser,
@@ -226,4 +226,6 @@ export default {
   getMonthName,
   getDayOfWeek
 };
+
+export default timezoneUtilsModule;
 

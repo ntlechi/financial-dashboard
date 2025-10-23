@@ -259,7 +259,7 @@ export const getUpgradeSuggestions = (currentTier, feature) => {
   return suggestions;
 };
 
-export default {
+const subscriptionUtilsModule = {
   SUBSCRIPTION_TIERS,
   TIER_HIERARCHY,
   FEATURE_ACCESS,
@@ -277,3 +277,5 @@ export default {
   getSideHustleLimit,
   canAddSideHustle
 };
+
+export default subscriptionUtilsModule;

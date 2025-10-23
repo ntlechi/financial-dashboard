@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { BookOpen, CheckCircle, Circle, Award, ArrowRight, Clock, Tag } from 'lucide-react';
+import { BookOpen, CheckCircle, Circle, Award, ArrowRight, Clock } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
@@ -12,13 +12,13 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
   const [showDrill, setShowDrill] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [drillCompleted, setDrillCompleted] = useState(false);
-  const [drillCorrect, setDrillCorrect] = useState(false);
   const [notification, setNotification] = useState(null);
 
   // Fetch missions from Firestore
   useEffect(() => {
     fetchMissions();
     fetchUserProgress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const fetchMissions = async () => {
@@ -111,7 +111,6 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
     setSelectedAnswer(answerIndex);
     
     const isCorrect = answerIndex === selectedMission.correctAnswerIndex;
-    setDrillCorrect(isCorrect);
     setDrillCompleted(true);
     
     if (isCorrect) {

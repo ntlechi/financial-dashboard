@@ -3,7 +3,7 @@
 // The bridge between "knowing" and "controlling" your finances
 
 import React, { useState, useEffect } from 'react';
-import { Package, Plus, Edit3, Trash2, AlertCircle, CheckCircle, TrendingDown, X, Award, DollarSign } from 'lucide-react';
+import { Package, Plus, Edit3, Trash2, X, Award, DollarSign } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -50,7 +50,6 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
 
   // Get crate status
   const getCrateStatus = (allocated, spent) => {
-    const remaining = allocated - spent;
     const percentUsed = (spent / allocated) * 100;
 
     if (percentUsed >= 100) {

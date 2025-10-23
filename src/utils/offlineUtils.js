@@ -237,7 +237,7 @@ export const hasOfflineData = () => {
 };
 
 // 🎯 Export all utilities
-export default {
+const offlineUtilsModule = {
   isOnline,
   getOfflineStatus,
   storeOffline,
@@ -256,4 +256,6 @@ export default {
   getOfflineSummary,
   hasOfflineData
 };
+
+export default offlineUtilsModule;
 

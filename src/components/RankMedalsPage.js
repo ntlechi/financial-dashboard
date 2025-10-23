@@ -3,7 +3,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getRankFromXp, RANKS } from '../utils/xp';
 import { SUBSCRIPTION_TIERS } from '../utils/subscriptionUtils';
-import { Crown, Lock, Star, Award, Zap, Target, Shield, Trophy } from 'lucide-react';
+import { Crown, Lock, Star, Target, Shield, Trophy } from 'lucide-react';
 
 const RANK_INSIGNIA = {
   'Recruit': {

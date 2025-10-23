@@ -295,7 +295,7 @@ export const validateDataIntegrity = (data) => {
 };
 
 // 🛡️ Export all utilities
-export default {
+const dataSafetyModule = {
   createBackup,
   getUserBackups,
   restoreFromBackup,
@@ -309,4 +309,6 @@ export default {
   importUserData,
   validateDataIntegrity
 };
+
+export default dataSafetyModule;
 

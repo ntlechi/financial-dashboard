@@ -345,7 +345,7 @@ export const useModal = (isOpen, onClose) => {
   };
 };
 
-export default {
+const modalUtilsModule = {
   useModal,
   useModalFocus,
   useScrollPrevention,
@@ -361,3 +361,5 @@ export default {
   getModalAccessibilityProps,
   handleModalError,
 };
+
+export default modalUtilsModule;

@@ -3,7 +3,7 @@ import { X, Check, Crown, Zap, Target, Rocket, Clock, Users, ChevronDown, Chevro
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from '../pricing';
-import { isFoundersCircleAvailable, isEarlyAdopterAvailable } from '../utils/subscriptionUtils';
+// Removed unused imports: isFoundersCircleAvailable, isEarlyAdopterAvailable
 
 const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan = null }) => {
   const [billingCycle, setBillingCycle] = useState('monthly');

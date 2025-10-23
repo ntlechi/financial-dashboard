@@ -1,6 +1,6 @@
 // 🎯 REFLECTIONS PAGE - Unified My Logbook + The Trail
 import React, { useState } from 'react';
-import { BookOpen, Download, Compass } from 'lucide-react';
+import { BookOpen, Compass } from 'lucide-react';
 import TheTrail from './TheTrail';
 import MyLogbook from './MyLogbook';
 

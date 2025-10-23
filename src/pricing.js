@@ -364,7 +364,7 @@ export const getStripePriceId = (planId, billingCycle = 'monthly', foundersCount
   return priceIdMap[phase]?.[planId]?.[billingCycle] || null;
 };
 
-export default {
+const pricingModule = {
   PRICING_PHASES,
   pricingPlans,
   getCurrentPricingPlans,
@@ -374,3 +374,5 @@ export default {
   STRIPE_PRICE_IDS,
   getStripePriceId
 };
+
+export default pricingModule;
