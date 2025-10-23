@@ -12715,7 +12715,7 @@ function App() {
       }
       
       // NOTE: Removed viewport meta manipulation as it can cause issues
-      // Scroll position is now handled by openCardEditor/closeCardEditor
+      // Scroll position is now handled by FixedModal component
     }
   };
 
