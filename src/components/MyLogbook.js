@@ -899,10 +899,6 @@ export default function MyLogbook({
         </div>
       )}
 
-      {/* 💎 ACTION BUTTONS ONLY - Moved header to ReflectionsPage! */}
-      <div className="bg-gray-800/40 rounded-lg p-4 border border-gray-700/50 mb-6">
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
-
       {/* 💎 Add/Edit Entry Modal - Premium Gold! */}
       {showAddEntryModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
