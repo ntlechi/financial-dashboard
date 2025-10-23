@@ -4885,8 +4885,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           const kpis = calculateKPIs(filteredData);
           const yoyComparison = getYoYComparison(businessMonthlyData);
           
-          // Track active tab per business (using business ID as key)
-          const [businessTab, setBusinessTab] = useState('transactions');
+          // Get current tab for this business
+          const currentTab = getBusinessTab(business.id);
           
           return (
           <Card key={business.id} className="space-y-4">
@@ -4936,9 +4936,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             {/* 📊 TAB SWITCHER - NEW! */}
             <div className="flex gap-2 border-b border-gray-700">
               <button
-                onClick={() => setBusinessTab('transactions')}
+                onClick={() => setBusinessTab(business.id, 'transactions')}
                 className={`px-4 py-2 font-semibold transition-colors ${
-                  businessTab === 'transactions'
+                  currentTab === 'transactions'
                     ? 'text-blue-400 border-b-2 border-blue-400'
                     : 'text-gray-400 hover:text-gray-300'
                 }`}
@@ -4946,9 +4946,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 Transactions
               </button>
               <button
-                onClick={() => setBusinessTab('analytics')}
+                onClick={() => setBusinessTab(business.id, 'analytics')}
                 className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
-                  businessTab === 'analytics'
+                  currentTab === 'analytics'
                     ? 'text-amber-400 border-b-2 border-amber-400'
                     : 'text-gray-400 hover:text-gray-300'
                 }`}
@@ -4959,7 +4959,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             </div>
 
             {/* TRANSACTIONS TAB CONTENT */}
-            {businessTab === 'transactions' && (
+            {currentTab === 'transactions' && (
               <>
                 {/* Business Summary */}
                 <div className="grid grid-cols-3 gap-4 text-center">
@@ -5127,7 +5127,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             )}
 
             {/* 📊 ANALYTICS TAB CONTENT - NEW! */}
-            {businessTab === 'analytics' && (
+            {currentTab === 'analytics' && (
               <div className="space-y-6">
                 {filteredData.length > 0 ? (
                   <>
