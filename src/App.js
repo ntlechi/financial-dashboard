@@ -5217,7 +5217,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                             tick={{ fill: '#9CA3AF', fontSize: 12 }}
                             tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                           />
-                          <Tooltip 
+                          <RechartsTooltip 
                             contentStyle={{ 
                               backgroundColor: '#1F2937', 
                               border: '1px solid #374151',
@@ -17077,5 +17077,8 @@ const AppWithErrorBoundary = () => (
 );
 
 export default AppWithErrorBoundary;
+
+
+oundary;
 
 
