@@ -3589,11 +3589,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [editingBusiness, setEditingBusiness] = useState(null);
 
   // 📊 ANALYTICS TAB STATE - NEW!
-  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' or 'analytics'
+  const [businessTabs, setBusinessTabs] = useState({}); // Track active tab per business by ID
   const [analyticsTimeFilter, setAnalyticsTimeFilter] = useState('last12mo'); // 'year', 'last12mo', 'alltime'
   const [showIncome, setShowIncome] = useState(true);
   const [showExpenses, setShowExpenses] = useState(true);
   const [showProfit, setShowProfit] = useState(true);
+
+  // Helper to get/set business tab
+  const getBusinessTab = (businessId) => businessTabs[businessId] || 'transactions';
+  const setBusinessTab = (businessId, tab) => setBusinessTabs({...businessTabs, [businessId]: tab});
 
   // 💫 MOMENTS SYSTEM STATE - Passed down from App component
   // (state defined in main App component, accessed here via closure)
@@ -4874,7 +4878,17 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
       {/* Business List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {data.businesses.map(business => (
+        {data.businesses.map(business => {
+          // 📊 Calculate analytics data for this business
+          const businessMonthlyData = calculateMonthlyData(business);
+          const filteredData = filterDataByTimeRange(businessMonthlyData, analyticsTimeFilter);
+          const kpis = calculateKPIs(filteredData);
+          const yoyComparison = getYoYComparison(businessMonthlyData);
+          
+          // Track active tab per business (using business ID as key)
+          const [businessTab, setBusinessTab] = useState('transactions');
+          
+          return (
           <Card key={business.id} className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
@@ -4918,30 +4932,58 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </button>
               </div>
             </div>
-            
-            {/* Business Summary */}
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-green-900/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-green-400">
-                  ${(parseFloat(business.totalIncome) || 0).toLocaleString()}
-                </div>
-                <div className="text-xs text-green-300">Income</div>
-              </div>
-              <div className="bg-red-900/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-red-400">
-                  ${(parseFloat(business.totalExpenses) || 0).toLocaleString()}
-                </div>
-                <div className="text-xs text-red-300">Expenses</div>
-              </div>
-              <div className="bg-blue-900/30 rounded-lg p-3">
-                <div className={`text-lg font-bold ${(parseFloat(business.netProfit) || 0) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                  ${(parseFloat(business.netProfit) || 0).toLocaleString()}
-                </div>
-                <div className="text-xs text-blue-300">Net Profit</div>
-              </div>
+
+            {/* 📊 TAB SWITCHER - NEW! */}
+            <div className="flex gap-2 border-b border-gray-700">
+              <button
+                onClick={() => setBusinessTab('transactions')}
+                className={`px-4 py-2 font-semibold transition-colors ${
+                  businessTab === 'transactions'
+                    ? 'text-blue-400 border-b-2 border-blue-400'
+                    : 'text-gray-400 hover:text-gray-300'
+                }`}
+              >
+                Transactions
+              </button>
+              <button
+                onClick={() => setBusinessTab('analytics')}
+                className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
+                  businessTab === 'analytics'
+                    ? 'text-amber-400 border-b-2 border-amber-400'
+                    : 'text-gray-400 hover:text-gray-300'
+                }`}
+              >
+                <BarChart3 className="w-4 h-4" />
+                Analytics
+              </button>
             </div>
-            
-            {/* Recent Items */}
+
+            {/* TRANSACTIONS TAB CONTENT */}
+            {businessTab === 'transactions' && (
+              <>
+                {/* Business Summary */}
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="bg-green-900/30 rounded-lg p-3">
+                    <div className="text-lg font-bold text-green-400">
+                      ${(parseFloat(business.totalIncome) || 0).toLocaleString()}
+                    </div>
+                    <div className="text-xs text-green-300">Income</div>
+                  </div>
+                  <div className="bg-red-900/30 rounded-lg p-3">
+                    <div className="text-lg font-bold text-red-400">
+                      ${(parseFloat(business.totalExpenses) || 0).toLocaleString()}
+                    </div>
+                    <div className="text-xs text-red-300">Expenses</div>
+                  </div>
+                  <div className="bg-blue-900/30 rounded-lg p-3">
+                    <div className={`text-lg font-bold ${(parseFloat(business.netProfit) || 0) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                      ${(parseFloat(business.netProfit) || 0).toLocaleString()}
+                    </div>
+                    <div className="text-xs text-blue-300">Net Profit</div>
+                  </div>
+                </div>
+                
+                {/* Recent Items */}
             <div className="space-y-2">
               <h4 className="font-semibold text-gray-300">Recent Activity</h4>
               <div className="max-h-32 overflow-y-auto space-y-1">
@@ -5081,8 +5123,190 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </div>
               </div>
             )}
+              </>
+            )}
+
+            {/* 📊 ANALYTICS TAB CONTENT - NEW! */}
+            {businessTab === 'analytics' && (
+              <div className="space-y-6">
+                {filteredData.length > 0 ? (
+                  <>
+                    {/* KPI Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="bg-green-900/20 rounded-lg p-4 border border-green-500/30">
+                        <div className="text-xs text-green-300 mb-1">Total Revenue</div>
+                        <div className="text-2xl font-bold text-green-400">
+                          ${(kpis.totalRevenue || 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                        </div>
+                      </div>
+                      <div className="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+                        <div className="text-xs text-red-300 mb-1">Total Expenses</div>
+                        <div className="text-2xl font-bold text-red-400">
+                          ${(kpis.totalExpenses || 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                        </div>
+                      </div>
+                      <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
+                        <div className="text-xs text-amber-300 mb-1">Total Profit</div>
+                        <div className="text-2xl font-bold text-amber-400">
+                          ${(kpis.totalProfit || 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                        </div>
+                      </div>
+                      <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+                        <div className="text-xs text-blue-300 mb-1">Growth (MoM)</div>
+                        <div className={`text-2xl font-bold ${kpis.growth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {kpis.growth >= 0 ? '+' : ''}{kpis.growth.toFixed(1)}%
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Chart Controls */}
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                      <div className="flex flex-wrap gap-3">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={showIncome}
+                            onChange={(e) => setShowIncome(e.target.checked)}
+                            className="rounded border-gray-600 text-green-600 focus:ring-green-500"
+                          />
+                          <span className="text-sm text-green-300">Income</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={showExpenses}
+                            onChange={(e) => setShowExpenses(e.target.checked)}
+                            className="rounded border-gray-600 text-red-600 focus:ring-red-500"
+                          />
+                          <span className="text-sm text-red-300">Expenses</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={showProfit}
+                            onChange={(e) => setShowProfit(e.target.checked)}
+                            className="rounded border-gray-600 text-amber-600 focus:ring-amber-500"
+                          />
+                          <span className="text-sm text-amber-300">Profit</span>
+                        </label>
+                      </div>
+                      <select
+                        value={analyticsTimeFilter}
+                        onChange={(e) => setAnalyticsTimeFilter(e.target.value)}
+                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none text-sm"
+                      >
+                        <option value="year">Current Year</option>
+                        <option value="last12mo">Last 12 Months</option>
+                        <option value="alltime">All Time</option>
+                      </select>
+                    </div>
+
+                    {/* Performance Chart */}
+                    <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                      <h4 className="text-sm font-semibold text-gray-300 mb-4">Performance Trend</h4>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <LineChart data={filteredData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                          <XAxis 
+                            dataKey="month" 
+                            stroke="#9CA3AF"
+                            tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                          />
+                          <YAxis 
+                            stroke="#9CA3AF"
+                            tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                            tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1F2937', 
+                              border: '1px solid #374151',
+                              borderRadius: '8px'
+                            }}
+                            formatter={(value) => `$${value.toLocaleString()}`}
+                          />
+                          <Legend />
+                          {showIncome && <Line type="monotone" dataKey="income" stroke="#10B981" strokeWidth={2} name="Income" />}
+                          {showExpenses && <Line type="monotone" dataKey="expenses" stroke="#EF4444" strokeWidth={2} name="Expenses" />}
+                          {showProfit && <Line type="monotone" dataKey="profit" stroke="#F59E0B" strokeWidth={3} name="Profit" />}
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Year-over-Year Comparison */}
+                    {yoyComparison && (
+                      <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+                        <h4 className="text-sm font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4" />
+                          Year-over-Year Comparison
+                        </h4>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b border-gray-700">
+                                <th className="text-left py-2 text-gray-400 font-semibold">Metric</th>
+                                <th className="text-right py-2 text-gray-400 font-semibold">Last Year</th>
+                                <th className="text-right py-2 text-gray-400 font-semibold">This Year</th>
+                                <th className="text-right py-2 text-gray-400 font-semibold">Change</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="border-b border-gray-700/50">
+                                <td className="py-3 text-white">Revenue</td>
+                                <td className="text-right text-green-300">${yoyComparison.lastYear.income.toLocaleString()}</td>
+                                <td className="text-right text-green-400 font-semibold">${yoyComparison.current.income.toLocaleString()}</td>
+                                <td className={`text-right font-bold ${yoyComparison.growth.revenue >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  {yoyComparison.growth.revenue >= 0 ? '↑' : '↓'} {Math.abs(yoyComparison.growth.revenue).toFixed(1)}%
+                                </td>
+                              </tr>
+                              <tr className="border-b border-gray-700/50">
+                                <td className="py-3 text-white">Expenses</td>
+                                <td className="text-right text-red-300">${yoyComparison.lastYear.expenses.toLocaleString()}</td>
+                                <td className="text-right text-red-400 font-semibold">${yoyComparison.current.expenses.toLocaleString()}</td>
+                                <td className={`text-right font-bold ${yoyComparison.growth.expenses >= 0 ? 'text-red-400' : 'text-green-400'}`}>
+                                  {yoyComparison.growth.expenses >= 0 ? '↑' : '↓'} {Math.abs(yoyComparison.growth.expenses).toFixed(1)}%
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="py-3 text-white font-semibold">Net Profit</td>
+                                <td className="text-right text-amber-300">${yoyComparison.lastYear.profit.toLocaleString()}</td>
+                                <td className="text-right text-amber-400 font-bold">${yoyComparison.current.profit.toLocaleString()}</td>
+                                <td className={`text-right font-bold ${yoyComparison.growth.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  {yoyComparison.growth.profit >= 0 ? '↑' : '↓'} {Math.abs(yoyComparison.growth.profit).toFixed(1)}%
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        {/* Smart Insight */}
+                        <div className="mt-4 bg-gray-800/50 rounded-lg p-3">
+                          <p className="text-sm text-gray-300">
+                            💡 <strong>Insight:</strong> {
+                              yoyComparison.growth.profit > 50 
+                                ? `Outstanding ${yoyComparison.growth.profit.toFixed(0)}% profit growth! You're crushing it! 🚀`
+                                : yoyComparison.growth.profit > 25
+                                ? `Strong ${yoyComparison.growth.profit.toFixed(0)}% profit growth! Keep up the momentum! 💪`
+                                : yoyComparison.growth.profit > 0
+                                ? `Positive ${yoyComparison.growth.profit.toFixed(0)}% profit growth. Stay consistent! 📈`
+                                : `Profit down ${Math.abs(yoyComparison.growth.profit).toFixed(0)}%. Time to optimize! 💡`
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-12 text-gray-400">
+                    <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg font-semibold mb-2">No Data Yet</p>
+                    <p className="text-sm">Start adding transactions to see your analytics!</p>
+                  </div>
+                )}
+              </div>
+            )}
           </Card>
-        ))}
+        );
+        })}
       </div>
 
       {/* Add Item Modal */}
