@@ -3581,11 +3581,27 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
   
-  // ?��️ EDIT ITEM - New Feature!
+  // State for editing items
   const [editingItem, setEditingItem] = useState(null);
   
-  // ?��️ EDIT BUSINESS - New Feature!
+  // State for editing business
   const [editingBusiness, setEditingBusiness] = useState(null);
+
+  // 💫 MOMENTS SYSTEM STATE (needed early for Side Hustle integration)
+  const [showMomentModal, setShowMomentModal] = useState(false);
+  const [editingMoment, setEditingMoment] = useState(null);
+  const [newMoment, setNewMoment] = useState(() => {
+    const today = new Date();
+    return {
+      title: '',
+      story: '',
+      location: '',
+      date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+      isAchievement: false,
+      category: 'personal',
+      linkedTransaction: null
+    };
+  });
   
   // 🔄 RECURRING ITEMS - New Feature!
   const [showAddRecurring, setShowAddRecurring] = useState(false);
