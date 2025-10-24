@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Camera, Save, X, RotateCcw } from 'lucide-react';
+import { BookOpen, Save, X, RotateCcw } from 'lucide-react';
 
 export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
   const [journalText, setJournalText] = useState('');
-  const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -26,22 +24,6 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
     setCurrentPrompt(randomPrompt);
   }, []);
 
-  // Handle photo upload
-  const handlePhotoUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => setPhotoPreview(e.target.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Remove photo
-  const removePhoto = () => {
-    setPhotoFile(null);
-    setPhotoPreview(null);
-  };
 
   // Rotate to next prompt
   const rotatePrompt = () => {
@@ -61,16 +43,13 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
         entryID: Date.now().toString(),
         timestamp: new Date().toISOString(),
         text: journalText.trim(),
-        prompt: currentPrompt,
-        photoURL: photoPreview // For now, we'll store the base64 data URL
+        prompt: currentPrompt
       };
 
       await onSaveEntry(entry);
       
       // Reset form
       setJournalText('');
-      setPhotoFile(null);
-      setPhotoPreview(null);
       
       // Rotate to next prompt
       rotatePrompt();
@@ -117,40 +96,8 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
         onChange={(e) => setJournalText(e.target.value)}
         placeholder="Share your thoughts about this adventure..."
         className="w-full bg-gray-800/50 text-white px-3 py-3 rounded-lg border border-gray-600 focus:border-amber-400 focus:outline-none resize-none"
-        rows="4"
+        rows="6"
       />
-
-      {/* Photo Upload Section */}
-      <div className="mt-4">
-        {photoPreview ? (
-          <div className="relative">
-            <img
-              src={photoPreview}
-              alt="Journal photo"
-              className="w-full h-32 object-cover rounded-lg border border-amber-500/30"
-            />
-            <button
-              onClick={removePhoto}
-              className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 transition-colors"
-            >
-              <X className="w-3 h-3" />
-            </button>
-          </div>
-        ) : (
-          <label className="flex items-center justify-center w-full h-20 border-2 border-dashed border-amber-500/30 rounded-lg cursor-pointer hover:border-amber-400/50 transition-colors">
-            <div className="flex flex-col items-center text-amber-300">
-              <Camera className="w-5 h-5 mb-1" />
-              <span className="text-sm">Add Photo (Optional)</span>
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              className="hidden"
-            />
-          </label>
-        )}
-      </div>
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-3 mt-4">
