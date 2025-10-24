@@ -10628,7 +10628,7 @@ const TravelTab = ({ data, setData, userId }) => {
                {/* Inspiring Message */}
                <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
                  <p className="text-amber-200 text-sm italic text-center">
-                   ?�� "You didn't work for money. You worked for moments like this."
+                   💰✈️ "You didn't work for money. You worked for moments like this."
                  </p>
                </div>
 
