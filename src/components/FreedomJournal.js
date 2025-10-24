@@ -54,6 +54,9 @@ export default function FreedomJournal({ trip, onSaveEntry, onClose }) {
       // Rotate to next prompt
       rotatePrompt();
       
+      // Close modal after successful save
+      onClose();
+      
     } catch (error) {
       console.error('Error saving journal entry:', error);
     } finally {
