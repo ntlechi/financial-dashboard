@@ -10357,7 +10357,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     type="date"
                     value={newTrip.startDate}
                     onChange={(e) => setNewTrip({...newTrip, startDate: e.target.value})}
-                    className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                    className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
                     style={{ maxWidth: '100%' }}
                   />
                 </div>
@@ -10367,7 +10367,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     type="date"
                     value={newTrip.endDate}
                     onChange={(e) => setNewTrip({...newTrip, endDate: e.target.value})}
-                    className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                    className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
                     style={{ maxWidth: '100%' }}
                   />
                 </div>
@@ -10725,7 +10725,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      type="date"
                      value={editingTrip.startDate}
                      onChange={(e) => setEditingTrip({...editingTrip, startDate: e.target.value})}
-                     className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                     className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
                      style={{ maxWidth: '100%' }}
                    />
                  </div>
@@ -10735,7 +10735,7 @@ const TravelTab = ({ data, setData, userId }) => {
                      type="date"
                      value={editingTrip.endDate}
                      onChange={(e) => setEditingTrip({...editingTrip, endDate: e.target.value})}
-                     className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                     className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
                      style={{ maxWidth: '100%' }}
                    />
                  </div>
