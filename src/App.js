@@ -786,6 +786,9 @@ const SavingsRateCard = ({ data, onEdit }) => {
 // Rainy Day Fund Card - PREMIUM UPGRADE: Gamified Resilience Status 🎯
 const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   const [showStatusLegend, setShowStatusLegend] = useState(false);
+  
+  // i18n translation hook
+  const { t } = useTranslation();
 
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
@@ -793,7 +796,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 border-blue-500/20">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <Umbrella className="w-6 h-6 mr-3 text-blue-400" />
-          Rainy Day Fund
+          {t('dashboard.rainyDayFund')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -847,7 +850,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
         <div className="flex items-center gap-2">
           <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
             <Umbrella className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-400" />
-            Rainy Day Fund
+            {t('dashboard.rainyDayFund')}
           </h2>
           {/* 📊 Status Legend Tooltip */}
           <div className="relative">
@@ -1332,6 +1335,9 @@ const NetWorthCard = ({ data, onEdit }) => {
   const [showAllLiabilities, setShowAllLiabilities] = useState(false);
   const maxVisibleItems = 3;
   
+  // i18n translation hook
+  const { t } = useTranslation();
+  
   // Calculate totals for donut chart (before any returns)
   const totalAssets = data?.breakdown?.filter(item => item.type === 'asset').reduce((sum, item) => sum + item.value, 0) || 0;
   const totalLiabilities = Math.abs(data?.breakdown?.filter(item => item.type === 'liability').reduce((sum, item) => sum + item.value, 0) || 0);
@@ -1401,7 +1407,7 @@ const NetWorthCard = ({ data, onEdit }) => {
         <div className="flex justify-between items-start mb-2">
           <h2 className="text-xl font-bold text-white flex items-center">
             <DollarSign className="w-6 h-6 mr-3 text-sky-400" />
-            Net Worth
+            {t('dashboard.netWorth')}
           </h2>
           <button
             onClick={() => onEdit('netWorth', data || {})}
@@ -1421,7 +1427,7 @@ const NetWorthCard = ({ data, onEdit }) => {
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
         <DollarSign className="w-6 h-6 mr-3 text-sky-400" />
-        Net Worth
+        {t('dashboard.netWorth')}
       </h2>
       <button
         onClick={() => onEdit('netWorth', data)}
