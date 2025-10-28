@@ -620,6 +620,9 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 
 // Financial Freedom Goal Card (SLATE - Premium)
 const FinancialFreedomCard = ({ data, onEdit }) => {
+  // i18n translation hook
+  const { t } = useTranslation();
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.targetAmount) {
     return (
@@ -695,6 +698,9 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
 
 // Savings Rate Card (SLATE GREEN - Growth/Progress)
 const SavingsRateCard = ({ data, onEdit }) => {
+  // i18n translation hook
+  const { t } = useTranslation();
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.current === 'undefined') {
     return (
