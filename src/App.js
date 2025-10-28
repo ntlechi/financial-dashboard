@@ -14529,36 +14529,36 @@ function App() {
                     <LayoutDashboard className="w-4 h-4 mr-2"/>{t('dashboard.title')}
                   </button>
                   <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <CreditCard className="w-4 h-4 mr-2"/>Transactions
+                    <CreditCard className="w-4 h-4 mr-2"/>{t('common.transactions')}
                   </button>
                   <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <Calculator className="w-4 h-4 mr-2"/>Budget
+                    <Calculator className="w-4 h-4 mr-2"/>{t('common.budget')}
                   </button>
                   <button onClick={() => handleTabClick('mission-control')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'mission-control' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <Target className="w-4 h-4 mr-2"/>Mission Control
+                    <Target className="w-4 h-4 mr-2"/>{t('common.missionControl')}
                     {!checkFeatureAccess('goal-tracking') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('reflections')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'reflections' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <BookOpen className="w-4 h-4 mr-2"/>Field Notes
+                    <BookOpen className="w-4 h-4 mr-2"/>{t('common.fieldNotes')}
                   </button>
                   <button onClick={() => handleTabClick('rank-medals')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'rank-medals' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <Award className="w-4 h-4 mr-2"/>Rank & Medals
+                    <Award className="w-4 h-4 mr-2"/>{t('common.rankMedals')}
                     {userPlan === SUBSCRIPTION_TIERS.FREE && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <Building className="w-4 h-4 mr-2"/>Side Hustle
+                    <Building className="w-4 h-4 mr-2"/>{t('common.sideHustle')}
                     {!checkFeatureAccess('side-hustle') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <Briefcase className="w-4 h-4 mr-2"/>Investment
+                    <Briefcase className="w-4 h-4 mr-2"/>{t('common.investment')}
                     {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    🌍 Travel
+                    🌍 {t('common.travel')}
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                   <button onClick={() => handleTabClick('moments')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'moments' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    💫 Moments
+                    💫 {t('common.moments')}
                     {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
