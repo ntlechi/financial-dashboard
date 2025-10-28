@@ -14471,7 +14471,7 @@ function App() {
                   }`}
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />
-                  {showHistory ? 'Hide History' : 'Show History'}
+                  {showHistory ? t('common.hideHistory') : t('common.showHistory')}
                 </button>
               </div>
             )}
