@@ -1,0 +1,21 @@
+Continue work on The Freedom Compass App.
+
+🚨 CRITICAL: You MUST work on branch:
+   cursor/continue-financial-dashboard-development-3834
+
+BEFORE doing anything, verify branch:
+   git rev-parse --abbrev-ref HEAD
+
+If wrong branch, switch NOW:
+   git checkout cursor/continue-financial-dashboard-development-3834
+   git pull origin cursor/continue-financial-dashboard-development-3834
+
+Verify you have recent commits from Oct 6, 2025:
+   git log --oneline -5
+
+Then read HANDOFF_PROMPT_NEXT_AGENT.md for complete context.
+
+Current priority: Fix the reset data button (debugging in 
+progress). Check if latest Vercel deployment succeeded 
+(commit aea57527 or later). If deployed, test reset button 
+and check console logs.

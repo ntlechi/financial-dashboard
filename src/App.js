@@ -1,8 +1,16 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award } from 'lucide-react';
 import * as d3 from 'd3';
 import SubscriptionManager from './SubscriptionManager';
+import ErrorBoundary from './components/ErrorBoundary';
+import FinancialErrorBoundary from './components/FinancialErrorBoundary';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
+import HelpFAQ from './components/HelpFAQ';
+import PricingModal from './components/PricingModal';
+import UpgradePrompt from './components/UpgradePrompt';
+import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 
 // Firebase Imports
 import { db, auth } from './firebase';
@@ -11,346 +19,395 @@ import {
   createUserWithEmailAndPassword, 
   signInWithPopup, 
   GoogleAuthProvider,
+  signInAnonymously,
   signOut, 
   onAuthStateChanged,
   updateProfile 
 } from "firebase/auth";
-import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const appId = process.env.REACT_APP_FIREBASE_APP_ID;
+// Firebase App ID available if needed
+// const appId = process.env.REACT_APP_FIREBASE_APP_ID;
 
 // Retirement accounts are now fully user-editable - no need for country configs!
 
+// 🤖 Smart Expense Categorization System
+const expenseCategorizationRules = {
+  housing: [
+    'rent', 'mortgage', 'property tax', 'home insurance', 'hoa', 'utilities', 'electricity', 'gas bill', 
+    'water bill', 'internet', 'cable', 'phone bill', 'maintenance', 'repairs', 'cleaning'
+  ],
+  food: [
+    'grocery', 'groceries', 'supermarket', 'restaurant', 'takeout', 'delivery', 'coffee', 'lunch', 
+    'dinner', 'breakfast', 'food', 'dining', 'uber eats', 'doordash', 'grubhub', 'starbucks'
+  ],
+  transport: [
+    'gas', 'fuel', 'car payment', 'auto loan', 'car insurance', 'parking', 'tolls', 'uber', 'lyft', 
+    'taxi', 'bus', 'train', 'subway', 'metro', 'car wash', 'oil change', 'car repair', 'mechanic'
+  ],
+  entertainment: [
+    'netflix', 'spotify', 'amazon prime', 'disney+', 'hulu', 'movie', 'cinema', 'theater', 'concert', 
+    'game', 'gaming', 'subscription', 'streaming', 'music', 'books', 'hobbies', 'gym', 'fitness'
+  ],
+  healthcare: [
+    'doctor', 'dentist', 'pharmacy', 'medicine', 'prescription', 'hospital', 'medical', 'health insurance', 
+    'copay', 'deductible', 'therapy', 'massage', 'chiropractor', 'optometrist', 'glasses', 'contacts'
+  ],
+  shopping: [
+    'amazon', 'target', 'walmart', 'costco', 'clothing', 'shoes', 'electronics', 'furniture', 
+    'home depot', 'lowes', 'best buy', 'apple store', 'shopping', 'retail'
+  ],
+  business: [
+    'office supplies', 'software', 'saas', 'hosting', 'domain', 'marketing', 'advertising', 'business lunch', 
+    'conference', 'training', 'professional development', 'legal', 'accounting', 'consulting'
+  ]
+};
+
+// 🎯 Auto-categorize expense based on description
+const categorizeExpense = (description) => {
+  const desc = description.toLowerCase();
+  
+  for (const [category, keywords] of Object.entries(expenseCategorizationRules)) {
+    if (keywords.some(keyword => desc.includes(keyword))) {
+      return {
+        category: 'personal', // Default to personal, can be changed manually
+        subcategory: category
+      };
+    }
+  }
+  
+  // Default categorization
+  return {
+    category: 'personal',
+    subcategory: 'other'
+  };
+};
+
+// 📅 Recurring Expense Utilities
+const calculateNextDueDate = (frequency, dayOfMonth, dayOfWeek, monthOfYear, lastProcessed) => {
+  const lastDate = new Date(lastProcessed);
+  let nextDate = new Date(lastDate);
+  
+  switch (frequency) {
+    case 'weekly':
+      nextDate.setDate(lastDate.getDate() + 7);
+      break;
+    case 'monthly':
+      nextDate.setMonth(lastDate.getMonth() + 1);
+      nextDate.setDate(dayOfMonth);
+      break;
+    case 'yearly':
+      nextDate.setFullYear(lastDate.getFullYear() + 1);
+      nextDate.setMonth(monthOfYear - 1); // monthOfYear is 1-12, setMonth expects 0-11
+      nextDate.setDate(dayOfMonth);
+      break;
+    default:
+      nextDate.setMonth(lastDate.getMonth() + 1);
+  }
+  
+  return nextDate.toISOString().split('T')[0];
+};
+
+// 🔄 Process Due Recurring Expenses
+const processDueRecurringExpenses = (recurringExpenses, existingTransactions) => {
+  const today = new Date();
+  const newTransactions = [];
+  const updatedRecurringExpenses = [];
+  
+  recurringExpenses.forEach(recurring => {
+    if (!recurring.isActive) {
+      updatedRecurringExpenses.push(recurring);
+      return;
+    }
+    
+    const dueDate = new Date(recurring.nextDueDate);
+    
+    // Check if the recurring expense is due (due date is today or in the past)
+    if (dueDate <= today) {
+      // Create new transaction
+      const transaction = {
+        id: Date.now() + Math.random(), // Ensure unique ID
+        date: recurring.nextDueDate,
+        description: recurring.description,
+        amount: recurring.type === 'expense' ? -Math.abs(recurring.amount) : Math.abs(recurring.amount),
+        type: recurring.type,
+        category: recurring.category,
+        subcategory: recurring.subcategory,
+        isRecurring: true,
+        recurringId: recurring.id,
+        tags: recurring.tags || []
+      };
+      
+      newTransactions.push(transaction);
+      
+      // Update recurring expense with new next due date
+      const updatedRecurring = {
+        ...recurring,
+        lastProcessed: recurring.nextDueDate,
+        nextDueDate: calculateNextDueDate(
+          recurring.frequency,
+          recurring.dayOfMonth,
+          recurring.dayOfWeek,
+          recurring.monthOfYear,
+          recurring.nextDueDate
+        )
+      };
+      
+      updatedRecurringExpenses.push(updatedRecurring);
+    } else {
+      updatedRecurringExpenses.push(recurring);
+    }
+  });
+  
+  return {
+    newTransactions,
+    updatedRecurringExpenses
+  };
+};
+
+// 🎯 REALISTIC BEGINNER SAMPLE DATA
+// Designed for someone just starting their financial journey
 const initialData = {
   financialFreedom: {
-    targetAmount: 2000000,
-    currentInvestments: 450000,
-    monthlyContribution: 1500,
+    targetAmount: 500000,  // More realistic first goal
+    currentInvestments: 0,  // Just starting out
+    monthlyContribution: 0,  // Not investing yet
     annualReturn: 7,
   },
   creditScore: {
-    current: 750,
-    history: [ { date: '2025-06-30', score: 720 }, { date: '2025-08-09', score: 750 } ]
+    current: 650,  // Average starting credit score
+    history: [ { date: '2025-06-30', score: 630 }, { date: '2025-08-09', score: 650 } ]
   },
   cashOnHand: {
-    total: 75000,
+    total: 2500,  // Small but realistic emergency fund
     accounts: [
-        { id: 1, name: 'CIBC Chequing', balance: 15000, type: 'Checking' },
-        { id: 2, name: 'Tangerine Savings', balance: 45000, type: 'Savings' },
-        { id: 3, name: 'Wealthsimple Cash', balance: 15000, type: 'Investment Cash' },
+        { id: 1, name: 'Checking Account', balance: 1200, type: 'Checking' },
+        { id: 2, name: 'Savings Account', balance: 1300, type: 'Savings' },
     ],
-    history: [ { date: '2025-08-09', total: 75000 } ]
-  },
-  registeredAccounts: {
-    tfsa: {
-      currentBalance: 45000,
-      contributionRoom: 88000,
-      contributionLimit: 95000,
-      annualContributionLimit: 7000,
-      withdrawals: 0,
-      contributionsThisYear: 7000
-    },
-    rrsp: {
-      currentBalance: 85000,
-      contributionRoom: 42000,
-      contributionLimit: 127000,
-      annualContributionLimit: 31560, // 18% of income up to max
-      contributionsThisYear: 15000,
-      carryForward: 8500
-    }
+    history: [ { date: '2025-08-09', total: 2500 } ]
   },
   rainyDayFund: {
-    total: 20000,
-    goal: 30000,
+    total: 1300,  // Building emergency fund (goal: 3-6 months expenses)
+    goal: 6000,  // 3 months of $2,000 expenses
     accounts: [
-        { id: 1, name: 'Emergency Fund', balance: 20000 }
+        { id: 1, name: 'Emergency Savings', balance: 1300 }
     ],
-    history: [ { date: '2025-08-09', total: 20000 } ]
+    history: [ { date: '2025-08-09', total: 1300 } ]
   },
   debt: {
-    total: 45000,
+    total: 2800,  // Small credit card debt
     accounts: [
-        { id: 1, name: 'Visa Card', balance: 5000, interestRate: 19.99, minPayment: 100 },
-        { id: 2, name: 'Mastercard', balance: 10000, interestRate: 22.99, minPayment: 200 },
-        { id: 3, name: 'Line of Credit', balance: 30000, interestRate: 8.5, minPayment: 300 },
+        { id: 1, name: 'Credit Card', balance: 2800, interestRate: 19.99, minPayment: 75 },
     ],
     history: [
-        { date: '2025-06-30', total: 50000 },
-        { date: '2025-07-31', total: 48000 },
-        { date: '2025-08-09', total: 45000 },
+        { date: '2025-06-30', total: 3200 },
+        { date: '2025-07-31', total: 3000 },
+        { date: '2025-08-09', total: 2800 },
     ]
   },
   netWorth: { 
-    total: 550000, 
+    total: 4700,  // Small positive net worth ($2,500 cash + $5,000 car - $2,800 debt)
     breakdown: [
-      { id: 1, name: 'Cash', value: 75000, color: 'bg-sky-500', type: 'asset' },
-      { id: 2, name: 'Investments', value: 350000, color: 'bg-violet-500', type: 'asset' },
-      { id: 3, name: 'Real Estate', value: 250000, color: 'bg-emerald-500', type: 'asset' },
-      { id: 4, name: 'Liabilities', value: -125000, color: 'bg-red-500', type: 'liability' },
+      { id: 1, name: 'Cash & Savings', value: 2500, color: 'bg-sky-500', type: 'asset' },
+      { id: 2, name: 'Vehicle', value: 5000, color: 'bg-emerald-500', type: 'asset' },
+      { id: 3, name: 'Credit Card Debt', value: -2800, color: 'bg-red-500', type: 'liability' },
     ],
-    history: [ { date: '2025-08-09', total: 550000 } ]
+    history: [ { date: '2025-08-09', total: 4700 } ]
   },
   income: { 
-    total: 12500, 
+    total: 3000,  // Entry-level job income
     sources: [
-      { id: 1, name: 'Main Job', amount: 8000, type: 'active' },
-      { id: 2, name: 'Trading', amount: 2500, type: 'passive' },
-      { id: 3, name: 'Side Business', amount: 2000, type: 'passive' },
+      { id: 1, name: 'Full-Time Job', amount: 3000, type: 'active' },
     ]
   },
   expenses: { 
-    total: 6500, 
+    total: 2000,  // Realistic monthly expenses
     categories: [
-      { id: 1, name: 'Housing', amount: 2500, color: 'bg-red-500' },
-      { id: 2, name: 'Transport', amount: 800, color: 'bg-yellow-500' },
-      { id: 3, name: 'Food', amount: 1200, color: 'bg-green-500' },
-      { id: 4, name: 'Entertainment', amount: 1000, color: 'bg-purple-500' },
-      { id: 5, name: 'Other', amount: 1000, color: 'bg-gray-400' },
+      { id: 1, name: 'Rent', amount: 900, color: 'bg-red-500' },
+      { id: 2, name: 'Transportation', amount: 300, color: 'bg-yellow-500' },
+      { id: 3, name: 'Groceries', amount: 400, color: 'bg-green-500' },
+      { id: 4, name: 'Utilities & Phone', amount: 200, color: 'bg-blue-500' },
+      { id: 5, name: 'Entertainment', amount: 150, color: 'bg-purple-500' },
+      { id: 6, name: 'Other', amount: 50, color: 'bg-gray-400' },
     ]
   },
-  cashflow: { total: 6000 },
+  cashflow: { total: 1000 },  // $1k/month savings
   savingsRate: { 
-    current: 48, // 48% savings rate
-    target: 50,
-    monthly: 6000,
-    monthlyIncome: 12500
+    current: 33,  // 33% savings rate (very achievable!)
+    target: 40,
+    monthly: 1000,
+    monthlyIncome: 3000
   },
   goals: [
-    { id: 1, name: 'House Down Payment', targetAmount: 75000, currentAmount: 25000, targetDate: '2025-12-31' },
-    { id: 2, name: 'New Car', targetAmount: 40000, currentAmount: 10000, targetDate: '2026-06-30' },
-    { id: 3, name: 'Vacation Fund', targetAmount: 15000, currentAmount: 5000, targetDate: '2025-09-15' },
+    { id: 1, name: 'Emergency Fund (3 months)', targetAmount: 6000, currentAmount: 1300, targetDate: '2026-06-30' },
+    { id: 2, name: 'Pay Off Credit Card', targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
+    { id: 3, name: 'Vacation Fund', targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
   ],
-  businesses: [
-    {
-      id: 1,
-      name: "Trading Business",
-      description: "Stock and crypto trading",
-      startDate: "2024-01-01",
-      totalIncome: 15000,
-      totalExpenses: 2500,
-      netProfit: 12500,
-      incomeItems: [
-        { id: 1, description: "Q4 Trading Profits", amount: 8000, date: "2025-01-10" },
-        { id: 2, description: "Crypto Gains", amount: 4500, date: "2025-01-08" },
-        { id: 3, description: "Dividend Income", amount: 2500, date: "2025-01-05" }
-      ],
-      expenseItems: [
-        { id: 1, description: "Trading Platform Fees", amount: 1200, date: "2025-01-12" },
-        { id: 2, description: "Market Data Subscription", amount: 800, date: "2025-01-01" },
-        { id: 3, description: "Tax Preparation", amount: 500, date: "2025-01-15" }
-      ]
-    },
-    {
-      id: 2,
-      name: "Consulting Services",
-      description: "Tech consulting and advisory",
-      startDate: "2023-06-01",
-      totalIncome: 25000,
-      totalExpenses: 3500,
-      netProfit: 21500,
-      incomeItems: [
-        { id: 1, description: "Client A - Project Completion", amount: 15000, date: "2025-01-14" },
-        { id: 2, description: "Client B - Monthly Retainer", amount: 5000, date: "2025-01-01" },
-        { id: 3, description: "Client C - Strategy Session", amount: 5000, date: "2025-01-07" }
-      ],
-      expenseItems: [
-        { id: 1, description: "Business License Renewal", amount: 1500, date: "2025-01-03" },
-        { id: 2, description: "Professional Development", amount: 1200, date: "2025-01-11" },
-        { id: 3, description: "Office Supplies", amount: 800, date: "2025-01-09" }
-      ]
-    }
-  ],
+  // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
+  // FREE tier users shouldn't have phantom businesses affecting their calculations
+  businesses: [],
   investments: {
-    totalValue: 270000, // Calculated: VTI (1200 * 225) = 270,000
-    portfolioAllocation: [
-      { id: 1, name: 'Stocks', value: 270000, percentage: 60, color: '#3B82F6' },
-      { id: 2, name: 'Bonds', value: 90000, percentage: 20, color: '#10B981' },
-      { id: 3, name: 'Real Estate', value: 45000, percentage: 10, color: '#F59E0B' },
-      { id: 4, name: 'Crypto', value: 45000, percentage: 10, color: '#8B5CF6' }
-    ],
-    holdings: [
-      {
-        id: 1,
-        symbol: 'VTI',
-        name: 'Vanguard Total Stock Market ETF',
-        shares: 1200,
-        avgCost: 180.50,
-        currentPrice: 225.00,
-        totalValue: 270000, // 1200 * 225 = 270000 ✅
-        dividendYield: 1.8,
-        annualDividend: 4860,
-        nextDividendDate: '2025-03-15',
-        dripEnabled: true,
-        dividendAccumulated: 1215,
-        dripProgress: 27.0, // 27% towards next share
-        accountType: 'RRSP',
-        isUSStock: true,
-        withholdingTax: 15, // US withholding tax for RRSP
-        currency: 'USD'
-      },
-      {
-        id: 2,
-        symbol: 'BND',
-        name: 'Vanguard Total Bond Market ETF',
-        shares: 1125,
-        avgCost: 75.00,
-        currentPrice: 80.00,
-        totalValue: 90000, // 1125 * 80 = 90000 ✅
-        dividendYield: 4.2,
-        annualDividend: 3780,
-        nextDividendDate: '2025-02-28',
-        dripEnabled: true,
-        dividendAccumulated: 65,
-        dripProgress: 81.3, // 81% towards next share
-        accountType: 'TFSA',
-        isUSStock: true,
-        withholdingTax: 30, // US withholding tax for TFSA
-        currency: 'USD'
-      },
-      {
-        id: 3,
-        symbol: 'VNQ',
-        name: 'Vanguard Real Estate ETF',
-        shares: 500,
-        avgCost: 85.00,
-        currentPrice: 90.00,
-        totalValue: 45000, // 500 * 90 = 45000 ✅
-        dividendYield: 3.5,
-        annualDividend: 1575,
-        nextDividendDate: '2025-03-20',
-        dripEnabled: false,
-        dividendAccumulated: 262,
-        dripProgress: 0, // DRIP disabled
-        accountType: 'Taxable',
-        isUSStock: true,
-        withholdingTax: 30, // US withholding tax for non-registered
-        currency: 'USD'
-      },
-      {
-        id: 4,
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        shares: 0.5,
-        avgCost: 45000,
-        currentPrice: 90000,
-        totalValue: 45000, // 0.5 * 90000 = 45000 ✅
-        dividendYield: 0,
-        annualDividend: 0,
-        nextDividendDate: null,
-        dripEnabled: false,
-        dividendAccumulated: 0,
-        dripProgress: 0,
-        accountType: 'Taxable',
-        isUSStock: false,
-        withholdingTax: 0, // No withholding tax on crypto
-        currency: 'USD'
-      }
-    ]
+    totalValue: 0,  // Just starting out - no investments yet
+    portfolioAllocation: [],  // Will build portfolio over time
+    holdings: []  // Empty - beginners start with 0 investments
   },
   registeredAccounts: {
     accounts: [
       {
         id: 'tfsa',
         name: 'TFSA',
-        contributed: 45000,
+        contributed: 0,  // Just starting out
         limit: 88000,
-        goal: 88000,
+        goal: 10000,  // Realistic first goal
         type: 'tax-free',
         description: 'Tax-free growth and withdrawals'
       },
       {
         id: 'rrsp', 
         name: 'RRSP',
-        contributed: 25000,
+        contributed: 0,  // Just starting out
         limit: 31560,
-        goal: 31560,
+        goal: 5000,  // Realistic first goal
         type: 'tax-deferred',
         description: 'Tax-deferred retirement savings'
       }
     ]
   },
   transactions: [
-    { id: 1, date: '2025-01-15', description: 'Main Job Salary', amount: 8000, type: 'income', category: 'personal', subcategory: 'salary' },
-    { id: 2, date: '2025-01-15', description: 'Rent Payment', amount: -2500, type: 'expense', category: 'personal', subcategory: 'housing' },
-    { id: 3, date: '2025-01-14', description: 'Trading Profit', amount: 2500, type: 'income', category: 'business', subcategory: 'trading' },
-    { id: 4, date: '2025-01-13', description: 'Groceries', amount: -150, type: 'expense', category: 'personal', subcategory: 'food' },
-    { id: 5, date: '2025-01-12', description: 'Side Business Revenue', amount: 2000, type: 'income', category: 'business', subcategory: 'consulting' },
-    { id: 6, date: '2025-01-12', description: 'Software Subscription', amount: -100, type: 'expense', category: 'business', subcategory: 'software' },
-    { id: 7, date: '2025-01-11', description: 'Gas Station', amount: -80, type: 'expense', category: 'personal', subcategory: 'transport' },
-    { id: 8, date: '2025-01-10', description: 'Dividend Payment', amount: 500, type: 'income', category: 'personal', subcategory: 'investment' },
-    { id: 9, date: '2025-01-10', description: 'Coffee Shop', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
-    { id: 10, date: '2025-01-09', description: 'Business Lunch', amount: -75, type: 'expense', category: 'business', subcategory: 'meals' },
+    { id: 1, date: '2025-01-15', description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
+    { id: 2, date: '2025-01-01', description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
+    { id: 3, date: '2025-01-12', description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
+    { id: 4, date: '2025-01-10', description: 'Gas', amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
+    { id: 5, date: '2025-01-08', description: 'Credit Card Payment', amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
+    { id: 6, date: '2025-01-05', description: 'Netflix', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 7, date: '2025-01-03', description: 'Coffee', amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
   ],
+  recurringExpenses: [
+    {
+      id: 1,
+      description: 'Rent Payment',
+      amount: 900,  // Updated to match realistic beginner rent
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'housing',
+      frequency: 'monthly',
+      dayOfMonth: 1,
+      dayOfWeek: null,
+      monthOfYear: null,
+      isActive: true,
+      nextDueDate: '2025-02-01',
+      lastProcessed: '2025-01-01',
+      createdDate: '2024-12-01',
+      tags: ['essential', 'housing']
+    },
+    {
+      id: 2,
+      description: 'Netflix',
+      amount: 15,
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'entertainment',
+      frequency: 'monthly',
+      dayOfMonth: 5,
+      dayOfWeek: null,
+      monthOfYear: null,
+      isActive: true,
+      nextDueDate: '2025-02-05',
+      lastProcessed: '2025-01-05',
+      createdDate: '2024-11-05',
+      tags: ['subscription', 'entertainment']
+    },
+    {
+      id: 3,
+      description: 'Car Insurance',
+      amount: 150,
+      type: 'expense',
+      category: 'personal',
+      subcategory: 'transport',
+      frequency: 'monthly',
+      dayOfMonth: 15,
+      dayOfWeek: null,
+      monthOfYear: null,
+      isActive: true,
+      nextDueDate: '2025-02-15',
+      lastProcessed: '2025-01-15',
+      createdDate: '2024-10-15',
+      tags: ['insurance', 'essential']
+    }
+  ],
+  // 🔧 FIX: Monthly history updated to match realistic beginner sample data
   monthlyHistory: [
     { 
       month: '2025-01', 
-      netWorth: 550000, 
-      income: 12500, 
-      expenses: 6500, 
-      cashflow: 6000, 
-      businessIncome: 4500, 
-      businessExpenses: 1000,
-      investmentValue: 450000,
-      savingsRate: 48
+      netWorth: 4700,      // Realistic beginner: cash + car - debt
+      income: 3000,        // Entry-level job
+      expenses: 2000,      // Manageable expenses
+      cashflow: 1000,      // $1k/month savings
+      businessIncome: 0,   // No business yet
+      businessExpenses: 0,
+      investmentValue: 0,  // Learning phase
+      savingsRate: 33      // Achievable 33%
     },
     { 
       month: '2024-12', 
-      netWorth: 535000, 
-      income: 11800, 
-      expenses: 6200, 
-      cashflow: 5600, 
-      businessIncome: 4200, 
-      businessExpenses: 950,
-      investmentValue: 445000,
-      savingsRate: 47
+      netWorth: 4500, 
+      income: 3000, 
+      expenses: 2100, 
+      cashflow: 900, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 30
     },
     { 
       month: '2024-11', 
-      netWorth: 528000, 
-      income: 12200, 
-      expenses: 6400, 
-      cashflow: 5800, 
-      businessIncome: 4400, 
-      businessExpenses: 1100,
-      investmentValue: 440000,
-      savingsRate: 48
+      netWorth: 4200, 
+      income: 3000, 
+      expenses: 2050, 
+      cashflow: 950, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 32
     },
     { 
       month: '2024-10', 
-      netWorth: 522000, 
-      income: 11900, 
-      expenses: 6300, 
-      cashflow: 5600, 
-      businessIncome: 4100, 
-      businessExpenses: 980,
-      investmentValue: 435000,
-      savingsRate: 47
+      netWorth: 4000, 
+      income: 2900,        // Slight variation (realistic)
+      expenses: 2150, 
+      cashflow: 750, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 26
     },
     { 
       month: '2024-09', 
-      netWorth: 515000, 
-      income: 12000, 
-      expenses: 6100, 
-      cashflow: 5900, 
-      businessIncome: 4300, 
-      businessExpenses: 920,
-      investmentValue: 425000,
-      savingsRate: 49
+      netWorth: 3800, 
+      income: 3000, 
+      expenses: 2100, 
+      cashflow: 900, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 30
     },
     { 
       month: '2024-08', 
-      netWorth: 508000, 
-      income: 11700, 
-      expenses: 5900, 
-      cashflow: 5800, 
-      businessIncome: 4000, 
-      businessExpenses: 850,
-      investmentValue: 415000,
-      savingsRate: 50
+      netWorth: 3500, 
+      income: 2800,        // First job - lower starting salary
+      expenses: 2000, 
+      cashflow: 800, 
+      businessIncome: 0, 
+      businessExpenses: 0,
+      investmentValue: 0,
+      savingsRate: 29
     }
   ],
+  // 🔧 FIX: No travel trips in sample data (Travel Mode is Operator-only feature)
+  // FREE tier users shouldn't have phantom travel data, consistent with businesses fix
   travel: {
-    totalSavings: 85000,
+    totalSavings: 0,  // Just starting out - building travel fund
     homeCurrency: 'CAD',
     exchangeRates: {
       'USD': 0.70,        // 1 CAD = 0.70 USD (realistic rate)
@@ -361,41 +418,11 @@ const initialData = {
       'VND': 17800,       // 1 CAD = 17,800 Vietnamese Dong
       'MXN': 14.2         // 1 CAD = 14.2 Mexican Pesos
     },
-    trips: [
-      {
-        id: 1,
-        name: "Southeast Asia Adventure 2025",
-        description: "3 months backpacking through Thailand, Vietnam, Cambodia",
-        targetBudget: 45000,
-        currentSavings: 32000,
-        startDate: "2025-06-01",
-        endDate: "2025-09-01",
-        estimatedDailySpend: 500, // in CAD
-        countries: ["Thailand", "Vietnam", "Cambodia"],
-        status: "planning",
-        expenses: [
-          { id: 1, date: "2025-01-15", description: "Flight to Bangkok", amount: 1200, currency: "CAD", category: "transport" },
-          { id: 2, date: "2025-01-10", description: "Travel Insurance", amount: 450, currency: "CAD", category: "insurance" }
-        ]
-      },
-      {
-        id: 2,
-        name: "Colombia & Peru 2026",
-        description: "6 weeks exploring South American culture and coffee",
-        targetBudget: 28000,
-        currentSavings: 8500,
-        startDate: "2026-03-15",
-        endDate: "2026-05-01",
-        estimatedDailySpend: 350,
-        countries: ["Colombia", "Peru"],
-        status: "saving",
-        expenses: []
-      }
-    ],
+    trips: [],  // Empty - Operator users can add their own trips
     runwayCalculation: {
-      averageDailySpend: 425, // Average across all travel styles
-      totalAvailableFunds: 85000,
-      estimatedDaysRemaining: 200,
+      averageDailySpend: 0,
+      totalAvailableFunds: 0,
+      estimatedDaysRemaining: 0,
       lastUpdated: "2025-01-15"
     },
     expenseCategories: [
@@ -408,12 +435,56 @@ const initialData = {
       { name: "visa", color: "bg-orange-500", icon: "📋" },
       { name: "other", color: "bg-gray-500", icon: "💫" }
     ]
+  },
+  budgetSettings: {
+    fiftyThirtyTwenty: {
+      needs: 50,
+      wants: 30,
+      savings: 20
+    },
+    sixJars: {
+      necessities: 55,
+      education: 10,
+      play: 10,
+      longTermSavings: 10,
+      financial: 10,
+      give: 5
+    }
   }
 };
 
 const Card = ({ children, className = '' }) => (
   <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 ${className}`}>
     {children}
+  </div>
+);
+
+// 🔒 Locked Card Component - Shows upgrade prompt for locked dashboard cards
+const LockedCard = ({ cardName, requiredTier, onUpgrade }) => (
+  <div className="bg-gray-800/50 backdrop-blur-sm border-2 border-amber-500/30 rounded-2xl shadow-lg p-6 relative overflow-hidden col-span-1 md:col-span-2 lg:col-span-2">
+    {/* Blur overlay */}
+    <div className="absolute inset-0 backdrop-blur-sm bg-gray-900/80 flex items-center justify-center z-10">
+      <div className="text-center p-6">
+        <Crown className="w-12 h-12 text-amber-400 mx-auto mb-3 animate-pulse" />
+        <h3 className="text-lg font-bold text-white mb-2">{cardName}</h3>
+        <p className="text-gray-400 text-sm mb-4">
+          Upgrade to <span className="text-amber-400 font-semibold">{requiredTier === 'climber' ? 'Climber Plan' : 'Operator Plan'}</span> to unlock
+        </p>
+        <button
+          onClick={onUpgrade}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg"
+        >
+          View Plans
+        </button>
+      </div>
+    </div>
+    
+    {/* Blurred preview content */}
+    <div className="opacity-10 pointer-events-none">
+      <h3 className="text-xl font-bold text-white mb-4">{cardName}</h3>
+      <div className="h-24 bg-gray-700 rounded mb-4"></div>
+      <div className="h-16 bg-gray-700 rounded"></div>
+    </div>
   </div>
 );
 
@@ -451,6 +522,21 @@ const ProgressBar = ({ value, maxValue, color, height = 'h-2.5' }) => {
 
 // Financial Freedom Goal Card
 const FinancialFreedomCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.targetAmount) {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-emerald-900/40 to-teal-900/40">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <Target className="w-6 h-6 mr-3 text-emerald-400" />
+            Financial Freedom Goal
+          </h2>
+        </div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const progressPercentage = (data.currentInvestments / data.targetAmount) * 100;
   const monthsToGoal = data.monthlyContribution > 0 
     ? Math.ceil((data.targetAmount - data.currentInvestments) / data.monthlyContribution) 
@@ -507,6 +593,21 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
 
 // Savings Rate Card
 const SavingsRateCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.current === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+            Savings Rate
+          </h2>
+        </div>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const getRateColor = (rate) => {
     if (rate >= 50) return 'text-emerald-400';
     if (rate >= 30) return 'text-yellow-400';
@@ -573,6 +674,19 @@ const SavingsRateCard = ({ data, onEdit }) => {
 
 // Rainy Day Fund Card
 const RainyDayFundCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Umbrella className="w-6 h-6 mr-3 text-purple-400" />
+          Rainy Day Fund
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const progressPercentage = (data.total / data.goal) * 100;
   const monthsOfExpenses = data.total / 6500; // Assuming monthly expenses
   
@@ -655,11 +769,13 @@ const CreditScoreCard = ({ data, onEdit }) => {
     return 'Poor';
   };
 
-  const getScoreProgress = (score) => (score / 850) * 100;
+  // Score progress calculation available if needed
+  // const getScoreProgress = (score) => (score / 850) * 100;
 
   // Create line chart for credit score history
+  // 🛡️ MOVED BEFORE NULL CHECK - Hooks must be called unconditionally
   useEffect(() => {
-    if (!data.history || data.history.length === 0) return;
+    if (!data || !data.history || data.history.length === 0 || !svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -801,7 +917,20 @@ const CreditScoreCard = ({ data, onEdit }) => {
       .style("stroke", "#4b5563")
       .style("stroke-width", 1);
 
-  }, [data.history, data.current]);
+  }, [data.history, data.current]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 🛡️ NULL SAFETY CHECK - After hooks, before render - Fixed: only check 'current'
+  if (!data || typeof data.current === 'undefined') {
+    return (
+      <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
+          Credit Score
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
 
   // Calculate score change
   const getScoreChange = () => {
@@ -880,6 +1009,19 @@ const CreditScoreCard = ({ data, onEdit }) => {
 
 // Goals Card
 const GoalsCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !Array.isArray(data)) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <Calendar className="w-6 h-6 mr-3 text-amber-400" />
+          Financial Goals
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
       <div className="flex justify-between items-start mb-4">
@@ -946,7 +1088,21 @@ const GoalsCard = ({ data, onEdit }) => {
 };
 
 // Net Worth Card
-const NetWorthCard = ({ data, onEdit }) => (
+const NetWorthCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <DollarSign className="w-6 h-6 mr-3 text-emerald-400" />
+          Net Worth
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
@@ -997,10 +1153,24 @@ const NetWorthCard = ({ data, onEdit }) => (
       )}
     </div>
   </Card>
-);
+  );
+};
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-blue-900/30 to-indigo-900/30">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
+          Retirement Accounts
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const accounts = data?.accounts || [];
   
   // Calculate totals
@@ -1104,6 +1274,19 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
 
 // Debt Management Card
 const DebtCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || !data.accounts) {
+    return (
+      <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-red-900/30 to-orange-900/30">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <CreditCard className="w-6 h-6 mr-3 text-red-400" />
+          Total Debt
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const totalDebt = data.accounts?.reduce((sum, account) => sum + account.balance, 0) || 0;
   const totalMinPayment = data.accounts?.reduce((sum, account) => sum + account.minPayment, 0) || 0;
   const avgInterestRate = data.accounts?.length > 0 ? 
@@ -1165,7 +1348,21 @@ const DebtCard = ({ data, onEdit }) => {
 };
 
 // Cash on Hand Card
-const CashOnHandCard = ({ data, onEdit }) => (
+const CashOnHandCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK - Fixed: checking for 'total' not 'amount'
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <Wallet className="w-6 h-6 mr-3 text-teal-400" />
+          Cash on Hand
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
     <div className="flex justify-between items-start mb-2">
       <h2 className="text-xl font-bold text-white flex items-center">
@@ -1197,10 +1394,25 @@ const CashOnHandCard = ({ data, onEdit }) => (
       {data.accounts.length} accounts • Last updated {new Date().toLocaleDateString()}
     </div>
   </Card>
-);
+  );
+};
 
 // Income Card
-const IncomeCard = ({ data, viewMode }) => (
+const IncomeCard = ({ data, viewMode }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
+          {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-cyan-900/30 to-sky-900/30">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowUp className="w-6 h-6 mr-3 text-cyan-400" />
@@ -1216,10 +1428,25 @@ const IncomeCard = ({ data, viewMode }) => (
       ))}
     </div>
   </Card>
-);
+  );
+};
 
 // Expenses Card
-const ExpensesCard = ({ data, viewMode }) => (
+const ExpensesCard = ({ data, viewMode }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
+          {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
+  return (
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-red-900/40 to-rose-900/40">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowDown className="w-6 h-6 mr-3 text-red-500" />
@@ -1235,10 +1462,24 @@ const ExpensesCard = ({ data, viewMode }) => (
       ))}
     </div>
   </Card>
-);
+  );
+};
 
 // Cash Flow Card
 const CashFlowCard = ({ data, onEdit }) => {
+  // 🛡️ NULL SAFETY CHECK
+  if (!data || typeof data.total === 'undefined') {
+    return (
+      <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center">
+          <TrendingUp className="w-6 h-6 mr-3 text-amber-400" />
+          Cash Flow
+        </h2>
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      </Card>
+    );
+  }
+
   const isPositive = data.total >= 0;
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-amber-900/40 to-yellow-900/40">
@@ -1281,20 +1522,23 @@ const FinancialFreedomCalculator = () => {
   const requiredAmountFor4Percent = monthlyPassiveNeeded * 12 / 0.04;
 
   // Generate projection data
-  const projectionData = [];
-  let amount = currentSavings;
-  for (let month = 0; month <= totalMonths && month <= 600; month++) { // Max 50 years
-    if (month > 0) {
-      amount = amount * (1 + monthlyReturn) + monthlyContribution;
+  const projectionData = useMemo(() => {
+    const data = [];
+    let amount = currentSavings;
+    for (let month = 0; month <= totalMonths && month <= 600; month++) { // Max 50 years
+      if (month > 0) {
+        amount = amount * (1 + monthlyReturn) + monthlyContribution;
+      }
+      if (month % 12 === 0) {
+        data.push({
+          year: currentAge + Math.floor(month / 12),
+          amount: amount,
+          passiveIncome: amount * 0.04 / 12 // 4% rule monthly
+        });
+      }
     }
-    if (month % 12 === 0) {
-      projectionData.push({
-        year: currentAge + Math.floor(month / 12),
-        amount: amount,
-        passiveIncome: amount * 0.04 / 12 // 4% rule monthly
-      });
-    }
-  }
+    return data;
+  }, [currentSavings, totalMonths, monthlyReturn, monthlyContribution, currentAge]);
 
   useEffect(() => {
     if (chartRef.current && projectionData.length > 0) {
@@ -1635,7 +1879,7 @@ const DebtPayoffCalculator = () => {
       let remainingExtraPayment = extraPayment;
       
       // Apply minimum payments and interest
-      sortedDebts.forEach(debt => {
+      for (const debt of sortedDebts) {
         if (debt.balance > 0) {
           const monthlyInterest = debt.balance * (debt.interestRate / 100 / 12);
           totalInterestPaid += monthlyInterest;
@@ -1644,7 +1888,7 @@ const DebtPayoffCalculator = () => {
           const payment = Math.min(debt.minPayment, debt.balance);
           debt.balance -= payment;
         }
-      });
+      }
       
       // Apply extra payment to first debt with balance
       const targetDebt = sortedDebts.find(debt => debt.balance > 0);
@@ -2299,8 +2543,9 @@ const SideHustleTab = ({ data, setData, userId }) => {
     date: new Date().toISOString().split('T')[0]
   });
 
-  const totalBusinessIncome = data.businesses.reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
-  const totalBusinessExpenses = data.businesses.reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
+  // 🔧 EDGE CASE FIX: Null safety for empty businesses array
+  const totalBusinessIncome = (data.businesses || []).reduce((sum, business) => sum + (business.totalIncome || business.income || 0), 0);
+  const totalBusinessExpenses = (data.businesses || []).reduce((sum, business) => sum + (business.totalExpenses || business.expenses || 0), 0);
   const totalNetProfit = totalBusinessIncome - totalBusinessExpenses;
 
   const handleAddBusiness = async () => {
@@ -2320,7 +2565,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewBusiness({ name: '', description: '', startDate: new Date().toISOString().split('T')[0] });
       setShowAddBusiness(false);
@@ -2360,7 +2605,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewItem({ description: '', amount: '', date: new Date().toISOString().split('T')[0] });
       setShowAddItem(false);
@@ -2386,7 +2631,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setBusinessToDelete(null);
       setShowDeleteConfirm(false);
@@ -2419,7 +2664,7 @@ const SideHustleTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, businesses: updatedBusinesses };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
       console.error('Error deleting item:', error);
@@ -2596,9 +2841,18 @@ const SideHustleTab = ({ data, setData, userId }) => {
                     const isIncome = business.incomeItems.includes(item);
                     return (
                       <div key={`${isIncome ? 'income' : 'expense'}-${item.id}`} className="flex items-center justify-between bg-gray-700/30 rounded p-2">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                          <span className="text-sm text-white">{item.description}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${isIncome ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                            <span className="text-sm text-white">{item.description}</span>
+                          </div>
+                          <div className="text-xs text-gray-400 ml-4">
+                            {new Date(item.date).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric', 
+                              year: 'numeric' 
+                            })}
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-semibold ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
@@ -2804,13 +3058,13 @@ const InvestmentTab = ({ data, setData, userId }) => {
     currency: 'CAD'
   });
 
-  // Calculate dynamic totals from actual holdings
-  const actualTotalValue = data.investments.holdings.reduce((sum, holding) => {
-    return sum + (holding.shares * holding.currentPrice);
+  // 🔧 EDGE CASE FIX: Null safety for empty holdings array
+  const actualTotalValue = (data.investments?.holdings || []).reduce((sum, holding) => {
+    return sum + ((holding.shares || 0) * (holding.currentPrice || 0));
   }, 0);
 
-  const actualTotalCost = data.investments.holdings.reduce((sum, holding) => {
-    return sum + (holding.shares * holding.avgCost);
+  const actualTotalCost = (data.investments?.holdings || []).reduce((sum, holding) => {
+    return sum + ((holding.shares || 0) * (holding.avgCost || 0));
   }, 0);
 
   useEffect(() => {
@@ -2972,7 +3226,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stop-opacity", 0.1);
       
       // Add axes with responsive formatting
-      const xAxis = g.append("g")
+      g.append("g")
         .attr("transform", `translate(0,${chartHeight})`)
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")).ticks(data_parsed.length))
         .selectAll("text")
@@ -3024,7 +3278,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
         .attr("stroke", "#1F2937")
         .attr("stroke-width", 2);
     }
-  }, [data.investments]);
+  }, [data.investments, actualTotalCost, actualTotalValue]);
 
   const totalGainLoss = actualTotalValue - actualTotalCost;
   const totalGainLossPercent = actualTotalCost > 0 ? (totalGainLoss / actualTotalCost) * 100 : 0;
@@ -3170,10 +3424,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     });
     setShowAddHolding(false);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3195,10 +3449,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3219,10 +3473,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     // Update local state immediately
     setData(updatedData);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3263,10 +3517,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
     setData(updatedData);
     setEditingHolding(null);
     
-    // Save to Firebase only if auth is enabled and user exists
-    if (userId && userId !== 'dev-user') {
+    // Save to Firebase
+    if (userId && db) {
       try {
-        await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       } catch (error) {
         console.error('Error saving to Firebase:', error);
       }
@@ -3364,47 +3618,47 @@ const InvestmentTab = ({ data, setData, userId }) => {
       </div>
 
       {/* Enhanced Dividend Tracker */}
-              <Card className="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-500/30">
+              <Card style={{ backgroundColor: '#18212F' }} className="border-amber-500/30">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-            <Repeat className="w-6 h-6 mr-3 text-green-400" />
+            <Repeat className="w-6 h-6 mr-3 text-amber-400" />
             💰 Dividend Income Tracker
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Monthly Income</div>
+              <div className="text-sm text-amber-200">Monthly Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Quarterly Income</div>
+              <div className="text-sm text-amber-200">Quarterly Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
               </div>
-              <div className="text-sm text-green-200">Annual Income</div>
+              <div className="text-sm text-amber-200">Annual Income</div>
             </div>
             
-            <div className="bg-green-800/30 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-300">
+            <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
+              <div className="text-2xl font-bold text-amber-300">
                 {(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / actualTotalValue * 100).toFixed(2)}%
               </div>
-              <div className="text-sm text-green-200">Portfolio Yield</div>
+              <div className="text-sm text-amber-200">Portfolio Yield</div>
             </div>
           </div>
         
         {/* Dividend Calendar & Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Upcoming Dividends */}
-            <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-              <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+            <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
+              <h4 className="text-lg font-semibold text-amber-200 mb-3 flex items-center">
                 📅 Upcoming Dividends
               </h4>
             <div className="space-y-3">
@@ -3412,7 +3666,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 .filter(h => h.nextDividendDate && h.dividendYield > 0)
                 .sort((a, b) => new Date(a.nextDividendDate) - new Date(b.nextDividendDate))
                                   .map(holding => (
-                    <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                    <div key={holding.id} className="flex justify-between items-center bg-amber-800/20 rounded p-2 border border-amber-600/20">
                       <div>
                         <div className="font-semibold text-white">{holding.symbol}</div>
                         <div className="text-xs text-gray-400">
@@ -3422,7 +3676,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-green-300 font-semibold">
+                        <div className="text-amber-300 font-semibold">
                           ${(holding.annualDividend / 4).toFixed(0)}
                         </div>
                         <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
@@ -3433,15 +3687,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </div>
           
           {/* DRIP Status */}
-          <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-            <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+          <div style={{ backgroundColor: '#141F3B' }} className="rounded-lg p-4 border border-blue-500/30">
+            <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
               🔄 DRIP Status
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
                 .filter(h => h.dividendYield > 0)
                 .map(holding => (
-                  <div key={holding.id} className="flex justify-between items-center bg-green-800/20 rounded p-2">
+                  <div key={holding.id} className="flex justify-between items-center bg-blue-800/30 rounded p-2 border border-blue-600/20">
                     <div>
                       <div className="font-semibold text-white">{holding.symbol}</div>
                       <div className="text-xs text-gray-400">
@@ -3450,7 +3704,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                     </div>
                     <div className="text-right">
                       <div className={`text-sm font-semibold ${
-                        holding.dripEnabled ? 'text-green-400' : 'text-gray-400'
+                        holding.dripEnabled ? 'text-cyan-300' : 'text-gray-400'
                       }`}>
                         <Tooltip 
                           text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
@@ -3459,7 +3713,7 @@ const InvestmentTab = ({ data, setData, userId }) => {
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
-                        <div className="text-xs text-green-300">
+                        <div className="text-xs text-cyan-200">
                           {holding.dripProgress.toFixed(1)}% to next share
                         </div>
                       )}
@@ -3471,8 +3725,9 @@ const InvestmentTab = ({ data, setData, userId }) => {
         </div>
         
               {/* Dividend Breakdown by Holding */}
-      <div className="mt-6 bg-green-900/20 rounded-lg p-4 border border-green-600/30">
-        <h4 className="text-lg font-semibold text-green-200 mb-3 flex items-center">
+      <div className="mt-6" style={{ backgroundColor: '#141F3B' }}>
+        <div className="rounded-lg p-4 border border-blue-500/30">
+        <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
           📊 Dividend Breakdown by Holding
         </h4>
           <div className="space-y-2">
@@ -3484,16 +3739,16 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 const percentage = totalDividends > 0 ? (holding.annualDividend / totalDividends * 100) : 0;
                 
                                   return (
-                    <div key={holding.id} className="flex items-center justify-between bg-green-800/20 rounded p-3">
+                    <div key={holding.id} className="flex items-center justify-between bg-blue-800/30 rounded p-3 border border-blue-600/20">
                       <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
                         <div>
                           <div className="font-semibold text-white">{holding.symbol}</div>
                           <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-green-300">
+                        <div className="font-semibold text-white">
                           ${holding.annualDividend.toLocaleString()}
                         </div>
                         <div className="text-xs text-gray-400">
@@ -3504,14 +3759,15 @@ const InvestmentTab = ({ data, setData, userId }) => {
                   );
               })}
           </div>
+        </div>
           
-                      <div className="mt-4 p-3 bg-green-800/20 rounded border border-green-600/30">
-              <div className="text-sm text-green-200 mb-2">
+                      <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
+              <div className="text-sm text-purple-200 mb-2">
                 💡 <strong>Income Strategy:</strong> Your ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
                 in passive income - perfect for travel funding! 🌍
               </div>
-              <div className="text-xs text-green-300 border-t border-green-600/30 pt-2">
+              <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
                 📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
                 Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
               </div>
@@ -3532,7 +3788,25 @@ const InvestmentTab = ({ data, setData, userId }) => {
           </button>
         </div>
         <div className="space-y-4">
-          {data.investments.holdings.map(holding => (
+          {data.investments.holdings.length === 0 ? (
+            <Card className="bg-gradient-to-br from-violet-900/20 to-blue-900/20 border-violet-500/30">
+              <div className="text-center py-12">
+                <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-white mb-2">No Investments Yet</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start building your investment portfolio. Track stocks, ETFs, crypto, and dividends all in one place!
+                </p>
+                <button
+                  onClick={() => setShowAddHolding(true)}
+                  className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Your First Investment
+                </button>
+              </div>
+            </Card>
+          ) : (
+            data.investments.holdings.map(holding => (
             <div key={holding.id} className="bg-gray-700/30 rounded-lg p-4">
               <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-center">
                 <div className="lg:col-span-2">
@@ -3647,9 +3921,10 @@ const InvestmentTab = ({ data, setData, userId }) => {
                 </div>
               </div>
             </div>
-          ))}
-                  </div>
-        </Card>
+          ))
+          )}
+        </div>
+      </Card>
 
         {/* Add Holding Modal */}
         {showAddHolding && (
@@ -3974,7 +4249,12 @@ const TransactionsTab = ({ data, setData, userId }) => {
     type: 'expense',
     category: 'personal',
     subcategory: '',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    isRecurring: false,
+    frequency: 'monthly',
+    dayOfMonth: 1,
+    dayOfWeek: 1,
+    monthOfYear: 1
   });
 
   const subcategoryOptions = {
@@ -3991,17 +4271,59 @@ const TransactionsTab = ({ data, setData, userId }) => {
   const handleAddTransaction = async () => {
     if (!newTransaction.description || !newTransaction.amount) return;
     
+    // Auto-categorize if subcategory is empty
+    let finalTransaction = { ...newTransaction };
+    if (!finalTransaction.subcategory || finalTransaction.subcategory === '') {
+      const autoCategory = categorizeExpense(finalTransaction.description);
+      finalTransaction.category = autoCategory.category;
+      finalTransaction.subcategory = autoCategory.subcategory;
+    }
+    
     const transaction = {
       id: Date.now(),
-      ...newTransaction,
-      amount: newTransaction.type === 'expense' ? -Math.abs(parseFloat(newTransaction.amount)) : Math.abs(parseFloat(newTransaction.amount))
+      ...finalTransaction,
+      amount: finalTransaction.type === 'expense' ? -Math.abs(parseFloat(finalTransaction.amount)) : Math.abs(parseFloat(finalTransaction.amount)),
+      isRecurring: false // Regular transaction, not from recurring
     };
     
+    let updatedData = { ...data };
+    
+    // Add the transaction
     const updatedTransactions = [transaction, ...data.transactions];
-    const updatedData = { ...data, transactions: updatedTransactions };
+    updatedData.transactions = updatedTransactions;
+    
+    // If this is a recurring expense, add it to recurring expenses
+    if (finalTransaction.isRecurring) {
+      const recurringExpense = {
+        id: Date.now() + 1, // Different ID from transaction
+        description: finalTransaction.description,
+        amount: parseFloat(finalTransaction.amount),
+        type: finalTransaction.type,
+        category: finalTransaction.category,
+        subcategory: finalTransaction.subcategory,
+        frequency: finalTransaction.frequency,
+        dayOfMonth: finalTransaction.dayOfMonth,
+        dayOfWeek: finalTransaction.dayOfWeek,
+        monthOfYear: finalTransaction.monthOfYear,
+        isActive: true,
+        nextDueDate: calculateNextDueDate(
+          finalTransaction.frequency,
+          finalTransaction.dayOfMonth,
+          finalTransaction.dayOfWeek,
+          finalTransaction.monthOfYear,
+          finalTransaction.date
+        ),
+        lastProcessed: finalTransaction.date,
+        createdDate: finalTransaction.date,
+        tags: ['user-created']
+      };
+      
+      const updatedRecurringExpenses = [...(data.recurringExpenses || []), recurringExpense];
+      updatedData.recurringExpenses = updatedRecurringExpenses;
+    }
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewTransaction({
         description: '',
@@ -4009,7 +4331,12 @@ const TransactionsTab = ({ data, setData, userId }) => {
         type: 'expense',
         category: 'personal',
         subcategory: '',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        isRecurring: false,
+        frequency: 'monthly',
+        dayOfMonth: 1,
+        dayOfWeek: 1,
+        monthOfYear: 1
       });
       setShowAddForm(false);
     } catch (error) {
@@ -4027,7 +4354,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, transactions: updatedTransactions };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setEditingTransaction(null);
     } catch (error) {
@@ -4040,7 +4367,7 @@ const TransactionsTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, transactions: updatedTransactions };
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
     } catch (error) {
       console.error('Error deleting transaction:', error);
@@ -4272,58 +4599,179 @@ const TransactionsTab = ({ data, setData, userId }) => {
             </button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Description"
-              value={newTransaction.description}
-              onChange={(e) => setNewTransaction({...newTransaction, description: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            />
-            
-            <input
-              type="number"
-              placeholder="Amount"
-              value={newTransaction.amount || ''}
-              onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? '' : e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            />
-            
-            <select
-              value={newTransaction.type}
-              onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-            >
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-            
-            <select
-              value={newTransaction.category}
-              onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-            >
-              <option value="personal">Personal</option>
-              <option value="business">Business</option>
-            </select>
-            
-            <select
-              value={newTransaction.subcategory}
-              onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
-            >
-              <option value="">Select Subcategory</option>
-              {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
-                <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
-              ))}
-            </select>
-            
-            <input
-              type="date"
-              value={newTransaction.date}
-              onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            />
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Description (e.g., Netflix, Rent, Groceries)"
+                value={newTransaction.description}
+                onChange={(e) => {
+                  const newDesc = e.target.value;
+                  setNewTransaction({...newTransaction, description: newDesc});
+                  
+                  // Auto-suggest category as user types
+                  if (newDesc && !newTransaction.subcategory) {
+                    const autoCategory = categorizeExpense(newDesc);
+                    setNewTransaction(prev => ({
+                      ...prev, 
+                      description: newDesc,
+                      category: autoCategory.category,
+                      subcategory: autoCategory.subcategory
+                    }));
+                  }
+                }}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <input
+                type="number"
+                placeholder="Amount"
+                value={newTransaction.amount || ''}
+                onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value === '' ? '' : e.target.value})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+              
+              <select
+                value={newTransaction.type}
+                onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="expense">💸 Expense</option>
+                <option value="income">💰 Income</option>
+              </select>
+              
+              <select
+                value={newTransaction.category}
+                onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="personal">👤 Personal</option>
+                <option value="business">🏢 Business</option>
+              </select>
+              
+              <select
+                value={newTransaction.subcategory}
+                onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
+              >
+                <option value="">🤖 Auto-categorize</option>
+                {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
+                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                ))}
+              </select>
+              
+              <input
+                type="date"
+                value={newTransaction.date}
+                onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
+                className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+
+            {/* 🔄 Recurring Expense Section */}
+            <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
+              <div className="flex items-center gap-3 mb-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newTransaction.isRecurring}
+                    onChange={(e) => setNewTransaction({...newTransaction, isRecurring: e.target.checked})}
+                    className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
+                  />
+                  <span className="text-white font-semibold">🔄 Make this a recurring {newTransaction.type}</span>
+                </label>
+              </div>
+              
+              {newTransaction.isRecurring && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+                  <select
+                    value={newTransaction.frequency}
+                    onChange={(e) => setNewTransaction({...newTransaction, frequency: e.target.value})}
+                    className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                  >
+                    <option value="weekly">📅 Weekly</option>
+                    <option value="monthly">🗓️ Monthly</option>
+                    <option value="yearly">📆 Yearly</option>
+                  </select>
+                  
+                  {newTransaction.frequency === 'weekly' && (
+                    <select
+                      value={newTransaction.dayOfWeek}
+                      onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: parseInt(e.target.value)})}
+                      className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                    >
+                      <option value={0}>Sunday</option>
+                      <option value={1}>Monday</option>
+                      <option value={2}>Tuesday</option>
+                      <option value={3}>Wednesday</option>
+                      <option value={4}>Thursday</option>
+                      <option value={5}>Friday</option>
+                      <option value={6}>Saturday</option>
+                    </select>
+                  )}
+                  
+                  {newTransaction.frequency === 'monthly' && (
+                    <select
+                      value={newTransaction.dayOfMonth}
+                      onChange={(e) => setNewTransaction({...newTransaction, dayOfMonth: parseInt(e.target.value)})}
+                      className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                    >
+                      {Array.from({length: 31}, (_, i) => (
+                        <option key={i+1} value={i+1}>Day {i+1}</option>
+                      ))}
+                    </select>
+                  )}
+                  
+                  {newTransaction.frequency === 'yearly' && (
+                    <>
+                      <select
+                        value={newTransaction.monthOfYear}
+                        onChange={(e) => setNewTransaction({...newTransaction, monthOfYear: parseInt(e.target.value)})}
+                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      >
+                        <option value={1}>January</option>
+                        <option value={2}>February</option>
+                        <option value={3}>March</option>
+                        <option value={4}>April</option>
+                        <option value={5}>May</option>
+                        <option value={6}>June</option>
+                        <option value={7}>July</option>
+                        <option value={8}>August</option>
+                        <option value={9}>September</option>
+                        <option value={10}>October</option>
+                        <option value={11}>November</option>
+                        <option value={12}>December</option>
+                      </select>
+                      <select
+                        value={newTransaction.dayOfMonth}
+                        onChange={(e) => setNewTransaction({...newTransaction, dayOfMonth: parseInt(e.target.value)})}
+                        className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                      >
+                        {Array.from({length: 31}, (_, i) => (
+                          <option key={i+1} value={i+1}>Day {i+1}</option>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </div>
+              )}
+              
+              {newTransaction.isRecurring && (
+                <div className="mt-3 p-3 bg-blue-800/20 rounded-lg text-sm text-blue-200">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Repeat className="w-4 h-4" />
+                    <span className="font-semibold">Automation Preview:</span>
+                  </div>
+                  <div>
+                    This {newTransaction.type} will automatically be added every{' '}
+                    {newTransaction.frequency === 'weekly' && `week on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]}`}
+                    {newTransaction.frequency === 'monthly' && `month on day ${newTransaction.dayOfMonth}`}
+                    {newTransaction.frequency === 'yearly' && `year on ${['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][newTransaction.monthOfYear]} ${newTransaction.dayOfMonth}`}
+                    . You can manage all recurring {newTransaction.type}s in the Transactions tab.
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="mt-4 flex justify-end gap-2">
@@ -4339,6 +4787,115 @@ const TransactionsTab = ({ data, setData, userId }) => {
             >
               Add Transaction
             </button>
+          </div>
+        </Card>
+      )}
+
+      {/* Recurring Expenses Management */}
+      {data.recurringExpenses && data.recurringExpenses.length > 0 && (
+        <Card className="border-purple-500/30">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Repeat className="w-6 h-6 text-purple-400" />
+                Recurring {data.recurringExpenses.filter(r => r.type === 'expense').length > 0 ? 'Expenses' : 'Income'} 
+                ({data.recurringExpenses.filter(r => r.isActive).length} active)
+              </h3>
+              <p className="text-gray-400">Automatically processed transactions</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data.recurringExpenses.map(recurring => (
+              <div key={recurring.id} className={`p-4 rounded-lg border-2 ${
+                recurring.isActive 
+                  ? 'bg-purple-900/20 border-purple-500/30' 
+                  : 'bg-gray-800/50 border-gray-600/30'
+              }`}>
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-semibold text-white">{recurring.description}</h4>
+                    <p className={`text-lg font-bold ${
+                      recurring.type === 'expense' ? 'text-red-400' : 'text-green-400'
+                    }`}>
+                      {recurring.type === 'expense' ? '-' : '+'}${recurring.amount.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className={`px-2 py-1 rounded text-xs font-semibold ${
+                    recurring.isActive 
+                      ? 'bg-green-600/20 text-green-400' 
+                      : 'bg-gray-600/20 text-gray-400'
+                  }`}>
+                    {recurring.isActive ? 'Active' : 'Paused'}
+                  </div>
+                </div>
+                
+                <div className="space-y-1 text-sm text-gray-300">
+                  <div className="flex justify-between">
+                    <span>Frequency:</span>
+                    <span className="capitalize">{recurring.frequency}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Next Due:</span>
+                    <span className="text-purple-300">{new Date(recurring.nextDueDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Category:</span>
+                    <span className="capitalize">{recurring.subcategory}</span>
+                  </div>
+                </div>
+                
+                {recurring.tags && recurring.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {recurring.tags.map(tag => (
+                      <span key={tag} className="px-2 py-1 bg-gray-700/50 text-xs text-gray-300 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                
+                <div className="mt-3 flex justify-between items-center">
+                  <button
+                    onClick={async () => {
+                      const updatedRecurring = data.recurringExpenses.map(r => 
+                        r.id === recurring.id ? { ...r, isActive: !r.isActive } : r
+                      );
+                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
+                      try {
+                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+                        setData(updatedData);
+                      } catch (error) {
+                        console.error('Error updating recurring expense:', error);
+                      }
+                    }}
+                    className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
+                      recurring.isActive
+                        ? 'bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30'
+                        : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
+                    }`}
+                  >
+                    {recurring.isActive ? 'Pause' : 'Resume'}
+                  </button>
+                  
+                  <button
+                    onClick={async () => {
+                      const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
+                      const updatedData = { ...data, recurringExpenses: updatedRecurring };
+                      try {
+                        await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
+                        setData(updatedData);
+                      } catch (error) {
+                        console.error('Error deleting recurring expense:', error);
+                      }
+                    }}
+                    className="px-3 py-1 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       )}
@@ -4598,7 +5155,7 @@ const TravelTab = ({ data, setData, userId }) => {
         }
       };
         
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setShowRunwayModal(false);
       
@@ -4664,7 +5221,7 @@ const TravelTab = ({ data, setData, userId }) => {
      };
 
      try {
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
        setData(updatedData);
        setNewExpense({
          description: '',
@@ -4708,7 +5265,7 @@ const TravelTab = ({ data, setData, userId }) => {
      const updatedData = { ...data, travel: updatedTravel };
 
      try {
-       await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
        setData(updatedData);
        setEditingTrip(null);
        
@@ -4743,7 +5300,7 @@ const TravelTab = ({ data, setData, userId }) => {
     const updatedData = { ...data, travel: updatedTravel };
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       setNewTrip({ name: '', description: '', targetBudget: '', startDate: '', endDate: '', estimatedDailySpend: '', countries: [] });
       setShowAddTrip(false);
@@ -4765,82 +5322,82 @@ const TravelTab = ({ data, setData, userId }) => {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-6 space-y-6">
       {/* Travel Runway Calculator - Hero Section */}
-      <Card className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-500/30 relative">
+      <Card style={{ backgroundColor: '#18212F' }} className="border-slate-500/30 relative">
         <button
           onClick={() => setShowRunwayModal(true)}
-          className="absolute top-4 right-4 p-2 bg-blue-700/20 hover:bg-blue-600/30 rounded-lg transition-colors"
+          className="absolute top-4 right-4 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
           title="Edit Travel Runway Settings"
         >
-          <Edit className="w-4 h-4 text-blue-300" />
+          <Edit className="w-4 h-4 text-slate-300" />
         </button>
         
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-2">🌍 Travel Runway Calculator</h2>
-          <p className="text-blue-200 mb-6">Smart destination-based travel planning with cost tiers</p>
+          <p className="text-slate-300 mb-6">Smart destination-based travel planning with cost tiers</p>
           
           {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.totalPossibleDays}</div>
-              <div className="text-blue-200">Total Possible Days</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
+              <div className="text-slate-300">Total Possible Days</div>
             </div>
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.weeksRemaining}</div>
-              <div className="text-blue-200">Weeks of Travel</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
+              <div className="text-slate-300">Weeks of Travel</div>
             </div>
-            <div className="bg-blue-800/30 rounded-lg p-4">
-              <div className="text-3xl font-bold text-blue-300">{runway.monthsRemaining}</div>
-              <div className="text-blue-200">Months of Travel</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
+              <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
+              <div className="text-slate-300">Months of Travel</div>
             </div>
           </div>
 
           {/* Destination Cost Breakdown */}
-          <div className="bg-blue-900/30 rounded-lg p-4 mb-6">
-            <h3 className="text-lg font-semibold text-blue-200 mb-4">🎯 Your Travel Plan</h3>
+          <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
+            <h3 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-green-900/30 rounded-lg p-3 border border-green-600/30">
-                <div className="text-green-400 font-semibold">🟢 Cheap Destinations</div>
+              <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
+                <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
-                <div className="text-green-300">${runway.costTiers.cheap}/day</div>
-                <div className="text-green-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
-                <div className="text-xs text-green-300 mt-1">Southeast Asia, Eastern Europe, India</div>
+                <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
+                <div className="text-emerald-200">Total: ${runway.plannedCosts.cheap.toLocaleString()}</div>
+                <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
               </div>
-              <div className="bg-yellow-900/30 rounded-lg p-3 border border-yellow-600/30">
-                <div className="text-yellow-400 font-semibold">🟡 Moderate Destinations</div>
+              <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
+                <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
-                <div className="text-yellow-300">${runway.costTiers.moderate}/day</div>
-                <div className="text-yellow-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
-                <div className="text-xs text-yellow-300 mt-1">South America, Southern Europe</div>
+                <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
+                <div className="text-amber-200">Total: ${runway.plannedCosts.moderate.toLocaleString()}</div>
+                <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
               </div>
-              <div className="bg-red-900/30 rounded-lg p-3 border border-red-600/30">
-                <div className="text-red-400 font-semibold">🔴 Expensive Destinations</div>
+              <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
+                <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
                 <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
-                <div className="text-red-300">${runway.costTiers.expensive}/day</div>
-                <div className="text-red-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
-                <div className="text-xs text-red-300 mt-1">Western Europe, Scandinavia, Japan</div>
+                <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
+                <div className="text-rose-200">Total: ${runway.plannedCosts.expensive.toLocaleString()}</div>
+                <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
               </div>
             </div>
           </div>
 
           {/* Financial Summary */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
-            <div className="bg-blue-700/20 rounded-lg p-3">
-              <div className="text-blue-200">Total Travel Funds</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+              <div className="text-slate-300">Total Travel Funds</div>
               <div className="text-xl font-bold text-white">${runway.totalFunds.toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
             </div>
-            <div className="bg-blue-700/20 rounded-lg p-3">
-              <div className="text-blue-200">Planned Trip Cost</div>
+            <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
+              <div className="text-slate-300">Planned Trip Cost</div>
               <div className="text-xl font-bold text-white">${runway.totalPlannedCost.toLocaleString()}</div>
-              <div className="text-xs text-blue-300">{runway.totalPlannedDays} days planned</div>
+              <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
             </div>
-            <div className="bg-green-700/20 rounded-lg p-3">
-              <div className="text-green-200">Remaining Funds</div>
-              <div className="text-xl font-bold text-green-400">${runway.remainingFunds.toLocaleString()}</div>
-              <div className="text-xs text-green-300">+{runway.extensionDays} days possible</div>
+            <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
+              <div className="text-emerald-200">Remaining Funds</div>
+              <div className="text-xl font-bold text-emerald-400">${runway.remainingFunds.toLocaleString()}</div>
+              <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
             </div>
           </div>
           
-          <div className="text-xs text-blue-300 text-center">
+          <div className="text-xs text-slate-400 text-center">
             💡 Extend your journey by choosing cheaper destinations with remaining funds
           </div>
         </div>
@@ -4867,7 +5424,27 @@ const TravelTab = ({ data, setData, userId }) => {
 
       {/* Trip Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {(data.travel?.trips || []).map(trip => {
+        {(data.travel?.trips || []).length === 0 ? (
+          <div className="col-span-1 lg:col-span-2">
+            <Card className="bg-gradient-to-br from-blue-900/20 to-emerald-900/20 border-blue-500/30">
+              <div className="text-center py-12">
+                <Target className="w-16 h-16 text-blue-400 mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-white mb-2">No Trips Planned Yet</h3>
+                <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.
+                </p>
+                <button
+                  onClick={() => setShowAddTrip(true)}
+                  className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Plan Your First Trip
+                </button>
+              </div>
+            </Card>
+          </div>
+        ) : (
+          (data.travel?.trips || []).map(trip => {
           const progress = trip.targetBudget > 0 ? (trip.currentSavings / trip.targetBudget) * 100 : 0;
           const totalExpenses = trip.expenses?.reduce((sum, exp) => {
             return sum + convertCurrency(exp.amount, exp.currency, 'CAD');
@@ -4945,11 +5522,22 @@ const TravelTab = ({ data, setData, userId }) => {
                 {trip.expenses && trip.expenses.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
-                    <div className="space-y-1 max-h-24 overflow-y-auto">
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.expenses.slice(0, 3).map(expense => (
                         <div key={expense.id} className="flex justify-between text-xs">
-                          <span className="text-gray-400">{expense.description}</span>
-                          <span className="text-white">
+                          <div className="flex flex-col">
+                            <span className="text-gray-400">{expense.description}</span>
+                            {expense.date && (
+                              <span className="text-gray-500 text-xs mt-0.5">
+                                {new Date(expense.date).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric', 
+                                  year: 'numeric' 
+                                })}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-white flex-shrink-0 ml-3">
                             {expense.amount} {expense.currency}
                             {expense.currency !== 'CAD' && (
                               <span className="text-gray-500 ml-1">
@@ -4965,7 +5553,8 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
             </Card>
           );
-        })}
+        })
+        )}
       </div>
 
       {/* Add Trip Modal */}
@@ -5549,7 +6138,7 @@ const TravelTab = ({ data, setData, userId }) => {
    );
  };
 
-export default function App() {
+function App() {
   // Add CSS for scrollbar hiding and mobile viewport fixes
   React.useEffect(() => {
     const style = document.createElement('style');
@@ -5700,18 +6289,40 @@ export default function App() {
 
   const [data, setData] = useState(null);
   const [userId, setUserId] = useState(null);
-  // AUTHENTICATION DISABLED FOR DEVELOPMENT - QUICK ACCESS
-  const [user, setUser] = useState({ uid: 'dev-user', email: 'dev@test.com', displayName: 'Dev User' });
-  const [authLoading, setAuthLoading] = useState(false);
+  // 🔐 PRODUCTION AUTHENTICATION ENABLED
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [authForm, setAuthForm] = useState({ email: '', password: '', name: '' });
   const [showSubscription, setShowSubscription] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
-  const [loading, setLoading] = useState(true);
+  const [userPlan, setUserPlan] = useState(SUBSCRIPTION_TIERS.FREE); // Subscription plan state
+  
+  // 🛠️ SECURE DEVELOPER PANEL (only for admins)
+  const [showDevPanel, setShowDevPanel] = useState(false);
+  const [devOverridePlan, setDevOverridePlan] = useState(null);
+  
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTermsOfService, setShowTermsOfService] = useState(false);
+  const [showHelpFAQ, setShowHelpFAQ] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [upgradePromptData, setUpgradePromptData] = useState({ featureName: '', requiredPlan: '' });
+  // Removed unused loading state - using authLoading instead
   const [activeTab, setActiveTab] = useState('dashboard');
   const [viewMode, setViewMode] = useState('monthly'); // monthly or annual
   const [showHistory, setShowHistory] = useState(false);
+  
+  // 🔒 SECURE ADMIN CHECK - Only specific emails can use dev panel
+  const ADMIN_EMAILS = [
+    'janara.nguon@gmail.com',
+    // Add more admin emails here as needed
+  ];
+  
+  const isAdmin = user && user.email && ADMIN_EMAILS.includes(user.email);
+  
+  // Get current plan (with dev override if admin)
+  const currentUserPlan = (isAdmin && devOverridePlan) ? devOverridePlan : userPlan;
   
   // Modal states for dashboard cards
   const [editingCard, setEditingCard] = useState(null);
@@ -5731,27 +6342,337 @@ export default function App() {
   });
 
   // User feedback system
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false); // Removed - using authLoading instead
   const [notification, setNotification] = useState(null);
   
-  const showNotification = (message, type = 'success') => {
+  const showNotification = useCallback((message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
-  };
+  }, []);
 
-    // Authentication Effect - DISABLED FOR DEVELOPMENT
-  useEffect(() => {
-    // Skip Firebase auth - use mock user
-    setUserId('dev-user');
-    setAuthLoading(false);
-    setLoading(false);
-    
-    // Load initial sample data immediately
-    if (!data) {
-      setData(initialData);
+  // Feature gating and upgrade functions
+  const checkFeatureAccess = useCallback((feature) => {
+    return hasFeatureAccess(userPlan, feature);
+  }, [userPlan]);
+
+  const showUpgradePromptForFeature = useCallback((featureName, feature) => {
+    const requiredPlan = getRequiredTier(feature);
+    setUpgradePromptData({ featureName, requiredPlan });
+    setShowUpgradePrompt(true);
+  }, []);
+
+  const handleUpgrade = useCallback(async (planId, billingCycle = 'monthly') => {
+    if (planId === 'view-all') {
+      setShowUpgradePrompt(false);
+      setShowPricingModal(true);
+      return;
+    }
+
+    // Don't allow upgrading if not authenticated
+    if (!user) {
+      showNotification('Please sign in to upgrade your plan', 'error');
+      return;
+    }
+
+    try {
+      console.log(`🛒 Initiating upgrade to ${planId} with ${billingCycle} billing`);
+      
+      // Import Stripe utilities dynamically
+      const { createCheckoutSession } = await import('./utils/stripeUtils');
+      
+      // Show loading notification
+      showNotification('Redirecting to secure checkout...', 'info');
+      
+      // Create Stripe checkout session and redirect
+      await createCheckoutSession(planId, billingCycle, user);
+      
+      // Note: User will be redirected to Stripe, so code after this may not execute
+      // Subscription update happens via webhook after successful payment
+      
+    } catch (error) {
+      console.error('❌ Upgrade error:', error);
+      showNotification(
+        error.message || 'Failed to process upgrade. Please try again.',
+        'error'
+      );
+    }
+  }, [user, showNotification]);
+
+  const handleTabClick = useCallback((tab) => {
+    // Check if user has access to the tab
+    const tabFeatures = {
+      'dashboard': 'basic-dashboard',
+      'budget': 'budget-calculator', 
+      'investment': 'investment-portfolio',
+      'investments': 'investment-portfolio',
+      'side-hustle': 'side-hustle',
+      'travel': 'travel-mode',
+      'transactions': 'transaction-management'
+    };
+
+    const requiredFeature = tabFeatures[tab];
+    if (requiredFeature && !checkFeatureAccess(requiredFeature)) {
+      const featureNames = {
+        'investment-portfolio': 'Investment Portfolio',
+        'side-hustle': 'Side Hustle Management',
+        'travel-mode': 'Travel Mode'
+      };
+      showUpgradePromptForFeature(featureNames[requiredFeature] || tab, requiredFeature);
+      return;
     }
     
-    // Set up --vh for iOS viewport fix
+    setActiveTab(tab);
+  }, [checkFeatureAccess, showUpgradePromptForFeature]);
+
+  // 🔄 Process Recurring Expenses Function
+  const processRecurringExpenses = useCallback(async (userData, currentUserId) => {
+    if (!userData || !userData.recurringExpenses || userData.recurringExpenses.length === 0) {
+      return;
+    }
+
+    const { newTransactions, updatedRecurringExpenses } = processDueRecurringExpenses(
+      userData.recurringExpenses, 
+      userData.transactions || []
+    );
+    
+    if (newTransactions.length > 0) {
+      const updatedData = {
+        ...userData,
+        transactions: [...newTransactions, ...(userData.transactions || [])],
+        recurringExpenses: updatedRecurringExpenses
+      };
+      
+      try {
+        const docRef = doc(db, `users/${currentUserId}/financials`, 'data');
+        await setDoc(docRef, updatedData);
+        setData(updatedData);
+        
+        // Show notification about processed recurring expenses
+        if (newTransactions.length === 1) {
+          showNotification(`✅ Processed 1 recurring ${newTransactions[0].type}: ${newTransactions[0].description}`, 'success');
+        } else {
+          showNotification(`✅ Processed ${newTransactions.length} recurring transactions`, 'success');
+        }
+      } catch (error) {
+        console.error('Error processing recurring expenses:', error);
+        showNotification('Error processing recurring transactions', 'error');
+      }
+    }
+  }, [showNotification]);
+
+    // 🔐 PRODUCTION Authentication Effect
+  useEffect(() => {
+    if (!auth) {
+      console.error('❌ Firebase auth not initialized');
+      setAuthLoading(false);
+      setShowAuth(true);
+      return;
+    }
+
+    console.log('🔐 Setting up authentication listener...');
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('🔐 Auth state changed:', firebaseUser ? `User: ${firebaseUser.uid}` : 'No user');
+      setAuthLoading(true);
+      
+      if (firebaseUser) {
+        // User is signed in
+        setUser(firebaseUser);
+        setUserId(firebaseUser.uid);
+        setShowAuth(false);
+        
+        // Load user's financial data from Firestore
+        try {
+          const docRef = doc(db, `users/${firebaseUser.uid}/financials`, 'data');
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setData(userData);
+            
+            // 🔄 Process recurring expenses on data load
+            await processRecurringExpenses(userData, firebaseUser.uid);
+          } else {
+            // New user - initialize with sample data
+            console.log('New user detected, initializing with sample data');
+            const newUserData = { ...initialData };
+            await setDoc(docRef, newUserData);
+            setData(newUserData);
+            showNotification('Welcome! Your financial dashboard is ready.', 'success');
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+          showNotification('Error loading your data. Please try refreshing.', 'error');
+          // Fallback to initial data
+          setData(initialData);
+        }
+        
+        // 💳 Load user's subscription data
+        try {
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            const userDoc = userDocSnap.data();
+            const subscription = userDoc.subscription;
+            
+            if (subscription && subscription.plan && subscription.status === 'active') {
+              console.log('✅ Active subscription found:', subscription.plan);
+              setUserPlan(subscription.plan);
+            } else {
+              console.log('📋 No active subscription, using free tier');
+              setUserPlan(SUBSCRIPTION_TIERS.FREE);
+            }
+          } else {
+            console.log('📋 No user document, using free tier');
+            setUserPlan(SUBSCRIPTION_TIERS.FREE);
+          }
+        } catch (error) {
+          console.error('Error loading subscription:', error);
+          setUserPlan(SUBSCRIPTION_TIERS.FREE);
+        }
+      } else {
+        // User is signed out - show authentication screen
+        console.log('No user found, showing auth screen...');
+        setUser(null);
+        setUserId(null);
+        setData(null);
+        setShowAuth(true);
+        
+        // TEMPORARILY DISABLED: Auto anonymous sign-in (for Stripe testing)
+        // Uncomment below to re-enable anonymous sign-in after payment testing
+        // try {
+        //   await signInAnonymously(auth);
+        //   // onAuthStateChanged will handle the rest
+        // } catch (error) {
+        //   console.error('Anonymous sign-in failed:', error);
+        //   setShowAuth(true);
+        // }
+      }
+      
+      setAuthLoading(false);
+      // setLoading(false); // Removed - using authLoading instead
+    });
+
+    return () => unsubscribe();
+  }, [processRecurringExpenses, showNotification]);
+  
+  // 🛠️ SECURE DEV PANEL - Keyboard shortcut (Ctrl+Shift+Alt+D)
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      // Only works for admin emails
+      if (!isAdmin) return;
+      
+      // Secret combo: Ctrl + Shift + Alt + D
+      if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'D') {
+        e.preventDefault();
+        setShowDevPanel(prev => !prev);
+      }
+      
+      // Quick close: Escape
+      if (e.key === 'Escape' && showDevPanel) {
+        setShowDevPanel(false);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isAdmin, showDevPanel]);
+
+
+  // 🔐 Authentication Functions
+  const handleSignUp = async () => {
+    if (!authForm.email || !authForm.password || !authForm.name) {
+      showNotification('Please fill in all fields', 'error');
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
+      await updateProfile(userCredential.user, { displayName: authForm.name });
+      
+      showNotification(`Welcome ${authForm.name}! Your account has been created.`, 'success');
+      setAuthForm({ email: '', password: '', name: '' });
+    } catch (error) {
+      console.error('Signup error:', error);
+      let errorMessage = 'Failed to create account';
+      
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'An account with this email already exists';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password should be at least 6 characters';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
+  };
+
+  const handleSignIn = async () => {
+    if (!authForm.email || !authForm.password) {
+      showNotification('Please enter email and password', 'error');
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
+      showNotification('Welcome back!', 'success');
+      setAuthForm({ email: '', password: '', name: '' });
+    } catch (error) {
+      console.error('Signin error:', error);
+      let errorMessage = 'Failed to sign in';
+      
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed attempts. Please try again later';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      showNotification('Signed out successfully', 'success');
+    } catch (error) {
+      console.error('Signout error:', error);
+      showNotification('Error signing out', 'error');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setAuthLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      showNotification('Welcome! Signed in with Google.', 'success');
+    } catch (error) {
+      console.error('Google signin error:', error);
+      let errorMessage = 'Failed to sign in with Google';
+      
+      if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'Sign-in cancelled';
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = 'Popup blocked. Please allow popups and try again';
+      }
+      
+      showNotification(errorMessage, 'error');
+    }
+    setAuthLoading(false);
+  };
+
+  // Set up --vh for iOS viewport fix
+  useEffect(() => {
     const setVH = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
@@ -5763,106 +6684,12 @@ export default function App() {
     window.addEventListener('resize', setVH);
     window.addEventListener('orientationchange', setVH);
     
-    // const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-    //   setUser(user);
-    //   setUserId(user?.uid || null);
-    //   setAuthLoading(false);
-    //   
-    //   if (!user) {
-    //     setLoading(false);
-    //     setData(null);
-    //   }
-    // });
-    // return () => unsubscribeAuth();
-    
     return () => {
       window.removeEventListener('resize', setVH);
       window.removeEventListener('orientationchange', setVH);
     };
   }, []);
 
-  // Authentication Functions
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      setAuthLoading(true);
-      const { user } = await createUserWithEmailAndPassword(auth, authForm.email, authForm.password);
-      await updateProfile(user, { displayName: authForm.name });
-      
-      // Create initial user data
-      await setDoc(doc(db, 'users', user.uid), {
-        ...initialData,
-        profile: {
-          name: authForm.name,
-          email: authForm.email,
-          createdAt: new Date().toISOString(),
-          subscription: 'free' // Default to free tier
-        }
-      });
-      
-      setShowAuth(false);
-      setAuthForm({ email: '', password: '', name: '' });
-    } catch (error) {
-      console.error('Sign up error:', error);
-      alert(error.message);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    try {
-      setAuthLoading(true);
-      await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
-      setShowAuth(false);
-      setAuthForm({ email: '', password: '', name: '' });
-    } catch (error) {
-      console.error('Sign in error:', error);
-      alert(error.message);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      setAuthLoading(true);
-      const provider = new GoogleAuthProvider();
-      const { user } = await signInWithPopup(auth, provider);
-      
-      // Check if user exists, if not create initial data
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, 'users', user.uid), {
-          ...initialData,
-          profile: {
-            name: user.displayName,
-            email: user.email,
-            createdAt: new Date().toISOString(),
-            subscription: 'free'
-          }
-        });
-      }
-      
-      setShowAuth(false);
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      alert(error.message);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      setData(null);
-      setActiveTab('dashboard');
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
 
   // Firebase Data Loading - DISABLED FOR DEVELOPMENT
   useEffect(() => {
@@ -5966,7 +6793,7 @@ export default function App() {
     }
     
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       closeCardEditor();
     } catch (error) {
@@ -6056,7 +6883,15 @@ export default function App() {
   };
 
   const confirmResetData = async () => {
-    if (!userId) return;
+    console.log('🔧 Reset Data: Function called');
+    console.log('🔧 Reset Data: userId =', userId);
+    console.log('🔧 Reset Data: resetToSample =', resetToSample);
+    
+    if (!userId) {
+      console.error('❌ Reset Data: No userId available!');
+      showNotification('❌ Please sign in to reset data', 'error');
+      return;
+    }
 
     let resetData;
     
@@ -6069,15 +6904,27 @@ export default function App() {
           ...t,
           date: resetStartDate
         })),
-        history: [{
+        recurringExpenses: initialData.recurringExpenses.map(r => ({
+          ...r,
+          nextDueDate: calculateNextDueDate(
+            r.frequency,
+            r.dayOfMonth,
+            r.dayOfWeek,
+            r.monthOfYear,
+            resetStartDate
+          ),
+          lastProcessed: resetStartDate,
+          createdDate: resetStartDate
+        })),
+        monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
           netWorth: initialData.netWorth.total,
           income: initialData.income.total,
           expenses: initialData.expenses.total,
-          cashflow: initialData.cashflow.monthly,
-          businessIncome: initialData.businesses.reduce((sum, b) => sum + b.totalIncome, 0),
-          businessExpenses: initialData.businesses.reduce((sum, b) => sum + b.totalExpenses, 0),
-          investmentValue: initialData.investments.totalValue,
+          cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
+          businessIncome: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalIncome || 0), 0),
+          businessExpenses: (initialData.businesses || []).reduce((sum, b) => sum + (b.totalExpenses || 0), 0),
+          investmentValue: initialData.investments.totalValue || 0,
           savingsRate: initialData.savingsRate.current
         }]
       };
@@ -6105,23 +6952,32 @@ export default function App() {
           accounts: [],
           history: [{ date: resetStartDate, total: 0 }]
         },
+        debt: {
+          total: 0,
+          accounts: [],
+          history: [{ date: resetStartDate, total: 0 }]
+        },
         registeredAccounts: {
-          tfsa: {
-            currentBalance: 0,
-            contributionRoom: 95000,
-            contributionLimit: 95000,
-            annualContributionLimit: 7000,
-            withdrawals: 0,
-            contributionsThisYear: 0
-          },
-          rrsp: {
-            currentBalance: 0,
-            contributionRoom: 127000,
-            contributionLimit: 127000,
-            annualContributionLimit: 31560,
-            contributionsThisYear: 0,
-            carryForward: 0
-          }
+          accounts: [
+            {
+              id: 'tfsa',
+              name: 'TFSA',
+              contributed: 0,
+              limit: 88000,
+              goal: 10000,
+              type: 'tax-free',
+              description: 'Tax-free growth and withdrawals'
+            },
+            {
+              id: 'rrsp', 
+              name: 'RRSP',
+              contributed: 0,
+              limit: 31560,
+              goal: 5000,
+              type: 'tax-deferred',
+              description: 'Tax-deferred retirement savings'
+            }
+          ]
         },
         businesses: [],
         netWorth: {
@@ -6140,19 +6996,18 @@ export default function App() {
           history: [{ date: resetStartDate, total: 0 }]
         },
         cashflow: {
+          total: 0,
           monthly: 0,
           history: [{ date: resetStartDate, amount: 0 }]
         },
         savingsRate: {
           current: 0,
           target: 20,
+          monthly: 0,
+          monthlyIncome: 0,
           history: [{ date: resetStartDate, rate: 0 }]
         },
-        goals: {
-          items: [],
-          totalTarget: 0,
-          totalProgress: 0
-        },
+        goals: [],
         investments: {
           totalValue: 0,
           totalGainLoss: 0,
@@ -6161,7 +7016,8 @@ export default function App() {
           monthlyData: []
         },
         transactions: [],
-        history: [{
+        recurringExpenses: [],
+        monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
           netWorth: 0,
           income: 0,
@@ -6171,17 +7027,74 @@ export default function App() {
           businessExpenses: 0,
           investmentValue: 0,
           savingsRate: 0
-        }]
+        }],
+        travel: {
+          totalSavings: 0,
+          homeCurrency: 'CAD',
+          exchangeRates: {
+            'USD': 1.35,
+            'EUR': 1.47,
+            'GBP': 1.70,
+            'THB': 0.037,
+            'COP': 0.00033
+          },
+          trips: [],
+          runwayCalculation: {
+            averageDailySpend: 0,
+            totalAvailableFunds: 0,
+            estimatedDaysRemaining: 0,
+            lastUpdated: resetStartDate
+          },
+          tripPlan: {
+            cheap: 90,
+            moderate: 30,
+            expensive: 15
+          },
+          expenseCategories: [
+            { name: 'Accommodation', icon: '🏨', color: 'bg-blue-500' },
+            { name: 'Food & Dining', icon: '🍽️', color: 'bg-green-500' },
+            { name: 'Transportation', icon: '🚕', color: 'bg-yellow-500' },
+            { name: 'Activities', icon: '🎭', color: 'bg-purple-500' },
+            { name: 'Shopping', icon: '🛍️', color: 'bg-pink-500' },
+            { name: 'Other', icon: '💵', color: 'bg-gray-500' }
+          ]
+        },
+        budgetSettings: {
+          fiftyThirtyTwenty: {
+            needs: 50,
+            wants: 30,
+            savings: 20
+          },
+          sixJars: {
+            necessities: 55,
+            education: 10,
+            play: 10,
+            longTermSavings: 10,
+            financial: 10,
+            give: 5
+          }
+        }
       };
     }
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), resetData);
+      console.log('🔧 Reset Data: Starting Firebase write...');
+      // 🔧 FIX: Corrected Firebase path (was using wrong artifacts path)
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), resetData);
+      console.log('✅ Reset Data: Firebase write successful');
+      
       setData(resetData);
+      console.log('✅ Reset Data: Local state updated');
+      
       setShowResetModal(false);
       setResetToSample(false);
+      console.log('✅ Reset Data: Modal closed');
+      
+      showNotification('✅ Data reset successfully!', 'success');
     } catch (error) {
-      console.error('Error resetting data:', error);
+      console.error('❌ Reset Data Error:', error);
+      console.error('❌ Reset Data Error Details:', error.message, error.code);
+      showNotification(`❌ Failed to reset data: ${error.message}`, 'error');
     }
   };
 
@@ -6236,7 +7149,7 @@ export default function App() {
     const updatedData = { ...data, transactions: updatedTransactions };
 
     try {
-      await setDoc(doc(db, `artifacts/${process.env.REACT_APP_FIREBASE_APP_ID}/users/${userId}/financials`, 'data'), updatedData);
+      await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       setData(updatedData);
       closeQuickExpense();
       
@@ -6265,7 +7178,7 @@ export default function App() {
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
     
-    const totalExpenses = transactions
+    const totalTransactionExpenses = transactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
@@ -6273,8 +7186,15 @@ export default function App() {
     const totalBusinessIncome = businesses.reduce((sum, business) => 
       sum + (business.totalIncome || business.income || 0), 0);
 
+    // 🔧 FIX: Calculate business expenses (CRITICAL BUG FIX!)
+    const totalBusinessExpenses = businesses.reduce((sum, business) => 
+      sum + (business.totalExpenses || business.expenses || 0), 0);
+
     // Combine transaction and business income
     const totalIncome = totalTransactionIncome + totalBusinessIncome;
+
+    // 🔧 FIX: Combine transaction and business expenses
+    const totalExpenses = totalTransactionExpenses + totalBusinessExpenses;
 
     // Group income by subcategory (from transactions)
     const incomeByCategory = {};
@@ -6308,6 +7228,14 @@ export default function App() {
         expensesByCategory[category] += Math.abs(t.amount);
       });
 
+    // 🔧 FIX: Add business expenses as separate categories
+    businesses.forEach((business, index) => {
+      if ((business.totalExpenses || business.expenses || 0) > 0) {
+        const businessKey = `${business.name || `Business ${index + 1}`} Expenses`;
+        expensesByCategory[businessKey] = business.totalExpenses || business.expenses || 0;
+      }
+    });
+
     // Convert to array format
     const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => ({
       id: index + 1,
@@ -6339,7 +7267,8 @@ export default function App() {
   const getAnnualizedData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
+    // 🔧 EDGE CASE FIX: Null safety for transactions and businesses
+    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
     
     return {
       ...data,
@@ -6374,8 +7303,9 @@ export default function App() {
   const getDisplayData = () => {
     if (!data) return data;
     
-    const calculatedData = calculateIncomeExpenses(data.transactions, data.businesses);
-    const actualInvestmentTotal = calculateInvestmentTotal(data.investments.holdings);
+    // 🔧 EDGE CASE FIX: Ensure all required data structures exist
+    const calculatedData = calculateIncomeExpenses(data.transactions || [], data.businesses || []);
+    const actualInvestmentTotal = calculateInvestmentTotal(data.investments?.holdings || []);
     
     // Update Net Worth with dynamic investment value
     const updatedNetWorth = {
@@ -6406,9 +7336,10 @@ export default function App() {
         monthly: calculatedData.income.total - calculatedData.expenses.total
       },
       savingsRate: { 
-        ...data.savingsRate, 
+        ...data.savingsRate,
+        // 🔧 EDGE CASE FIX: Handle 0 income, negative cash flow, and null safety
         current: calculatedData.income.total > 0 ? 
-          Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100 : 0
+          Math.max(-100, Math.min(100, Math.round(((calculatedData.income.total - calculatedData.expenses.total) / calculatedData.income.total * 100) * 100) / 100)) : 0
       }
     };
     
@@ -6417,134 +7348,6 @@ export default function App() {
 
   const displayData = getDisplayData();
 
-  // Show loading spinner during auth check
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-2xl animate-pulse mb-4">Loading Your Financial Universe...</p>
-          <p className="text-gray-400 text-sm">Connecting to Firebase...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show auth screen if user is not logged in
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="max-w-md w-full mx-auto p-6">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Survive Financial</h1>
-            <p className="text-gray-400">Your journey to financial freedom starts here</p>
-          </div>
-
-          {!showAuth ? (
-            <div className="space-y-4">
-              <button
-                onClick={() => { setShowAuth(true); setAuthMode('login'); }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => { setShowAuth(true); setAuthMode('signup'); }}
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                Create Account
-              </button>
-              <button
-                onClick={handleGoogleSignIn}
-                disabled={authLoading}
-                className="w-full bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Continue with Google
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={authMode === 'login' ? handleSignIn : handleSignUp} className="space-y-4">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-white">
-                  {authMode === 'login' ? 'Welcome Back' : 'Join Survive Financial'}
-                </h2>
-              </div>
-
-              {authMode === 'signup' && (
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={authForm.name}
-                  onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  required
-                />
-              )}
-
-              <input
-                type="email"
-                placeholder="Email"
-                value={authForm.email}
-                onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                required
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-                value={authForm.password}
-                onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                required
-              />
-
-              <button
-                type="submit"
-                disabled={authLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
-              </button>
-
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAuth(false)}
-                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-                  className="flex-1 text-blue-400 hover:text-blue-300 py-2 px-4 rounded-lg transition-colors"
-                >
-                  {authMode === 'login' ? 'Need an account?' : 'Have an account?'}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  if (loading || !data) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-2xl animate-pulse mb-4">Loading Your Financial Data...</p>
-          <p className="text-gray-400 text-sm">Setting up your dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="app-container min-h-screen bg-gray-900 text-white font-sans p-4 sm:p-6 lg:p-8">
@@ -6566,12 +7369,121 @@ export default function App() {
         </div>
       )}
       
+      {/* Show loading screen while checking authentication */}
+      {authLoading && (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="relative mb-6">
+              {/* Spinning ring */}
+              <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-amber-500 mx-auto"></div>
+              {/* Inner pulsing circle */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full opacity-50 animate-pulse"></div>
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+              The Freedom Compass
+            </h2>
+            <p className="text-gray-400 animate-pulse">Loading your dashboard...</p>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Show authentication screen if user is not logged in */}
+      {showAuth && !user && !authLoading && (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center p-4">
+          <div className="max-w-md w-full">
+            <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-amber-500/30 shadow-lg shadow-amber-500/10">
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
+                  The Freedom Compass
+                </h1>
+                <p className="text-amber-200 mt-2">
+                  {authMode === 'login' ? 'Navigate to your financial freedom' : 'Start your journey to financial independence'}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {authMode === 'signup' && (
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={authForm.name}
+                    onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
+                    className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                  />
+                )}
+                
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  value={authForm.email}
+                  onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                />
+                
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
+                  className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={authMode === 'login' ? handleSignIn : handleSignUp}
+                  disabled={authLoading}
+                  className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+                >
+                  {authLoading ? 'Loading...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
+                </button>
+                
+                <button
+                  onClick={handleGoogleSignIn}
+                  disabled={authLoading}
+                  className="w-full bg-white hover:bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  Continue with Google
+                </button>
+              </div>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+                  className="text-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  {authMode === 'login' 
+                    ? "Don't have an account? Sign up" 
+                    : "Already have an account? Sign in"
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Dashboard - Only show when authenticated */}
+      {user && !authLoading && (
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">Financial Freedom Dashboard</h1>
-              <p className="text-gray-400 text-lg">Welcome back, {user?.displayName || 'Entrepreneur'}! Here's your {viewMode} snapshot.</p>
+              <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
+              <p className="text-amber-200 text-lg">Welcome back, {user?.displayName || 'Explorer'}! Navigate your {viewMode} financial journey.</p>
             </div>
             
             {/* User Profile Section */}
@@ -6581,24 +7493,38 @@ export default function App() {
                 <p className="text-gray-400 text-sm flex items-center gap-1">
                   {user?.email}
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    userPlan === 'free' ? 'bg-gray-600 text-gray-300' :
-                    userPlan === 'backpacker' ? 'bg-blue-600 text-blue-100' :
-                    'bg-purple-600 text-purple-100'
+                    userPlan === SUBSCRIPTION_TIERS.FREE ? 'bg-gray-600 text-gray-300' :
+                    userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'bg-blue-600 text-blue-100' :
+                    userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
+                    'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
                   }`}>
-                    {userPlan === 'free' ? 'Free' : userPlan === 'backpacker' ? 'Backpacker' : 'Entrepreneur'}
+                    {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon' : 
+                     userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber' : 
+                     userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator' :
+                     userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder' : 
+                     'Free'}
                   </span>
                 </p>
               </div>
               
-              {userPlan === 'free' && (
+              {userPlan === SUBSCRIPTION_TIERS.FREE && (
                 <button
-                  onClick={() => setShowSubscription(true)}
+                  onClick={() => setShowPricingModal(true)}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-medium"
                 >
                   <Crown className="w-4 h-4" />
-                  Upgrade
+                  {isFoundersCircleAvailable() ? 'Join Founder\'s Circle' : 'Upgrade'}
                 </button>
               )}
+              
+              {/* Help FAQ Button */}
+              <button
+                onClick={() => setShowHelpFAQ(true)}
+                className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
+                title="Help & FAQ"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
               
               <button
                 onClick={handleSignOut}
@@ -6648,23 +7574,26 @@ export default function App() {
             <div className="bg-gray-800 rounded-full p-1 overflow-hidden">
               <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
                 <div className="flex space-x-1 min-w-max">
-                  <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
                   </button>
-                  <button onClick={() => setActiveTab('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('budget')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'budget' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Calculator className="w-4 h-4 mr-2"/>Budget
                   </button>
-                  <button onClick={() => setActiveTab('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('side-hustle')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'side-hustle' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Building className="w-4 h-4 mr-2"/>Side Hustle
+                    {!checkFeatureAccess('side-hustle') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
-                  <button onClick={() => setActiveTab('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('investment')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'investment' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <Briefcase className="w-4 h-4 mr-2"/>Investment
+                    {!checkFeatureAccess('investment-portfolio') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
-                  <button onClick={() => setActiveTab('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <CreditCard className="w-4 h-4 mr-2"/>Transactions
                   </button>
-                  <button onClick={() => setActiveTab('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
+                  <button onClick={() => handleTabClick('travel')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'travel' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     🌍 Travel
+                    {!checkFeatureAccess('travel-mode') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
                   </button>
                 </div>
               </div>
@@ -6677,6 +7606,7 @@ export default function App() {
             <>
               {/* Monthly History View */}
               {showHistory && data.monthlyHistory && (
+                <FinancialErrorBoundary componentName="Monthly History">
                 <Card className="col-span-1 md:col-span-6 lg:col-span-6">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
@@ -6715,48 +7645,153 @@ export default function App() {
                     </table>
                   </div>
                 </Card>
+                </FinancialErrorBoundary>
               )}
               
-              {/* Top Row - Financial Freedom Goal */}
-              <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
-              <SavingsRateCard data={displayData.savingsRate} onEdit={openCardEditor} />
+              {/* 🎯 OPERATOR'S TRIAGE LAYOUT - Mission-Critical Order */}
               
-              {/* Second Row - Net Worth and Cash on Hand */}
-              <NetWorthCard data={displayData.netWorth} onEdit={openCardEditor} />
-              <CashOnHandCard data={displayData.cashOnHand} onEdit={openCardEditor} />
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 1: IMMEDIATE REALITY & SECURITY */}
+              {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* Third Row - Income and Expenses Side by Side */}
-              <IncomeCard data={displayData.income} viewMode={viewMode} />
-              <ExpensesCard data={displayData.expenses} viewMode={viewMode} />
+              {/* Cash Flow - FREE+ (Left) */}
+              <CashFlowCard data={displayData?.cashflow} onEdit={openCardEditor} />
               
-              {/* Fourth Row - Cash Flow and Rainy Day Fund */}
-              <CashFlowCard data={displayData.cashflow} onEdit={openCardEditor} />
-              <RainyDayFundCard data={displayData.rainyDayFund} onEdit={openCardEditor} />
+              {/* Rainy Day Fund - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'emergency-fund') ? (
+                <RainyDayFundCard data={displayData?.rainyDayFund} onEdit={openCardEditor} />
+              ) : (
+                <LockedCard cardName="Rainy Day Fund" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
               
-              {/* Fifth Row - Debt (Full Width) */}
-              <DebtCard data={displayData.debt} onEdit={openCardEditor} />
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 2: CORE MECHANICS (Inflow & Outflow) */}
+              {/* ═══════════════════════════════════════════════════════ */}
               
-              {/* Sixth Row - Credit Score and Goals */}
-              <CreditScoreCard data={displayData.creditScore} onEdit={openCardEditor} />
-              <GoalsCard data={displayData.goals} onEdit={openCardEditor} />
+              {/* Monthly Income - FREE+ (Left) */}
+              <IncomeCard data={displayData?.income} viewMode={viewMode} />
               
-              {/* Seventh Row - Retirement Accounts */}
-              <RegisteredAccountsCard 
-                data={displayData.registeredAccounts} 
-                onEdit={openCardEditor} 
-              />
+              {/* Monthly Expenses - FREE+ (Right) */}
+              <ExpensesCard data={displayData?.expenses} viewMode={viewMode} />
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 3: THE BIG PICTURE (Assets & Liquidity) */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Net Worth - FREE+ (Left) */}
+              <FinancialErrorBoundary componentName="Net Worth Calculator">
+                <NetWorthCard data={displayData?.netWorth} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
+              
+              {/* Cash on Hand - CLIMBER+ (Right) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <FinancialErrorBoundary componentName="Cash Management">
+                  <CashOnHandCard data={displayData?.cashOnHand} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              ) : (
+                <LockedCard cardName="Cash on Hand" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* ROW 4: LONG-TERM MISSION & PROGRESS */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Financial Freedom Goal - CLIMBER+ (Left) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <FinancialErrorBoundary componentName="Financial Freedom Goal">
+                  <FinancialFreedomCard data={displayData.financialFreedom} onEdit={openCardEditor} />
+                </FinancialErrorBoundary>
+              ) : (
+                <LockedCard cardName="Financial Freedom Goal" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+              )}
+              
+              {/* Savings Rate - FREE+ (Right) */}
+              <FinancialErrorBoundary componentName="Savings Rate Tracker">
+                <SavingsRateCard data={displayData?.savingsRate} onEdit={openCardEditor} />
+              </FinancialErrorBoundary>
+              
+              {/* ═══════════════════════════════════════════════════════ */}
+              {/* FULL-WIDTH CARDS: Detailed Intelligence */}
+              {/* ═══════════════════════════════════════════════════════ */}
+              
+              {/* Total Debt - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'debt-payoff') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <DebtCard data={displayData?.debt} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Total Debt & Payoff Plan" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
+              {/* Credit Score - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'credit-score') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <CreditScoreCard data={displayData?.creditScore} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Credit Score Tracking" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
+              {/* Financial Goals - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <GoalsCard data={displayData?.goals} onEdit={openCardEditor} />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Financial Goals" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
+              
+              {/* Retirement Accounts - CLIMBER+ (Full Width) */}
+              {hasDashboardCardAccess(userPlan, 'financial-freedom') ? (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <RegisteredAccountsCard 
+                    data={displayData?.registeredAccounts} 
+                    onEdit={openCardEditor} 
+                  />
+                </div>
+              ) : (
+                <div className="col-span-1 md:col-span-6 lg:col-span-6">
+                  <LockedCard cardName="Retirement Planning" requiredTier="climber" onUpgrade={() => setShowPricingModal(true)} />
+                </div>
+              )}
             </>
           )}
           
-          {activeTab === 'budget' && <BudgetCalculatorTab />}
+          {activeTab === 'budget' && (
+            <ErrorBoundary>
+              <BudgetCalculatorTab />
+            </ErrorBoundary>
+          )}
           
-          {activeTab === 'side-hustle' && <SideHustleTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'side-hustle' && (
+            <FinancialErrorBoundary componentName="Side Hustle Management">
+              <SideHustleTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
           
-          {activeTab === 'investment' && <InvestmentTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'investment' && (
+            <FinancialErrorBoundary componentName="Investment Portfolio">
+              <InvestmentTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
           
-          {activeTab === 'transactions' && <TransactionsTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'transactions' && (
+            <FinancialErrorBoundary componentName="Transaction Management">
+              <TransactionsTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
           
-          {activeTab === 'travel' && <TravelTab data={data} setData={setData} userId={userId} />}
+          {activeTab === 'travel' && (
+            <FinancialErrorBoundary componentName="Travel Planning">
+              <TravelTab data={data} setData={setData} userId={userId} />
+            </FinancialErrorBoundary>
+          )}
         </main>
 
         <footer className="text-center mt-12 text-gray-500">
@@ -6779,18 +7814,21 @@ export default function App() {
           </div>
         </footer>
       </div>
+      )}
 
-      {/* Floating Quick Expense Button */}
-      <button
-        onClick={openQuickExpense}
-        className="floating-quick-btn bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
-        title="Quick Expense Log"
-      >
-        <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
-      </button>
+      {/* Floating Quick Expense Button - Only show when authenticated */}
+      {user && !authLoading && (
+        <>
+          <button
+            onClick={openQuickExpense}
+            className="floating-quick-btn bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
+            title="Quick Expense Log"
+          >
+            <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
+          </button>
 
-      {/* Quick Expense Modal */}
-      {showQuickExpense && (
+          {/* Quick Expense Modal */}
+          {showQuickExpense && (
         <div 
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
           style={{
@@ -6889,6 +7927,8 @@ export default function App() {
             </div>
           </Card>
         </div>
+          )}
+        </>
       )}
 
       {/* Card Editing Modals */}
@@ -7986,7 +9026,157 @@ export default function App() {
           onClose={() => setShowSubscription(false)}
         />
       )}
+
+      {/* Footer */}
+      <footer className="mt-12 border-t border-gray-700 pt-8 pb-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="text-center md:text-left">
+              <h3 className="text-lg font-semibold text-white mb-1">The Freedom Compass</h3>
+              <p className="text-gray-400 text-sm">Navigate to your financial freedom</p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center md:justify-end items-center space-x-6 text-sm">
+              <button
+                onClick={() => setShowPrivacyPolicy(true)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </button>
+              <button
+                onClick={() => setShowTermsOfService(true)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Terms of Service
+              </button>
+              <span className="text-gray-500">
+                © {new Date().getFullYear()} The Freedom Compass. All rights reserved.
+              </span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Privacy Policy Modal */}
+      {showPrivacyPolicy && (
+        <PrivacyPolicy onClose={() => setShowPrivacyPolicy(false)} />
+      )}
+
+      {/* Terms of Service Modal */}
+      {showTermsOfService && (
+        <TermsOfService onClose={() => setShowTermsOfService(false)} />
+      )}
+
+      {/* Help FAQ Modal */}
+      {showHelpFAQ && (
+        <HelpFAQ onClose={() => setShowHelpFAQ(false)} />
+      )}
+
+      {/* Pricing Modal */}
+      {showPricingModal && (
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          currentPlan={userPlan}
+          onUpgrade={handleUpgrade}
+        />
+      )}
+
+      {/* Upgrade Prompt Modal */}
+      {showUpgradePrompt && (
+        <UpgradePrompt
+          onClose={() => setShowUpgradePrompt(false)}
+          featureName={upgradePromptData.featureName}
+          requiredPlan={upgradePromptData.requiredPlan}
+          onViewPlans={() => {
+            setShowUpgradePrompt(false);
+            setShowPricingModal(true);
+          }}
+          currentPlan={userPlan}
+          onUpgrade={handleUpgrade}
+          isFoundersCircleAvailable={isFoundersCircleAvailable()}
+        />
+      )}
+      
+      {/* 🛠️ SECURE DEVELOPER PANEL - Only visible to admin emails */}
+      {showDevPanel && isAdmin && (
+        <div className="fixed bottom-4 right-4 bg-gray-900 border-2 border-amber-500 rounded-lg shadow-2xl p-6 z-50 min-w-[300px]">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
+              <h3 className="text-white font-bold text-sm">🛠️ DEVELOPER MODE</h3>
+            </div>
+            <button
+              onClick={() => setShowDevPanel(false)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
+              <span className="text-green-400">●</span>
+              Admin: {user?.email}
+            </div>
+            
+            <div>
+              <label className="text-gray-300 text-sm font-semibold block mb-2">
+                Override Subscription Tier:
+              </label>
+              <select
+                value={devOverridePlan || 'none'}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === 'none') {
+                    setDevOverridePlan(null);
+                  } else {
+                    setDevOverridePlan(value);
+                    setUserPlan(value);
+                  }
+                }}
+                className="w-full bg-gray-800 text-white border border-gray-700 hover:border-amber-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+              >
+                <option value="none">🔄 Use Real Subscription</option>
+                <option value={SUBSCRIPTION_TIERS.FREE}>🆓 FREE (Recon Kit)</option>
+                <option value={SUBSCRIPTION_TIERS.CLIMBER}>🧗 CLIMBER ($7.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.OPERATOR}>⚙️ OPERATOR ($14.99/mo)</option>
+                <option value={SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE}>👑 FOUNDER'S CIRCLE ($7.49/mo)</option>
+              </select>
+            </div>
+            
+            <div className="pt-3 border-t border-gray-700 space-y-2">
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Active Plan:</span>
+                  <span className="text-amber-400 font-semibold">{currentUserPlan}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Real Subscription:</span>
+                  <span className="text-blue-400">{userPlan}</span>
+                </div>
+                {devOverridePlan && (
+                  <div className="text-amber-400 text-center mt-2 bg-amber-500/10 rounded px-2 py-1">
+                    ⚠️ Dev Override Active
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="pt-2 text-xs text-gray-500 text-center border-t border-gray-700">
+              Press <kbd className="px-1 py-0.5 bg-gray-800 rounded text-amber-400">Ctrl+Shift+Alt+D</kbd> to toggle
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+// Wrap the entire app with error boundary for maximum protection
+const AppWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;

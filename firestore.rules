@@ -1,12 +1,41 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can only access their own data
+    // 🔐 PRODUCTION SECURITY RULES
+    
+    // User root document - read access for authenticated user
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Deny all other access
+    // User financial data - only accessible by the authenticated user
+    match /users/{userId}/financials/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // User profile data - only accessible by the authenticated user
+    match /users/{userId}/profile {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // User subscription data - only accessible by the authenticated user
+    match /users/{userId}/subscription {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // User payments - read-only, written by webhooks
+    match /users/{userId}/payments/{payment} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false; // Only webhooks can write
+    }
+    
+    // App configuration - readable by all authenticated users (for Founder's Circle counter)
+    match /app-config/{document} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only webhooks/backend can write
+    }
+    
+    // Deny all other access - secure by default
     match /{document=**} {
       allow read, write: if false;
     }
