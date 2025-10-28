@@ -14209,7 +14209,7 @@ function App() {
               <button
                 onClick={() => setShowHelpFAQ(true)}
                 className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-                title="Help & FAQ"
+                title={t('settings.helpFAQ')}
               >
                 <HelpCircle className="w-4 h-4" />
               </button>
