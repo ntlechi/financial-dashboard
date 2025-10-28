@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import './i18n/config'; // Initialize i18n
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
@@ -31,7 +32,7 @@ import FixedModal from './components/FixedModal';
 import MomentsFeed from './components/MomentsFeed';
 import QuickStartGuide from './components/QuickStartGuide';
 import ForgotPassword from './components/ForgotPassword';
-import UpdateNotification from './components/UpdateNotification';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
@@ -14208,6 +14209,9 @@ function App() {
               >
                 <HelpCircle className="w-4 h-4" />
               </button>
+              
+              {/* Language Switcher */}
+              <LanguageSwitcher />
               
               {/* Modern User Menu Dropdown */}
               <div className="relative">
