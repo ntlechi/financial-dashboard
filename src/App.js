@@ -2993,7 +2993,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.name}
                         onChange={(e) => updateDebt(index, 'name', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="Debt name"
+                        placeholder={t('dashboard.debtName')}
                       />
                     </div>
                     <div>
@@ -4768,7 +4768,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Business Name"
+              placeholder={t('sideHustle.businessName')}
               value={newBusiness.name}
               onChange={(e) => setNewBusiness({...newBusiness, name: e.target.value})}
               className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
@@ -4784,7 +4784,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           </div>
           
           <textarea
-            placeholder="Business Description"
+            placeholder={t('sideHustle.businessDescription')}
             value={newBusiness.description}
             onChange={(e) => setNewBusiness({...newBusiness, description: e.target.value})}
             className="w-full mt-4 bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
