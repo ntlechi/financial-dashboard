@@ -7918,7 +7918,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <Card>
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
             <Calendar className="w-6 h-6 mr-3 text-purple-400" />
-            Transaction History by Month
+            {t('dashboard.transactionHistoryByMonth')}
           </h3>
           <div className="space-y-4">
             {Object.entries(
