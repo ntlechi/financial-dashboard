@@ -14556,7 +14556,7 @@ function App() {
                 <Card className="col-span-1 md:col-span-2 lg:col-span-2">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
-                    Monthly History
+                    {t('dashboard.monthlyHistory')}
                   </h2>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
