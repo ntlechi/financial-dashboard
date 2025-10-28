@@ -7859,7 +7859,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <CreditCard className="w-6 h-6 mr-3 text-blue-400" />
               {t('dashboard.transactionManagement')}
             </h2>
-            <p className="text-gray-400">Track all your personal and business transactions</p>
+            <p className="text-gray-400">{t('dashboard.trackTransactions')}</p>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
@@ -8183,7 +8183,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex flex-wrap items-center gap-2">
           <div className="flex items-center">
             <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
-            💰 Spending by Category
+            💰 {t('dashboard.spendingByCategory')}
           </div>
           <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
         </h3>
@@ -8217,7 +8217,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               ))}
               <div className="mt-4 pt-3 border-t border-gray-600">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-300">Total Spending This Month:</span>
+                  <span className="text-gray-300">{t('dashboard.totalSpendingThisMonth')}</span>
                   <span className="text-lg font-bold text-red-400">
                     ${(spendingByCategory.reduce((sum, cat) => sum + (parseFloat(cat.amount) || 0), 0)).toLocaleString()}
                   </span>
@@ -8229,10 +8229,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           <div className="text-center py-12">
             <PieChart className="w-16 h-16 mx-auto text-gray-600 mb-4" />
             <p className="text-gray-400 text-lg font-semibold">
-              Log your first expense to see your spending analysis
+              {t('dashboard.logFirstExpense')}
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              Track where your money goes each month with visual insights
+              {t('dashboard.trackMoneyInsights')}
             </p>
           </div>
         )}
