@@ -650,7 +650,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Target className="w-6 h-6 mr-3 text-green-400" />
-          Financial Freedom Goal
+          {t('dashboard.financialFreedomGoal')}
         </h2>
         <button
           onClick={() => onEdit('financialFreedom', data)}
@@ -708,7 +708,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
             <PiggyBank className="w-6 h-6 mr-3 text-teal-400" />
-            Savings Rate
+            {t('dashboard.savingsRate')}
           </h2>
         </div>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -735,7 +735,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
         <h2 className="text-xl font-bold text-white flex items-center">
           <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
           <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
-            Savings Rate
+            {t('dashboard.savingsRate')}
           </Tooltip>
         </h2>
         <div className="flex items-center gap-2">
@@ -1752,13 +1752,16 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
   const [showAllAccounts, setShowAllAccounts] = useState(false);
   const maxVisibleAccounts = 3;
   
+  // i18n translation hook
+  const { t } = useTranslation();
+  
   // 🛡️ NULL SAFETY CHECK
   if (!data || typeof data.total === 'undefined') {
     return (
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-600/30">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
           <Wallet className="w-6 h-6 mr-3 text-teal-400" />
-          Survival Runway
+          {t('dashboard.survivalRunway')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -1809,7 +1812,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     <div className="flex justify-between items-start mb-3">
       <h2 className="text-lg sm:text-xl font-bold text-white flex items-center">
         <Wallet className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-teal-400" />
-        Survival Runway
+        {t('dashboard.survivalRunway')}
       </h2>
       <button
         onClick={() => onEdit('cashOnHand', data)}
