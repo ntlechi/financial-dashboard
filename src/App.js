@@ -625,7 +625,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
             <Target className="w-6 h-6 mr-3 text-amber-400" />
-            Financial Freedom Goal
+            {t('dashboard.financialFreedomGoal')}
           </h2>
         </div>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -1220,7 +1220,7 @@ const GoalsCard = ({ data, onEdit }) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Calendar className="w-6 h-6 mr-3 text-amber-400" />
-          Financial Goals
+          {t('dashboard.financialGoals')}
         </h2>
         <button
           onClick={() => onEdit('goals', goals)}
