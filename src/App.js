@@ -4747,7 +4747,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Business
+            {t('dashboard.addBusiness')}
           </button>
         </div>
       </Card>
@@ -6724,7 +6724,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Holding
+            {t('dashboard.addHolding')}
           </button>
         </div>
         <div className="space-y-4">
@@ -7908,7 +7908,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             }`}
           >
             <Calendar className="w-4 h-4 mr-2" />
-            {showTransactionHistory ? 'Hide History' : 'Monthly History'}
+            {showTransactionHistory ? t('common.hideHistory') : t('dashboard.monthlyHistory')}
           </button>
         </div>
       </Card>
@@ -7979,8 +7979,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       <FixedModal
         isOpen={showAddForm}
         onClose={() => setShowAddForm(false)}
-        title="Add New Transaction"
-        description="Track your income and expenses"
+        title={t('dashboard.addNewTransaction')}
+        description={t('dashboard.trackIncomeExpenses')}
         size="lg"
       >
           
@@ -8173,7 +8173,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               onClick={handleAddTransaction}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              Add Transaction
+              {t('dashboard.addTransaction')}
             </button>
           </div>
       </FixedModal>
@@ -8784,7 +8784,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <FixedModal
           isOpen={!!editingTransaction}
           onClose={() => setEditingTransaction(null)}
-          title="Edit Transaction"
+          title={t('dashboard.editTransaction')}
           size="md"
         >
           <div className="space-y-4">
