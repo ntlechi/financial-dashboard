@@ -16437,16 +16437,16 @@ function App() {
                     <AlertTriangle className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-red-400 font-semibold mb-1">Warning: Data Reset</h4>
+                    <h4 className="text-red-400 font-semibold mb-1">{t('common.warningDataReset')}</h4>
                     <p className="text-sm text-gray-300">
-                      This action will permanently replace your current data. Choose carefully:
+                      {t('common.resetDataWarning')}
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <h5 className="text-white font-medium">Reset Options:</h5>
+                <h5 className="text-white font-medium">{t('common.resetOptions')}:</h5>
                 
                 <div className="space-y-2">
                   <label className="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg cursor-pointer hover:bg-gray-700/50 border-2 border-transparent data-[checked=true]:border-blue-500">
@@ -16459,11 +16459,11 @@ function App() {
                     />
                     <div>
                       <div className="text-white font-medium flex items-center gap-2">
-                        💰 Financial Data Only
-                        <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Recommended</span>
+                        💰 {t('common.financialDataOnly')}
+                        <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">{t('common.recommended')}</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Reset transactions & dashboard only. Keep your moments, logbook, businesses, travel data.
+                        {t('common.resetFinancialDataDescription')}
                       </div>
                     </div>
                   </label>
@@ -16963,7 +16963,7 @@ function App() {
                 <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-600/30">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-amber-400">?��️</span>
-                    <span className="font-semibold text-amber-400">Recovery Warning</span>
+                    <span className="font-semibold text-amber-400">{t('common.recoveryWarning')}</span>
                   </div>
                   <p className="text-sm text-amber-200">
                     This will restore your data from a backup. Your current data will be replaced. 

@@ -83,7 +83,14 @@
     "monthly": "Monthly",
     "annual": "Annual",
     "showHistory": "Show History",
-    "hideHistory": "Hide History"
+    "hideHistory": "Hide History",
+    "recoveryWarning": "Recovery Warning",
+    "warningDataReset": "Warning: Data Reset",
+    "resetDataWarning": "This action will permanently replace your current data. Choose carefully:",
+    "resetOptions": "Reset Options",
+    "financialDataOnly": "Financial Data Only",
+    "recommended": "Recommended",
+    "resetFinancialDataDescription": "Reset transactions & dashboard only. Keep your moments, logbook, businesses, travel data."
   },
   "auth": {
     "welcome": "Welcome to Kampoul",
