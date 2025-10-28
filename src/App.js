@@ -650,7 +650,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         <button
           onClick={() => onEdit('financialFreedom', data)}
           className="text-green-400 hover:text-green-300 p-1 rounded-lg hover:bg-green-500/10 transition-colors"
-          title="Edit financial freedom goal"
+          title={t('dashboard.editFinancialFreedomGoal')}
         >
           <Target className="w-4 h-4" />
         </button>
@@ -737,7 +737,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
             className="text-blue-400 hover:text-blue-300 p-1 rounded-lg hover:bg-blue-500/10 transition-colors"
-            title="Edit target savings rate"
+            title={t('dashboard.editTargetSavingsRate')}
           >
             <Target className="w-4 h-4" />
           </button>
@@ -1225,7 +1225,7 @@ const GoalsCard = ({ data, onEdit }) => {
         <button
           onClick={() => onEdit('goals', goals)}
           className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
-          title="Edit Goals"
+          title={t('dashboard.editGoals')}
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -6829,7 +6829,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     {t('dashboard.addYourFirstInvestment')}
                   </button>
                   <p className="text-sm text-gray-400 mt-3">
-                    Ready to start? Click above to add your first investment! 📈
+                    {t('dashboard.readyToStartClickAbove')} 📈
                   </p>
                 </div>
               </div>
@@ -16022,7 +16022,7 @@ function App() {
                       
                       {(!tempCardData.breakdown || tempCardData.breakdown.length === 0) && (
                         <div className="text-center text-gray-400 py-4 border-2 border-dashed border-gray-600 rounded-lg">
-                          No assets or liabilities added yet. Use the buttons above to get started.
+                          {t('dashboard.noAssetsLiabilitiesYet')}
                         </div>
                       )}
                     </div>
@@ -16284,8 +16284,8 @@ function App() {
                     {(tempCardData || []).length === 0 ? (
                       <div className="text-center py-8 text-gray-400">
                         <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p>No financial goals yet.</p>
-                        <p className="text-sm">Click "Add Goal" to create your first one!</p>
+                        <p>{t('dashboard.noFinancialGoalsYet')}</p>
+                        <p className="text-sm">{t('dashboard.clickAddGoalToCreateFirst')}</p>
                       </div>
                     ) : (
                       (tempCardData || []).map((goal, index) => (
