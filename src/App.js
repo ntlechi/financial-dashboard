@@ -14178,7 +14178,7 @@ function App() {
               <button
                 onClick={openQuickExpense}
                 className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-                title="Quick Expense"
+                title={t('common.quickExpense')}
               >
                 <Plus className="w-5 h-5" />
               </button>
@@ -14187,7 +14187,7 @@ function App() {
               <button
                 onClick={() => setShowQuickJournal(true)}
                 className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
-                title="Quick Journal - Capture your thoughts!"
+                title={t('common.quickJournal')}
               >
                 <Edit3 className="w-5 h-5" />
               </button>
