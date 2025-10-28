@@ -7857,7 +7857,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-2">
               <CreditCard className="w-6 h-6 mr-3 text-blue-400" />
-              Transaction Management
+              {t('dashboard.transactionManagement')}
             </h2>
             <p className="text-gray-400">Track all your personal and business transactions</p>
           </div>
@@ -7866,7 +7866,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Transaction
+            {t('dashboard.addTransaction')}
           </button>
         </div>
         
