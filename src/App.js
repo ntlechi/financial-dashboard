@@ -14200,7 +14200,7 @@ function App() {
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700' 
                     : 'bg-gray-700 hover:bg-gray-600'
                 } text-white p-2 rounded-lg transition-colors flex items-center gap-2`}
-                title={stealthMode ? "Stealth Mode: ON (Hide Numbers)" : "Stealth Mode: OFF (Show Numbers)"}
+                title={stealthMode ? t('common.stealthModeOn') : t('common.stealthModeOff')}
               >
                 {stealthMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
