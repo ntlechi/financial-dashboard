@@ -2920,7 +2920,7 @@ const DebtPayoffCalculator = () => {
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>💳 Add Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
+                <p><strong>💳 {t('dashboard.addTransaction')} Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
                 <p><strong>💰 Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
                 <p><strong>🏔️ Choose Strategy:</strong></p>
                 <ul className="ml-4 space-y-1">
@@ -3176,7 +3176,7 @@ const DebtPayoffCalculator = () => {
                       <div className="text-gray-400 text-xs">
                         {currentResult.payoffOrder.length > 0 
                           ? `${currentResult.payoffOrder[0].months} months away`
-                          : 'Add debts to see timeline'}
+                          : t('dashboard.addTransaction') + ' debts to see timeline'}
                       </div>
                     </div>
                   </div>
@@ -3441,7 +3441,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
             {totalPercentage !== 100 && (
               <p className="text-xs text-gray-400 mt-1">
-                {totalPercentage > 100 ? 'Reduce percentages to 100%' : 'Add more percentage allocations'}
+                {totalPercentage > 100 ? 'Reduce percentages to 100%' : t('dashboard.addTransaction') + ' more percentage allocations'}
               </p>
             )}
           </div>
@@ -9941,7 +9941,7 @@ const TravelTab = ({ data, setData, userId }) => {
                         className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2 transition-colors"
                       >
                         <Plus className="w-4 h-4" />
-                        Add Country
+                        {t('dashboard.addTransaction')}
                       </button>
                     </div>
                     
@@ -9973,7 +9973,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <p className="text-purple-400 font-medium mb-1">Your wishlist is empty</p>
-                        <p className="text-gray-400 text-sm">Add countries you dream of visiting!</p>
+                        <p className="text-gray-400 text-sm">{t('dashboard.addTransaction')} countries you dream of visiting!</p>
                         <button
                           onClick={() => setShowAddWishlistCountry(true)}
                           className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2 transition-colors"
@@ -10192,7 +10192,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     }}
                     className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
                   >
-                    Add Expense
+                    {t('dashboard.addTransaction')}
                   </button>
                   {/* 💫 NEW: Add Moment Button */}
                   <button
@@ -10626,7 +10626,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 className="bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
                                  <Plus className="w-4 h-4" />
-                 Add Expense
+                 {t('dashboard.addTransaction')}
                </button>
              </div>
         </FixedModal>
@@ -10901,7 +10901,7 @@ const TravelTab = ({ data, setData, userId }) => {
           <div className="space-y-4">
               <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
                 <p className="text-sm text-purple-200 mb-2">
-                  ?�� <strong>Quick Wishlist</strong> - Add countries you dream of visiting!
+                  ?�� <strong>Quick Wishlist</strong> - {t('dashboard.addTransaction')} countries you dream of visiting!
                 </p>
                 <p className="text-xs text-gray-400">
                   No need to create a full trip. Just type the country name and we'll add it to your wishlist.
@@ -10946,7 +10946,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
-                Add to Wishlist
+                {t('dashboard.addTransaction')}
               </button>
              </div>
         </FixedModal>
@@ -15829,7 +15829,7 @@ function App() {
                 <div>
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-lg font-semibold text-white">Add New Credit Score</h4>
+                      <h4 className="text-lg font-semibold text-white">{t('dashboard.addTransaction')} New Credit Score</h4>
                       <div className="text-sm text-indigo-400">
                         Current: {tempCardData.current || 0}
                       </div>
@@ -15892,7 +15892,7 @@ function App() {
                       className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       <Plus className="w-4 h-4" />
-                      Add Score Entry
+                      {t('dashboard.addTransaction')}
                     </button>
                   </div>
                   
@@ -16090,7 +16090,7 @@ function App() {
                       onClick={() => {
                         const newAccount = {
                           id: `account_${Date.now()}`,
-                          name: 'New Account',
+                          name: t('dashboard.addTransaction') + ' Account',
                           contributed: 0,
                           limit: 0,
                           goal: 0,
@@ -16147,7 +16147,7 @@ function App() {
                         }}
                         className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded"
                       >
-                        Add Default Accounts (TFSA & RRSP)
+                        {t('dashboard.addTransaction')} Default Accounts (TFSA & RRSP)
                       </button>
                     </div>
                   ) : (
