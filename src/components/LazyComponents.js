@@ -20,7 +20,7 @@ export const LazyTransactionManager = lazy(() =>
   import('../components/Transactions').then(module => ({ default: module.default }))
 );
 
-// Loading fallback component with Freedom Compass branding
+// Loading fallback component with Kampoul branding
 export const LoadingFallback = ({ componentName = 'Component' }) => (
   <div className="flex items-center justify-center p-8">
     <div className="text-center">

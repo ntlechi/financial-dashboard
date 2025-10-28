@@ -1,4 +1,4 @@
-// 🎯 MISSION CONTROL - The Heart of The Freedom Compass
+// 🎯 MISSION CONTROL - The Heart of Kampoul
 // The strategic flight plan connecting daily actions to ultimate life goals
 
 import React, { useState, useEffect } from 'react';

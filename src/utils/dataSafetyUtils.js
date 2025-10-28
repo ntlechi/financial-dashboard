@@ -233,7 +233,7 @@ export const exportUserData = (data) => {
       ...data,
       exportDate: new Date().toISOString(),
       exportVersion: '1.0',
-      appName: 'Freedom Compass'
+      appName: 'Kampoul'
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);

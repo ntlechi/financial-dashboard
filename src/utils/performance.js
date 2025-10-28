@@ -1,4 +1,4 @@
-// ⚡ Performance Monitoring for The Freedom Compass
+// ⚡ Performance Monitoring for Kampoul
 
 // 📊 Performance metrics tracking
 export const trackPerformance = (metricName, startTime, additionalData = {}) => {
