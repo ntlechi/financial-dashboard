@@ -592,3 +592,7 @@ We show you the path.
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

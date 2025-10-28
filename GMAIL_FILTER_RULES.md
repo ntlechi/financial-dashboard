@@ -584,3 +584,7 @@ Make labels visual:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

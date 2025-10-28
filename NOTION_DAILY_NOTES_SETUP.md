@@ -839,3 +839,7 @@ But this is YOUR personal journal first. Be honest with yourself.
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

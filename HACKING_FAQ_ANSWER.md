@@ -278,3 +278,7 @@ Consider creating a dedicated `/security` page with:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

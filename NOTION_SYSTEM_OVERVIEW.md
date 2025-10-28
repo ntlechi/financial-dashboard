@@ -372,3 +372,7 @@ Add more sections as it becomes a habit.
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

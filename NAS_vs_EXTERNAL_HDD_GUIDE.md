@@ -878,3 +878,7 @@ VS ALL-CLOUD: Saves $1,152/year!
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

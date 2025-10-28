@@ -145,3 +145,7 @@ I respond within 24 hours. Always.
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

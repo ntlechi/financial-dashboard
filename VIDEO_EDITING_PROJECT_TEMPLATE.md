@@ -590,3 +590,7 @@ Learn these for speed:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

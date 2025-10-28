@@ -830,3 +830,7 @@ DISASTER RECOVERY             → pCloud (encrypted!)
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

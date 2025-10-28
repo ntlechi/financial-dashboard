@@ -387,3 +387,7 @@ Now you know:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

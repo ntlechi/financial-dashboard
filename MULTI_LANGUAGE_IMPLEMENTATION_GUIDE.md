@@ -1086,3 +1086,7 @@ Your story resonates strongly in French-speaking immigrant communities:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

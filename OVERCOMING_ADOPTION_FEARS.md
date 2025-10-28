@@ -1145,3 +1145,7 @@ Every slow day is a day you're building something that lasts.
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

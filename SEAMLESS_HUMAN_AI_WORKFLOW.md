@@ -696,3 +696,7 @@ TOOLS:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

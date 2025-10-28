@@ -675,3 +675,7 @@ BaseCamp might be strongest legal protection!
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

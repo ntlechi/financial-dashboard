@@ -1249,3 +1249,7 @@ Insights:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

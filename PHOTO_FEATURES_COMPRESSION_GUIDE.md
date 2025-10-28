@@ -785,3 +785,7 @@ Why?
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

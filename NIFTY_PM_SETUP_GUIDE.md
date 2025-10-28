@@ -1005,3 +1005,7 @@ Create task templates for recurring work:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation

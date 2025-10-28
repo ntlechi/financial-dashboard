@@ -1,5 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import './i18n/config'; // Initialize i18n
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
@@ -31,7 +33,7 @@ import FixedModal from './components/FixedModal';
 import MomentsFeed from './components/MomentsFeed';
 import QuickStartGuide from './components/QuickStartGuide';
 import ForgotPassword from './components/ForgotPassword';
-import UpdateNotification from './components/UpdateNotification';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
@@ -623,7 +625,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white flex items-center">
             <Target className="w-6 h-6 mr-3 text-amber-400" />
-            Financial Freedom Goal
+            {t('dashboard.financialFreedomGoal')}
           </h2>
         </div>
         <div className="text-center text-gray-400 py-8">Loading...</div>
@@ -648,7 +650,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         <button
           onClick={() => onEdit('financialFreedom', data)}
           className="text-green-400 hover:text-green-300 p-1 rounded-lg hover:bg-green-500/10 transition-colors"
-          title="Edit financial freedom goal"
+          title={t('dashboard.editFinancialFreedomGoal')}
         >
           <Target className="w-4 h-4" />
         </button>
@@ -735,7 +737,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
             className="text-blue-400 hover:text-blue-300 p-1 rounded-lg hover:bg-blue-500/10 transition-colors"
-            title="Edit target savings rate"
+            title={t('dashboard.editTargetSavingsRate')}
           >
             <Target className="w-4 h-4" />
           </button>
@@ -1218,12 +1220,12 @@ const GoalsCard = ({ data, onEdit }) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <Calendar className="w-6 h-6 mr-3 text-amber-400" />
-          Financial Goals
+          {t('dashboard.financialGoals')}
         </h2>
         <button
           onClick={() => onEdit('goals', goals)}
           className="text-gray-400 hover:text-amber-400 p-1 rounded-lg hover:bg-gray-700/50 transition-colors"
-          title="Edit Goals"
+          title={t('dashboard.editGoals')}
         >
           <Edit className="w-4 h-4" />
         </button>
@@ -1244,7 +1246,7 @@ const GoalsCard = ({ data, onEdit }) => {
             className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            Add Your First Goal
+            {t('dashboard.addYourFirstGoal')}
           </button>
         </div>
       ) : (
@@ -2991,7 +2993,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.name}
                         onChange={(e) => updateDebt(index, 'name', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="Debt name"
+                        placeholder={t('dashboard.debtName')}
                       />
                     </div>
                     <div>
@@ -4745,7 +4747,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Business
+            {t('dashboard.addBusiness')}
           </button>
         </div>
       </Card>
@@ -4766,7 +4768,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Business Name"
+              placeholder={t('sideHustle.businessName')}
               value={newBusiness.name}
               onChange={(e) => setNewBusiness({...newBusiness, name: e.target.value})}
               className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
@@ -4782,7 +4784,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           </div>
           
           <textarea
-            placeholder="Business Description"
+            placeholder={t('sideHustle.businessDescription')}
             value={newBusiness.description}
             onChange={(e) => setNewBusiness({...newBusiness, description: e.target.value})}
             className="w-full mt-4 bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
@@ -6722,7 +6724,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Holding
+            {t('dashboard.addHolding')}
           </button>
         </div>
         <div className="space-y-4">
@@ -6824,10 +6826,10 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-lg inline-flex items-center gap-3 hover:scale-105"
                   >
                     <Plus className="w-6 h-6" />
-                    Add Your First Investment
+                    {t('dashboard.addYourFirstInvestment')}
                   </button>
                   <p className="text-sm text-gray-400 mt-3">
-                    Ready to start? Click above to add your first investment! 📈
+                    {t('dashboard.readyToStartClickAbove')} 📈
                   </p>
                 </div>
               </div>
@@ -7801,24 +7803,24 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
             <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
-            Total Income
+            {t('dashboard.totalIncome')}
           </h3>
           <p className="text-2xl font-bold text-green-400 stealth-target">${(parseFloat(totalIncome) || 0).toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div className="stealth-target">Personal: ${(parseFloat(personalIncome) || 0).toLocaleString()}</div>
-            <div className="stealth-target">Business: ${(parseFloat(businessIncome) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.personal')}: ${(parseFloat(personalIncome) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.business')}: ${(parseFloat(businessIncome) || 0).toLocaleString()}</div>
           </div>
         </Card>
         
         <Card className="bg-gradient-to-br from-red-900/40 to-rose-900/40">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
             <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
-            Total Expenses
+            {t('dashboard.totalExpenses')}
           </h3>
           <p className="text-2xl font-bold text-red-400 stealth-target">${(parseFloat(totalExpenses) || 0).toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div className="stealth-target">Personal: ${(parseFloat(personalExpenses) || 0).toLocaleString()}</div>
-            <div className="stealth-target">Business: ${(parseFloat(businessExpenses) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.personal')}: ${(parseFloat(personalExpenses) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.business')}: ${(parseFloat(businessExpenses) || 0).toLocaleString()}</div>
           </div>
         </Card>
         
@@ -7855,16 +7857,16 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-2">
               <CreditCard className="w-6 h-6 mr-3 text-blue-400" />
-              Transaction Management
+              {t('dashboard.transactionManagement')}
             </h2>
-            <p className="text-gray-400">Track all your personal and business transactions</p>
+            <p className="text-gray-400">{t('dashboard.trackTransactions')}</p>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Transaction
+            {t('dashboard.addTransaction')}
           </button>
         </div>
         
@@ -7874,9 +7876,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             onChange={(e) => setFilterType(e.target.value)}
             className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
           >
-            <option value="all">All Types</option>
-            <option value="income">Income Only</option>
-            <option value="expense">Expenses Only</option>
+            <option value="all">{t('dashboard.allTypes')}</option>
+            <option value="income">{t('dashboard.incomeOnly')}</option>
+            <option value="expense">{t('dashboard.expensesOnly')}</option>
           </select>
           
           <select
@@ -7884,9 +7886,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             onChange={(e) => setFilterCategory(e.target.value)}
             className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
           >
-            <option value="all">All Categories</option>
-            <option value="personal">Personal</option>
-            <option value="business">Business</option>
+            <option value="all">{t('dashboard.allCategories')}</option>
+            <option value="personal">{t('dashboard.personal')}</option>
+            <option value="business">{t('dashboard.business')}</option>
           </select>
           
           <select
@@ -7894,9 +7896,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
           >
-            <option value="date">Sort by Date</option>
-            <option value="amount">Sort by Amount</option>
-            <option value="description">Sort by Description</option>
+            <option value="date">{t('dashboard.sortByDate')}</option>
+            <option value="amount">{t('dashboard.sortByAmount')}</option>
+            <option value="description">{t('dashboard.sortByDescription')}</option>
           </select>
           
           <button
@@ -7906,7 +7908,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             }`}
           >
             <Calendar className="w-4 h-4 mr-2" />
-            {showTransactionHistory ? 'Hide History' : 'Monthly History'}
+            {showTransactionHistory ? t('common.hideHistory') : t('dashboard.monthlyHistory')}
           </button>
         </div>
       </Card>
@@ -7916,7 +7918,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <Card>
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
             <Calendar className="w-6 h-6 mr-3 text-purple-400" />
-            Transaction History by Month
+            {t('dashboard.transactionHistoryByMonth')}
           </h3>
           <div className="space-y-4">
             {Object.entries(
@@ -7977,8 +7979,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       <FixedModal
         isOpen={showAddForm}
         onClose={() => setShowAddForm(false)}
-        title="Add New Transaction"
-        description="Track your income and expenses"
+        title={t('dashboard.addNewTransaction')}
+        description={t('dashboard.trackIncomeExpenses')}
         size="lg"
       >
           
@@ -8171,7 +8173,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               onClick={handleAddTransaction}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              Add Transaction
+              {t('dashboard.addTransaction')}
             </button>
           </div>
       </FixedModal>
@@ -8181,7 +8183,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex flex-wrap items-center gap-2">
           <div className="flex items-center">
             <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
-            💰 Spending by Category
+            💰 {t('dashboard.spendingByCategory')}
           </div>
           <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
         </h3>
@@ -8215,7 +8217,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               ))}
               <div className="mt-4 pt-3 border-t border-gray-600">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-300">Total Spending This Month:</span>
+                  <span className="text-gray-300">{t('dashboard.totalSpendingThisMonth')}</span>
                   <span className="text-lg font-bold text-red-400">
                     ${(spendingByCategory.reduce((sum, cat) => sum + (parseFloat(cat.amount) || 0), 0)).toLocaleString()}
                   </span>
@@ -8227,10 +8229,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           <div className="text-center py-12">
             <PieChart className="w-16 h-16 mx-auto text-gray-600 mb-4" />
             <p className="text-gray-400 text-lg font-semibold">
-              Log your first expense to see your spending analysis
+              {t('dashboard.logFirstExpense')}
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              Track where your money goes each month with visual insights
+              {t('dashboard.trackMoneyInsights')}
             </p>
           </div>
         )}
@@ -8563,7 +8565,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="🔍 Search transactions..."
+                placeholder={t('dashboard.searchTransactions')}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className="w-full bg-gray-700/50 text-white px-4 py-4 md:py-3 pl-12 md:pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
@@ -8709,7 +8711,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       {/* Transaction List */}
       <Card>
         <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
-          <span>Recent Transactions ({filteredTransactions.length})</span>
+          <span>{t('dashboard.recentTransactions')} ({filteredTransactions.length})</span>
           {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
             <span className="text-sm text-blue-400 font-normal">
               {[
@@ -8771,7 +8773,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           
           {filteredTransactions.length === 0 && (
             <div className="text-center text-gray-400 py-8">
-              No transactions found matching your filters.
+              {t('dashboard.noTransactionsFound')}
             </div>
           )}
         </div>
@@ -8782,7 +8784,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <FixedModal
           isOpen={!!editingTransaction}
           onClose={() => setEditingTransaction(null)}
-          title="Edit Transaction"
+          title={t('dashboard.editTransaction')}
           size="md"
         >
           <div className="space-y-4">
@@ -9633,7 +9635,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg inline-flex items-center gap-2"
                 >
                   <Plus className="w-5 h-5" />
-                  Plan Your First Expedition
+                  {t('travel.planYourFirstExpedition')}
                 </button>
               </div>
             ) : (
@@ -9941,7 +9943,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2 transition-colors"
                         >
                           <Plus className="w-4 h-4" />
-                          Add Your First Country
+                          {t('travel.addYourFirstCountry')}
                         </button>
                       </div>
                     )}
@@ -10119,7 +10121,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
                 >
                   <Plus className="w-5 h-5" />
-                  Plan Your First Trip
+                  {t('travel.planYourFirstTrip')}
                 </button>
               </div>
             </Card>
@@ -11116,6 +11118,9 @@ const TravelTab = ({ data, setData, userId }) => {
 function App() {
   // Loading state for initial app load
   const [isLoading, setIsLoading] = useState(true);
+  
+  // i18n translation hook
+  const { t } = useTranslation();
 
   // Add CSS for scrollbar hiding and mobile viewport fixes
   React.useEffect(() => {
@@ -12015,7 +12020,7 @@ function App() {
             const newUserData = { ...initialData };
             await setDoc(docRef, newUserData);
             setData(newUserData);
-            showNotification('Welcome! Your financial dashboard is ready.', 'success');
+            showNotification(t('notifications.welcomeDashboardReady'), 'success');
           }
         } catch (error) {
 
@@ -12231,14 +12236,14 @@ function App() {
 
   const handleSignIn = async () => {
     if (!authForm.email || !authForm.password) {
-      showNotification('Please enter email and password', 'error');
+      showNotification(t('errors.pleaseEnterEmailPassword'), 'error');
       return;
     }
 
     setAuthLoading(true);
     try {
       await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
-      showNotification('Welcome back!', 'success');
+      showNotification(t('notifications.welcomeBack'), 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
       // ✨ Show Quick Start popup for new users after 2-3 seconds
@@ -12282,7 +12287,7 @@ function App() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      showNotification('Signed out successfully', 'success');
+      showNotification(t('notifications.signedOutSuccessfully'), 'success');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS
@@ -14153,8 +14158,8 @@ function App() {
           
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">Kampoul</h1>
-              <p className="text-amber-300 text-lg font-semibold">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Take command of your financial mission.</p>
+              <h1 className="text-4xl font-bold text-white">{t('app.name')}</h1>
+              <p className="text-amber-300 text-lg font-semibold">{t('dashboard.welcome')}, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! {t('dashboard.welcomeMessage')}</p>
             </div>
             
             {/* User Profile Section - Modern Dropdown Menu - FIXED: Now stays right on mobile */}
@@ -14173,7 +14178,7 @@ function App() {
               <button
                 onClick={openQuickExpense}
                 className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-                title="Quick Expense"
+                title={t('common.quickExpense')}
               >
                 <Plus className="w-5 h-5" />
               </button>
@@ -14182,7 +14187,7 @@ function App() {
               <button
                 onClick={() => setShowQuickJournal(true)}
                 className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2 transform hover:scale-105 shadow-md"
-                title="Quick Journal - Capture your thoughts!"
+                title={t('common.quickJournal')}
               >
                 <Edit3 className="w-5 h-5" />
               </button>
@@ -14195,7 +14200,7 @@ function App() {
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700' 
                     : 'bg-gray-700 hover:bg-gray-600'
                 } text-white p-2 rounded-lg transition-colors flex items-center gap-2`}
-                title={stealthMode ? "Stealth Mode: ON (Hide Numbers)" : "Stealth Mode: OFF (Show Numbers)"}
+                title={stealthMode ? t('common.stealthModeOn') : t('common.stealthModeOff')}
               >
                 {stealthMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -14204,10 +14209,13 @@ function App() {
               <button
                 onClick={() => setShowHelpFAQ(true)}
                 className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors flex items-center gap-2"
-                title="Help & FAQ"
+                title={t('settings.helpFAQ')}
               >
                 <HelpCircle className="w-4 h-4" />
               </button>
+              
+              {/* Language Switcher */}
+              <LanguageSwitcher />
               
               {/* Modern User Menu Dropdown */}
               <div className="relative">
@@ -14444,7 +14452,7 @@ function App() {
                       viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
                     }`}
                   >
-                    Monthly
+                    {t('common.monthly')}
                   </button>
                   <button
                     onClick={() => setViewMode('annual')}
@@ -14452,7 +14460,7 @@ function App() {
                       viewMode === 'annual' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
                     }`}
                   >
-                    Annual
+                    {t('common.annual')}
                   </button>
                 </div>
                 
@@ -14463,7 +14471,7 @@ function App() {
                   }`}
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />
-                  {showHistory ? 'Hide History' : 'Show History'}
+                  {showHistory ? t('common.hideHistory') : t('common.showHistory')}
                 </button>
               </div>
             )}
@@ -14498,7 +14506,7 @@ function App() {
               >
                 <div className="flex space-x-1 min-w-max">
                   <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
+                    <LayoutDashboard className="w-4 h-4 mr-2"/>{t('dashboard.title')}
                   </button>
                   <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <CreditCard className="w-4 h-4 mr-2"/>Transactions
@@ -14548,7 +14556,7 @@ function App() {
                 <Card className="col-span-1 md:col-span-2 lg:col-span-2">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-blue-400" />
-                    Monthly History
+                    {t('dashboard.monthlyHistory')}
                   </h2>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -16014,7 +16022,7 @@ function App() {
                       
                       {(!tempCardData.breakdown || tempCardData.breakdown.length === 0) && (
                         <div className="text-center text-gray-400 py-4 border-2 border-dashed border-gray-600 rounded-lg">
-                          No assets or liabilities added yet. Use the buttons above to get started.
+                          {t('dashboard.noAssetsLiabilitiesYet')}
                         </div>
                       )}
                     </div>
@@ -16276,8 +16284,8 @@ function App() {
                     {(tempCardData || []).length === 0 ? (
                       <div className="text-center py-8 text-gray-400">
                         <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p>No financial goals yet.</p>
-                        <p className="text-sm">Click "Add Goal" to create your first one!</p>
+                        <p>{t('dashboard.noFinancialGoalsYet')}</p>
+                        <p className="text-sm">{t('dashboard.clickAddGoalToCreateFirst')}</p>
                       </div>
                     ) : (
                       (tempCardData || []).map((goal, index) => (
@@ -16591,7 +16599,7 @@ function App() {
                   Survive Backpacking
                 </a>
               </h3>
-              <p className="text-gray-400 text-sm">Navigate to your financial freedom</p>
+              <p className="text-gray-400 text-sm">{t('auth.welcomeMessage')}</p>
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-end items-center space-x-6 text-sm">

@@ -994,3 +994,7 @@ You can build this yourself with:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/i18n-implementation
