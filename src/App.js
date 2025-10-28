@@ -1216,6 +1216,9 @@ const CreditScoreCard = ({ data, onEdit }) => {
 const GoalsCard = ({ data, onEdit }) => {
   // Ensure data is always an array
   const goals = Array.isArray(data) ? data : [];
+  
+  // i18n translation hook
+  const { t } = useTranslation();
 
   return (
     <Card className="col-span-1 md:col-span-6 lg:col-span-6">
