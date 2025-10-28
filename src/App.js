@@ -12020,7 +12020,7 @@ function App() {
             const newUserData = { ...initialData };
             await setDoc(docRef, newUserData);
             setData(newUserData);
-            showNotification('Welcome! Your financial dashboard is ready.', 'success');
+            showNotification(t('notifications.welcomeDashboardReady'), 'success');
           }
         } catch (error) {
 
@@ -12236,14 +12236,14 @@ function App() {
 
   const handleSignIn = async () => {
     if (!authForm.email || !authForm.password) {
-      showNotification('Please enter email and password', 'error');
+      showNotification(t('errors.pleaseEnterEmailPassword'), 'error');
       return;
     }
 
     setAuthLoading(true);
     try {
       await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
-      showNotification('Welcome back!', 'success');
+      showNotification(t('notifications.welcomeBack'), 'success');
       setAuthForm({ email: '', password: '', name: '' });
       
       // ✨ Show Quick Start popup for new users after 2-3 seconds
@@ -12287,7 +12287,7 @@ function App() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      showNotification('Signed out successfully', 'success');
+      showNotification(t('notifications.signedOutSuccessfully'), 'success');
     } catch (error) {
 
   // 💫 MOMENTS HANDLERS

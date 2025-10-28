@@ -366,7 +366,8 @@
     "failedToDelete": "Failed to delete",
     "failedToSave": "Failed to save",
     "failedToLoad": "Failed to load",
-    "tryAgain": "Please try again"
+    "tryAgain": "Please try again",
+    "pleaseEnterEmailPassword": "Please enter email and password"
   },
   "success": {
     "saved": "Saved successfully!",
@@ -386,6 +387,9 @@
     "dataBackedUp": "Data backed up successfully!",
     "dataRestored": "Data restored successfully!",
     "exportComplete": "Export complete successfully!",
-    "importComplete": "Import complete successfully!"
+    "importComplete": "Import complete successfully!",
+    "welcomeDashboardReady": "Welcome! Your financial dashboard is ready.",
+    "welcomeBack": "Welcome back!",
+    "signedOutSuccessfully": "Signed out successfully"
   }
 }
