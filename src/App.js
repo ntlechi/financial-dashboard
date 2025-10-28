@@ -1246,7 +1246,7 @@ const GoalsCard = ({ data, onEdit }) => {
             className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            Add Your First Goal
+            {t('dashboard.addYourFirstGoal')}
           </button>
         </div>
       ) : (
@@ -6826,7 +6826,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-lg inline-flex items-center gap-3 hover:scale-105"
                   >
                     <Plus className="w-6 h-6" />
-                    Add Your First Investment
+                    {t('dashboard.addYourFirstInvestment')}
                   </button>
                   <p className="text-sm text-gray-400 mt-3">
                     Ready to start? Click above to add your first investment! 📈
@@ -9635,7 +9635,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg inline-flex items-center gap-2"
                 >
                   <Plus className="w-5 h-5" />
-                  Plan Your First Expedition
+                  {t('travel.planYourFirstExpedition')}
                 </button>
               </div>
             ) : (
@@ -9943,7 +9943,7 @@ const TravelTab = ({ data, setData, userId }) => {
                           className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2 transition-colors"
                         >
                           <Plus className="w-4 h-4" />
-                          Add Your First Country
+                          {t('travel.addYourFirstCountry')}
                         </button>
                       </div>
                     )}
@@ -10121,7 +10121,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2 mx-auto"
                 >
                   <Plus className="w-5 h-5" />
-                  Plan Your First Trip
+                  {t('travel.planYourFirstTrip')}
                 </button>
               </div>
             </Card>

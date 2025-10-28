@@ -145,6 +145,8 @@
     "editTransaction": "Edit Transaction",
     "addHolding": "Add Holding",
     "addBusiness": "Add Business",
+    "addYourFirstGoal": "Add Your First Goal",
+    "addYourFirstInvestment": "Add Your First Investment",
     "trackIncomeExpenses": "Track your income and expenses",
     "searchTransactions": "🔍 Search transactions...",
     "sortByDate": "Sort by Date",
@@ -297,7 +299,10 @@
     "planTravelByDestinationType": "🎯 Plan Your Travel by Destination Type",
     "daysInSoutheastAsiaEasternEuropeIndia": "Days in Southeast Asia, Eastern Europe, India",
     "daysInSouthAmericaSouthernEurope": "Days in South America, Southern Europe",
-    "daysInWesternEuropeScandinaviaJapan": "Days in Western Europe, Scandinavia, Japan"
+    "daysInWesternEuropeScandinaviaJapan": "Days in Western Europe, Scandinavia, Japan",
+    "addYourFirstCountry": "Add Your First Country",
+    "planYourFirstExpedition": "Plan Your First Expedition",
+    "planYourFirstTrip": "Plan Your First Trip"
   },
   "pricing": {
     "title": "Pricing",
