@@ -14452,7 +14452,7 @@ function App() {
                       viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
                     }`}
                   >
-                    Monthly
+                    {t('common.monthly')}
                   </button>
                   <button
                     onClick={() => setViewMode('annual')}
@@ -14460,7 +14460,7 @@ function App() {
                       viewMode === 'annual' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'
                     }`}
                   >
-                    Annual
+                    {t('common.annual')}
                   </button>
                 </div>
                 
