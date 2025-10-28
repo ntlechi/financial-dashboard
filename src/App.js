@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import './i18n/config'; // Initialize i18n
 import { ArrowUp, ArrowDown, DollarSign, TrendingUp, Building, LayoutDashboard, Calculator, Briefcase, Target, PiggyBank, Umbrella, ShieldCheck, Calendar, Plus, X, Edit, Trash2, CreditCard, BarChart3, PieChart, Repeat, Wallet, AlertTriangle, Crown, Save, HelpCircle, Award, MessageCircle, Send, Bug, Lightbulb, Edit3, ChevronDown, ChevronUp, Eye, EyeOff, Package, BookOpen, ChevronLeft, ChevronRight, Mountain } from 'lucide-react';
 import * as d3 from 'd3';
@@ -11117,6 +11118,9 @@ const TravelTab = ({ data, setData, userId }) => {
 function App() {
   // Loading state for initial app load
   const [isLoading, setIsLoading] = useState(true);
+  
+  // i18n translation hook
+  const { t } = useTranslation();
 
   // Add CSS for scrollbar hiding and mobile viewport fixes
   React.useEffect(() => {
@@ -14154,8 +14158,8 @@ function App() {
           
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">Kampoul</h1>
-              <p className="text-amber-300 text-lg font-semibold">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Take command of your financial mission.</p>
+              <h1 className="text-4xl font-bold text-white">{t('app.name')}</h1>
+              <p className="text-amber-300 text-lg font-semibold">{t('dashboard.welcome')}, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! {t('dashboard.welcomeMessage')}</p>
             </div>
             
             {/* User Profile Section - Modern Dropdown Menu - FIXED: Now stays right on mobile */}
@@ -14502,7 +14506,7 @@ function App() {
               >
                 <div className="flex space-x-1 min-w-max">
                   <button onClick={() => handleTabClick('dashboard')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                    <LayoutDashboard className="w-4 h-4 mr-2"/>Dashboard
+                    <LayoutDashboard className="w-4 h-4 mr-2"/>{t('dashboard.title')}
                   </button>
                   <button onClick={() => handleTabClick('transactions')} className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center whitespace-nowrap ${activeTab === 'transactions' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
                     <CreditCard className="w-4 h-4 mr-2"/>Transactions
@@ -16595,7 +16599,7 @@ function App() {
                   Survive Backpacking
                 </a>
               </h3>
-              <p className="text-gray-400 text-sm">Navigate to your financial freedom</p>
+              <p className="text-gray-400 text-sm">{t('auth.welcomeMessage')}</p>
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-end items-center space-x-6 text-sm">
