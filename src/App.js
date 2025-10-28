@@ -633,7 +633,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
             {t('dashboard.financialFreedomGoal')}
           </h2>
         </div>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -711,7 +711,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
             {t('dashboard.savingsRate')}
           </h2>
         </div>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -798,7 +798,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
           <Umbrella className="w-6 h-6 mr-3 text-blue-400" />
           {t('dashboard.rainyDayFund')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -1144,7 +1144,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
           <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
           {t('dashboard.creditScore')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -1544,7 +1544,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           <Mountain className="w-7 h-7 mr-3" style={{color: '#FBBF24'}} />
           {t('dashboard.retirementAccounts')}
         </h2>
-        <div className="text-center py-8" style={{color: 'rgba(255, 255, 255, 0.6)'}}>Loading...</div>
+        <div className="text-center py-8" style={{color: 'rgba(255, 255, 255, 0.6)'}}>{t('common.loading')}</div>
       </Card>
     );
   }
@@ -1689,7 +1689,7 @@ const DebtCard = ({ data, onEdit }) => {
           <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
           {t('dashboard.totalDebt')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -1770,7 +1770,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
           <Wallet className="w-6 h-6 mr-3 text-teal-400" />
           {t('dashboard.survivalRunway')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -1977,7 +1977,7 @@ const IncomeCard = ({ data, viewMode }) => {
           <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
           {viewMode === 'annual' ? t('dashboard.annualIncome') : t('dashboard.monthlyIncome')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -2103,7 +2103,7 @@ const ExpensesCard = ({ data, viewMode }) => {
           <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
           {viewMode === 'annual' ? t('dashboard.annualExpenses') : t('dashboard.monthlyExpenses')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -2339,7 +2339,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
           <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
           {t('dashboard.cashFlow')}
         </h2>
-        <div className="text-center text-gray-400 py-8">Loading...</div>
+        <div className="text-center text-gray-400 py-8">{t('common.loading')}</div>
       </Card>
     );
   }
@@ -3006,7 +3006,7 @@ const DebtPayoffCalculator = () => {
                 className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                Add Debt
+                {t('dashboard.addTransaction')}
               </button>
             </div>
             
@@ -4792,7 +4792,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       {showAddBusiness && (
         <Card className="border-violet-500/30">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-white">Add New Business</h3>
+            <h3 className="text-xl font-bold text-white">{t('dashboard.addBusiness')}</h3>
             <button
               onClick={() => setShowAddBusiness(false)}
               className="text-gray-400 hover:text-white"
@@ -4838,7 +4838,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               onClick={handleAddBusiness}
               className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              Add Business
+              {t('dashboard.addBusiness')}
             </button>
           </div>
         </Card>
@@ -4950,7 +4950,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   className="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
                 >
                   <Plus className="w-3 h-3 mr-1" />
-                  Add Item
+                  {t('dashboard.addTransaction')}
                 </button>
                 <button
                   onClick={() => {
@@ -6576,7 +6576,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </div>
             )) : (
               <div className="col-span-2 text-center text-gray-400 py-4">
-                Add holdings to see portfolio allocation
+                {t('dashboard.addYourFirstInvestment')} to see portfolio allocation
               </div>
             )}
           </div>
@@ -6781,9 +6781,9 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   {/* Step 1 */}
                   <div className="bg-gradient-to-br from-violet-900/40 to-violet-800/20 rounded-lg p-6 border border-violet-600/30">
                     <div className="text-3xl mb-3 font-bold text-violet-300">1</div>
-                    <h4 className="text-lg font-bold text-white mb-2">Add Your Investment</h4>
+                    <h4 className="text-lg font-bold text-white mb-2">{t('dashboard.addYourFirstInvestment')}</h4>
                     <p className="text-sm text-gray-300 mb-3">
-                      Click "Add Investment" and enter your stock info:
+                      Click "{t('dashboard.addYourFirstInvestment')}" and enter your stock info:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
                       <li>◆ <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
@@ -7011,7 +7011,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <FixedModal
             isOpen={showAddHolding}
             onClose={() => setShowAddHolding(false)}
-            title="Add New Holding"
+            title={t('dashboard.addYourFirstInvestment')}
             size="md"
           >
             <div className="space-y-4">
@@ -7239,7 +7239,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   onClick={handleAddHolding}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  Add Holding
+                  {t('dashboard.addYourFirstInvestment')}
                 </button>
               </div>
           </FixedModal>
@@ -13879,7 +13879,7 @@ function App() {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading...</p>
+          <p className="text-white text-lg">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -13945,7 +13945,7 @@ function App() {
             <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Kampoul
             </h2>
-            <p className="text-gray-400 animate-pulse">Loading your dashboard...</p>
+            <p className="text-gray-400 animate-pulse">{t('common.loading')} your dashboard...</p>
             <div className="mt-4 flex items-center justify-center gap-2">
               <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
               <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
@@ -15262,7 +15262,7 @@ function App() {
                         className="text-teal-400 hover:text-teal-300 text-sm flex items-center gap-1"
                       >
                         <Plus className="w-4 h-4" />
-                        Add Account
+                        {t('dashboard.addTransaction')}
                       </button>
                     </div>
                     
@@ -15370,7 +15370,7 @@ function App() {
                         className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1"
                       >
                         <Plus className="w-4 h-4" />
-                        Add Debt
+                        {t('dashboard.addTransaction')}
                       </button>
                     </div>
                     
@@ -15976,7 +15976,7 @@ function App() {
                           className="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-1 px-2 py-1 rounded bg-emerald-900/20"
                         >
                           <Plus className="w-4 h-4" />
-                          Add Asset
+                          {t('dashboard.addTransaction')}
                         </button>
                         <button
                           onClick={() => {
@@ -15995,7 +15995,7 @@ function App() {
                           className="text-red-400 hover:text-red-300 text-sm flex items-center gap-1 px-2 py-1 rounded bg-red-900/20"
                         >
                           <Plus className="w-4 h-4" />
-                          Add Liability
+                          {t('dashboard.addTransaction')}
                         </button>
                       </div>
                     </div>
@@ -16105,7 +16105,7 @@ function App() {
                       className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
                     >
                       <Plus className="w-4 h-4" />
-                      Add Account
+                      {t('dashboard.addTransaction')}
                     </button>
                   </div>
 
@@ -16312,7 +16312,7 @@ function App() {
                       className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors"
                     >
                       <Plus className="w-3 h-3" />
-                      Add Goal
+                      {t('dashboard.addYourFirstGoal')}
                     </button>
                   </div>
                   
