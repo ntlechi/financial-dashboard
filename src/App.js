@@ -966,6 +966,9 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
 // Credit Score Card with History Chart
 const CreditScoreCard = ({ data, onEdit }) => {
   const svgRef = useRef();
+  
+  // i18n translation hook
+  const { t } = useTranslation();
 
   const getScoreColor = (score) => {
     if (score >= 800) return 'text-emerald-400';
@@ -1139,7 +1142,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
       <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
-          Credit Score
+          {t('dashboard.creditScore')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -1162,7 +1165,7 @@ const CreditScoreCard = ({ data, onEdit }) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <ShieldCheck className="w-6 h-6 mr-3 text-indigo-400" />
-          Credit Score
+          {t('dashboard.creditScore')}
         </h2>
         <button
           onClick={() => onEdit('creditScore', data)}
@@ -1531,13 +1534,15 @@ const NetWorthCard = ({ data, onEdit }) => {
 
 // Editable Retirement Accounts Card
 const RegisteredAccountsCard = ({ data, onEdit }) => {
+  // i18n translation hook
+  const { t } = useTranslation();
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
       <Card className="col-span-1 md:col-span-6 lg:col-span-6" style={{background: 'radial-gradient(circle at top, rgba(251, 191, 36, 0.15), rgba(15, 23, 42, 0.95))'}}>
         <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
           <Mountain className="w-7 h-7 mr-3" style={{color: '#FBBF24'}} />
-          Retirement Accounts
+          {t('dashboard.retirementAccounts')}
         </h2>
         <div className="text-center py-8" style={{color: 'rgba(255, 255, 255, 0.6)'}}>Loading...</div>
       </Card>
@@ -1557,7 +1562,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
         <div>
           <h2 className="text-xl font-bold text-white flex items-center">
             <Mountain className="w-6 h-6 mr-3 text-blue-400" />
-            Retirement Accounts
+            {t('dashboard.retirementAccounts')}
           </h2>
           <p className="text-sm text-blue-200 mt-1 ml-9">Building your legacy, one contribution at a time.</p>
         </div>
@@ -1674,13 +1679,15 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
 
 // Debt Management Card
 const DebtCard = ({ data, onEdit }) => {
+  // i18n translation hook
+  const { t } = useTranslation();
   // 🛡️ NULL SAFETY CHECK
   if (!data || !data.accounts) {
     return (
       <Card className="col-span-1 md:col-span-6 lg:col-span-6 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
-          Total Debt
+          {t('dashboard.totalDebt')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -1704,7 +1711,7 @@ const DebtCard = ({ data, onEdit }) => {
 
       <h2 className="text-xl font-bold text-white mb-2 flex items-center">
         <CreditCard className="w-6 h-6 mr-3 text-rose-400" />
-        Total Debt
+        {t('dashboard.totalDebt')}
       </h2>
       <p className="text-5xl font-extrabold text-white">${(parseFloat(totalDebt) || 0).toLocaleString()}</p>
       
