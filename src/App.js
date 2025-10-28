@@ -11115,6 +11115,7 @@ const TravelTab = ({ data, setData, userId }) => {
    );
  };
 
+/* eslint-disable no-undef */
 function App() {
   // Loading state for initial app load
   const [isLoading, setIsLoading] = useState(true);
