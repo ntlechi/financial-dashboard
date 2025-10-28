@@ -1884,6 +1884,9 @@ const IncomeCard = ({ data, viewMode }) => {
   const [showAllSources, setShowAllSources] = useState(false);
   const maxVisibleItems = 3;
   
+  // i18n translation hook
+  const { t } = useTranslation();
+  
   // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
     if (incomeChartRef.current && data.sources && data.sources.length > 0) {
@@ -1950,7 +1953,7 @@ const IncomeCard = ({ data, viewMode }) => {
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
           <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
-          {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
+          {viewMode === 'annual' ? t('dashboard.annualIncome') : t('dashboard.monthlyIncome')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -1964,7 +1967,7 @@ const IncomeCard = ({ data, viewMode }) => {
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40 min-h-[420px] flex flex-col">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowUp className="w-6 h-6 mr-3 text-teal-400" />
-      {viewMode === 'annual' ? 'Annual Income' : 'Monthly Income'}
+      {viewMode === 'annual' ? t('dashboard.annualIncome') : t('dashboard.monthlyIncome')}
     </h2>
     <p className="text-5xl font-extrabold text-white stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</p>
     
@@ -2006,6 +2009,9 @@ const ExpensesCard = ({ data, viewMode }) => {
   const expensesChartRef = useRef(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const maxVisibleItems = 3;
+  
+  // i18n translation hook
+  const { t } = useTranslation();
   
   // 📊 D3.js Donut Chart Effect (MUST be before any returns)
   useEffect(() => {
@@ -2073,7 +2079,7 @@ const ExpensesCard = ({ data, viewMode }) => {
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
           <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
-          {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
+          {viewMode === 'annual' ? t('dashboard.annualExpenses') : t('dashboard.monthlyExpenses')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -2087,7 +2093,7 @@ const ExpensesCard = ({ data, viewMode }) => {
   <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-rose-900/40 to-pink-900/40 min-h-[420px] flex flex-col">
     <h2 className="text-xl font-bold text-white mb-2 flex items-center">
       <ArrowDown className="w-6 h-6 mr-3 text-rose-400" />
-      {viewMode === 'annual' ? 'Annual Expenses' : 'Monthly Expenses'}
+      {viewMode === 'annual' ? t('dashboard.annualExpenses') : t('dashboard.monthlyExpenses')}
     </h2>
     <p className="text-5xl font-extrabold text-white stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</p>
     
@@ -2129,6 +2135,9 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
   const chartRef = useRef(null);
   const tooltipRef = useRef(null); // DOM ref for tooltip (no React state!)
   const [chartKey, setChartKey] = useState(0); // For forcing re-render on resize
+  
+  // i18n translation hook
+  const { t } = useTranslation();
 
   // 📊 CALCULATE 3-MONTH HISTORICAL CASH FLOW
   const calculate3MonthTrend = () => {
@@ -2306,7 +2315,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       <Card className="col-span-1 md:col-span-3 lg:col-span-3 bg-gradient-to-br from-teal-900/40 to-cyan-900/40">
         <h2 className="text-xl font-bold text-white mb-2 flex items-center">
           <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
-          Cash Flow
+          {t('dashboard.cashFlow')}
         </h2>
         <div className="text-center text-gray-400 py-8">Loading...</div>
       </Card>
@@ -2322,7 +2331,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       <div className="flex justify-between items-start mb-2">
         <h2 className="text-xl font-bold text-white flex items-center">
           <TrendingUp className="w-6 h-6 mr-3 text-teal-400" />
-          Cash Flow
+          {t('dashboard.cashFlow')}
         </h2>
       </div>
       
@@ -2337,12 +2346,12 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-6 mb-4 text-xs sm:text-sm">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
-          <span className="text-gray-300">Income:</span>
+          <span className="text-gray-300">{t('dashboard.totalIncome')}:</span>
           <span className="text-white font-semibold stealth-target">${(parseFloat(monthlyIncome) || 0).toLocaleString()}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-400"></div>
-          <span className="text-gray-300">Expenses:</span>
+          <span className="text-gray-300">{t('dashboard.totalExpenses')}:</span>
           <span className="text-white font-semibold stealth-target">${(parseFloat(monthlyExpenses) || 0).toLocaleString()}</span>
         </div>
       </div>
@@ -2350,7 +2359,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
       {/* 📈 3-MONTH TREND CHART */}
       <div className="mt-4 border-t border-teal-800/50 pt-4">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-          <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide">3-Month Trend</h3>
+          <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide">{t('dashboard.monthlyBreakdown')}</h3>
           {/* Tooltip - Always present, controlled via DOM (no re-renders!) */}
           <div 
             ref={tooltipRef}
