@@ -7803,24 +7803,24 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
             <ArrowUp className="w-5 h-5 mr-2 text-green-400" />
-            Total Income
+            {t('dashboard.totalIncome')}
           </h3>
           <p className="text-2xl font-bold text-green-400 stealth-target">${(parseFloat(totalIncome) || 0).toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div className="stealth-target">Personal: ${(parseFloat(personalIncome) || 0).toLocaleString()}</div>
-            <div className="stealth-target">Business: ${(parseFloat(businessIncome) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.personal')}: ${(parseFloat(personalIncome) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.business')}: ${(parseFloat(businessIncome) || 0).toLocaleString()}</div>
           </div>
         </Card>
         
         <Card className="bg-gradient-to-br from-red-900/40 to-rose-900/40">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
             <ArrowDown className="w-5 h-5 mr-2 text-red-400" />
-            Total Expenses
+            {t('dashboard.totalExpenses')}
           </h3>
           <p className="text-2xl font-bold text-red-400 stealth-target">${(parseFloat(totalExpenses) || 0).toLocaleString()}</p>
           <div className="mt-2 text-sm text-gray-300">
-            <div className="stealth-target">Personal: ${(parseFloat(personalExpenses) || 0).toLocaleString()}</div>
-            <div className="stealth-target">Business: ${(parseFloat(businessExpenses) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.personal')}: ${(parseFloat(personalExpenses) || 0).toLocaleString()}</div>
+            <div className="stealth-target">{t('dashboard.business')}: ${(parseFloat(businessExpenses) || 0).toLocaleString()}</div>
           </div>
         </Card>
         
@@ -7876,9 +7876,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             onChange={(e) => setFilterType(e.target.value)}
             className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
           >
-            <option value="all">All Types</option>
-            <option value="income">Income Only</option>
-            <option value="expense">Expenses Only</option>
+            <option value="all">{t('dashboard.allTypes')}</option>
+            <option value="income">{t('dashboard.incomeOnly')}</option>
+            <option value="expense">{t('dashboard.expensesOnly')}</option>
           </select>
           
           <select
@@ -7886,9 +7886,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             onChange={(e) => setFilterCategory(e.target.value)}
             className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
           >
-            <option value="all">All Categories</option>
-            <option value="personal">Personal</option>
-            <option value="business">Business</option>
+            <option value="all">{t('dashboard.allCategories')}</option>
+            <option value="personal">{t('dashboard.personal')}</option>
+            <option value="business">{t('dashboard.business')}</option>
           </select>
           
           <select
