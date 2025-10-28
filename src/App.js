@@ -7896,9 +7896,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
           >
-            <option value="date">Sort by Date</option>
-            <option value="amount">Sort by Amount</option>
-            <option value="description">Sort by Description</option>
+            <option value="date">{t('dashboard.sortByDate')}</option>
+            <option value="amount">{t('dashboard.sortByAmount')}</option>
+            <option value="description">{t('dashboard.sortByDescription')}</option>
           </select>
           
           <button
@@ -8565,7 +8565,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="🔍 Search transactions..."
+                placeholder={t('dashboard.searchTransactions')}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className="w-full bg-gray-700/50 text-white px-4 py-4 md:py-3 pl-12 md:pl-10 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
@@ -8711,7 +8711,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
       {/* Transaction List */}
       <Card>
         <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
-          <span>Recent Transactions ({filteredTransactions.length})</span>
+          <span>{t('dashboard.recentTransactions')} ({filteredTransactions.length})</span>
           {(searchKeyword || selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
             <span className="text-sm text-blue-400 font-normal">
               {[
@@ -8773,7 +8773,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           
           {filteredTransactions.length === 0 && (
             <div className="text-center text-gray-400 py-8">
-              No transactions found matching your filters.
+              {t('dashboard.noTransactionsFound')}
             </div>
           )}
         </div>
