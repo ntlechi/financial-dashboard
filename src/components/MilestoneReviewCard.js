@@ -180,7 +180,7 @@ export default function MilestoneReviewCard({
             {/* Rating */}
             <div>
               <label className="block text-sm font-semibold text-gray-300 mb-3">
-                How would you rate The Freedom Compass?
+                How would you rate Kampoul?
               </label>
               <div className="flex gap-2 justify-center">
                 {[1, 2, 3, 4, 5].map(star => (

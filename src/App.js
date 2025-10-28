@@ -13902,7 +13902,7 @@ function App() {
               </div>
             </div>
             <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-              The Freedom Compass
+              Kampoul
             </h2>
             <p className="text-gray-400 animate-pulse">Loading your dashboard...</p>
             <div className="mt-4 flex items-center justify-center gap-2">
@@ -13921,7 +13921,7 @@ function App() {
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-amber-500/30 shadow-lg shadow-amber-500/10">
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
-                  The Freedom Compass
+                  Kampoul
                 </h1>
                 <p className="text-amber-200 mt-2">
                   {authMode === 'login' ? 'Navigate to your financial freedom' : 'Start your journey to financial independence'}
@@ -14153,7 +14153,7 @@ function App() {
           
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white">The Freedom Compass</h1>
+              <h1 className="text-4xl font-bold text-white">Kampoul</h1>
               <p className="text-amber-300 text-lg font-semibold">Welcome back, {devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'Explorer')}! Take command of your financial mission.</p>
             </div>
             
@@ -16831,7 +16831,7 @@ function App() {
                 }`}>
                   {feedbackType === 'bug' 
                     ? '🐛 Found a bug? Let us know! We\'ll fix it ASAP.' 
-                    : '💡 Have an idea? We\'d love to hear it! Your feedback shapes the future of The Freedom Compass.'}
+                    : '💡 Have an idea? We\'d love to hear it! Your feedback shapes the future of Kampoul.'}
                 </p>
               </div>
 

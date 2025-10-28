@@ -1,5 +1,5 @@
 // 🌍 TIMEZONE UTILITIES - Global timezone support for worldwide users
-// This file handles all timezone-related operations for the Freedom Compass app
+// This file handles all timezone-related operations for Kampoul
 
 // 🎯 Get user's timezone
 export const getUserTimezone = () => {

@@ -118,7 +118,7 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
           <div className="flex justify-between items-center p-6 border-b border-amber-500/30">
             <h2 className="text-3xl font-bold text-white flex items-center gap-3">
               <Gamepad2 className="w-8 h-8 text-amber-400" />
-              🎮 How to Play The Freedom Compass
+              🎮 How to Play Kampoul
             </h2>
             <button
               onClick={() => setShowGuide(false)}
@@ -136,7 +136,7 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
                 Welcome to Your Financial Adventure!
               </h3>
               <p className="text-gray-300">
-                The Freedom Compass gamifies your financial journey. Every action earns <strong>XP (Experience Points)</strong>, 
+                Kampoul gamifies your financial journey. Every action earns <strong>XP (Experience Points)</strong>, 
                 helping you level up through <strong>6 ranks</strong> and unlock <strong>Freedom Milestones</strong>. 
                 Think of it as your financial RPG - you're the hero, and financial freedom is the endgame! 🎯
               </p>

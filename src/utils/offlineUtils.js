@@ -1,5 +1,5 @@
 // 🧳 OFFLINE UTILITIES - Perfect for travelers and digital nomads
-// This file handles offline functionality for the Freedom Compass app
+// This file handles offline functionality for Kampoul
 
 // 🎯 Offline Storage Keys
 const OFFLINE_KEYS = {

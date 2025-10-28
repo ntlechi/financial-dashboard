@@ -1,4 +1,4 @@
-// 🛡️ Error Handling Utilities for The Freedom Compass
+// 🛡️ Error Handling Utilities for Kampoul
 
 // Error types for better categorization
 export const ERROR_TYPES = {

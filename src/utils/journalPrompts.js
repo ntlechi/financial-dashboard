@@ -1,4 +1,4 @@
-// 365 Daily Journal Prompts for Freedom Compass
+// 365 Daily Journal Prompts for Kampoul
 // Curated, remixed, and optimized for financial freedom journey
 
 export const journalPrompts = [

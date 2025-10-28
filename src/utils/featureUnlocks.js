@@ -101,7 +101,7 @@ export const MILESTONE_UNLOCKS = {
     badge: 'Loyalty',
     xpReward: 2000,
     features: ['lifetime_premium', 'exclusive_content'],
-    description: 'You\'re a true Freedom Compass veteran!'
+    description: 'You\'re a true Kampoul veteran!'
   }
 };
 

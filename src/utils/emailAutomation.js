@@ -131,7 +131,7 @@ async function sendViaSendGrid(emailData) {
     }],
     from: {
       email: 'noreply@survivebackpacking.com',
-      name: 'The Freedom Compass'
+      name: 'Kampoul'
     },
     template_id: templateId
   };
