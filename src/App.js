@@ -3613,6 +3613,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
 
 // Side Hustle Management Component
 const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger, showMomentModal, setShowMomentModal, editingMoment, setEditingMoment, newMoment, setNewMoment }) => {
+  const { t } = useTranslation();
   const [showAddBusiness, setShowAddBusiness] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [showAddItem, setShowAddItem] = useState(false);
@@ -3868,16 +3869,16 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     let progressColor = '';
     
     if (freedomRatio >= 75) {
-      progressLevel = 'Financially Independent';
+      progressLevel = t('sideHustle.financiallyIndependent');
       progressColor = '#14B8A6'; // Teal
     } else if (freedomRatio >= 50) {
-      progressLevel = 'Nearing Freedom';
+      progressLevel = t('sideHustle.nearingFreedom');
       progressColor = '#38BDF8'; // Sky Blue
     } else if (freedomRatio >= 25) {
-      progressLevel = 'Building Momentum';
+      progressLevel = t('sideHustle.buildingMomentum');
       progressColor = '#F59E0B'; // Amber
     } else {
-      progressLevel = 'Survival Mode';
+      progressLevel = t('sideHustle.survivalMode');
       progressColor = '#F43F5E'; // Rose
     }
     
@@ -4519,25 +4520,25 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <Card className="bg-gradient-to-br from-teal-900/40 to-emerald-900/40 border-teal-500/30">
           <h3 className="text-sm font-semibold text-teal-200 mb-2 flex items-center">
             <TrendingUp className="w-4 h-4 mr-2" />
-            Side Hustle Income
+            {t('sideHustle.sideHustleIncome')}
           </h3>
           <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${(parseFloat(freedomMetrics.sideHustleIncomeThisMonth) || 0).toLocaleString()}</p>
-          <p className="text-xs text-teal-300 mt-1">This Month</p>
+          <p className="text-xs text-teal-300 mt-1">{t('sideHustle.thisMonth')}</p>
         </Card>
         
         <Card className="bg-gradient-to-br from-rose-900/40 to-red-900/40 border-rose-500/30">
           <h3 className="text-sm font-semibold text-rose-200 mb-2 flex items-center">
             <ArrowDown className="w-4 h-4 mr-2" />
-            Side Hustle Expenses
+            {t('sideHustle.sideHustleExpenses')}
           </h3>
           <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${(parseFloat(freedomMetrics.sideHustleExpensesThisMonth) || 0).toLocaleString()}</p>
-          <p className="text-xs text-rose-300 mt-1">This Month</p>
+          <p className="text-xs text-rose-300 mt-1">{t('sideHustle.thisMonth')}</p>
         </Card>
         
         <Card className="bg-gradient-to-br from-amber-900/40 to-yellow-900/40 border-amber-500/30">
           <h3 className="text-sm font-semibold text-amber-200 mb-2 flex items-center">
             <DollarSign className="w-4 h-4 mr-2" />
-            Passive Income
+            {t('sideHustle.passiveIncome')}
             {/* 🎯 OPERATOR'S INTEL TOOLTIP */}
             <div className="tooltip-container" style={{position: 'relative', display: 'inline-block', marginLeft: '6px'}}>
               <span 
@@ -4584,9 +4585,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 }}
               >
                 <div style={{marginBottom: '4px', fontWeight: '600', color: '#FBBF24', fontSize: '10px', letterSpacing: '0.5px'}}>
-                  📡 OPERATOR'S INTEL
+                  {t('sideHustle.operatorsIntel')}
                 </div>
-                This is your total gross income from all passive and side hustle sources. It's used to calculate your Freedom Ratio against your personal monthly expenses. Your business's net profit is calculated in the Side Hustle Management section below.
+                {t('sideHustle.passiveIncomeTooltip')}
                 {/* Tooltip arrow */}
                 <div style={{
                   position: 'absolute',
@@ -4604,13 +4605,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             </div>
           </h3>
           <p className="text-2xl md:text-3xl font-bold text-white stealth-target">${(parseFloat(freedomMetrics.totalPassiveIncome) || 0).toLocaleString()}</p>
-          <p className="text-xs text-amber-300 mt-1">Last 30 Days</p>
+          <p className="text-xs text-amber-300 mt-1">{t('sideHustle.last30Days')}</p>
         </Card>
         
         <Card className="bg-gradient-to-br from-violet-900/40 to-purple-900/40 border-violet-500/30">
           <h3 className="text-sm font-semibold text-violet-200 mb-2 flex items-center">
             <Target className="w-4 h-4 mr-2" />
-            Freedom Ratio
+            {t('sideHustle.freedomRatio')}
           </h3>
           <p className="text-2xl md:text-3xl font-bold text-white stealth-target">{freedomMetrics.freedomRatio.toFixed(1)}%</p>
           <p className="text-xs text-violet-300 mt-1">{freedomMetrics.progressLevel}</p>
@@ -4621,9 +4622,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       <Card className="bg-gradient-to-br from-slate-900 to-gray-900 border-2" style={{ borderColor: freedomMetrics.progressColor }}>
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            🏔️ Freedom Ratio
+            🏔️ {t('sideHustle.freedomRatio')}
           </h2>
-          <p className="text-gray-400">Your passive income vs. monthly expenses</p>
+          <p className="text-gray-400">{t('sideHustle.passiveVsExpenses')}</p>
         </div>
 
         {/* Progress Circle */}
@@ -4695,11 +4696,11 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           {/* Data Display */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
             <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
-              <div className="text-sm text-amber-300 mb-1">Passive Income (30 days)</div>
+              <div className="text-sm text-amber-300 mb-1">{t('sideHustle.passiveIncome30')}</div>
               <div className="text-2xl font-bold text-amber-400">${(parseFloat(freedomMetrics.totalPassiveIncome) || 0).toLocaleString()}</div>
             </div>
             <div className="bg-rose-900/20 rounded-lg p-4 border border-rose-500/30">
-              <div className="text-sm text-rose-300 mb-1">Monthly Expenses (30 days)</div>
+              <div className="text-sm text-rose-300 mb-1">{t('sideHustle.monthlyExpenses30')}</div>
               <div className="text-2xl font-bold text-rose-400">${(parseFloat(freedomMetrics.totalMonthlyExpenses) || 0).toLocaleString()}</div>
             </div>
           </div>
@@ -4709,18 +4710,18 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 text-center">
           <p className="text-gray-300 italic">
             {freedomMetrics.actualRatio >= 100 
-              ? "🎉 Congratulations! You've reached the summit. Your passive income covers your lifestyle!"
+              ? t('sideHustle.congratulationsSummit')
               : freedomMetrics.actualRatio >= 75
-              ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. You're almost there! Keep climbing.`
+              ? t('sideHustle.ratioAlmostThere', { ratio: freedomMetrics.actualRatio.toFixed(1) })
               : freedomMetrics.actualRatio >= 50
-              ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. The summit is in sight. Keep pushing!`
+              ? t('sideHustle.ratioInSight', { ratio: freedomMetrics.actualRatio.toFixed(1) })
               : freedomMetrics.actualRatio >= 25
-              ? `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. You're building momentum. Stay consistent!`
-              : `Your Freedom Ratio is ${freedomMetrics.actualRatio.toFixed(1)}%. Every journey starts with a single step. Keep hustling!`
+              ? t('sideHustle.ratioMomentum', { ratio: freedomMetrics.actualRatio.toFixed(1) })
+              : t('sideHustle.ratioFirstStep', { ratio: freedomMetrics.actualRatio.toFixed(1) })
             }
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            At 100%, you earn your time back. That's the summit.
+            {t('sideHustle.earnTimeBack')}
           </p>
         </div>
 
@@ -4728,7 +4729,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         {freedomMetrics.actualRatio < 100 && freedomMetrics.totalPassiveIncome > 0 && (
           <div className="mt-6 bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
             <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
-              🔮 Freedom Forecast
+              {t('sideHustle.freedomForecast')}
             </h3>
             <p className="text-gray-300 text-sm">
               {(() => {
@@ -4737,8 +4738,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 const currentPassive = freedomMetrics.totalPassiveIncome;
                 const targetPassive = freedomMetrics.totalMonthlyExpenses;
                 
-                if (currentPassive >= targetPassive) return "You've already achieved financial freedom!";
-                if (currentPassive === 0) return "Start building passive income streams to see your forecast!";
+                if (currentPassive >= targetPassive) return t('sideHustle.alreadyFree');
+                if (currentPassive === 0) return t('sideHustle.startBuilding');
                 
                 // Calculate months to freedom
                 let months = 0;
@@ -4751,8 +4752,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 const years = (months / 12).toFixed(1);
                 
                 return months >= 120 
-                  ? "Focus on increasing your passive income growth rate to reach freedom faster!"
-                  : `At your current pace (10% monthly growth), you'll reach 100% freedom in approximately ${years} years.`;
+                  ? t('sideHustle.focusOnGrowth')
+                  : t('sideHustle.reachFreedomIn', { years });
               })()}
             </p>
           </div>
@@ -4774,9 +4775,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-2">
               <Building className="w-6 h-6 mr-3 text-violet-400" />
-              Side Hustle Management
+              {t('sideHustle.sideHustleManagement')}
             </h2>
-            <p className="text-gray-400">Track income and expenses for all your businesses</p>
+            <p className="text-gray-400">{t('sideHustle.trackBusinesses')}</p>
           </div>
           <button
             onClick={() => setShowAddBusiness(true)}
@@ -4848,7 +4849,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       {editingBusiness && (
         <Card className="border-amber-500/30">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-white">Edit Business</h3>
+            <h3 className="text-xl font-bold text-white">{t('sideHustle.editBusiness')}</h3>
             <button
               onClick={() => setEditingBusiness(null)}
               className="text-gray-400 hover:text-white"
@@ -4860,7 +4861,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Business Name"
+              placeholder={t('sideHustle.businessName')}
               value={editingBusiness.name}
               onChange={(e) => setEditingBusiness({...editingBusiness, name: e.target.value})}
               className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
@@ -4876,7 +4877,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           </div>
           
           <textarea
-            placeholder="Business Description"
+            placeholder={t('sideHustle.businessDescription')}
             value={editingBusiness.description}
             onChange={(e) => setEditingBusiness({...editingBusiness, description: e.target.value})}
             className="w-full mt-4 bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
@@ -4908,7 +4909,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               }}
               className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              Save Changes
+              {t('sideHustle.saveChanges')}
             </button>
           </div>
         </Card>
