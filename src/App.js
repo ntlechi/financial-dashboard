@@ -8904,6 +8904,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
 
 // Travel Tab Component with Trip Budgeting
 const TravelTab = ({ data, setData, userId }) => {
+  const { t } = useTranslation();
   const [showAddTrip, setShowAddTrip] = useState(false);
   const [editingTrip, setEditingTrip] = useState(null);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
@@ -9638,22 +9639,22 @@ const TravelTab = ({ data, setData, userId }) => {
                   <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Operator's World Map
+                  {t('travel.operatorsWorldMap')}
                 </h2>
-                <p className="text-gray-400">Your quest to paint the map - track every expedition</p>
+                <p className="text-gray-400">{t('travel.questToPaintMap')}</p>
               </div>
               
               {/* Statistics Counter */}
               <div className="flex flex-wrap gap-4">
                 <div className="bg-amber-900/30 rounded-lg px-4 py-3 border border-amber-600/40">
-                  <div className="text-xs text-amber-300 uppercase tracking-wide">Completed Expeditions</div>
+                  <div className="text-xs text-amber-300 uppercase tracking-wide">{t('travel.completedExpeditions')}</div>
                   <div className="text-2xl font-bold text-amber-400">{totalVisited} / 195</div>
-                  <div className="text-xs text-gray-400">Countries Visited</div>
+                  <div className="text-xs text-gray-400">{t('travel.countriesVisited')}</div>
                 </div>
                 <div className="bg-blue-900/30 rounded-lg px-4 py-3 border border-blue-600/40">
-                  <div className="text-xs text-blue-300 uppercase tracking-wide">Future Missions</div>
+                  <div className="text-xs text-blue-300 uppercase tracking-wide">{t('travel.futureMissions')}</div>
                   <div className="text-2xl font-bold text-blue-400">{totalPlanned}</div>
-                  <div className="text-xs text-gray-400">Countries Planned</div>
+                  <div className="text-xs text-gray-400">{t('travel.countriesPlanned')}</div>
                 </div>
               </div>
             </div>
@@ -9664,9 +9665,9 @@ const TravelTab = ({ data, setData, userId }) => {
                 <svg className="w-24 h-24 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h3 className="text-xl font-bold text-white mb-2">Your World Map Awaits</h3>
+                <h3 className="text-xl font-bold text-white mb-2">{t('travel.worldMapAwaits')}</h3>
                 <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                  Start planning trips and watch your map come to life! Add countries to your trips to begin painting your journey.
+                  {t('travel.startPlanningTrips')}
                 </p>
                 <button
                   onClick={() => setShowAddTrip(true)}

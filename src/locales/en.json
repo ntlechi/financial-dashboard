@@ -223,6 +223,17 @@
     "feedbackSendError": "Failed to send feedback.",
     "helpFAQ": "Help & FAQ"
   },
+  "travel": {
+    "operatorsWorldMap": "Operator's World Map",
+    "questToPaintMap": "Your quest to paint the map - track every expedition",
+    "completedExpeditions": "Completed Expeditions",
+    "futureMissions": "Future Missions",
+    "countriesVisited": "Countries Visited",
+    "countriesPlanned": "Countries Planned",
+    "worldMapAwaits": "Your World Map Awaits",
+    "startPlanningTrips": "Start planning trips and watch your map come to life! Add countries to your trips to begin painting your journey.",
+    "planYourFirstExpedition": "Plan Your First Expedition"
+  },
   "sideHustle": {
     "businessName": "Business Name",
     "businessDescription": "Business Description",

@@ -511,6 +511,17 @@
     "next": "Prochain :",
     "deleteRecurringItem": "Supprimer cet élément récurrent ?"
   },
+  "travel": {
+    "operatorsWorldMap": "Carte du Monde de l'Opérateur",
+    "questToPaintMap": "Votre quête pour peindre la carte - suivez chaque expédition",
+    "completedExpeditions": "Expéditions Terminées",
+    "futureMissions": "Missions Futures",
+    "countriesVisited": "Pays Visités",
+    "countriesPlanned": "Pays Planifiés",
+    "worldMapAwaits": "Votre Carte du Monde Vous Attend",
+    "startPlanningTrips": "Commencez à planifier des voyages et regardez votre carte prendre vie ! Ajoutez des pays à vos voyages pour commencer à peindre votre parcours.",
+    "planYourFirstExpedition": "Planifier Votre Première Expédition"
+  },
   "missionControl": {
     "title": "Mission",
     "pageTitle": "Mission Control",
