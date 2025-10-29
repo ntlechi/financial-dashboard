@@ -31,8 +31,9 @@
     "investment": "Investissement",
     "travel": "Voyage",
     "moments": "Moments",
-    "missionControl": "Contrôle de Mission",
-    "fieldNotes": "Notes de Terrain",
+    "missionControl": "Mission",
+    "fieldNotes": "Bloc-Notes",
+    "sideHustle": "Entreprises",
     "amount": "Montant",
     "date": "Date",
     "description": "Description",
@@ -201,7 +202,14 @@
     "annualIncome": "Revenus Annuels",
     "perYear": "par an",
     "months": "mois",
-    "years": "ans"
+    "years": "ans",
+    "holdings": "investissements",
+    "yield": "rendement",
+    "dripProgress": "Progrès DRIP",
+    "active": "Actif",
+    "perMonth": "/mois",
+    "totalValue": "Valeur Totale",
+    "totalGainLoss": "Gain/Perte Total"
   },
   "settings": {
     "title": "Paramètres",
@@ -252,5 +260,32 @@
     "th": "e",
     "moreAccounts": "autres comptes",
     "addFirstDebt": "Ajouter Première Dette"
+  },
+  "tooltips": {
+    "savingsRate": "Le taux d'épargne est le pourcentage de vos revenus que vous économisez/investissez chaque mois. Un taux de 20%+ est bon, 30%+ est excellent pour bâtir la richesse.",
+    "totalValue": "Valeur Totale = Somme de tous vos investissements aux prix actuels du marché. C'est ce pour quoi vous pourriez tout vendre aujourd'hui.",
+    "totalGainLoss": "Gain/Perte Total = Valeur Actuelle - Ce que Vous Avez Payé. C'est votre profit (ou perte) non réalisé sur papier. Vous ne le réalisez que lorsque vous vendez.",
+    "annualDividendsDesc": "Total des revenus de dividendes que vous recevrez par an de tous les investissements. C'est un revenu passif!",
+    "dripProgress": "Progrès DRIP = À quel point vous êtes proche d'acheter une autre action avec les dividendes réinvestis. Actions gratuites = richesse plus rapide!",
+    "holdingTotalValue": "Valeur Totale = Actions × Prix Actuel. C'est ce que vaut votre investissement en ce moment.",
+    "annualDividend": "Dividende Annuel = Argent que l'entreprise vous verse chaque année pour posséder des actions. Comme un loyer de votre investissement!",
+    "dripPlan": "DRIP (Plan de Réinvestissement des Dividendes) = Utilise automatiquement les paiements de dividendes pour acheter plus d'actions. Fait croître la richesse plus vite!",
+    "stockTicker": "Symbole Boursier = Un code unique pour identifier l'action (ex: AAPL pour Apple, TSLA pour Tesla). Trouvez-le sur Yahoo Finance ou Google.",
+    "shares": "Actions = Combien de parts de l'entreprise vous possédez. Même 1 action fait de vous un copropriétaire!",
+    "averageCost": "Coût Moyen = Le prix que vous avez payé par action. Si vous avez acheté à différents moments, calculez la moyenne: Total Investi ÷ Total Actions.",
+    "currentPrice": "Prix Actuel = Ce à quoi l'action se négocie en ce moment. Vérifiez sur Yahoo Finance, Google Finance, ou l'app de votre courtier.",
+    "dividendYield": "Rendement du Dividende = Paiement de dividende annuel en % du prix de l'action. Rendement plus élevé = plus de revenu passif! (0% si l'action ne paie pas de dividendes)"
+  },
+  "modals": {
+    "edit": "Modifier",
+    "financialFreedomGoal": "Objectif de Liberté Financière",
+    "savingsRateTarget": "Cible du Taux d'Épargne",
+    "rainyDayFund": "Fonds de Secours",
+    "creditScore": "Score de Crédit",
+    "netWorth": "Valeur Nette",
+    "survivalRunway": "Piste de Survie",
+    "debtManagement": "Gestion des Dettes",
+    "registeredAccounts": "Comptes Enregistrés",
+    "financialGoals": "Objectifs Financiers"
   }
 }

@@ -734,7 +734,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-bold text-white flex items-center">
           <PiggyBank className="w-6 h-6 mr-3 text-blue-400" />
-          <Tooltip text="Savings Rate is the percentage of your income that you save/invest each month. A rate of 20%+ is good, 30%+ is excellent for building wealth.">
+          <Tooltip text={t('tooltips.savingsRate')}>
             {t('dashboard.savingsRate')}
           </Tooltip>
         </h2>
@@ -6461,13 +6461,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <Briefcase className="w-5 h-5 text-blue-400" />
             <InfoTooltip 
               id="total-portfolio-value"
-              text="Total Value = Sum of all your investments at current market prices. This is what you could sell everything for today."
+              text={t('tooltips.totalValue')}
             >
-              <span>Total Value</span>
+              <span>{t('dashboard.totalValue')}</span>
             </InfoTooltip>
           </h3>
           <p className="text-3xl font-bold text-blue-400 stealth-target">${(parseFloat(actualTotalValue) || 0).toLocaleString()}</p>
-          <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} holdings</p>
+          <p className="text-sm text-gray-300 mt-2">{data.investments.holdings.length} {t('dashboard.holdings')}</p>
         </Card>
         
         <Card className="bg-gradient-to-br from-green-900/40 to-emerald-900/40">
@@ -6475,9 +6475,9 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <TrendingUp className="w-5 h-5 text-green-400" />
             <InfoTooltip 
               id="total-gain-loss"
-              text="Total Gain/Loss = Current Value - What You Paid. This is your unrealized profit (or loss) on paper. You only realize it when you sell."
+              text={t('tooltips.totalGainLoss')}
             >
-              <span>Total Gain/Loss</span>
+              <span>{t('dashboard.totalGainLoss')}</span>
             </InfoTooltip>
           </h3>
           <p className={`text-2xl font-bold stealth-target ${totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -6493,7 +6493,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <Repeat className="w-5 h-5 text-cyan-400" />
             <InfoTooltip 
               id="annual-dividends"
-              text={t('dashboard.annualDividends') + " = Total dividend income you'll receive per year from all holdings. This is passive income!"}
+              text={t('tooltips.annualDividendsDesc')}
             >
               <span>{t('dashboard.annualDividends')}</span>
             </InfoTooltip>
@@ -6502,7 +6502,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()}
           </p>
           <p className="text-sm text-gray-300 mt-2">
-            {((parseFloat(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)) || 0) / (parseFloat(data.investments.totalValue) || 1) * 100).toFixed(2)}% yield
+            {((parseFloat(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)) || 0) / (parseFloat(data.investments.totalValue) || 1) * 100).toFixed(2)}% {t('dashboard.yield')}
           </p>
         </Card>
         
@@ -6511,13 +6511,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <BarChart3 className="w-5 h-5 text-amber-400" />
             <InfoTooltip 
               id="drip-progress"
-              text="DRIP Progress = How close you are to buying another share with reinvested dividends. Free shares = faster wealth!"
+              text={t('tooltips.dripProgress')}
             >
-              <span>DRIP Progress</span>
+              <span>{t('dashboard.dripProgress')}</span>
             </InfoTooltip>
           </h3>
           <p className="text-2xl font-bold text-amber-400">
-            {data.investments.holdings.filter(h => h.dripEnabled).length} Active
+            {data.investments.holdings.filter(h => h.dripEnabled).length} {t('dashboard.active')}
           </p>
           <p className="text-sm text-gray-300 mt-2 stealth-target">
             ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.dividendAccumulated) || 0), 0)).toLocaleString()} accumulated
@@ -6655,7 +6655,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         <div className="text-amber-300 font-semibold">
                           ${(holding.annualDividend / 4).toFixed(0)}
                         </div>
-                        <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
+                        <div className="text-xs text-gray-400">{holding.dividendYield}% {t('dashboard.yield')}</div>
                       </div>
                     </div>
                   ))}
@@ -6720,7 +6720,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
                         <div>
                           <div className="font-semibold text-white">{holding.symbol}</div>
-                          <div className="text-xs text-gray-400">{holding.dividendYield}% yield</div>
+                          <div className="text-xs text-gray-400">{holding.dividendYield}% {t('dashboard.yield')}</div>
                         </div>
                       </div>
                       <div className="text-right">
@@ -6740,7 +6740,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
               <div className="text-sm text-purple-200 mb-2">
                 💡 <strong>Income Strategy:</strong> Your ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()} annual dividend income provides 
-                <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}/month </span>
+                <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}{t('dashboard.perMonth')} </span>
                 in passive income - perfect for travel funding! 🌍
               </div>
               <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
@@ -6924,7 +6924,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <div className="text-lg font-bold text-white">${(parseFloat(holding.totalValue) || 0).toLocaleString()}</div>
                   <InfoTooltip 
                     id={`total-value-${holding.id}`}
-                    text="Total Value = Shares × Current Price. This is what your investment is worth right now."
+                    text={t('tooltips.holdingTotalValue')}
                   >
                     <div className="text-xs text-gray-400">Total Value</div>
                   </InfoTooltip>
@@ -6934,11 +6934,11 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <div className="text-lg font-bold text-cyan-400">${(parseFloat(holding.annualDividend) || 0).toLocaleString()}</div>
                   <InfoTooltip 
                     id={`dividend-${holding.id}`}
-                    text="Annual Dividend = Money the company pays you each year for owning shares. Like rent from your investment!"
+                    text={t('tooltips.annualDividend')}
                   >
                     <div className="text-xs text-gray-400">Annual Dividend</div>
                   </InfoTooltip>
-                  <div className="text-xs text-cyan-300">{holding.dividendYield}% yield</div>
+                  <div className="text-xs text-cyan-300">{holding.dividendYield}% {t('dashboard.yield')}</div>
                 </div>
                 
                 <div className="text-center">
@@ -6952,7 +6952,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   >
                     <InfoTooltip 
                       id={`drip-${holding.id}`}
-                      text="DRIP (Dividend Reinvestment Plan) = Automatically use dividend payments to buy more shares. Grows wealth faster!"
+                      text={t('tooltips.dripPlan')}
                     >
                       <span>DRIP {holding.dripEnabled ? 'ON' : 'OFF'}</span>
                     </InfoTooltip>
@@ -7019,7 +7019,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                     <InfoTooltip 
                       id="ticker-info"
-                      text="Stock Ticker = A unique code to identify the stock (e.g., AAPL for Apple, TSLA for Tesla). Find it on Yahoo Finance or Google."
+                      text={t('tooltips.stockTicker')}
                     >
                       <span>Stock Ticker Symbol</span>
                     </InfoTooltip>
@@ -7074,7 +7074,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                       <InfoTooltip 
                         id="shares-info"
-                        text="Shares = How many pieces of the company you own. Even 1 share makes you a part-owner!"
+                        text={t('tooltips.shares')}
                       >
                         <span>Shares Owned</span>
                       </InfoTooltip>
@@ -7092,7 +7092,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                       <InfoTooltip 
                         id="avg-cost-info"
-                        text="Average Cost = The price you paid per share. If you bought at different times, calculate the average: Total Invested ÷ Total Shares."
+                        text={t('tooltips.averageCost')}
                       >
                         <span>Avg Cost per Share</span>
                       </InfoTooltip>
@@ -7112,7 +7112,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                       <InfoTooltip 
                         id="current-price-info"
-                        text="Current Price = What the stock is trading at right now. Check Yahoo Finance, Google Finance, or your broker's app."
+                        text={t('tooltips.currentPrice')}
                       >
                         <span>Current Price</span>
                       </InfoTooltip>
@@ -7130,7 +7130,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <label className="block text-sm text-gray-300 mb-1 flex items-center gap-2">
                       <InfoTooltip 
                         id="dividend-yield-info"
-                        text="Dividend Yield = Annual dividend payment as a % of stock price. Higher yield = more passive income! (0% if stock doesn't pay dividends)"
+                        text={t('tooltips.dividendYield')}
                       >
                         <span>Dividend Yield %</span>
                       </InfoTooltip>
@@ -15182,15 +15182,15 @@ function App() {
             setEditingCard(null);
             setTempCardData({});
           }}
-          title={`Edit ${editingCard === 'financialFreedom' ? 'Financial Freedom Goal' :
-                     editingCard === 'savingsRateTarget' ? 'Savings Rate Target' :
-                     editingCard === 'rainyDayFund' ? 'Rainy Day Fund' :
-                     editingCard === 'creditScore' ? 'Credit Score' :
-                     editingCard === 'netWorth' ? 'Net Worth' :
-                     editingCard === 'cashOnHand' ? 'Survival Runway' :
-                     editingCard === 'debt' ? 'Debt Management' :
-                     editingCard === 'registeredAccounts' ? 'Registered Accounts' :
-                     editingCard === 'goals' ? 'Financial Goals' : editingCard}`}
+          title={`${t('modals.edit')} ${editingCard === 'financialFreedom' ? t('modals.financialFreedomGoal') :
+                     editingCard === 'savingsRateTarget' ? t('modals.savingsRateTarget') :
+                     editingCard === 'rainyDayFund' ? t('modals.rainyDayFund') :
+                     editingCard === 'creditScore' ? t('modals.creditScore') :
+                     editingCard === 'netWorth' ? t('modals.netWorth') :
+                     editingCard === 'cashOnHand' ? t('modals.survivalRunway') :
+                     editingCard === 'debt' ? t('modals.debtManagement') :
+                     editingCard === 'registeredAccounts' ? t('modals.registeredAccounts') :
+                     editingCard === 'goals' ? t('modals.financialGoals') : editingCard}`}
           size="lg"
         >
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
