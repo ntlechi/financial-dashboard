@@ -813,28 +813,28 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
   // 🎮 GAMIFIED RESILIENCE STATUS LOGIC (Color-coded by completion %)
   const getResilienceStatus = (percentage) => {
     if (percentage > 90) return { 
-      status: 'Secure', 
+      status: t('dashboard.secureStatus'), 
       color: '#14B8A6',        // Vibrant Teal
       textColor: 'text-teal-400',
       bgColor: 'bg-teal-500',
       borderColor: 'border-teal-500/50'
     };
     if (percentage >= 50) return { 
-      status: 'Good Progress', 
+      status: t('dashboard.goodProgressStatus'), 
       color: '#38BDF8',        // Sky Blue
       textColor: 'text-sky-400',
       bgColor: 'bg-sky-500',
       borderColor: 'border-sky-500/50'
     };
     if (percentage >= 25) return { 
-      status: 'Building', 
+      status: t('dashboard.buildingStatus'), 
       color: '#F59E0B',        // Energetic Amber
       textColor: 'text-amber-400',
       bgColor: 'bg-amber-500',
       borderColor: 'border-amber-500/50'
     };
     return { 
-      status: 'Needs Work', 
+      status: t('dashboard.needsWorkStatus'), 
       color: '#F43F5E',        // Urgent Rose
       textColor: 'text-rose-400',
       bgColor: 'bg-rose-500',
@@ -927,14 +927,14 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             {resilience.status}
           </div>
           <div className="text-xs sm:text-sm text-gray-400">
-            <span className="stealth-target">{monthsOfExpenses.toFixed(1)}</span> months of expenses covered
+            <span className="stealth-target">{monthsOfExpenses.toFixed(1)}</span> {t('dashboard.monthsOfExpensesCovered')}
           </div>
         </div>
         
         <div className="mt-6">
           <div className="flex justify-between text-xs sm:text-sm text-gray-300 mb-2">
-            <span>Current: <span className="stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</span></span>
-            <span>Goal: <span className="stealth-target">${(parseFloat(data.goal) || 0).toLocaleString()}</span></span>
+            <span>{t('dashboard.currentLabel')}: <span className="stealth-target">${(parseFloat(data.total) || 0).toLocaleString()}</span></span>
+            <span>{t('dashboard.goalLabel')}: <span className="stealth-target">${(parseFloat(data.goal) || 0).toLocaleString()}</span></span>
           </div>
           {/* 🎨 DYNAMIC COLOR PROGRESS BAR */}
           <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -949,12 +949,17 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
         
         <div className={`bg-gray-800/50 rounded-lg p-3 border ${resilience.borderColor}`}>
           <div className="text-xs sm:text-sm text-gray-300 text-center">
-            Goal: ${(parseFloat(data.goal) || 0).toLocaleString()} ({((parseFloat(data.goal) || 0) / (monthlyExpenses || 1)).toFixed(1)} months of expenses)
+            {t('dashboard.goalLabel')}: ${(parseFloat(data.goal) || 0).toLocaleString()} ({((parseFloat(data.goal) || 0) / (monthlyExpenses || 1)).toFixed(1)} {t('dashboard.monthsOfExpenses')})
           </div>
           <div className="text-xs text-gray-400 mt-1 text-center">
             {viewMode === 'annual' 
-              ? `Based on ${(monthlyExpenses * 12).toFixed(2)}/year avg (${monthlyExpenses.toFixed(2)}/month)`
-              : `Based on ${monthlyExpenses.toFixed(2)}/month avg`
+              ? t('dashboard.basedOnYearAvg', { 
+                  yearly: (monthlyExpenses * 12).toFixed(2), 
+                  monthly: monthlyExpenses.toFixed(2) 
+                })
+              : t('dashboard.basedOnMonthAvg', { 
+                  monthly: monthlyExpenses.toFixed(2) 
+                })
             }
           </div>
         </div>
@@ -2388,7 +2393,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
             className="text-xs text-teal-300 bg-gray-800 px-2 sm:px-3 py-1 rounded-lg border border-teal-500/50"
             style={{ display: 'none' }}
           >
-            Hover to view
+            {t('dashboard.hoverToView')}
           </div>
         </div>
         <div className="w-full overflow-hidden">
@@ -2399,11 +2404,11 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-2 text-xs">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-amber-400"></div>
-            <span className="text-gray-400 text-[10px] sm:text-xs">Current Month</span>
+            <span className="text-gray-400 text-[10px] sm:text-xs">{t('dashboard.currentMonth')}</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-teal-400"></div>
-            <span className="text-gray-400 text-[10px] sm:text-xs">Previous Months</span>
+            <span className="text-gray-400 text-[10px] sm:text-xs">{t('dashboard.previousMonths')}</span>
           </div>
         </div>
       </div>
