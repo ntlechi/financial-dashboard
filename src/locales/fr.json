@@ -152,6 +152,50 @@
     "recommended": "Recommandé",
     "resetFinancialDataDescription": "Réinitialiser seulement les transactions et le tableau de bord. Conserver vos moments, carnet, entreprises et données de voyage."
   },
+  "placeholders": {
+    "description": "Description",
+    "amount": "Montant",
+    "startDate": "Date de Début",
+    "endDate": "Date de Fin",
+    "companyName": "Nom de l'Entreprise",
+    "shares": "Actions",
+    "avgCost": "Coût Moyen",
+    "currentPrice": "Prix Actuel",
+    "dividendYield": "Rendement en Dividendes %",
+    "accountName": "Nom du Compte",
+    "balance": "Solde",
+    "enterAmount": "Entrer le montant",
+    "selectDueDate": "Sélectionner la date d'échéance"
+  },
+  "examples": {
+    "netflixSubscription": "ex: Abonnement Netflix",
+    "exampleTicker": "ex: AAPL, TSLA, MSFT",
+    "exampleCompany": "ex: Apple Inc.",
+    "exampleShares": "ex: 10",
+    "exampleAvgCost": "ex: 150.00",
+    "exampleCurrentPrice": "ex: 175.50",
+    "exampleDividendYield": "ex: 2.5",
+    "southeastAsiaAdventure": "ex: Aventure en Asie du Sud-Est",
+    "tripDescriptionExample": "Brève description de votre voyage...",
+    "countryInputExample": "Tapez le nom du pays et appuyez sur virgule ou Entrée",
+    "travelExpenseExample": "ex: Hôtel à Bangkok, Nourriture de rue, Billet de train...",
+    "momentDescriptionExample": "ex: Premier Paiement de Dette, Jalon du Fonds d'Urgence...",
+    "momentStoryExample": "Partagez l'histoire derrière ce moment... Comment vous sentiez-vous? Qu'avez-vous appris? Pourquoi est-ce significatif?"
+  },
+  "hints": {
+    "perfectForPaychecks": "💡 Parfait pour les paies! (ex: \"tous les deux jeudis\")",
+    "chooseRecurringDay": "Choisissez quel jour cela se répète",
+    "biWeeklyPaycheck": "2 semaines le {{day}} (ex: paies!)"
+  },
+  "emptyStatesExtended": {
+    "noDataYet": "Aucune Donnée Pour L'Instant",
+    "startAddingTransactions": "Commencez à ajouter des transactions pour voir vos analyses!",
+    "noTripsPlannedYet": "Aucun Voyage Prévu Pour L'Instant",
+    "noGoalsYet": "Aucun Objectif Pour L'Instant",
+    "noRetirementAccounts": "Aucun Compte de Retraite",
+    "addRetirementAccountsDescription": "Ajoutez vos comptes de retraite comme CELI, REER, 401(k), IRA, etc.",
+    "noBackupsAvailable": "Aucune sauvegarde disponible"
+  },
   "auth": {
     "welcome": "Bienvenue sur Kompul",
     "welcomeMessage": "Naviguez vers votre liberté financière",
@@ -174,7 +218,11 @@
     "backToLogin": "Retour à la connexion",
     "sendResetEmail": "Envoyer l'email de réinitialisation",
     "passwordResetEmailSent": "Email de réinitialisation envoyé! Vérifiez votre boîte de réception.",
-    "passwordResetError": "Erreur lors de l'envoi de l'email de réinitialisation."
+    "passwordResetError": "Erreur lors de l'envoi de l'email de réinitialisation.",
+    "firstNamePlaceholder": "Prénom",
+    "emailPlaceholder": "Adresse Email",
+    "passwordPlaceholder": "Mot de Passe",
+    "setPasswordPlaceholder": "Définir Votre Mot de Passe"
   },
   "dashboard": {
     "title": "Tableau de Bord",

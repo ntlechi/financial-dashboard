@@ -158,6 +158,50 @@
     "totalRoomAvailable": "Espacio Total Disponible",
     "deleteBusiness": "Eliminar Negocio"
   },
+  "placeholders": {
+    "description": "Descripción",
+    "amount": "Monto",
+    "startDate": "Fecha de Inicio",
+    "endDate": "Fecha de Fin",
+    "companyName": "Nombre de la Empresa",
+    "shares": "Acciones",
+    "avgCost": "Costo Promedio",
+    "currentPrice": "Precio Actual",
+    "dividendYield": "Rendimiento de Dividendos %",
+    "accountName": "Nombre de la Cuenta",
+    "balance": "Saldo",
+    "enterAmount": "Ingresa el monto",
+    "selectDueDate": "Seleccionar fecha de vencimiento"
+  },
+  "examples": {
+    "netflixSubscription": "ej: Suscripción Netflix",
+    "exampleTicker": "ej: AAPL, TSLA, MSFT",
+    "exampleCompany": "ej: Apple Inc.",
+    "exampleShares": "ej: 10",
+    "exampleAvgCost": "ej: 150.00",
+    "exampleCurrentPrice": "ej: 175.50",
+    "exampleDividendYield": "ej: 2.5",
+    "southeastAsiaAdventure": "ej: Aventura en el Sudeste Asiático",
+    "tripDescriptionExample": "Breve descripción de tu viaje...",
+    "countryInputExample": "Escribe el nombre del país y presiona coma o Enter",
+    "travelExpenseExample": "ej: Hotel en Bangkok, Comida callejera, Boleto de tren...",
+    "momentDescriptionExample": "ej: Primer Pago de Deuda, Hito de Fondo de Emergencia...",
+    "momentStoryExample": "Comparte la historia detrás de este momento... ¿Cómo te sentiste? ¿Qué aprendiste? ¿Por qué es significativo?"
+  },
+  "hints": {
+    "perfectForPaychecks": "💡 ¡Perfecto para nóminas! (ej: \"cada dos jueves\")",
+    "chooseRecurringDay": "Elige qué día se repite",
+    "biWeeklyPaycheck": "2 semanas el {{day}} (ej: ¡nóminas!)"
+  },
+  "emptyStatesExtended": {
+    "noDataYet": "Sin Datos Aún",
+    "startAddingTransactions": "¡Comienza a agregar transacciones para ver tus análisis!",
+    "noTripsPlannedYet": "Sin Viajes Planeados Aún",
+    "noGoalsYet": "Sin Objetivos Aún",
+    "noRetirementAccounts": "Sin Cuentas de Jubilación",
+    "addRetirementAccountsDescription": "Agrega tus cuentas de jubilación como TFSA, RRSP, 401(k), IRA, etc.",
+    "noBackupsAvailable": "Sin copias de seguridad disponibles"
+  },
   "auth": {
     "welcome": "Bienvenido a Kompul",
     "tagline": "Rastrea. Crece. Conquista tu Cumbre Financiera.",
@@ -175,7 +219,11 @@
     "setPassword": "Establecer Tu Contraseña",
     "firstName": "Nombre",
     "emailAddress": "Dirección de Email",
-    "password6Chars": "Contraseña (mínimo 6 caracteres)"
+    "password6Chars": "Contraseña (mínimo 6 caracteres)",
+    "firstNamePlaceholder": "Nombre",
+    "emailPlaceholder": "Correo Electrónico",
+    "passwordPlaceholder": "Contraseña",
+    "setPasswordPlaceholder": "Establece Tu Contraseña"
   },
   "notifications": {
     "welcome": "¡Bienvenido! Tu panel está listo.",

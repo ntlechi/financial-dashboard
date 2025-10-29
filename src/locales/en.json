@@ -121,6 +121,50 @@
     "recommended": "Recommended",
     "resetFinancialDataDescription": "Reset transactions & dashboard only. Keep your moments, logbook, businesses, travel data."
   },
+  "placeholders": {
+    "description": "Description",
+    "amount": "Amount",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "companyName": "Company Name",
+    "shares": "Shares",
+    "avgCost": "Avg Cost",
+    "currentPrice": "Current Price",
+    "dividendYield": "Dividend Yield %",
+    "accountName": "Account Name",
+    "balance": "Balance",
+    "enterAmount": "Enter amount",
+    "selectDueDate": "Select due date"
+  },
+  "examples": {
+    "netflixSubscription": "e.g., Netflix Subscription",
+    "exampleTicker": "e.g., AAPL, TSLA, MSFT",
+    "exampleCompany": "e.g., Apple Inc.",
+    "exampleShares": "e.g., 10",
+    "exampleAvgCost": "e.g., 150.00",
+    "exampleCurrentPrice": "e.g., 175.50",
+    "exampleDividendYield": "e.g., 2.5",
+    "southeastAsiaAdventure": "e.g., Southeast Asia Adventure",
+    "tripDescriptionExample": "Brief description of your trip...",
+    "countryInputExample": "Type country name and press comma or Enter",
+    "travelExpenseExample": "e.g., Hotel in Bangkok, Street food, Train ticket...",
+    "momentDescriptionExample": "e.g., First Debt Payment, Emergency Fund Milestone...",
+    "momentStoryExample": "Share the story behind this moment... How did it feel? What did you learn? Why is it meaningful?"
+  },
+  "hints": {
+    "perfectForPaychecks": "💡 Perfect for paychecks! (e.g., \"every other Thursday\")",
+    "chooseRecurringDay": "Choose which day this repeats",
+    "biWeeklyPaycheck": "2 weeks on {{day}} (e.g., paychecks!)"
+  },
+  "emptyStatesExtended": {
+    "noDataYet": "No Data Yet",
+    "startAddingTransactions": "Start adding transactions to see your analytics!",
+    "noTripsPlannedYet": "No Trips Planned Yet",
+    "noGoalsYet": "No Goals Yet",
+    "noRetirementAccounts": "No Retirement Accounts",
+    "addRetirementAccountsDescription": "Add your retirement accounts like TFSA, RRSP, 401(k), IRA, etc.",
+    "noBackupsAvailable": "No backups available"
+  },
   "auth": {
     "welcome": "Welcome to Kompul",
     "welcomeMessage": "Navigate to your financial freedom",
@@ -143,7 +187,11 @@
     "backToLogin": "Back to Login",
     "sendResetEmail": "Send Reset Email",
     "passwordResetEmailSent": "Password reset email sent! Check your inbox.",
-    "passwordResetError": "Error sending password reset email."
+    "passwordResetError": "Error sending password reset email.",
+    "firstNamePlaceholder": "First Name",
+    "emailPlaceholder": "Email Address",
+    "passwordPlaceholder": "Password",
+    "setPasswordPlaceholder": "Set Your Password"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -334,7 +382,25 @@
     "comingSoon": "Coming soon...",
     "extraPaymentPlaceholder": "Extra payment amount",
     "monthlyIncomePlaceholder": "Enter your monthly income",
-    "unknownSymbol": "Unknown"
+    "unknownSymbol": "Unknown",
+    "budgetCalculatorTitle": "Budget Calculator",
+    "planFinancesDescription": "Plan your finances with proven budgeting methods.",
+    "fiftyThirtyTwentyRule": "50/30/20 Rule",
+    "sixJarsSystem": "6 Jars System",
+    "hideFFCalculator": "Hide FF Calculator",
+    "financialFreedom": "Financial Freedom",
+    "hideDebtCalculator": "Hide Debt Calculator",
+    "debtPayoff": "Debt Payoff",
+    "monthlyIncomeInput": "Monthly Income Input",
+    "monthlyIncome": "Monthly Income",
+    "readyForBudgeting": "Ready for budgeting",
+    "afterBudgeting": "After Budgeting",
+    "totalAllocation": "Total Allocation:",
+    "reducePercentages": "Reduce percentages to 100%",
+    "needs": "💡 Needs",
+    "wants": "🎯 Wants",
+    "savings": "💰 Savings",
+    "essentialExpenses": "Essential expenses"
   },
   "sideHustle": {
     "businessName": "Business Name",
