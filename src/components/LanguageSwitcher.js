@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
 
+  // Load saved language preference on mount
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('preferredLanguage');
+    if (savedLanguage && savedLanguage !== i18n.language) {
+      i18n.changeLanguage(savedLanguage);
+    }
+  }, [i18n]);
+
   const toggleLanguage = () => {
     const newLang = i18n.language === 'en' ? 'fr' : 'en';
     i18n.changeLanguage(newLang);
+    // Save preference to localStorage
+    localStorage.setItem('preferredLanguage', newLang);
   };
 
   return (
