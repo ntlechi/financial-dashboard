@@ -4386,7 +4386,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
   // 🔄 DELETE RECURRING ITEM
   const handleDeleteRecurringItem = async (businessId, itemId) => {
-    if (!window.confirm('Delete this recurring item?')) return;
+    if (!window.confirm(t('sideHustle.deleteRecurringItem'))) return;
 
     const updatedBusinesses = data.businesses.map(business => {
       if (business.id === businessId) {
@@ -4933,13 +4933,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <div>
                 <h3 className="text-xl font-bold text-white">{business.name}</h3>
                 <p className="text-gray-400 text-sm">{business.description}</p>
-                <p className="text-gray-500 text-xs">Since {new Date(business.startDate).toLocaleDateString()}</p>
+                <p className="text-gray-500 text-xs">{t('sideHustle.since')} {new Date(business.startDate).toLocaleDateString()}</p>
               </div>
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => setEditingBusiness(business)}
                   className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
-                  title="Edit Business"
+                  title={t('sideHustle.editBusiness')}
                 >
                   <Edit className="w-3 h-3" />
                 </button>
@@ -4961,7 +4961,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm flex items-center transition-colors"
                 >
                   <Repeat className="w-3 h-3 mr-1" />
-                  Recurring
+                  {t('sideHustle.recurring')}
                 </button>
                 <button
                   onClick={() => initiateDeleteBusiness(business)}
@@ -4982,7 +4982,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     : 'text-gray-400 hover:text-gray-300'
                 }`}
               >
-                Transactions
+                {t('sideHustle.transactionsTab')}
               </button>
               <button
                 onClick={() => setBusinessTab(business.id, 'analytics')}
@@ -4993,7 +4993,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
-                Analytics
+                {t('sideHustle.analyticsTab')}
               </button>
             </div>
 
@@ -5006,25 +5006,25 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div className="text-lg font-bold text-green-400">
                       ${(parseFloat(business.totalIncome) || 0).toLocaleString()}
                     </div>
-                    <div className="text-xs text-green-300">Income</div>
+                    <div className="text-xs text-green-300">{t('sideHustle.income')}</div>
                   </div>
                   <div className="bg-red-900/30 rounded-lg p-3">
                     <div className="text-lg font-bold text-red-400">
                       ${(parseFloat(business.totalExpenses) || 0).toLocaleString()}
                     </div>
-                    <div className="text-xs text-red-300">Expenses</div>
+                    <div className="text-xs text-red-300">{t('sideHustle.expenses')}</div>
                   </div>
                   <div className="bg-blue-900/30 rounded-lg p-3">
                     <div className={`text-lg font-bold ${(parseFloat(business.netProfit) || 0) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
                       ${(parseFloat(business.netProfit) || 0).toLocaleString()}
                     </div>
-                    <div className="text-xs text-blue-300">Net Profit</div>
+                    <div className="text-xs text-blue-300">{t('sideHustle.netProfit')}</div>
                   </div>
                 </div>
                 
                 {/* Recent Items */}
             <div className="space-y-2">
-              <h4 className="font-semibold text-gray-300">Recent Activity</h4>
+              <h4 className="font-semibold text-gray-300">{t('sideHustle.recentActivity')}</h4>
               <div className="max-h-32 overflow-y-auto space-y-1">
                 {[...business.incomeItems, ...business.expenseItems]
                   .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -5071,7 +5071,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                               setShowMomentModal(true);
                             }}
                             className="text-gray-400 hover:text-purple-400 p-1"
-                            title="Create Business Moment"
+                            title={t('sideHustle.createBusinessMoment')}
                           >
                             <BookOpen className="w-3 h-3" />
                           </button>
@@ -5108,7 +5108,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <div className="space-y-2 border-t border-gray-700 pt-4">
                 <h4 className="font-semibold text-blue-300 flex items-center gap-2">
                   <Repeat className="w-4 h-4" />
-                  Recurring Items ({business.recurringItems.filter(r => r.isActive).length} active)
+                  {t('sideHustle.recurringItems')} ({business.recurringItems.filter(r => r.isActive).length} {t('transactions.active', { count: business.recurringItems.filter(r => r.isActive).length })})
                 </h4>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {business.recurringItems.map(recurring => (
@@ -5123,14 +5123,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                             <span className="text-sm font-semibold text-white">{recurring.name}</span>
                             {recurring.isPassive && (
                               <span className="px-2 py-0.5 bg-amber-600/30 text-amber-300 text-xs rounded-full">
-                                Passive
+                                {t('sideHustle.passive')}
                               </span>
                             )}
                           </div>
                           <div className="flex items-center gap-3 text-xs text-gray-400">
                             <span className="capitalize">{recurring.frequency}</span>
                             <span>•</span>
-                            <span>Next: {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
+                            <span>{t('sideHustle.next')} {new Date(recurring.nextDueDate).toLocaleDateString()}</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">

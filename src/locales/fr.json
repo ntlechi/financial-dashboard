@@ -497,7 +497,19 @@
     "sideHustleManagement": "Gestion des Entreprises",
     "trackBusinesses": "Suivez les revenus et dépenses pour toutes vos entreprises",
     "editBusiness": "Modifier l'Entreprise",
-    "saveChanges": "Sauvegarder les Modifications"
+    "saveChanges": "Sauvegarder les Modifications",
+    "editBusinessTitle": "Modifier l'Entreprise",
+    "since": "Depuis",
+    "recurring": "Récurrent",
+    "transactionsTab": "Transactions",
+    "analyticsTab": "Analyses",
+    "netProfit": "Bénéfice Net",
+    "recentActivity": "Activité Récente",
+    "createBusinessMoment": "Créer un Moment d'Entreprise",
+    "recurringItems": "Éléments Récurrents",
+    "passive": "Passif",
+    "next": "Prochain :",
+    "deleteRecurringItem": "Supprimer cet élément récurrent ?"
   },
   "missionControl": {
     "title": "Mission",

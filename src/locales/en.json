@@ -255,6 +255,20 @@
     "sideHustleManagement": "Side Hustle Management",
     "trackBusinesses": "Track income and expenses for all your businesses",
     "editBusiness": "Edit Business",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "editBusinessTitle": "Edit Business",
+    "since": "Since",
+    "recurring": "Recurring",
+    "transactionsTab": "Transactions",
+    "analyticsTab": "Analytics",
+    "income": "Income",
+    "expenses": "Expenses",
+    "netProfit": "Net Profit",
+    "recentActivity": "Recent Activity",
+    "createBusinessMoment": "Create Business Moment",
+    "recurringItems": "Recurring Items",
+    "passive": "Passive",
+    "next": "Next:",
+    "deleteRecurringItem": "Delete this recurring item?"
   }
 }
