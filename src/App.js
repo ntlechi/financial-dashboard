@@ -5791,6 +5791,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
 // Investment Portfolio Component with Charts
 const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger }) => {
+  const { t } = useTranslation();
   const pieChartRef = useRef(null);
   const lineChartRef = useRef(null);
   const [showAddHolding, setShowAddHolding] = useState(false);

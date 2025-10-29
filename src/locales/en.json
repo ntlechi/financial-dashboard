@@ -261,6 +261,15 @@
     "copiedToClipboard": "Copied to clipboard!",
     "failedToCopy": "Failed to copy to clipboard"
   },
+  "budget": {
+    "budgetCalculator": "Budget Calculator",
+    "useRules": "Use the 50/30/20 rule and 6 Jars system to manage your budget effectively.",
+    "rule503020": "50/30/20 Rule",
+    "ruleDescription": "50% Needs, 30% Wants, 20% Savings",
+    "sixJarsSystem": "6 Jars System",
+    "sixJarsDescription": "Divide income into 6 categories",
+    "comingSoon": "Coming soon..."
+  },
   "sideHustle": {
     "businessName": "Business Name",
     "businessDescription": "Business Description",
