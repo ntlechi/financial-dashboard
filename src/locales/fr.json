@@ -320,7 +320,22 @@
     "editRecurringExpense": "Modifier la Dépense Récurrente",
     "income": "Revenu",
     "expenses": "Dépenses",
-    "netLabel": "Net :"
+    "netLabel": "Net :",
+    "editTransaction": "Modifier la Transaction",
+    "addTransaction": "Ajouter une Transaction",
+    "updateTransactionDetails": "Mettre à jour les détails de la transaction",
+    "addNewTransactionToRecords": "Ajouter une nouvelle transaction à vos enregistrements",
+    "transactionType": "Type de Transaction",
+    "incomeSource": "Source de Revenu",
+    "whatDidYouSpendOn": "Sur quoi avez-vous dépensé?",
+    "incomePlaceholder": "ex: Salaire, Freelance, Investissement...",
+    "expensePlaceholder": "ex: Café, Déjeuner, Essence, Épicerie...",
+    "subcategory": "Sous-catégorie",
+    "account": "Compte",
+    "tip": "Conseil :",
+    "incomeTip": "Cela sera ajouté à votre suivi des revenus et au calcul de votre valeur nette.",
+    "expenseTip": "Cela sera déduit de votre flux de trésorerie et du calcul de votre valeur nette.",
+    "updateTransaction": "Mettre à jour la Transaction"
   },
   "frequencies": {
     "weekly": "Hebdomadaire",
@@ -354,6 +369,8 @@
     "december": "Décembre"
   },
   "categories": {
+    "personal": "Personnel",
+    "business": "Entreprise",
     "salary": "Salaire",
     "bonus": "Prime",
     "investment": "Investissement",
@@ -376,5 +393,12 @@
     "shopping": "Shopping",
     "insurance": "Assurance",
     "education": "Éducation"
+  },
+  "accounts": {
+    "cash": "Espèces",
+    "checking": "Compte Chèque",
+    "savings": "Compte Épargne",
+    "credit": "Carte de Crédit",
+    "investmentAccount": "Compte d'Investissement"
   }
 }

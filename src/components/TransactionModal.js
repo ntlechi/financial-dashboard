@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import FixedModal, { FixedInput, FixedSelect, FixedButton } from './FixedModal';
+import { useTranslation } from 'react-i18next';
 
 const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditing = false }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
@@ -81,31 +83,31 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
     <FixedModal
       isOpen={isOpen}
       onClose={handleClose}
-      title={isEditing ? "Edit Transaction" : "Add Transaction"}
-      description={isEditing ? "Update transaction details" : "Add a new transaction to your records"}
+      title={isEditing ? t('transactions.editTransaction') : t('transactions.addTransaction')}
+      description={isEditing ? t('transactions.updateTransactionDetails') : t('transactions.addNewTransactionToRecords')}
       size="lg"
     >
       <div className="space-y-4">
         {/* Transaction Type */}
         <div>
-          <label className="block text-sm text-gray-300 mb-2">Transaction Type</label>
+          <label className="block text-sm text-gray-300 mb-2">{t('transactions.transactionType')}</label>
           <FixedSelect
             value={formData.type}
             onChange={(e) => handleInputChange('type', e.target.value)}
           >
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
+            <option value="expense">{t('dashboard.expense')}</option>
+            <option value="income">{t('dashboard.income')}</option>
           </FixedSelect>
         </div>
 
         {/* Description */}
         <div>
           <label className="block text-sm text-gray-300 mb-2">
-            {formData.type === 'income' ? 'Income Source' : 'What did you spend on?'}
+            {formData.type === 'income' ? t('transactions.incomeSource') : t('transactions.whatDidYouSpendOn')}
           </label>
           <FixedInput
             type="text"
-            placeholder={formData.type === 'income' ? 'e.g., Salary, Freelance, Investment...' : 'e.g., Coffee, Lunch, Gas, Groceries...'}
+            placeholder={formData.type === 'income' ? t('transactions.incomePlaceholder') : t('transactions.expensePlaceholder')}
             value={formData.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
             autoFocus
@@ -115,7 +117,7 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
         {/* Amount and Date */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Amount</label>
+            <label className="block text-sm text-gray-300 mb-2">{t('common.amount')}</label>
             <FixedInput
               type="number"
               placeholder="0.00"
@@ -126,7 +128,7 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
           </div>
           
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Date</label>
+            <label className="block text-sm text-gray-300 mb-2">{t('common.date')}</label>
             <FixedInput
               type="date"
               value={formData.date}
@@ -138,50 +140,50 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
         {/* Category and Subcategory */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Category</label>
+            <label className="block text-sm text-gray-300 mb-2">{t('common.category')}</label>
             <FixedSelect
               value={formData.category}
               onChange={(e) => handleInputChange('category', e.target.value)}
             >
-              <option value="personal">Personal</option>
-              <option value="business">Business</option>
-              <option value="investment">Investment</option>
-              <option value="travel">Travel</option>
+              <option value="personal">{t('categories.personal')}</option>
+              <option value="business">{t('categories.business')}</option>
+              <option value="investment">{t('common.investment')}</option>
+              <option value="travel">{t('common.travel')}</option>
             </FixedSelect>
           </div>
           
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Subcategory</label>
+            <label className="block text-sm text-gray-300 mb-2">{t('transactions.subcategory')}</label>
             <FixedSelect
               value={formData.subcategory}
               onChange={(e) => handleInputChange('subcategory', e.target.value)}
             >
-              <option value="other">Other</option>
-              <option value="housing">Housing</option>
-              <option value="food">Food</option>
-              <option value="transport">Transport</option>
-              <option value="entertainment">Entertainment</option>
-              <option value="healthcare">Healthcare</option>
-              <option value="shopping">Shopping</option>
-              <option value="utilities">Utilities</option>
-              <option value="insurance">Insurance</option>
-              <option value="education">Education</option>
+              <option value="other">{t('categories.other')}</option>
+              <option value="housing">{t('categories.housing')}</option>
+              <option value="food">{t('categories.food')}</option>
+              <option value="transport">{t('categories.transport')}</option>
+              <option value="entertainment">{t('categories.entertainment')}</option>
+              <option value="healthcare">{t('categories.healthcare')}</option>
+              <option value="shopping">{t('categories.shopping')}</option>
+              <option value="utilities">{t('categories.utilities')}</option>
+              <option value="insurance">{t('categories.insurance')}</option>
+              <option value="education">{t('categories.education')}</option>
             </FixedSelect>
           </div>
         </div>
 
         {/* Account */}
         <div>
-          <label className="block text-sm text-gray-300 mb-2">Account</label>
+          <label className="block text-sm text-gray-300 mb-2">{t('transactions.account')}</label>
           <FixedSelect
             value={formData.account}
             onChange={(e) => handleInputChange('account', e.target.value)}
           >
-            <option value="cash">Cash</option>
-            <option value="checking">Checking Account</option>
-            <option value="savings">Savings Account</option>
-            <option value="credit">Credit Card</option>
-            <option value="investment">Investment Account</option>
+            <option value="cash">{t('accounts.cash')}</option>
+            <option value="checking">{t('accounts.checking')}</option>
+            <option value="savings">{t('accounts.savings')}</option>
+            <option value="credit">{t('accounts.credit')}</option>
+            <option value="investment">{t('accounts.investmentAccount')}</option>
           </FixedSelect>
         </div>
 
@@ -194,9 +196,9 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
           <div className={`text-xs ${
             formData.type === 'income' ? 'text-green-200' : 'text-red-200'
           }`}>
-            💡 <strong>Tip:</strong> {formData.type === 'income' 
-              ? 'This will be added to your income tracking and net worth calculation.' 
-              : 'This will be deducted from your cash flow and net worth calculation.'}
+            💡 <strong>{t('transactions.tip')}</strong> {formData.type === 'income' 
+              ? t('transactions.incomeTip') 
+              : t('transactions.expenseTip')}
           </div>
         </div>
       </div>
@@ -206,7 +208,7 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
           onClick={handleClose}
           variant="secondary"
         >
-          Cancel
+          {t('common.cancel')}
         </FixedButton>
         <FixedButton
           onClick={handleSave}
@@ -214,7 +216,7 @@ const TransactionModal = ({ isOpen, onClose, onSave, transaction = null, isEditi
           variant={formData.type === 'income' ? 'success' : 'danger'}
         >
           <Plus className="w-4 h-4 mr-2" />
-          {isEditing ? 'Update Transaction' : 'Add Transaction'}
+          {isEditing ? t('transactions.updateTransaction') : t('transactions.addTransaction')}
         </FixedButton>
       </div>
     </FixedModal>
