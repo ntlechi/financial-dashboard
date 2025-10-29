@@ -196,6 +196,37 @@
     "addRetirementAccountsDescription": "Ajoutez vos comptes de retraite comme CELI, REER, 401(k), IRA, etc.",
     "noBackupsAvailable": "Aucune sauvegarde disponible"
   },
+  "modalTitles": {
+    "deleteBusiness": "Supprimer l'Entreprise",
+    "milestoneUnlocked": "🎉 Jalon Débloqué !",
+    "planNewTrip": "Planifier un Nouveau Voyage",
+    "editTrip": "Modifier le Voyage",
+    "travelRunwaySettings": "Paramètres de Réserve de Voyage"
+  },
+  "tooltips": {
+    "removeFromWishlist": "Retirer de la liste de souhaits",
+    "editTravelRunway": "Modifier les Paramètres de Réserve de Voyage",
+    "addTravelMoment": "Ajouter un Moment de Voyage",
+    "editTrip": "Modifier le Voyage",
+    "deleteTrip": "Supprimer le Voyage",
+    "deleteExpense": "Supprimer la dépense",
+    "deleteMoment": "Supprimer le moment",
+    "upgradeToPremium": "Passer à Premium",
+    "deleteAccount": "Supprimer le Compte",
+    "scrollTabsLeft": "Faire défiler les onglets vers la gauche",
+    "scrollTabsRight": "Faire défiler les onglets vers la droite"
+  },
+  "dropdownOptions": {
+    "usStocks": "Actions Américaines",
+    "internationalStocks": "Actions Internationales",
+    "bonds": "Obligations",
+    "realEstate": "Immobilier (REITs)",
+    "cryptocurrency": "Cryptomonnaie",
+    "commodities": "Matières Premières",
+    "cashEquivalents": "Liquidités & Équivalents",
+    "other": "Autre",
+    "taxableAccount": "Compte Imposable"
+  },
   "auth": {
     "welcome": "Bienvenue sur Kompul",
     "welcomeMessage": "Naviguez vers votre liberté financière",

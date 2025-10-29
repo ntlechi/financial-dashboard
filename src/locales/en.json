@@ -165,6 +165,37 @@
     "addRetirementAccountsDescription": "Add your retirement accounts like TFSA, RRSP, 401(k), IRA, etc.",
     "noBackupsAvailable": "No backups available"
   },
+  "modalTitles": {
+    "deleteBusiness": "Delete Business",
+    "milestoneUnlocked": "🎉 Milestone Unlocked!",
+    "planNewTrip": "Plan New Trip",
+    "editTrip": "Edit Trip",
+    "travelRunwaySettings": "Travel Runway Settings"
+  },
+  "tooltips": {
+    "removeFromWishlist": "Remove from wishlist",
+    "editTravelRunway": "Edit Travel Runway Settings",
+    "addTravelMoment": "Add Travel Moment",
+    "editTrip": "Edit Trip",
+    "deleteTrip": "Delete Trip",
+    "deleteExpense": "Delete expense",
+    "deleteMoment": "Delete moment",
+    "upgradeToPremium": "Upgrade to Premium",
+    "deleteAccount": "Delete Account",
+    "scrollTabsLeft": "Scroll tabs left",
+    "scrollTabsRight": "Scroll tabs right"
+  },
+  "dropdownOptions": {
+    "usStocks": "US Stocks",
+    "internationalStocks": "International Stocks",
+    "bonds": "Bonds",
+    "realEstate": "Real Estate (REITs)",
+    "cryptocurrency": "Cryptocurrency",
+    "commodities": "Commodities",
+    "cashEquivalents": "Cash & Equivalents",
+    "other": "Other",
+    "taxableAccount": "Taxable Account"
+  },
   "auth": {
     "welcome": "Welcome to Kompul",
     "welcomeMessage": "Navigate to your financial freedom",

@@ -202,6 +202,37 @@
     "addRetirementAccountsDescription": "Agrega tus cuentas de jubilación como TFSA, RRSP, 401(k), IRA, etc.",
     "noBackupsAvailable": "Sin copias de seguridad disponibles"
   },
+  "modalTitles": {
+    "deleteBusiness": "Eliminar Negocio",
+    "milestoneUnlocked": "🎉 ¡Hito Desbloqueado!",
+    "planNewTrip": "Planificar Nuevo Viaje",
+    "editTrip": "Editar Viaje",
+    "travelRunwaySettings": "Configuración de Reserva de Viaje"
+  },
+  "tooltips": {
+    "removeFromWishlist": "Eliminar de la lista de deseos",
+    "editTravelRunway": "Editar Configuración de Reserva de Viaje",
+    "addTravelMoment": "Agregar Momento de Viaje",
+    "editTrip": "Editar Viaje",
+    "deleteTrip": "Eliminar Viaje",
+    "deleteExpense": "Eliminar gasto",
+    "deleteMoment": "Eliminar momento",
+    "upgradeToPremium": "Actualizar a Premium",
+    "deleteAccount": "Eliminar Cuenta",
+    "scrollTabsLeft": "Desplazar pestañas a la izquierda",
+    "scrollTabsRight": "Desplazar pestañas a la derecha"
+  },
+  "dropdownOptions": {
+    "usStocks": "Acciones Estadounidenses",
+    "internationalStocks": "Acciones Internacionales",
+    "bonds": "Bonos",
+    "realEstate": "Bienes Raíces (REITs)",
+    "cryptocurrency": "Criptomonedas",
+    "commodities": "Materias Primas",
+    "cashEquivalents": "Efectivo y Equivalentes",
+    "other": "Otro",
+    "taxableAccount": "Cuenta Imponible"
+  },
   "auth": {
     "welcome": "Bienvenido a Kompul",
     "tagline": "Rastrea. Crece. Conquista tu Cumbre Financiera.",

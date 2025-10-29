@@ -5706,7 +5706,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <FixedModal
           isOpen={showDeleteConfirm}
           onClose={cancelDelete}
-          title="Delete Business"
+          title={t('modalTitles.deleteBusiness')}
           size="md"
         >
             
@@ -5778,7 +5778,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <FixedModal
           isOpen={showMilestoneCelebration}
           onClose={() => setShowMilestoneCelebration(false)}
-          title="🎉 Milestone Unlocked!"
+          title={t('modalTitles.milestoneUnlocked')}
           size="md"
         >
           <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-8 shadow-2xl">
@@ -7062,14 +7062,14 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     onChange={(e) => setNewHolding({...newHolding, category: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="US Stocks">US Stocks</option>
-                    <option value="International Stocks">International Stocks</option>
-                    <option value="Bonds">Bonds</option>
-                    <option value="Real Estate">Real Estate (REITs)</option>
-                    <option value="Crypto">Cryptocurrency</option>
-                    <option value="Commodities">Commodities</option>
-                    <option value="Cash & Equivalents">Cash & Equivalents</option>
-                    <option value="Other">Other</option>
+                    <option value="US Stocks">{t('dropdownOptions.usStocks')}</option>
+                    <option value="International Stocks">{t('dropdownOptions.internationalStocks')}</option>
+                    <option value="Bonds">{t('dropdownOptions.bonds')}</option>
+                    <option value="Real Estate">{t('dropdownOptions.realEstate')}</option>
+                    <option value="Crypto">{t('dropdownOptions.cryptocurrency')}</option>
+                    <option value="Commodities">{t('dropdownOptions.commodities')}</option>
+                    <option value="Cash & Equivalents">{t('dropdownOptions.cashEquivalents')}</option>
+                    <option value="Other">{t('dropdownOptions.other')}</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
                     💡 Group similar holdings for category view
@@ -7167,8 +7167,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         </option>
                       ))}
                       {/* Always include taxable option */}
-                      <option value="Taxable">Taxable Account</option>
-                      <option value="Other">Other</option>
+                      <option value="Taxable">{t('dropdownOptions.taxableAccount')}</option>
+                      <option value="Other">{t('dropdownOptions.other')}</option>
                     </select>
                   </div>
                   
@@ -7320,8 +7320,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         </option>
                       ))}
                       {/* Always include taxable option */}
-                      <option value="Taxable">Taxable Account</option>
-                      <option value="Other">Other</option>
+                      <option value="Taxable">{t('dropdownOptions.taxableAccount')}</option>
+                      <option value="Other">{t('dropdownOptions.other')}</option>
                     </select>
                   </div>
                   
@@ -9967,7 +9967,7 @@ const TravelTab = ({ data, setData, userId }) => {
                               <button
                                 onClick={() => handleRemoveWishlistCountry(country)}
                                 className="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300"
-                                title="Remove from wishlist"
+                                title={t('tooltips.removeFromWishlist')}
                               >
                                 <X className="w-4 h-4" />
                               </button>
@@ -10044,7 +10044,7 @@ const TravelTab = ({ data, setData, userId }) => {
               <button
                 onClick={() => setShowRunwayModal(true)}
                 className="absolute top-0 right-0 p-2 bg-slate-700/20 hover:bg-slate-600/30 rounded-lg transition-colors border border-slate-500/30"
-                title="Edit Travel Runway Settings"
+                title={t('tooltips.editTravelRunway')}
               >
                 <Edit className="w-4 h-4 text-slate-300" />
               </button>
@@ -10211,21 +10211,21 @@ const TravelTab = ({ data, setData, userId }) => {
                     }}
                     className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
                     style={{ backgroundColor: '#F59E0B' }}
-                    title="Add Travel Moment"
+                    title={t('tooltips.addTravelMoment')}
                   >
                     💫 Moment
                   </button>
                   <button 
                     onClick={() => setEditingTrip({...trip, countries: trip.countries || []})}
                     className="text-blue-400 hover:text-blue-300 p-1"
-                    title="Edit Trip"
+                    title={t('modalTitles.editTrip')}
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => handleDeleteTrip(trip.id)}
                     className="text-red-400 hover:text-red-300 p-1"
-                    title="Delete Trip"
+                    title={t('tooltips.deleteTrip')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -10297,7 +10297,7 @@ const TravelTab = ({ data, setData, userId }) => {
                             <button
                               onClick={() => handleDeleteExpense(trip.id, expense.id)}
                               className="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                              title="Delete expense"
+                              title={t('tooltips.deleteExpense')}
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
@@ -10329,7 +10329,7 @@ const TravelTab = ({ data, setData, userId }) => {
                             <button
                               onClick={() => handleDeleteTripMoment(trip.id, moment.id)}
                               className="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                              title="Delete moment"
+                              title={t('tooltips.deleteMoment')}
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
@@ -10359,7 +10359,7 @@ const TravelTab = ({ data, setData, userId }) => {
         <FixedModal
           isOpen={showAddTrip}
           onClose={() => setShowAddTrip(false)}
-          title="Plan New Trip"
+          title={t('modalTitles.planNewTrip')}
           size="lg"
         >
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
@@ -10727,7 +10727,7 @@ const TravelTab = ({ data, setData, userId }) => {
          <FixedModal
            isOpen={!!editingTrip}
            onClose={() => setEditingTrip(null)}
-           title="Edit Trip"
+           title={t('modalTitles.editTrip')}
            size="lg"
          >
            <div className="space-y-4 max-h-[70vh] overflow-y-auto">
@@ -10966,7 +10966,7 @@ const TravelTab = ({ data, setData, userId }) => {
         <FixedModal
           isOpen={showRunwayModal}
           onClose={() => setShowRunwayModal(false)}
-          title="Travel Runway Settings"
+          title={t('modalTitles.travelRunwaySettings')}
           size="lg"
         >
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
@@ -14213,7 +14213,7 @@ function App() {
                 <button
                   onClick={() => setShowPricingModal(true)}
                   className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white p-2 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-                  title="Upgrade to Premium"
+                  title={t('tooltips.upgradeToPremium')}
                 >
                   <Crown className="w-5 h-5" />
                 </button>
@@ -14527,7 +14527,7 @@ function App() {
                 <button
                   onClick={() => scrollTabs('left')}
                   className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full p-1 shadow-lg transition-all"
-                  aria-label="Scroll tabs left"
+                  aria-label={t('tooltips.scrollTabsLeft')}
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -14538,7 +14538,7 @@ function App() {
                 <button
                   onClick={() => scrollTabs('right')}
                   className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full p-1 shadow-lg transition-all"
-                  aria-label="Scroll tabs right"
+                  aria-label={t('tooltips.scrollTabsRight')}
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -16185,7 +16185,7 @@ function App() {
                                   setTempCardData({ ...tempCardData, accounts: updated });
                                 }}
                                 className="text-red-400 hover:text-red-300 p-1 ml-2"
-                                title="Delete Account"
+                                title={t('tooltips.deleteAccount')}
                               >
                                 <X className="w-4 h-4" />
                               </button>
