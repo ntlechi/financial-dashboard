@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Kampoul",
+    "name": "Kompul",
     "tagline": "Find Your Apex",
     "description": "Your climb from broke to apex. Built by a Cambodian refugee."
   },
@@ -86,7 +86,7 @@
     "hideHistory": "Hide History"
   },
   "auth": {
-    "welcome": "Welcome to Kampoul",
+    "welcome": "Welcome to Kompul",
     "welcomeMessage": "Navigate to your financial freedom",
     "getStarted": "Get Started",
     "signIn": "Sign In",

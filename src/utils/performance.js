@@ -1,4 +1,4 @@
-// ⚡ Performance Monitoring for Kampoul
+// ⚡ Performance Monitoring for Kompul
 
 // 📊 Performance metrics tracking
 export const trackPerformance = (metricName, startTime, additionalData = {}) => {

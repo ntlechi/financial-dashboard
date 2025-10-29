@@ -233,7 +233,7 @@ export const exportUserData = (data) => {
       ...data,
       exportDate: new Date().toISOString(),
       exportVersion: '1.0',
-      appName: 'Kampoul'
+      appName: 'Kompul'
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);

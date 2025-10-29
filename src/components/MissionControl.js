@@ -1,4 +1,4 @@
-// 🎯 MISSION CONTROL - The Heart of Kampoul
+// 🎯 MISSION CONTROL - The Heart of Kompul
 // The strategic flight plan connecting daily actions to ultimate life goals
 
 import React, { useState, useEffect } from 'react';

@@ -1,4 +1,4 @@
-// 3-Phase Pricing System for Kampoul
+// 3-Phase Pricing System for Kompul
 // Phase 1: Founder's Circle (Oct 19-26, 2025) - 100 spots
 // Phase 2: Early Adopter (Oct 27, 2025 - Jan 1, 2026) - 500 spots  
 // Phase 3: Regular Pricing (Jan 2, 2026+)

@@ -91,7 +91,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Rank & Medals</h1>
-            <p className="text-gray-400">Your progression through Kampoul ranks</p>
+            <p className="text-gray-400">Your progression through Kompul ranks</p>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-amber-400">{current.name}</div>

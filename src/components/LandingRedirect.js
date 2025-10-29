@@ -45,7 +45,7 @@ const LandingRedirect = ({ planId = 'founders-circle' }) => {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-white text-2xl mb-4">Welcome to Kampoul!</h1>
+        <h1 className="text-white text-2xl mb-4">Welcome to Kompul!</h1>
         <p className="text-gray-400">Redirecting you to the app...</p>
       </div>
     </div>
