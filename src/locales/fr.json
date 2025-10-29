@@ -187,7 +187,21 @@
     "personal": "Personnel",
     "business": "Entreprise",
     "incomeOnly": "Revenus Seulement",
-    "expensesOnly": "Dépenses Seulement"
+    "expensesOnly": "Dépenses Seulement",
+    "toGoal": "jusqu'à l'objectif",
+    "complete": "Terminé!",
+    "goalAchieved": "Objectif atteint!",
+    "remaining": "restant",
+    "roomRemaining": "disponible",
+    "annualGoal": "Objectif Annuel",
+    "monthsTotal": "mois au total",
+    "remainingBalance": "Solde Restant",
+    "overBudgetBy": "Dépassement de",
+    "annualDividends": "Dividendes Annuels",
+    "annualIncome": "Revenus Annuels",
+    "perYear": "par an",
+    "months": "mois",
+    "years": "ans"
   },
   "settings": {
     "title": "Paramètres",

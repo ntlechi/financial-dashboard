@@ -689,7 +689,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         
         <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
           Investing <span className="text-green-400 font-semibold">${(parseFloat(data.monthlyContribution) || 0).toLocaleString()}</span>/mo → 
-          <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> to goal
+          <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> {t('dashboard.toGoal')}
         </div>
       </div>
     </Card>
@@ -1305,10 +1305,10 @@ const GoalsCard = ({ data, onEdit }) => {
                   
                   <div className="text-center">
                     <div className={`text-lg font-bold ${isComplete ? 'text-green-400' : 'text-white'}`}>
-                      {isComplete ? '🎉 Complete!' : `$${(parseFloat(remaining) || 0).toLocaleString()}`}
+                      {isComplete ? `🎉 ${t('dashboard.complete')}` : `$${(parseFloat(remaining) || 0).toLocaleString()}`}
                     </div>
                     <div className="text-xs text-gray-400">
-                      {isComplete ? 'Goal achieved!' : 'remaining'}
+                      {isComplete ? t('dashboard.goalAchieved') : t('dashboard.remaining')}
                     </div>
                   </div>
                   
@@ -1628,13 +1628,13 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     height="h-3"
                   />
                   <div className={`text-xs ${textColor} mt-2 text-center font-semibold`}>
-                    ${(parseFloat(roomAvailable) || 0).toLocaleString()} room remaining
+                    ${(parseFloat(roomAvailable) || 0).toLocaleString()} {t('dashboard.roomRemaining')}
                   </div>
                 </div>
                 
                 {account.goal && account.goal > 0 && (
                   <div className={`${bgColor} border ${borderColor} rounded-lg p-3 text-center`}>
-                    <div className={`text-xs ${textColor} mb-1`}>Annual Goal</div>
+                    <div className={`text-xs ${textColor} mb-1`}>{t('dashboard.annualGoal')}</div>
                     <div className="text-lg font-bold text-white">${(parseFloat(account.goal) || 0).toLocaleString()}</div>
                     <div className="text-[10px] text-gray-400 mt-1">
                       {isGoalReached ? '✓ Goal Reached!' : `$${((parseFloat(account.goal) || 0) - (parseFloat(account.contributed) || 0)).toLocaleString()} to go`}
@@ -1832,7 +1832,7 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     {/* 🎯 HERO METRIC: Runway Time */}
     <div className="mb-2">
       <p className={`text-4xl sm:text-5xl font-extrabold ${status.textColor} mb-1`}>
-        <span className="stealth-target">{runwayMonths.toFixed(1)}</span> <span className="text-2xl sm:text-3xl">months</span>
+        <span className="stealth-target">{runwayMonths.toFixed(1)}</span> <span className="text-2xl sm:text-3xl">{t('dashboard.months')}</span>
       </p>
       <p className="text-sm font-semibold" style={{ color: status.color }}>
         {status.label}
@@ -2675,7 +2675,7 @@ const FinancialFreedomCalculator = () => {
           <div>
             <label className="block text-sm text-gray-300 mb-1">Financial Independence</label>
             <div className="bg-emerald-900/30 rounded px-3 py-2 border border-emerald-600">
-              <div className="text-emerald-400 font-bold">{yearsToFI} years</div>
+              <div className="text-emerald-400 font-bold">{yearsToFI} {t('dashboard.years')}</div>
               <div className="text-xs text-emerald-300">Age {targetAge}</div>
               {/* Progress Bar */}
               <div className="mt-2">
@@ -2698,7 +2698,7 @@ const FinancialFreedomCalculator = () => {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <div className="text-emerald-400 font-semibold mb-1">🎯 ETA to Freedom</div>
-              <div className="text-2xl font-bold text-white">{yearsToFI} years (Age {targetAge})</div>
+              <div className="text-2xl font-bold text-white">{yearsToFI} {t('dashboard.years')} (Age {targetAge})</div>
             </div>
             <div className="text-sm text-gray-300 max-w-md">
               💡 Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
@@ -2940,7 +2940,7 @@ const DebtPayoffCalculator = () => {
                 <div>
                   <div className="text-red-400 font-semibold">Debt Liberation Countdown</div>
                   <div className="text-white text-sm">
-                    You're <span className="font-bold text-orange-400">{currentResult.payoffOrder[0].months} months</span> from your first cleared debt. Stay the course.
+                    You're <span className="font-bold text-orange-400">{currentResult.payoffOrder[0].months} {t('dashboard.months')}</span> from your first cleared debt. Stay the course.
                   </div>
                 </div>
               </div>
@@ -3194,7 +3194,7 @@ const DebtPayoffCalculator = () => {
                     <div className="flex-1">
                       <div className="text-white font-medium text-sm">All Debts Paid - You're Free</div>
                       <div className="text-emerald-400 text-xs font-semibold">
-                        {currentResult.totalYears}y {currentResult.remainingMonths}m ({(currentResult.totalYears * 12 + currentResult.remainingMonths)} months total)
+                        {currentResult.totalYears}y {currentResult.remainingMonths}m ({(currentResult.totalYears * 12 + currentResult.remainingMonths)} {t('dashboard.monthsTotal')})
                       </div>
                     </div>
                   </div>
@@ -3430,7 +3430,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             ${Math.abs(parseFloat(remainingBalance) || 0).toLocaleString()}
           </div>
           <p className="text-gray-400">
-            {remainingBalance >= 0 ? 'Remaining balance' : 'Over budget by'}
+            {remainingBalance >= 0 ? t('dashboard.remainingBalance') : t('dashboard.overBudgetBy')}
           </p>
           <div className="mt-3 pt-3 border-t border-blue-800/40">
             <div className="flex items-center justify-between text-sm">
@@ -6493,9 +6493,9 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <Repeat className="w-5 h-5 text-cyan-400" />
             <InfoTooltip 
               id="annual-dividends"
-              text="Annual Dividends = Total dividend income you'll receive per year from all holdings. This is passive income!"
+              text={t('dashboard.annualDividends') + " = Total dividend income you'll receive per year from all holdings. This is passive income!"}
             >
-              <span>Annual Dividends</span>
+              <span>{t('dashboard.annualDividends')}</span>
             </InfoTooltip>
           </h3>
           <p className="text-2xl font-bold text-cyan-400 stealth-target">
@@ -6619,7 +6619,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <div className="text-2xl font-bold text-amber-300">
                 ${data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0).toFixed(0)}
               </div>
-              <div className="text-sm text-amber-200">Annual Income</div>
+              <div className="text-sm text-amber-200">{t('dashboard.annualIncome')}</div>
             </div>
             
             <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
