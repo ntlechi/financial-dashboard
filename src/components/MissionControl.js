@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Target, Calendar, Edit, Save, TrendingUp, Award, Rocket, CheckCircle, Circle, DollarSign } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const MissionControl = ({ 
   data, 
@@ -11,6 +12,8 @@ const MissionControl = ({
   awardXp,
   setXpRefreshTrigger 
 }) => {
+  const { t } = useTranslation();
+  
   // State
   const [northStarGoal, setNorthStarGoal] = useState(null);
   const [activeMissions, setActiveMissions] = useState([]);
@@ -92,7 +95,7 @@ const MissionControl = ({
       await setDoc(doc(db, `users/${userId}/financials`, 'data'), updatedData);
       
       onUpdateData(updatedData);
-      showNotification('⭐ North Star set! +100 XP', 'success');
+      showNotification(t('missionControl.northStarSetSuccess'), 'success');
 
       // Award XP for setting North Star
       if (awardXp && setXpRefreshTrigger) {
@@ -105,7 +108,7 @@ const MissionControl = ({
       }
     } catch (error) {
       console.error('Error setting North Star:', error);
-      showNotification('Failed to set North Star', 'error');
+      showNotification(t('missionControl.failedToSetNorthStar'), 'error');
     }
   };
 
@@ -129,21 +132,21 @@ const MissionControl = ({
       onUpdateData(updatedData);
       setWhyStatement(tempWhy.trim());
       setEditingWhy(false);
-      showNotification('💫 Your "Why" has been saved!', 'success');
+      showNotification(t('missionControl.whySavedSuccess'), 'success');
 
       // Award XP if this is their first time setting Why
       if (!data?.missionControl?.whyStatement && awardXp && setXpRefreshTrigger) {
         try {
           await awardXp(db, userId, 50);
           setXpRefreshTrigger(prev => prev + 1);
-          showNotification('🎯 First "Why" Statement! +50 XP', 'success');
+          showNotification(t('missionControl.firstWhyStatement'), 'success');
         } catch (error) {
           console.warn('XP award failed', error);
         }
       }
     } catch (error) {
       console.error('Error saving Why statement:', error);
-      showNotification('Failed to save', 'error');
+      showNotification(t('missionControl.failedToSave'), 'error');
     }
   };
 
@@ -163,13 +166,13 @@ const MissionControl = ({
       {/* 🌟 PAGE HEADER */}
       <div className="bg-gradient-to-br from-blue-900/40 via-purple-900/30 to-gray-900/40 rounded-2xl p-8 border border-blue-500/30 text-center shadow-2xl">
         <h1 className="text-4xl sm:text-5xl font-black mb-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
-          Mission Control
+          {t('missionControl.pageTitle')}
         </h1>
         <p className="text-xl text-blue-200 font-semibold mb-2">
-          Your Strategic Flight Plan
+          {t('missionControl.strategicFlightPlan')}
         </p>
         <p className="text-gray-400 max-w-2xl mx-auto">
-          Connect your daily actions to your ultimate freedom. This is your command center.
+          {t('missionControl.connectDailyActions')}
         </p>
       </div>
 
@@ -181,14 +184,14 @@ const MissionControl = ({
             <div className="text-center mb-8">
               <div className="inline-block bg-amber-500/20 rounded-full px-6 py-2 mb-4">
                 <span className="text-amber-400 font-black text-sm uppercase tracking-wider">
-                  ⭐ Your North Star
+                  {t('missionControl.yourNorthStar')}
                 </span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-black text-white mb-2">
                 {northStarGoal.name}
               </h2>
               <p className="text-gray-400">
-                The ultimate goal. Your reason for climbing.
+                {t('missionControl.ultimateGoal')}
               </p>
             </div>
 
@@ -264,7 +267,7 @@ const MissionControl = ({
                     {progressPercentage.toFixed(0)}%
                   </div>
                   <div className="text-sm font-semibold text-gray-400 mt-1">
-                    Complete
+                    {t('missionControl.complete')}
                   </div>
                 </div>
               </div>
@@ -272,21 +275,21 @@ const MissionControl = ({
               {/* Stats */}
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-md">
                 <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-500/30">
-                  <div className="text-sm text-blue-300 mb-2">Current Savings</div>
+                  <div className="text-sm text-blue-300 mb-2">{t('missionControl.currentSavings')}</div>
                   <div className="text-3xl font-black text-white">
                     ${northStarGoal.currentAmount.toLocaleString()}
                   </div>
                 </div>
                 
                 <div className="bg-purple-900/30 rounded-xl p-6 border border-purple-500/30">
-                  <div className="text-sm text-purple-300 mb-2">Target Amount</div>
+                  <div className="text-sm text-purple-300 mb-2">{t('missionControl.targetAmount')}</div>
                   <div className="text-3xl font-black text-white">
                     ${northStarGoal.targetAmount.toLocaleString()}
                   </div>
                 </div>
                 
                 <div className="bg-amber-900/30 rounded-xl p-6 border border-amber-500/30 sm:col-span-2">
-                  <div className="text-sm text-amber-300 mb-2">Remaining</div>
+                  <div className="text-sm text-amber-300 mb-2">{t('missionControl.remaining')}</div>
                   <div className="text-3xl font-black text-amber-400">
                     ${(northStarGoal.targetAmount - northStarGoal.currentAmount).toLocaleString()}
                   </div>
@@ -300,16 +303,16 @@ const MissionControl = ({
                 <div className="flex items-center justify-center gap-4">
                   <Rocket className="w-6 h-6 text-green-400" />
                   <div className="text-center">
-                    <div className="text-sm text-green-300 mb-1">📅 Projected Freedom Date</div>
+                    <div className="text-sm text-green-300 mb-1">{t('missionControl.projectedFreedomDate')}</div>
                     <div className="text-2xl font-black text-green-400">
-                      {projectedDate.toLocaleDateString('en-US', { 
+                      {projectedDate.toLocaleDateString('fr-FR', { 
                         month: 'long', 
                         day: 'numeric', 
                         year: 'numeric' 
                       })}
                     </div>
                     <div className="text-xs text-green-300/70 mt-1">
-                      Based on your current savings rate
+                      {t('missionControl.basedOnSavingsRate')}
                     </div>
                   </div>
                   <TrendingUp className="w-6 h-6 text-green-400" />
@@ -320,7 +323,7 @@ const MissionControl = ({
             {/* Target Date */}
             {northStarGoal.targetDate && (
               <div className="mt-6 text-center text-sm text-gray-400">
-                🎯 Target Date: {new Date(northStarGoal.targetDate + 'T12:00:00').toLocaleDateString('en-US', { 
+                {t('missionControl.targetDate')} {new Date(northStarGoal.targetDate + 'T12:00:00').toLocaleDateString('fr-FR', { 
                   month: 'long', 
                   day: 'numeric', 
                   year: 'numeric' 
@@ -335,17 +338,17 @@ const MissionControl = ({
               <Target className="w-16 h-16 text-amber-400" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-3">
-              Set Your North Star
+              {t('missionControl.setYourNorthStar')}
             </h3>
             <p className="text-gray-400 mb-6 max-w-md mx-auto">
-              Your North Star is your ultimate life goal - your reason for climbing.
+              {t('missionControl.northStarDescription')}
             </p>
             <div className="bg-amber-900/30 rounded-lg p-4 border border-amber-500/30 mb-6 max-w-md mx-auto">
               <p className="text-sm text-amber-200 font-semibold mb-2">
-                💡 How to set your North Star:
+                {t('missionControl.howToSetNorthStar')}
               </p>
               <p className="text-sm text-amber-300">
-                Scroll down to <span className="font-bold">Active Missions</span> below and click the <span className="font-bold">⭐ Set as North Star</span> button on your ultimate goal!
+                Faites défiler jusqu'aux <span className="font-bold">Missions Actives</span> ci-dessous et cliquez sur le bouton <span className="font-bold">⭐ Définir comme Étoile Polaire</span> sur votre objectif ultime !
               </p>
             </div>
           </div>
@@ -357,10 +360,10 @@ const MissionControl = ({
         <div className="text-center mb-8">
           <h2 className="text-3xl font-black text-white mb-2 flex items-center justify-center gap-3">
             <Award className="w-8 h-8 text-blue-400" />
-            Active Missions
+            {t('missionControl.activeMissions')}
           </h2>
           <p className="text-gray-400">
-            The battles you're winning on your way to the summit
+            {t('missionControl.battlesYoureWinning')}
           </p>
         </div>
 
@@ -368,7 +371,7 @@ const MissionControl = ({
           <div>
             <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30 mb-6 text-center">
               <p className="text-amber-300 text-sm">
-                ⭐ Click <span className="font-bold">"Set as North Star"</span> on your ultimate life goal below!
+                ⭐ Cliquez sur <span className="font-bold">"Définir comme Étoile Polaire"</span> sur votre objectif de vie ultime ci-dessous !
               </p>
             </div>
             
@@ -392,9 +395,9 @@ const MissionControl = ({
                       {mission.name}
                     </h3>
                     {isComplete ? (
-                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" title="Mission Complete! ✅" />
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" title={t('missionControl.missionComplete')} />
                     ) : (
-                      <Circle className="w-6 h-6 text-blue-400/50 flex-shrink-0" title="In Progress ⭕" />
+                      <Circle className="w-6 h-6 text-blue-400/50 flex-shrink-0" title={t('missionControl.inProgress')} />
                     )}
                   </div>
 
@@ -420,13 +423,13 @@ const MissionControl = ({
                       <div className="text-2xl font-black text-white">
                         {progress.toFixed(0)}%
                       </div>
-                      <div className="text-xs text-gray-400">Progress</div>
+                      <div className="text-xs text-gray-400">{t('missionControl.progress')}</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-black text-blue-400">
                         ${(mission.targetAmount - mission.currentAmount).toLocaleString()}
                       </div>
-                      <div className="text-xs text-gray-400">Remaining</div>
+                      <div className="text-xs text-gray-400">{t('missionControl.remaining')}</div>
                     </div>
                   </div>
 
@@ -435,7 +438,7 @@ const MissionControl = ({
                     <div className="mt-4 pt-4 border-t border-gray-700 text-center">
                       <div className="text-xs text-gray-400 flex items-center justify-center gap-2">
                         <Calendar className="w-3 h-3" />
-                        Target: {new Date(mission.targetDate + 'T12:00:00').toLocaleDateString('en-US', { 
+                        {t('missionControl.target')} {new Date(mission.targetDate + 'T12:00:00').toLocaleDateString('fr-FR', { 
                           month: 'short', 
                           day: 'numeric', 
                           year: 'numeric' 
@@ -451,7 +454,7 @@ const MissionControl = ({
                       className="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white px-4 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
                     >
                       <Target className="w-4 h-4" />
-                      ⭐ Set as North Star
+                      {t('missionControl.setAsNorthStar')}
                     </button>
                   </div>
                 </div>
@@ -462,9 +465,9 @@ const MissionControl = ({
         ) : (
           <div className="text-center py-12">
             <Award className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 mb-2">No active missions yet</p>
+            <p className="text-gray-400 mb-2">{t('missionControl.noActiveMissions')}</p>
             <p className="text-sm text-gray-500">
-              Create goals in your Financial Goals card to see them here!
+              {t('missionControl.createGoalsToSee')}
             </p>
           </div>
         )}
@@ -474,10 +477,10 @@ const MissionControl = ({
       <div className="bg-gradient-to-br from-purple-900/30 to-gray-900/50 rounded-2xl p-6 sm:p-8 border border-purple-500/30">
         <div className="text-center mb-6">
           <h2 className="text-3xl font-black text-white mb-2">
-            My "Why"
+            {t('missionControl.myWhy')}
           </h2>
           <p className="text-gray-400">
-            What are you fighting for? Your purpose. Your anchor.
+            {t('missionControl.whatAreYouFightingFor')}
           </p>
         </div>
 
@@ -487,7 +490,7 @@ const MissionControl = ({
             <textarea
               value={tempWhy}
               onChange={(e) => setTempWhy(e.target.value)}
-              placeholder="I'm fighting for financial freedom because..."
+              placeholder={t('missionControl.whyPlaceholder')}
               className="w-full bg-gray-800/50 text-white px-6 py-4 rounded-xl border border-purple-500/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 min-h-[200px] text-lg leading-relaxed resize-none"
               autoFocus
             />
@@ -500,7 +503,7 @@ const MissionControl = ({
                 }}
                 className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={saveWhyStatement}
@@ -508,7 +511,7 @@ const MissionControl = ({
                 className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:opacity-50 text-white px-8 py-3 rounded-lg font-black transition-all flex items-center gap-2 shadow-xl"
               >
                 <Save className="w-5 h-5" />
-                Save My Why
+                {t('missionControl.saveMyWhy')}
               </button>
             </div>
           </div>
@@ -527,13 +530,13 @@ const MissionControl = ({
                     setEditingWhy(true);
                   }}
                   className="absolute top-4 right-4 text-gray-500 hover:text-purple-400 opacity-0 group-hover:opacity-100 transition-all p-2"
-                  title="Edit your Why"
+                  title={t('missionControl.editYourWhy')}
                 >
                   <Edit className="w-5 h-5" />
                 </button>
 
                 <div className="text-sm text-purple-400 font-semibold">
-                  - You, on your journey to freedom
+                  {t('missionControl.youOnYourJourney')}
                 </div>
               </div>
             ) : (
@@ -546,10 +549,10 @@ const MissionControl = ({
                   className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-4 rounded-xl font-black transition-all flex items-center gap-3 mx-auto shadow-2xl transform hover:scale-105"
                 >
                   <Edit className="w-5 h-5" />
-                  Write Your "Why" Statement
+                  {t('missionControl.writeYourWhy')}
                 </button>
                 <p className="text-sm text-gray-500 mt-4">
-                  💡 The most powerful financial tool is a clear purpose
+                  {t('missionControl.mostPowerfulTool')}
                 </p>
               </div>
             )}
@@ -561,7 +564,7 @@ const MissionControl = ({
       {northStarGoal && activeMissions.length > 0 && (
         <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-xl p-6 border border-blue-500/20 text-center">
           <p className="text-lg text-gray-300 italic">
-            "Every dollar saved, every goal achieved, every decision made - they all point to your North Star. Keep climbing."
+            {t('missionControl.motivationalQuote')}
           </p>
         </div>
       )}
