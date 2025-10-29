@@ -14262,7 +14262,7 @@ function App() {
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
-                  title="Account Menu"
+                  title={t('settings.accountMenu')}
                 >
                   {/* User Avatar with Plan Badge */}
                   <div className="relative">
@@ -14306,7 +14306,7 @@ function App() {
                             {devDemoMode ? 'D' : (user?.displayName?.split(' ')[0] || 'U')[0].toUpperCase()}
                           </div>
                           <div className="flex-1">
-                            <p className="text-white font-semibold">{devDemoMode ? 'Demo User' : (user?.displayName?.split(' ')[0] || 'User')}</p>
+                            <p className="text-white font-semibold">{devDemoMode ? t('settings.demoUser') : (user?.displayName?.split(' ')[0] || 'User')}</p>
                             <p className="text-gray-400 text-sm truncate">{devDemoMode ? 'demo@example.com' : user?.email}</p>
                           </div>
                         </div>
@@ -14317,11 +14317,11 @@ function App() {
                             userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'bg-purple-600 text-purple-100' :
                             'bg-gradient-to-r from-yellow-600 to-orange-600 text-white'
                           }`}>
-                            {userPlan === SUBSCRIPTION_TIERS.FREE ? 'Recon Kit' : 
-                             userPlan === SUBSCRIPTION_TIERS.CLIMBER ? 'Climber Plan' : 
-                             userPlan === SUBSCRIPTION_TIERS.OPERATOR ? 'Operator Plan' :
-                             userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? 'Founder\'s Circle' : 
-                             'Free Plan'}
+                            {userPlan === SUBSCRIPTION_TIERS.FREE ? t('settings.reconKit') : 
+                             userPlan === SUBSCRIPTION_TIERS.CLIMBER ? t('settings.climberPlan') : 
+                             userPlan === SUBSCRIPTION_TIERS.OPERATOR ? t('settings.operatorPlan') :
+                             userPlan === SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE ? t('settings.foundersCircle') : 
+                             t('settings.freePlan')}
                           </span>
                           {/* Timezone Indicator */}
                           <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded">
@@ -14346,8 +14346,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <div>
-                            <p className="font-medium">Report a Bug</p>
-                            <p className="text-xs text-gray-500">Help us improve</p>
+                            <p className="font-medium">{t('settings.reportBug')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.reportBugDesc')}</p>
                           </div>
                         </button>
                         
@@ -14365,8 +14365,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                           </svg>
                           <div>
-                            <p className="font-medium">Request Feature</p>
-                            <p className="text-xs text-gray-500">Share your ideas</p>
+                            <p className="font-medium">{t('settings.requestFeature')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.requestFeatureDesc')}</p>
                           </div>
                         </button>
                         
@@ -14374,7 +14374,7 @@ function App() {
                         
                         {/* 🛡️ DATA SAFETY SECTION */}
                         <div className="px-4 py-2">
-                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">🛡️ Data Safety</p>
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">{t('settings.dataSafety')}</p>
                         </div>
                         
                         {/* Export Data */}
@@ -14389,8 +14389,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
                           <div>
-                            <p className="font-medium">Export Data</p>
-                            <p className="text-xs text-gray-500">Download your data</p>
+                            <p className="font-medium">{t('settings.exportData')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.exportDataDesc')}</p>
                           </div>
                         </button>
                         
@@ -14406,8 +14406,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                           </svg>
                           <div>
-                            <p className="font-medium">Import Data</p>
-                            <p className="text-xs text-gray-500">Restore from backup</p>
+                            <p className="font-medium">{t('settings.importData')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.importDataDesc')}</p>
                           </div>
                         </button>
                         
@@ -14424,8 +14424,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                           </svg>
                           <div>
-                            <p className="font-medium">Recover Data</p>
-                            <p className="text-xs text-gray-500">Restore from backup</p>
+                            <p className="font-medium">{t('settings.recoverData')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.recoverDataDesc')}</p>
                           </div>
                         </button>
                         
@@ -14452,8 +14452,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                           </svg>
                           <div>
-                            <p className="font-medium">Create Backup Now</p>
-                            <p className="text-xs text-gray-500">Snapshot your data</p>
+                            <p className="font-medium">{t('settings.createBackup')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.createBackupDesc')}</p>
                           </div>
                         </button>
                         
@@ -14471,8 +14471,8 @@ function App() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                           </svg>
                           <div>
-                            <p className="font-medium">Sign Out</p>
-                            <p className="text-xs text-gray-500">See you next time!</p>
+                            <p className="font-medium">{t('settings.signOut')}</p>
+                            <p className="text-xs text-gray-500">{t('settings.signOutDesc')}</p>
                           </div>
                         </button>
                       </div>
