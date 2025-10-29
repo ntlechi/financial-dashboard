@@ -213,5 +213,30 @@
     "feedbackSentSuccess": "Commentaires envoyés avec succès!",
     "feedbackSendError": "Échec de l'envoi des commentaires.",
     "helpFAQ": "Aide et FAQ"
+  },
+  "debtTracker": {
+    "title": "Suivi des Dettes",
+    "subtitle": "Suivez votre progression de remboursement",
+    "totalDebt": "Dette Totale",
+    "unlockTitle": "Débloquer la Gestion des Dettes",
+    "unlockDescription": "Obtenez un suivi détaillé des dettes, des stratégies de remboursement et une visualisation des progrès.",
+    "upgradeButton": "Passer à Grimpeur",
+    "acrossAccounts": "Sur {{count}} compte",
+    "acrossAccounts_plural": "Sur {{count}} comptes",
+    "payoffProgress": "Progression de Remboursement",
+    "paid": "payé",
+    "total": "total",
+    "addInitialDebt": "Ajoutez les montants initiaux de dette pour suivre la progression",
+    "yourDebts": "Vos Dettes",
+    "dueToday": "À payer aujourd'hui!",
+    "dueInDays": "À payer dans {{days}} jour",
+    "dueInDays_plural": "À payer dans {{days}} jours",
+    "daysOverdue": "{{days}} jour de retard",
+    "daysOverdue_plural": "{{days}} jours de retard",
+    "min": "Min",
+    "due": "Échéance",
+    "th": "e",
+    "moreAccounts": "autres comptes",
+    "addFirstDebt": "Ajouter Première Dette"
   }
 }

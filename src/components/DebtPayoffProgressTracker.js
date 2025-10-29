@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { TrendingDown, Edit, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUpgrade }) {
+  const { t } = useTranslation();
   // Calculate total debt and progress
   const totalDebt = data?.accounts?.reduce((sum, account) => sum + (account.balance || 0), 0) || 0;
   const totalInitialDebt = data?.accounts?.reduce((sum, account) => sum + (account.initialDebt || 0), 0) || 0;
@@ -21,15 +23,15 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
               <TrendingDown className="w-6 h-6 text-rose-400" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">Debt Tracker</h3>
-              <p className="text-gray-400 text-sm">Track your debt payoff progress</p>
+              <h3 className="text-xl font-bold text-white">{t('debtTracker.title')}</h3>
+              <p className="text-gray-400 text-sm">{t('debtTracker.subtitle')}</p>
             </div>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-rose-400">
               ${totalDebt.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-400">Total Debt</div>
+            <div className="text-sm text-gray-400">{t('debtTracker.totalDebt')}</div>
           </div>
         </div>
 
@@ -38,15 +40,15 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
             <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
               <TrendingDown className="w-8 h-8 text-white" />
             </div>
-            <h4 className="text-lg font-bold text-white mb-2">Unlock Debt Management</h4>
+            <h4 className="text-lg font-bold text-white mb-2">{t('debtTracker.unlockTitle')}</h4>
             <p className="text-gray-300 mb-4">
-              Get detailed debt tracking, payoff strategies, and progress visualization.
+              {t('debtTracker.unlockDescription')}
             </p>
             <button
               onClick={onUpgrade}
               className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105"
             >
-              Upgrade to Climber
+              {t('debtTracker.upgradeButton')}
             </button>
           </div>
         </div>
@@ -83,7 +85,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
       {/* Total Debt Display */}
       <div className="mb-4">
         <p className="text-4xl font-extrabold text-white">${totalDebt.toLocaleString()}</p>
-        <p className="text-sm text-gray-400">Across {accountCount} account{accountCount !== 1 ? 's' : ''}</p>
+        <p className="text-sm text-gray-400">{t('debtTracker.acrossAccounts', { count: accountCount })}</p>
       </div>
 
       {/* Progress Bar */}
@@ -91,7 +93,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
         {totalInitialDebt > 0 ? (
           <>
             <div className="flex justify-between text-sm text-gray-300 mb-2">
-              <span>Debt Payoff Progress</span>
+              <span>{t('debtTracker.payoffProgress')}</span>
               <span>{Math.round(progressPercentage)}%</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-3">
@@ -101,17 +103,17 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
               ></div>
             </div>
             <div className="flex justify-between text-xs text-gray-400 mt-1">
-              <span>${totalPaid.toLocaleString()} paid</span>
-              <span>${totalInitialDebt.toLocaleString()} total</span>
+              <span>${totalPaid.toLocaleString()} {t('debtTracker.paid')}</span>
+              <span>${totalInitialDebt.toLocaleString()} {t('debtTracker.total')}</span>
             </div>
           </>
         ) : (
           <div className="text-center py-2">
-            <div className="text-sm text-gray-400 mb-1">Debt Payoff Progress</div>
+            <div className="text-sm text-gray-400 mb-1">{t('debtTracker.payoffProgress')}</div>
             <div className="w-full bg-gray-700 rounded-full h-3">
               <div className="bg-gray-600 h-3 rounded-full"></div>
             </div>
-            <div className="text-xs text-gray-500 mt-1">Add initial debt amounts to track progress</div>
+            <div className="text-xs text-gray-500 mt-1">{t('debtTracker.addInitialDebt')}</div>
           </div>
         )}
       </div>
@@ -119,7 +121,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
       {/* Current Debt Accounts */}
       {data?.accounts && data.accounts.length > 0 && (
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-white mb-2">Your Debts</h4>
+          <h4 className="text-sm font-semibold text-white mb-2">{t('debtTracker.yourDebts')}</h4>
           <div className="space-y-2">
             {data.accounts.slice(0, 3).map((account, index) => {
               const accountProgress = (account.initialDebt || 0) > 0 ? ((account.amountPaid || 0) / (account.initialDebt || 1)) * 100 : 0;
@@ -137,15 +139,15 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
               if (daysUntilDue === 0) {
                 paymentStatus = 'due-today';
                 statusColor = 'text-orange-400';
-                statusText = 'Due today!';
+                statusText = t('debtTracker.dueToday');
               } else if (daysUntilDue < 0) {
                 paymentStatus = 'overdue';
                 statusColor = 'text-red-400';
-                statusText = `${Math.abs(daysUntilDue)} days overdue`;
+                statusText = t('debtTracker.daysOverdue', { days: Math.abs(daysUntilDue) });
               } else if (daysUntilDue <= 3) {
                 paymentStatus = 'urgent';
                 statusColor = 'text-yellow-400';
-                statusText = `Due in ${daysUntilDue} days`;
+                statusText = t('debtTracker.dueInDays', { days: daysUntilDue });
               }
               
               return (
@@ -154,17 +156,17 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
                     <div>
                       <div className="text-white text-sm font-medium">{account.name || `Debt ${index + 1}`}</div>
                       <div className="text-xs text-gray-400">
-                        {(account.interestRate || 0).toFixed(1)}% • Min: ${(account.minPayment || 0).toLocaleString()}
+                        {(account.interestRate || 0).toFixed(1)}% • {t('debtTracker.min')}: ${(account.minPayment || 0).toLocaleString()}
                       </div>
                       <div className={`text-xs ${statusColor} font-medium`}>
-                        Due: {dueDate}th • {statusText}
+                        {t('debtTracker.due')}: {dueDate}{t('debtTracker.th')} • {statusText}
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-rose-400 font-bold text-sm">${(account.balance || 0).toLocaleString()}</div>
                       {(account.initialDebt || 0) > 0 && (
                         <div className="text-xs text-green-400">
-                          ${(account.amountPaid || 0).toLocaleString()} paid
+                          ${(account.amountPaid || 0).toLocaleString()} {t('debtTracker.paid')}
                         </div>
                       )}
                     </div>
@@ -182,7 +184,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
             })}
             {data.accounts.length > 3 && (
               <div className="text-xs text-gray-400 text-center">
-                +{data.accounts.length - 3} more accounts
+                +{data.accounts.length - 3} {t('debtTracker.moreAccounts')}
               </div>
             )}
           </div>
@@ -197,7 +199,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
             className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            Add First Debt
+            {t('debtTracker.addFirstDebt')}
           </button>
         </div>
       )}
