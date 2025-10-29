@@ -7380,6 +7380,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
 // Transaction Management Component
 const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpModal, setXpRefreshTrigger }) => {
+  const { t } = useTranslation();
   const spendingChartRef = useRef(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -7863,26 +7864,26 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <Card className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
             <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
-            Net Flow
+            {t('transactions.netFlow')}
           </h3>
           <p className={`text-2xl font-bold stealth-target ${(totalIncome - totalExpenses) >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
             ${((parseFloat(totalIncome) || 0) - (parseFloat(totalExpenses) || 0)).toLocaleString()}
           </p>
           <div className="mt-2 text-sm text-gray-300">
-            {data.transactions.length} transactions
+            {data.transactions.length} {t('transactions.transactionCount', { count: data.transactions.length })}
           </div>
         </Card>
         
         <Card className="bg-gradient-to-br from-purple-900/40 to-pink-900/40">
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
             <CreditCard className="w-5 h-5 mr-2 text-purple-400" />
-            Avg Transaction
+            {t('transactions.avgTransaction')}
           </h3>
           <p className="text-2xl font-bold text-purple-400 stealth-target">
             ${data.transactions.length > 0 ? (Math.abs(data.transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0) / data.transactions.length)).toFixed(2) : '0.00'}
           </p>
           <div className="mt-2 text-sm text-gray-300">
-            Last 30 days
+            {t('transactions.last30Days')}
           </div>
         </Card>
       </div>
@@ -7979,10 +7980,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         {new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                       </h4>
                       <div className="flex gap-4 text-sm">
-                        <span className="text-green-400">Income: ${(parseFloat(monthIncome) || 0).toLocaleString()}</span>
-                        <span className="text-red-400">Expenses: ${(parseFloat(monthExpenses) || 0).toLocaleString()}</span>
+                        <span className="text-green-400">{t('transactions.income')}: ${(parseFloat(monthIncome) || 0).toLocaleString()}</span>
+                        <span className="text-red-400">{t('transactions.expenses')}: ${(parseFloat(monthExpenses) || 0).toLocaleString()}</span>
                         <span className={`font-semibold ${monthNet >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                          Net: ${(parseFloat(monthNet) || 0).toLocaleString()}
+                          {t('transactions.netLabel')} ${(parseFloat(monthNet) || 0).toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -8000,7 +8001,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       ))}
                       {transactions.length > 6 && (
                         <div className="text-center text-gray-400 text-xs col-span-2">
-                          +{transactions.length - 6} more transactions
+                          +{transactions.length - 6} {t('transactions.moreTransactions')}
                         </div>
                       )}
                     </div>
@@ -8024,7 +8025,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Description (e.g., Netflix, Rent, Groceries)"
+                placeholder={t('transactions.descriptionPlaceholder')}
                 value={newTransaction.description}
                 onChange={(e) => {
                   const newDesc = e.target.value;
@@ -8046,7 +8047,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               
               <input
                 type="number"
-                placeholder="Amount"
+                placeholder={t('transactions.amountPlaceholder')}
                 value={newTransaction.amount === 0 ? '0' : (newTransaction.amount || '')}
                 onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -8075,7 +8076,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, subcategory: e.target.value})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="">🤖 Auto-categorize</option>
+                <option value="">🤖 {t('transactions.autoCategorize')}</option>
                 {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
                   <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                 ))}
@@ -8100,7 +8101,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setNewTransaction({...newTransaction, isRecurring: e.target.checked})}
                     className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
                   />
-                  <span className="text-white font-semibold">🔄 Make this a recurring {newTransaction.type}</span>
+                  <span className="text-white font-semibold">🔄 {newTransaction.type === 'income' ? t('transactions.makeRecurringIncome') : t('transactions.makeRecurringExpense')}</span>
                 </label>
               </div>
               
@@ -8111,10 +8112,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setNewTransaction({...newTransaction, frequency: e.target.value})}
                     className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                   >
-                    <option value="weekly">📅 Weekly</option>
-                    <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
-                    <option value="monthly">🗓️ Monthly</option>
-                    <option value="yearly">📆 Yearly</option>
+                    <option value="weekly">📅 {t('frequencies.weekly')}</option>
+                    <option value="bi-weekly">📅📅 {t('frequencies.biWeekly')}</option>
+                    <option value="monthly">🗓️ {t('frequencies.monthly')}</option>
+                    <option value="yearly">📆 {t('frequencies.yearly')}</option>
                   </select>
                   
                   {(newTransaction.frequency === 'weekly' || newTransaction.frequency === 'bi-weekly') && (
@@ -8123,13 +8124,13 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       onChange={(e) => setNewTransaction({...newTransaction, dayOfWeek: e.target.value})}
                       className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                     >
-                      <option value={0}>Sunday</option>
-                      <option value={1}>Monday</option>
-                      <option value={2}>Tuesday</option>
-                      <option value={3}>Wednesday</option>
-                      <option value={4}>Thursday</option>
-                      <option value={5}>Friday</option>
-                      <option value={6}>Saturday</option>
+                      <option value={0}>{t('daysOfWeek.sunday')}</option>
+                      <option value={1}>{t('daysOfWeek.monday')}</option>
+                      <option value={2}>{t('daysOfWeek.tuesday')}</option>
+                      <option value={3}>{t('daysOfWeek.wednesday')}</option>
+                      <option value={4}>{t('daysOfWeek.thursday')}</option>
+                      <option value={5}>{t('daysOfWeek.friday')}</option>
+                      <option value={6}>{t('daysOfWeek.saturday')}</option>
                     </select>
                   )}
                   
@@ -8140,7 +8141,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                     >
                       {Array.from({length: 31}, (_, i) => (
-                        <option key={i+1} value={i+1}>Day {i+1}</option>
+                        <option key={i+1} value={i+1}>{t('frequencies.day')} {i+1}</option>
                       ))}
                     </select>
                   )}
@@ -8152,18 +8153,18 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         onChange={(e) => setNewTransaction({...newTransaction, monthOfYear: parseInt(e.target.value)})}
                         className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                       >
-                        <option value={1}>January</option>
-                        <option value={2}>February</option>
-                        <option value={3}>March</option>
-                        <option value={4}>April</option>
-                        <option value={5}>May</option>
-                        <option value={6}>June</option>
-                        <option value={7}>July</option>
-                        <option value={8}>August</option>
-                        <option value={9}>September</option>
-                        <option value={10}>October</option>
-                        <option value={11}>November</option>
-                        <option value={12}>December</option>
+                        <option value={1}>{t('months.january')}</option>
+                        <option value={2}>{t('months.february')}</option>
+                        <option value={3}>{t('months.march')}</option>
+                        <option value={4}>{t('months.april')}</option>
+                        <option value={5}>{t('months.may')}</option>
+                        <option value={6}>{t('months.june')}</option>
+                        <option value={7}>{t('months.july')}</option>
+                        <option value={8}>{t('months.august')}</option>
+                        <option value={9}>{t('months.september')}</option>
+                        <option value={10}>{t('months.october')}</option>
+                        <option value={11}>{t('months.november')}</option>
+                        <option value={12}>{t('months.december')}</option>
                       </select>
                       <select
                         value={newTransaction.dayOfMonth}
@@ -8171,7 +8172,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
                       >
                         {Array.from({length: 31}, (_, i) => (
-                          <option key={i+1} value={i+1}>Day {i+1}</option>
+                          <option key={i+1} value={i+1}>{t('frequencies.day')} {i+1}</option>
                         ))}
                       </select>
                     </>
@@ -8183,7 +8184,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 <div className="mt-3 p-3 bg-blue-800/20 rounded-lg text-sm text-blue-200">
                   <div className="flex items-center gap-2 mb-1">
                     <Repeat className="w-4 h-4" />
-                    <span className="font-semibold">Automation Preview:</span>
+                    <span className="font-semibold">{t('transactions.automationPreview')}</span>
                   </div>
                   <div>
                     This {newTransaction.type} will automatically be added every{' '}
@@ -8233,7 +8234,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             
             {/* Legend - Mobile optimized with larger tap targets */}
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-gray-300 mb-3 px-1">Category Breakdown</h4>
+              <h4 className="text-sm font-semibold text-gray-300 mb-3 px-1">{t('transactions.categoryBreakdown')}</h4>
               {spendingByCategory.map(item => (
                 <div key={item.category} className="flex items-center justify-between p-3 md:p-2 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors min-h-[3rem] md:min-h-0">
                   <div className="flex items-center gap-3">
@@ -8281,10 +8282,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <div>
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <Repeat className="w-6 h-6 text-purple-400" />
-                Recurring Income/Expenses
-                ({data.recurringExpenses.filter(r => r.isActive).length} active)
+                {t('transactions.recurringIncomeExpenses')}
+                ({data.recurringExpenses.filter(r => r.isActive).length} {t('transactions.active', { count: data.recurringExpenses.filter(r => r.isActive).length })})
               </h3>
-              <p className="text-gray-400">Automatically processed transactions</p>
+              <p className="text-gray-400">{t('transactions.automaticallyProcessed')}</p>
             </div>
           </div>
           
@@ -8309,21 +8310,21 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       ? 'bg-green-600/20 text-green-400' 
                       : 'bg-gray-600/20 text-gray-400'
                   }`}>
-                    {recurring.isActive ? 'Active' : 'Paused'}
+                    {recurring.isActive ? t('transactions.active', { count: 1 }) : t('transactions.pause')}
                   </div>
                 </div>
                 
                 <div className="space-y-1 text-sm text-gray-300">
                   <div className="flex justify-between">
-                    <span>Frequency:</span>
+                    <span>{t('transactions.frequency')}</span>
                     <span className="capitalize">{recurring.frequency}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Next Due:</span>
+                    <span>{t('transactions.nextDue')}</span>
                     <span className="text-purple-300">{new Date(recurring.nextDueDate).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Category:</span>
+                    <span>{t('common.category')}:</span>
                     <span className="capitalize">{recurring.subcategory}</span>
                   </div>
                 </div>
@@ -8344,7 +8345,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     className="flex-1 px-3 py-1.5 bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1"
                   >
                     <Edit className="w-3 h-3" />
-                    Edit
+                    {t('transactions.editRecurring')}
                   </button>
                   
                   <button
@@ -8377,12 +8378,12 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                         : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
                     }`}
                   >
-                    {recurring.isActive ? 'Pause' : 'Resume'}
+                    {recurring.isActive ? t('transactions.pause') : t('transactions.resume')}
                   </button>
                   
                   <button
                     onClick={async () => {
-                      if (!window.confirm('Delete this recurring expense?')) return;
+                      if (!window.confirm(t('transactions.deleteRecurring'))) return;
                       const updatedRecurring = data.recurringExpenses.filter(r => r.id !== recurring.id);
                       try {
                         // 🛡️ CRITICAL FIX: Use updateDoc to prevent data loss!
@@ -8406,7 +8407,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     }}
                     className="flex-1 px-3 py-1.5 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded text-xs font-semibold transition-colors"
                   >
-                    Delete
+                    {t('common.delete')}
                   </button>
                 </div>
               </div>
@@ -8420,7 +8421,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
         <FixedModal
           isOpen={!!editingRecurring}
           onClose={() => setEditingRecurring(null)}
-          title={`Edit Recurring ${editingRecurring.type === 'income' ? 'Income' : 'Expense'}`}
+          title={editingRecurring.type === 'income' ? t('transactions.editRecurringIncome') : t('transactions.editRecurringExpense')}
           size="lg"
         >
           <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
