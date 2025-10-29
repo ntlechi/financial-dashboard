@@ -3,8 +3,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp, Copy, Briefcase } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
+  const { t } = useTranslation();
   const [moments, setMoments] = useState([]);
   const [filter, setFilter] = useState('all'); // 'all', 'travel', 'business', 'achievements', 'expenses'
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -97,16 +99,16 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
       setCopyNotification(true);
       setTimeout(() => setCopyNotification(false), 2000);
     }).catch(() => {
-      alert('Failed to copy to clipboard');
+      alert(t('moments.failedToCopy'));
     });
   };
 
   const getMomentSourceBadge = (moment) => {
-    if (moment.category === 'business') return <span className="bg-purple-600/20 text-purple-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Briefcase className="w-3 h-3"/>Business</span>;
-    if (moment.isTravel || moment.category === 'travel') return <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><MapPin className="w-3 h-3"/>Travel</span>;
-    if (moment.isAchievement) return <span className="bg-green-600/20 text-green-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Award className="w-3 h-3"/>Achievement</span>;
-    if (moment.expenseLink) return <span className="bg-red-600/20 text-red-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><DollarSign className="w-3 h-3"/>Expense</span>;
-    return <span className="bg-gray-600/20 text-gray-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Tag className="w-3 h-3"/>Personal</span>;
+    if (moment.category === 'business') return <span className="bg-purple-600/20 text-purple-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Briefcase className="w-3 h-3"/>{t('moments.business')}</span>;
+    if (moment.isTravel || moment.category === 'travel') return <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><MapPin className="w-3 h-3"/>{t('common.travel')}</span>;
+    if (moment.isAchievement) return <span className="bg-green-600/20 text-green-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Award className="w-3 h-3"/>{t('moments.achievement')}</span>;
+    if (moment.expenseLink) return <span className="bg-red-600/20 text-red-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><DollarSign className="w-3 h-3"/>{t('moments.expense')}</span>;
+    return <span className="bg-gray-600/20 text-gray-400 text-xs px-3 py-1 rounded-full flex items-center gap-1 font-semibold"><Tag className="w-3 h-3"/>{t('moments.personal')}</span>;
   };
 
   return (
@@ -115,20 +117,20 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
       {copyNotification && (
         <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-2 animate-fade-in">
           <Copy className="w-5 h-5" />
-          <span className="font-semibold">Copied to clipboard!</span>
+          <span className="font-semibold">{t('moments.copiedToClipboard')}</span>
         </div>
       )}
 
       {/* 💎 PREMIUM HEADER - Inspiring & Elegant - MOBILE RESPONSIVE! */}
       <div className="bg-gradient-to-br from-amber-900/30 via-purple-900/20 to-gray-900/40 rounded-2xl p-6 sm:p-10 border border-amber-500/30 mb-6 sm:mb-8 text-center shadow-2xl">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4" style={{ color: '#FBBF24' }}>
-          💫 Your Moments
+          {t('moments.yourMoments')}
         </h2>
         <p className="text-lg sm:text-xl md:text-2xl text-amber-100 italic font-semibold mb-2 sm:mb-3 px-2">
-          Every milestone. Every sacrifice. Every win — remembered forever.
+          {t('moments.everyMilestone')}
         </p>
         <p className="text-sm sm:text-base text-amber-200/70 font-medium px-2">
-          ✨ Because numbers fade, but moments don't.
+          {t('moments.numbersFade')}
         </p>
       </div>
 
@@ -140,7 +142,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
               <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
               <span className="text-4xl sm:text-5xl font-black text-white">{totalMoments}</span>
             </div>
-            <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">Total Moments</p>
+            <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">{t('moments.totalMoments')}</p>
           </div>
           
           <div className="hidden sm:block h-16 w-px bg-blue-500/20"></div>
@@ -151,7 +153,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
               <Link className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
               <span className="text-4xl sm:text-5xl font-black text-white">{totalExpensesLinked}</span>
             </div>
-            <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">Expenses Linked</p>
+            <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide font-medium">{t('moments.expensesLinked')}</p>
           </div>
         </div>
       </div>
@@ -162,7 +164,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
           <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
           <input
             type="text"
-            placeholder="Search moments..."
+            placeholder={t('moments.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-gray-800/60 text-white pl-10 sm:pl-14 pr-4 py-3 sm:py-4 rounded-xl border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/50 text-base sm:text-lg shadow-lg"
@@ -170,7 +172,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         </div>
         {searchQuery && (
           <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-amber-300 font-medium">
-            ✨ Showing {filteredMoments.length} of {totalMoments} moments
+            {t('moments.showing', { count: filteredMoments.length, total: totalMoments })}
           </div>
         )}
       </div>
@@ -183,15 +185,15 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
             className="w-full sm:w-auto bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 px-4 sm:px-5 py-3 rounded-lg flex items-center justify-center gap-2 text-sm font-medium border border-gray-600/30 transition-all"
           >
             <Filter className="w-4 h-4"/>
-            Filter: {filter.charAt(0).toUpperCase() + filter.slice(1)}
+            {t('moments.filter')} {filter === 'all' ? t('moments.all') : filter === 'achievements' ? t('moments.achievements') : filter === 'travel' ? t('common.travel') : filter === 'business' ? t('moments.business') : t('moments.expense')}
           </button>
           {showFilterDropdown && (
             <div className="absolute z-10 mt-2 w-48 bg-gray-800 rounded-lg shadow-2xl border border-gray-700">
-              <button onClick={() => { setFilter('all'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-t-lg">All</button>
-              <button onClick={() => { setFilter('travel'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">Travel</button>
-              <button onClick={() => { setFilter('business'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 flex items-center gap-2"><Briefcase className="w-3 h-3 text-purple-400"/>Business</button>
-              <button onClick={() => { setFilter('achievements'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">Achievements</button>
-              <button onClick={() => { setFilter('expenses'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-b-lg">Expenses Linked</button>
+              <button onClick={() => { setFilter('all'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-t-lg">{t('moments.all')}</button>
+              <button onClick={() => { setFilter('travel'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">{t('common.travel')}</button>
+              <button onClick={() => { setFilter('business'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 flex items-center gap-2"><Briefcase className="w-3 h-3 text-purple-400"/>{t('moments.business')}</button>
+              <button onClick={() => { setFilter('achievements'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700">{t('moments.achievements')}</button>
+              <button onClick={() => { setFilter('expenses'); setShowFilterDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 rounded-b-lg">{t('moments.expensesLinked')}</button>
             </div>
           )}
         </div>
@@ -202,7 +204,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
           className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 sm:gap-3 text-base font-bold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all"
           style={{ color: '#111827' }}
         >
-          <Plus className="w-4 h-4 sm:w-5 sm:h-5"/> Add New Moment
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5"/> {t('moments.addNewMoment')}
         </button>
       </div>
 
@@ -211,13 +213,13 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
         <div className="text-center py-16">
           <div className="inline-block bg-gradient-to-br from-amber-900/20 to-purple-900/20 rounded-2xl p-12 border border-amber-500/20">
             <BookOpen className="w-20 h-20 text-amber-400/50 mx-auto mb-4" />
-            <p className="text-2xl font-bold text-amber-200 mb-2">Your Freedom Journal Awaits</p>
-            <p className="text-gray-400 mb-6">Start capturing your story!</p>
+            <p className="text-2xl font-bold text-amber-200 mb-2">{t('moments.freedomJournalAwaits')}</p>
+            <p className="text-gray-400 mb-6">{t('moments.startCapturingStory')}</p>
             <button
               onClick={() => onEditMoment(null)}
               className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-8 py-4 rounded-xl inline-flex items-center gap-3 text-base font-bold shadow-2xl transform hover:scale-105 transition-all"
             >
-              <Plus className="w-5 h-5"/> Add Your First Moment
+              <Plus className="w-5 h-5"/> {t('moments.addFirstMoment')}
             </button>
           </div>
         </div>
@@ -242,7 +244,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                     <div className="flex-1 min-w-0">
                       {/* 💎 TITLE - Amber/Gold */}
                       <h3 className="text-xl font-bold mb-2" style={{ color: '#FBBF24' }}>
-                        {moment.title || 'Untitled Moment'}
+                        {moment.title || t('moments.untitledMoment')}
                       </h3>
                       
                       {/* Content Preview */}
@@ -263,12 +265,12 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                           {isExpanded ? (
                             <>
                               <ChevronUp className="w-4 h-4" />
-                              Show Less
+                              {t('logbook.showLess')}
                             </>
                           ) : (
                             <>
                               <ChevronDown className="w-4 h-4" />
-                              Read More
+                              {t('logbook.readMore')}
                             </>
                           )}
                         </button>
@@ -348,21 +350,21 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                         copyToClipboard(moment.story); 
                       }} 
                       className="text-gray-400 hover:text-green-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Copy to clipboard"
+                      title={t('moments.copyToClipboard')}
                     >
                       <Copy className="w-4 h-4"/>
                     </button>
                     <button 
                       onClick={(e) => { e.stopPropagation(); onEditMoment(moment); }} 
                       className="text-gray-400 hover:text-amber-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Edit moment"
+                      title={t('moments.editMoment')}
                     >
                       <Edit className="w-4 h-4"/>
                     </button>
                     <button 
                       onClick={(e) => { e.stopPropagation(); onShareMoment(moment); }} 
                       className="text-gray-400 hover:text-blue-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                      title="Share moment"
+                      title={t('moments.shareMoment')}
                     >
                       <Share2 className="w-4 h-4"/>
                     </button>
@@ -370,7 +372,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                       <button 
                         onClick={(e) => { e.stopPropagation(); onDeleteMoment(moment.id); }} 
                         className="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-                        title="Delete moment"
+                        title={t('moments.deleteMoment')}
                       >
                         <Trash2 className="w-4 h-4"/>
                       </button>
