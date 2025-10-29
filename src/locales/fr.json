@@ -4,6 +4,37 @@
     "tagline": "Trouvez Votre Sommet",
     "description": "Votre ascension de fauché à sommet. Construit par un réfugié cambodgien."
   },
+  "investment": {
+    "categories": {
+      "usStocks": "Actions Américaines",
+      "internationalStocks": "Actions Internationales",
+      "bonds": "Obligations",
+      "realEstate": "Immobilier (REITs)",
+      "crypto": "Cryptomonnaie",
+      "commodities": "Matières Premières",
+      "cashEquivalents": "Liquidités & Équivalents",
+      "other": "Autre"
+    },
+    "accountTypes": {
+      "taxable": "Compte Imposable",
+      "other": "Autre"
+    },
+    "placeholders": {
+      "ticker": "ex: AAPL, TSLA, MSFT",
+      "companyName": "ex: Apple Inc.",
+      "shares": "ex: 10",
+      "avgCost": "ex: 150.00",
+      "currentPrice": "ex: 175.50",
+      "dividendYield": "ex: 2.5",
+      "companyNameShort": "Nom de l'Entreprise",
+      "sharesShort": "Actions",
+      "avgCostShort": "Coût Moyen",
+      "currentPriceShort": "Prix Actuel",
+      "dividendYieldShort": "Rendement en Dividendes %"
+    },
+    "financialFreedomTarget": "Objectif de Liberté Financière",
+    "dripTooltip": "Le DRIP (Plan de Réinvestissement des Dividendes) utilise automatiquement les paiements de dividendes pour acheter plus d'actions du même titre, composant la croissance de votre investissement au fil du temps."
+  },
   "common": {
     "loading": "Chargement...",
     "save": "Sauvegarder",
@@ -209,7 +240,22 @@
     "active": "Actif",
     "perMonth": "/mois",
     "totalValue": "Valeur Totale",
-    "totalGainLoss": "Gain/Perte Total"
+    "totalGainLoss": "Gain/Perte Total",
+    "description": "Description",
+    "amount": "Montant",
+    "goalReached": "Objectif Atteint !",
+    "goalReachedCheck": "✓ Objectif Atteint !",
+    "toGo": "restants",
+    "noGoalsYet": "Pas Encore d'Objectifs",
+    "totalContributed": "Total Contribué",
+    "totalRoomAvailable": "Espace Total Disponible",
+    "deleteBusiness": "Supprimer l'Entreprise",
+    "startDate": "Date de Début",
+    "endDate": "Date de Fin",
+    "firstName": "Prénom",
+    "emailAddress": "Adresse E-mail",
+    "password": "Mot de Passe",
+    "setPassword": "Définir Votre Mot de Passe"
   },
   "settings": {
     "title": "Paramètres",
