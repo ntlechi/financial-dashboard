@@ -15,8 +15,8 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
       faqs: [
         {
           id: 1,
-          question: 'What is Kampoul?',
-          answer: 'Kampoul is your personal financial navigation system designed to guide you toward complete financial freedom. Unlike other apps that just track spending, we focus on building wealth through strategic planning, side hustle tracking, and investment management. Think of it as your financial GPS - showing you exactly where you are and the fastest route to where you want to be.',
+          question: 'What is Kompul?',
+          answer: 'Kompul is your personal financial navigation system designed to guide you toward complete financial freedom. Unlike other apps that just track spending, we focus on building wealth through strategic planning, side hustle tracking, and investment management. Think of it as your financial GPS - showing you exactly where you are and the fastest route to where you want to be.',
           tags: ['overview', 'purpose', 'financial freedom'],
           popular: true
         },
@@ -44,7 +44,7 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
         {
           id: 5,
           question: 'Can I use this if I\'m not tech-savvy?',
-          answer: 'Yes! Kampoul is designed for everyone, regardless of technical experience. The interface is intuitive, with clear labels and helpful tooltips. If you can use a smartphone, you can master this app. Plus, our FAQ system and support team are here to help you succeed.',
+          answer: 'Yes! Kompul is designed for everyone, regardless of technical experience. The interface is intuitive, with clear labels and helpful tooltips. If you can use a smartphone, you can master this app. Plus, our FAQ system and support team are here to help you succeed.',
           tags: ['ease of use', 'beginner friendly', 'support'],
           popular: false
         }

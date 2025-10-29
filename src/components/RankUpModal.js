@@ -128,7 +128,7 @@ export default function RankUpModal({ isOpen, onClose, newRank, oldRank, xpGaine
             <div className="bg-gray-800/50 rounded-lg p-4 mb-6">
               <h3 className="text-lg font-semibold text-white mb-2">Mission Status</h3>
               <p className="text-gray-300 text-sm">
-                You are now a <span className="font-bold text-amber-400">{newRank.name}</span> in Kampoul.
+                You are now a <span className="font-bold text-amber-400">{newRank.name}</span> in Kompul.
                 Continue your financial operations to reach the next rank.
               </p>
             </div>
