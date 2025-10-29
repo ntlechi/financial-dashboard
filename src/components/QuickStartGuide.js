@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, Rocket, TrendingUp, Target, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * QuickStartGuide Component
@@ -11,6 +12,7 @@ import { X, CheckCircle, Rocket, TrendingUp, Target, Zap } from 'lucide-react';
  * - Responsive design for mobile
  */
 export default function QuickStartGuide({ onClose, forceShow = false }) {
+  const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
@@ -38,26 +40,26 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
   const steps = [
     {
       icon: <Rocket className="w-6 h-6 text-blue-400" />,
-      title: "Reset to Start Fresh",
-      description: "Scroll to the bottom of the page and click 'Reset Data'. Choose 'Reset with Sample Data' to see how the app works, or 'Reset to Clean Data' to start from scratch.",
+      title: t('quickStart.step1Title'),
+      description: t('quickStart.step1Description'),
       color: "blue"
     },
     {
       icon: <TrendingUp className="w-6 h-6 text-green-400" />,
-      title: "Log Your First Transaction",
-      description: "Click 'Quick Expense' button (top right) or go to the Transactions tab to add your income and expenses. This builds your financial picture!",
+      title: t('quickStart.step2Title'),
+      description: t('quickStart.step2Description'),
       color: "green"
     },
     {
       icon: <Target className="w-6 h-6 text-amber-400" />,
-      title: "Set Your Goals",
-      description: "Edit the 'Financial Freedom Goal' card on your dashboard or create custom goals. Having clear targets keeps you motivated!",
+      title: t('quickStart.step3Title'),
+      description: t('quickStart.step3Description'),
       color: "amber"
     },
     {
       icon: <Zap className="w-6 h-6 text-purple-400" />,
-      title: "Start Earning XP",
-      description: "Complete actions like adding transactions, creating goals, and learning from The Trail to earn XP and rank up! Click the 🎮 button to see how.",
+      title: t('quickStart.step4Title'),
+      description: t('quickStart.step4Description'),
       color: "purple"
     }
   ];
@@ -70,10 +72,10 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">
-                🧭 Welcome to Kompul!
+                {t('quickStart.welcomeTitle')}
               </h2>
               <p className="text-blue-100 text-sm">
-                Your journey from financially illiterate to financially free starts here.
+                {t('quickStart.welcomeSubtitle')}
               </p>
             </div>
             <button
@@ -90,7 +92,7 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
           {/* Introduction */}
           <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-lg p-4">
             <p className="text-gray-200 text-sm leading-relaxed">
-              <strong className="text-blue-400">Quick Start Guide:</strong> Follow these 4 steps to get the most out of your financial transformation. Don't worry—you can access this guide anytime from the Help menu!
+              <strong className="text-blue-400">{t('quickStart.guideIntro')}</strong> {t('quickStart.guideDescription')}
             </p>
           </div>
 
@@ -108,7 +110,7 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`text-${step.color}-400 font-bold text-sm`}>
-                        STEP {index + 1}
+                        {t('quickStart.step')} {index + 1}
                       </span>
                       <h3 className="text-white font-semibold">
                         {step.title}
@@ -127,20 +129,20 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
           <div className="bg-gradient-to-r from-amber-900/20 to-orange-900/20 border border-amber-500/30 rounded-lg p-4">
             <h3 className="text-amber-400 font-semibold mb-2 flex items-center gap-2">
               <CheckCircle className="w-5 h-5" />
-              Pro Tips:
+              {t('quickStart.proTips')}
             </h3>
             <ul className="text-gray-300 text-sm space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 mt-1">•</span>
-                <span><strong className="text-white">Stealth Mode:</strong> Toggle the eye icon (top right) to blur sensitive numbers when viewing in public.</span>
+                <span><strong className="text-white">{t('quickStart.proTip1Title')}</strong> {t('quickStart.proTip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 mt-1">•</span>
-                <span><strong className="text-white">The Trail:</strong> Go to Field Notes → The Trail tab for 10 educational missions. Earn XP while learning!</span>
+                <span><strong className="text-white">{t('quickStart.proTip2Title')}</strong> {t('quickStart.proTip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 mt-1">•</span>
-                <span><strong className="text-white">Mobile Friendly:</strong> Add this app to your home screen for quick access. Click your browser's "Add to Home Screen" option.</span>
+                <span><strong className="text-white">{t('quickStart.proTip3Title')}</strong> {t('quickStart.proTip3')}</span>
               </li>
             </ul>
           </div>
@@ -158,7 +160,7 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
               htmlFor="dontShowAgain"
               className="text-gray-300 text-sm cursor-pointer select-none"
             >
-              Don't show this guide again (you can access it from the Help menu)
+              {t('quickStart.dontShowAgain')}
             </label>
           </div>
 
@@ -168,7 +170,7 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
               onClick={handleClose}
               className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg"
             >
-              Let's Get Started! 🚀
+              {t('quickStart.letsGetStarted')}
             </button>
             {!forceShow && (
               <button
@@ -178,7 +180,7 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
                 }}
                 className="sm:w-auto bg-gray-700 hover:bg-gray-600 text-gray-300 font-medium py-3 px-6 rounded-lg transition-colors"
               >
-                Skip for Now
+                {t('quickStart.skipForNow')}
               </button>
             )}
           </div>
