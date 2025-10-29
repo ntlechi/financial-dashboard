@@ -70,7 +70,7 @@ export default function QuickStartGuide({ onClose, forceShow = false }) {
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">
-                🧭 Welcome to Kampoul!
+                🧭 Welcome to Kompul!
               </h2>
               <p className="text-blue-100 text-sm">
                 Your journey from financially illiterate to financially free starts here.

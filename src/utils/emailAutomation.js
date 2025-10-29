@@ -131,7 +131,7 @@ async function sendViaSendGrid(emailData) {
     }],
     from: {
       email: 'noreply@survivebackpacking.com',
-      name: 'Kampoul'
+      name: 'Kompul'
     },
     template_id: templateId
   };

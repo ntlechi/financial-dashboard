@@ -26,7 +26,7 @@ const TermsOfService = ({ onClose }) => {
           <section>
             <h3 className="text-xl font-semibold text-white mb-3">1. Mission Agreement (Agreement to Terms)</h3>
             <p>
-              Welcome to the Survive Backpacking ecosystem. These Universal Terms of Service ("Terms") govern your access to and use of our entire operation, including the website (survivebackpacking.com), our flagship web application (Kampoul), and all related content and services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, you may not access the Service.
+              Welcome to the Survive Backpacking ecosystem. These Universal Terms of Service ("Terms") govern your access to and use of our entire operation, including the website (survivebackpacking.com), our flagship web application (Kompul), and all related content and services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, you may not access the Service.
             </p>
           </section>
 
@@ -37,7 +37,7 @@ const TermsOfService = ({ onClose }) => {
             </h3>
             <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 space-y-2">
               <p className="mb-3">
-                Kampoul and all content provided by Survive Backpacking are for informational and educational purposes only.
+                Kompul and all content provided by Survive Backpacking are for informational and educational purposes only.
               </p>
               <p><strong>Not Financial Advice:</strong> Our Service provides tools and intelligence, not professional financial, investment, or tax advice.</p>
               <p><strong>Your Responsibility:</strong> You are the sole commander of your financial decisions and are fully responsible for their outcomes.</p>
@@ -57,7 +57,7 @@ const TermsOfService = ({ onClose }) => {
           <section>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <CreditCard className="w-5 h-5 mr-2 text-green-400" />
-              4. Subscriptions & Payment (Kampoul)
+              4. Subscriptions & Payment (Kompul)
             </h3>
             <div className="space-y-3">
               <p><strong>Billing:</strong> Subscriptions are billed in advance on a recurring monthly or annual basis in USD.</p>

@@ -1,4 +1,4 @@
-// 🛡️ Error Handling Utilities for Kampoul
+// 🛡️ Error Handling Utilities for Kompul
 
 // Error types for better categorization
 export const ERROR_TYPES = {
