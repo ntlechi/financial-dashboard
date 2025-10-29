@@ -4,6 +4,31 @@
     "tagline": "Find Your Apex",
     "description": "Your climb from broke to apex. Built by a Cambodian refugee."
   },
+  "validations": {
+    "pleaseEnterValidAmount": "Please enter a valid amount greater than 0",
+    "pleaseFillAllFields": "Please fill in all required fields",
+    "sharesMustBeGreaterThanZero": "Shares must be greater than 0",
+    "avgCostMustBeGreaterThanZero": "Average cost must be greater than 0",
+    "currentPriceMustBeGreaterThanZero": "Current price must be greater than 0",
+    "dividendYieldRange": "Dividend yield must be between 0% and 50%",
+    "countryAlreadyInWishlist": "This country is already in your wishlist!",
+    "invalidPreviousAmount": "Error: Invalid previous amount. Please refresh and try again."
+  },
+  "confirmations": {
+    "deleteTripConfirm": "Are you sure you want to delete this trip? This action cannot be undone.",
+    "deleteExpenseConfirm": "Delete this expense?",
+    "deleteMomentConfirm": "Delete this moment?",
+    "deleteMomentWithXP": "Delete this moment?\\n\\n☠️ You will lose 10 XP for deleting.\\nThis cannot be undone."
+  },
+  "errors": {
+    "failedToDeleteTransaction": "Failed to delete transaction",
+    "failedToAddCountry": "Failed to add country. Please try again.",
+    "failedToRemoveCountry": "Failed to remove country. Please try again."
+  },
+  "emptyStates": {
+    "clickEditToAddAssetsLiabilities": "Click edit to add your assets and liabilities",
+    "clickEditToAddRetirementAccounts": "Click edit to add your retirement accounts"
+  },
   "common": {
     "loading": "Loading...",
     "save": "Save",

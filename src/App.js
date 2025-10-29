@@ -1420,7 +1420,7 @@ const NetWorthCard = ({ data, onEdit }) => {
           </button>
         </div>
         <p className="text-5xl font-extrabold text-white">$0</p>
-        <p className="text-gray-400 text-sm mt-2">Click edit to add your assets and liabilities</p>
+        <p className="text-gray-400 text-sm mt-2">{t('emptyStates.clickEditToAddAssetsLiabilities')}</p>
       </Card>
     );
   }
@@ -1670,7 +1670,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
         <div className="text-center py-8">
           <ShieldCheck className="w-12 h-12 mx-auto text-gray-400 mb-3" />
           <p className="text-gray-400">No retirement accounts configured</p>
-          <p className="text-sm text-gray-500 mt-1">Click edit to add your retirement accounts</p>
+          <p className="text-sm text-gray-500 mt-1">{t('emptyStates.clickEditToAddRetirementAccounts')}</p>
         </div>
       )}
     </Card>
@@ -4045,7 +4045,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     
     const amount = parseFloat(newItem.amount) || 0;
     if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid amount greater than 0');
+      alert(t('validations.pleaseEnterValidAmount'));
       return;
     }
     const item = {
@@ -4216,13 +4216,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
     const newAmount = parseFloat(editingItem.amount) || 0;
     
     if (isNaN(newAmount) || newAmount <= 0) {
-      alert('Please enter a valid amount greater than 0');
+      alert(t('validations.pleaseEnterValidAmount'));
       return;
     }
     
     if (isNaN(oldAmount)) {
       console.error('Invalid oldAmount:', editingItem.oldAmount);
-      alert('Error: Invalid previous amount. Please refresh and try again.');
+      alert(t('validations.invalidPreviousAmount'));
       return;
     }
 
@@ -4293,7 +4293,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
     const amount = parseFloat(newRecurringItem.amount) || 0;
     if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid amount greater than 0');
+      alert(t('validations.pleaseEnterValidAmount'));
       return;
     }
     const recurringItem = {
@@ -6149,7 +6149,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
   const handleAddHolding = async () => {
     if (!newHolding.symbol || !newHolding.shares || !newHolding.avgCost || !newHolding.currentPrice) {
-      alert('Please fill in all required fields');
+      alert(t('validations.pleaseFillAllFields'));
       return;
     }
     
@@ -6160,19 +6160,19 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
     // Validation for impossible values
     if (shares <= 0) {
-      alert('Shares must be greater than 0');
+      alert(t('validations.sharesMustBeGreaterThanZero'));
       return;
     }
     if (avgCost <= 0) {
-      alert('Average cost must be greater than 0');
+      alert(t('validations.avgCostMustBeGreaterThanZero'));
       return;
     }
     if (currentPrice <= 0) {
-      alert('Current price must be greater than 0');
+      alert(t('validations.currentPriceMustBeGreaterThanZero'));
       return;
     }
     if (dividendYield < 0 || dividendYield > 50) {
-      alert('Dividend yield must be between 0% and 50%');
+      alert(t('validations.dividendYieldRange'));
       return;
     }
     
@@ -7640,7 +7640,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
   //   console.log('Share moment:', moment);
   // };
       console.error('Error deleting transaction:', error);
-      alert('Failed to delete transaction');
+      alert(t('errors.failedToDeleteTransaction'));
     }
   };
 
@@ -8972,7 +8972,7 @@ const TravelTab = ({ data, setData, userId }) => {
     
     // Check if already in wishlist
     if (currentWishlist.some(c => c.toLowerCase() === formattedCountry.toLowerCase())) {
-      alert('This country is already in your wishlist!');
+      alert(t('validations.countryAlreadyInWishlist'));
       return;
     }
     
@@ -8998,7 +8998,7 @@ const TravelTab = ({ data, setData, userId }) => {
   //   console.log('Share moment:', moment);
   // };
       console.error('Error adding wishlist country:', error);
-      alert('Failed to add country. Please try again.');
+      alert(t('errors.failedToAddCountry'));
     }
   };
 
@@ -9025,7 +9025,7 @@ const TravelTab = ({ data, setData, userId }) => {
   //   console.log('Share moment:', moment);
   // };
       console.error('Error removing wishlist country:', error);
-      alert('Failed to remove country. Please try again.');
+      alert(t('errors.failedToRemoveCountry'));
     }
   };
 
@@ -9320,7 +9320,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
  // 🗑️ DELETE TRIP HANDLER
  const handleDeleteTrip = async (tripId) => {
-   if (!window.confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
+   if (!window.confirm(t('confirmations.deleteTripConfirm'))) {
      return;
    }
 
@@ -9340,7 +9340,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
  // 🗑️ DELETE EXPENSE FROM TRIP HANDLER
  const handleDeleteExpense = async (tripId, expenseId) => {
-   if (!window.confirm('Delete this expense?')) {
+   if (!window.confirm(t('confirmations.deleteExpenseConfirm'))) {
      return;
    }
 
@@ -9419,7 +9419,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
  // 💫 DELETE MOMENT FROM TRIP HANDLER
  const handleDeleteTripMoment = async (tripId, momentId) => {
-   if (!window.confirm('Delete this moment?')) return;
+   if (!window.confirm(t('confirmations.deleteMomentConfirm'))) return;
 
    // Remove from trip's moments
    const updatedTrips = (data.travel?.trips || []).map(trip => {
@@ -11645,7 +11645,7 @@ function App() {
   };
 
   const handleDeleteMoment = async (momentId) => {
-    if (!window.confirm('Delete this moment?\\n\\n?��️ You will lose 10 XP for deleting.\\nThis cannot be undone.')) return;
+    if (!window.confirm(t('confirmations.deleteMomentWithXP'))) return;
 
     const updatedMoments = (data.moments || []).filter(m => m.id !== momentId);
      try {

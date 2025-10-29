@@ -35,6 +35,31 @@
     "financialFreedomTarget": "Objectif de Liberté Financière",
     "dripTooltip": "Le DRIP (Plan de Réinvestissement des Dividendes) utilise automatiquement les paiements de dividendes pour acheter plus d'actions du même titre, composant la croissance de votre investissement au fil du temps."
   },
+  "validations": {
+    "pleaseEnterValidAmount": "Veuillez entrer un montant valide supérieur à 0",
+    "pleaseFillAllFields": "Veuillez remplir tous les champs obligatoires",
+    "sharesMustBeGreaterThanZero": "Les actions doivent être supérieures à 0",
+    "avgCostMustBeGreaterThanZero": "Le coût moyen doit être supérieur à 0",
+    "currentPriceMustBeGreaterThanZero": "Le prix actuel doit être supérieur à 0",
+    "dividendYieldRange": "Le rendement en dividendes doit être entre 0% et 50%",
+    "countryAlreadyInWishlist": "Ce pays est déjà dans votre liste de souhaits !",
+    "invalidPreviousAmount": "Erreur : Montant précédent invalide. Veuillez actualiser et réessayer."
+  },
+  "confirmations": {
+    "deleteTripConfirm": "Êtes-vous sûr de vouloir supprimer ce voyage ? Cette action ne peut pas être annulée.",
+    "deleteExpenseConfirm": "Supprimer cette dépense ?",
+    "deleteMomentConfirm": "Supprimer ce moment ?",
+    "deleteMomentWithXP": "Supprimer ce moment ?\\n\\n☠️ Vous perdrez 10 XP en supprimant.\\nCeci ne peut pas être annulé."
+  },
+  "errors": {
+    "failedToDeleteTransaction": "Échec de la suppression de la transaction",
+    "failedToAddCountry": "Échec de l'ajout du pays. Veuillez réessayer.",
+    "failedToRemoveCountry": "Échec de la suppression du pays. Veuillez réessayer."
+  },
+  "emptyStates": {
+    "clickEditToAddAssetsLiabilities": "Cliquez sur modifier pour ajouter vos actifs et passifs",
+    "clickEditToAddRetirementAccounts": "Cliquez sur modifier pour ajouter vos comptes de retraite"
+  },
   "common": {
     "loading": "Chargement...",
     "save": "Sauvegarder",
