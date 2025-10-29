@@ -268,7 +268,10 @@
     "ruleDescription": "50% Needs, 30% Wants, 20% Savings",
     "sixJarsSystem": "6 Jars System",
     "sixJarsDescription": "Divide income into 6 categories",
-    "comingSoon": "Coming soon..."
+    "comingSoon": "Coming soon...",
+    "extraPaymentPlaceholder": "Extra payment amount",
+    "monthlyIncomePlaceholder": "Enter your monthly income",
+    "unknownSymbol": "Unknown"
   },
   "sideHustle": {
     "businessName": "Business Name",

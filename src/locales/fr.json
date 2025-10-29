@@ -274,7 +274,19 @@
     "shares": "Actions = Combien de parts de l'entreprise vous possédez. Même 1 action fait de vous un copropriétaire!",
     "averageCost": "Coût Moyen = Le prix que vous avez payé par action. Si vous avez acheté à différents moments, calculez la moyenne: Total Investi ÷ Total Actions.",
     "currentPrice": "Prix Actuel = Ce à quoi l'action se négocie en ce moment. Vérifiez sur Yahoo Finance, Google Finance, ou l'app de votre courtier.",
-    "dividendYield": "Rendement du Dividende = Paiement de dividende annuel en % du prix de l'action. Rendement plus élevé = plus de revenu passif! (0% si l'action ne paie pas de dividendes)"
+    "dividendYield": "Rendement du Dividende = Paiement de dividende annuel en % du prix de l'action. Rendement plus élevé = plus de revenu passif! (0% si l'action ne paie pas de dividendes)",
+    "statusLegend": "Légende des Statuts",
+    "editDebt": "Modifier la Dette",
+    "removeDebt": "Supprimer la dette",
+    "resilienceStatusLevels": "Niveaux de Statut de Résilience",
+    "secureStatus": "Sécurisé (>90%)",
+    "secureDescription": "Résilience exceptionnelle !",
+    "goodProgressStatus": "Bon Progrès (50-90%)",
+    "goodProgressDescription": "Continuez à construire !",
+    "buildingStatus": "En Construction (25-50%)",
+    "buildingDescription": "Vous y arrivez !",
+    "needsWorkStatus": "À Améliorer (<25%)",
+    "needsWorkDescription": "C'est le moment de foncer !"
   },
   "modals": {
     "edit": "Modifier",
@@ -556,7 +568,10 @@
     "ruleDescription": "50% Besoins, 30% Envies, 20% Épargne",
     "sixJarsSystem": "Système des 6 Bocaux",
     "sixJarsDescription": "Divisez vos revenus en 6 catégories",
-    "comingSoon": "Bientôt disponible..."
+    "comingSoon": "Bientôt disponible...",
+    "extraPaymentPlaceholder": "Montant du paiement supplémentaire",
+    "monthlyIncomePlaceholder": "Entrez votre revenu mensuel",
+    "unknownSymbol": "Inconnu"
   },
   "missionControl": {
     "title": "Mission",

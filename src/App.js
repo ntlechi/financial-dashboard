@@ -859,7 +859,7 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
               onMouseLeave={() => setShowStatusLegend(false)}
               onClick={() => setShowStatusLegend(!showStatusLegend)}
               className="text-gray-400 hover:text-blue-400 transition-colors"
-              title="Status Legend"
+              title={t('tooltips.statusLegend')}
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -869,34 +869,34 @@ const RainyDayFundCard = ({ data, expenses, viewMode, onEdit }) => {
             {/* Status Legend Tooltip */}
             {showStatusLegend && (
               <div className="absolute top-full right-0 sm:left-0 mt-2 w-64 sm:w-72 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 z-50 p-4">
-                <h4 className="text-white font-semibold mb-3 text-sm">Resilience Status Levels</h4>
+                <h4 className="text-white font-semibold mb-3 text-sm">{t('tooltips.resilienceStatusLevels')}</h4>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-2 p-2 bg-teal-900/20 rounded border border-teal-500/30">
                     <div className="w-3 h-3 rounded-full bg-teal-500"></div>
                     <div className="flex-1">
-                      <div className="text-teal-400 font-semibold">Secure (&gt;90%)</div>
-                      <div className="text-gray-400">Outstanding resilience!</div>
+                      <div className="text-teal-400 font-semibold">{t('tooltips.secureStatus')}</div>
+                      <div className="text-gray-400">{t('tooltips.secureDescription')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 p-2 bg-sky-900/20 rounded border border-sky-500/30">
                     <div className="w-3 h-3 rounded-full bg-sky-500"></div>
                     <div className="flex-1">
-                      <div className="text-sky-400 font-semibold">Good Progress (50-90%)</div>
-                      <div className="text-gray-400">Keep building!</div>
+                      <div className="text-sky-400 font-semibold">{t('tooltips.goodProgressStatus')}</div>
+                      <div className="text-gray-400">{t('tooltips.goodProgressDescription')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 p-2 bg-amber-900/20 rounded border border-amber-500/30">
                     <div className="w-3 h-3 rounded-full bg-amber-500"></div>
                     <div className="flex-1">
-                      <div className="text-amber-400 font-semibold">Building (25-50%)</div>
-                      <div className="text-gray-400">Getting there!</div>
+                      <div className="text-amber-400 font-semibold">{t('tooltips.buildingStatus')}</div>
+                      <div className="text-gray-400">{t('tooltips.buildingDescription')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 p-2 bg-rose-900/20 rounded border border-rose-500/30">
                     <div className="w-3 h-3 rounded-full bg-rose-500"></div>
                     <div className="flex-1">
-                      <div className="text-rose-400 font-semibold">Needs Work (&lt;25%)</div>
-                      <div className="text-gray-400">Time to hustle!</div>
+                      <div className="text-rose-400 font-semibold">{t('tooltips.needsWorkStatus')}</div>
+                      <div className="text-gray-400">{t('tooltips.needsWorkDescription')}</div>
                     </div>
                   </div>
                 </div>
@@ -1704,7 +1704,7 @@ const DebtCard = ({ data, onEdit }) => {
       <button
         onClick={() => onEdit('debt', data)}
         className="absolute top-4 right-4 p-2 bg-rose-700/20 hover:bg-rose-600/30 rounded-lg transition-colors"
-        title="Edit Debt"
+        title={t('tooltips.editDebt')}
       >
         <Edit className="w-4 h-4 text-rose-300" />
       </button>
@@ -3065,7 +3065,7 @@ const DebtPayoffCalculator = () => {
                         <button
                           onClick={() => removeDebt(debt.id)}
                           className="text-red-400 hover:text-red-300 transition-colors p-1"
-                          title="Remove debt"
+                          title={t('tooltips.removeDebt')}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -3084,7 +3084,7 @@ const DebtPayoffCalculator = () => {
                   value={extraPayment === 0 ? '0' : (extraPayment || '')}
                   onChange={(e) => setExtraPayment(e.target.value)}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  placeholder="Extra payment amount"
+                  placeholder={t('budget.extraPaymentPlaceholder')}
                 />
               </div>
               
@@ -3414,7 +3414,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             value={monthlyIncome || ''}
             onChange={(e) => setMonthlyIncome(e.target.value)}
             className="w-full bg-gray-700 text-white text-xl p-4 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            placeholder="Enter your monthly income"
+            placeholder={t('budget.monthlyIncomePlaceholder')}
           />
         </div>
         
@@ -5867,8 +5867,8 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       
       return {
         id: holding.id || index + 1,
-        label: holding.symbol || 'Unknown',  // Ticker symbol (e.g., "AAPL", "BIT")
-        name: holding.symbol || 'Unknown',   // Keep for compatibility
+        label: holding.symbol || t('budget.unknownSymbol'),  // Ticker symbol (e.g., "AAPL", "BIT")
+        name: holding.symbol || t('budget.unknownSymbol'),   // Keep for compatibility
         value: holdingValue,                 // Actual dollar value
         percentage: percentage.toFixed(1),   // Percentage as string (e.g., "50.0")
         percentageNum: percentage,           // Percentage as number for sorting
