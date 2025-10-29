@@ -3488,7 +3488,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
                 <span className="text-yellow-400 text-sm font-semibold">%</span>
               </div>
             </div>
-            <p className="text-gray-300 mb-4">Discretionary spending</p>
+            <p className="text-gray-300 mb-4">{t('budget.discretionarySpending')}</p>
             <div className="text-4xl font-bold text-white">${(parseFloat(fiftyThirtyTwenty.wants) || 0).toLocaleString()}</div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40">
@@ -5564,7 +5564,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g., SaaS Subscription, Client Retainer"
+                  placeholder={t('examples.saasSubscription')}
                   value={newRecurringItem.name}
                   onChange={(e) => setNewRecurringItem({...newRecurringItem, name: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -5623,7 +5623,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <option value={6}>Saturday</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 {newRecurringItem.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                    {newRecurringItem.frequency === 'bi-weekly' ? t('hints.perfectForPaychecks') : t('hints.chooseRecurringDay')}
                   </p>
                 </div>
               )}
@@ -5648,7 +5648,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g., software, marketing"
+                    placeholder={t('examples.softwareMarketing')}
                     value={newRecurringItem.category}
                     onChange={(e) => setNewRecurringItem({...newRecurringItem, category: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -6793,7 +6793,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       Click "{t('dashboard.addYourFirstInvestment')}" and enter your stock info:
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>◆ <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)</li>
+                      <li dangerouslySetInnerHTML={{__html: t('budget.tickerHelp')}}></li>
                       <li>◆ <strong>Shares:</strong> How many you own</li>
                       <li>◆ <strong>Price:</strong> What you paid per share</li>
                     </ul>
@@ -7072,7 +7072,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <option value="Other">{t('dropdownOptions.other')}</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 Group similar holdings for category view
+                    {t('budget.groupSimilarHoldings')}
                   </p>
                 </div>
                 
@@ -8196,7 +8196,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   <div>
                     This {newTransaction.type} will automatically be added every{' '}
                     {newTransaction.frequency === 'weekly' && `week on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]}`}
-                    {newTransaction.frequency === 'bi-weekly' && `2 weeks on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek]} (e.g., paychecks!)`}
+                    {newTransaction.frequency === 'bi-weekly' && t('hints.biWeeklyPaycheck', { day: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][newTransaction.dayOfWeek] })}
                     {newTransaction.frequency === 'monthly' && `month on day ${newTransaction.dayOfMonth}`}
                     {newTransaction.frequency === 'yearly' && `year on ${['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][newTransaction.monthOfYear]} ${newTransaction.dayOfMonth}`}
                     . You can manage all recurring {newTransaction.type}s in the Transactions tab.
@@ -8512,7 +8512,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     <option value={6}>Saturday</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 {editingRecurring.frequency === 'bi-weekly' ? 'Perfect for paychecks! (e.g., "every other Thursday")' : 'Choose which day this repeats'}
+                    {editingRecurring.frequency === 'bi-weekly' ? t('hints.perfectForPaychecks') : t('hints.chooseRecurringDay')}
                   </p>
                 </div>
               )}
@@ -10252,7 +10252,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="bg-gray-700/30 rounded-lg p-2">
-                    <div className="text-sm text-gray-400">Start Date</div>
+                    <div className="text-sm text-gray-400">{t('budget.startDateLabel')}</div>
                     <div className="text-white font-medium">{new Date(trip.startDate).toLocaleDateString()}</div>
                   </div>
                   <div className="bg-gray-700/30 rounded-lg p-2">
@@ -10923,7 +10923,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g., Thailand, Japan, Italy"
+                  placeholder={t('examples.countriesExample')}
                   value={wishlistCountryInput}
                   onChange={(e) => setWishlistCountryInput(e.target.value)}
                   onKeyPress={(e) => {
@@ -15090,7 +15090,7 @@ function App() {
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g., Home, Coffee Shop, Bank..."
+                        placeholder={t('examples.locationExample')}
                         value={newMoment.location}
                         onChange={(e) => setNewMoment({...newMoment, location: e.target.value})}
                         className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
@@ -15393,7 +15393,7 @@ function App() {
                               <label className="block text-xs text-gray-400 mb-1">Account Name</label>
                               <input
                                 type="text"
-                                placeholder="Credit Card"
+                                placeholder={t('examples.creditCard')}
                                 value={account.name || ''}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
@@ -15792,7 +15792,7 @@ function App() {
                       value={tempCardData.target || ''}
                       onChange={(e) => setTempCardData({...tempCardData, target: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
-                      placeholder="e.g., 50"
+                      placeholder={t('examples.percentageExample')}
                       min="0"
                       max="100"
                     />
@@ -16175,7 +16175,7 @@ function App() {
                                     updated[index] = { ...updated[index], name: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  placeholder="e.g., TFSA, RRSP, 401(k)..."
+                                  placeholder={t('examples.retirementAccountExample')}
                                   className="text-lg font-semibold text-amber-400 bg-slate-900/50 border border-amber-500/20 outline-none focus:border-amber-500 focus:bg-slate-900 rounded px-3 py-2 w-full transition-all"
                                 />
                               </div>
@@ -16230,7 +16230,7 @@ function App() {
                                     updated[index] = { ...updated[index], goal: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  placeholder="e.g., 10000"
+                                  placeholder={t('examples.retirementAmountExample')}
                                   className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 />
                               </div>
@@ -16263,7 +16263,7 @@ function App() {
                                     updated[index] = { ...updated[index], description: e.target.value };
                                     setTempCardData({ ...tempCardData, accounts: updated });
                                   }}
-                                  placeholder="e.g., Tax-free growth..."
+                                  placeholder={t('examples.retirementDescExample')}
                                   className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 />
                               </div>
@@ -16353,7 +16353,7 @@ function App() {
                               <label className="block text-xs text-gray-400 mb-1">Goal Name</label>
                               <input
                                 type="text"
-                                placeholder="e.g., New MacBook, Vacation, Car..."
+                                placeholder={t('examples.goalExample')}
                                 value={goal.name}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];

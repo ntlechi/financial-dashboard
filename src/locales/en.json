@@ -149,7 +149,17 @@
     "countryInputExample": "Type country name and press comma or Enter",
     "travelExpenseExample": "e.g., Hotel in Bangkok, Street food, Train ticket...",
     "momentDescriptionExample": "e.g., First Debt Payment, Emergency Fund Milestone...",
-    "momentStoryExample": "Share the story behind this moment... How did it feel? What did you learn? Why is it meaningful?"
+    "momentStoryExample": "Share the story behind this moment... How did it feel? What did you learn? Why is it meaningful?",
+    "saasSubscription": "e.g., SaaS Subscription, Client Retainer",
+    "softwareMarketing": "e.g., software, marketing",
+    "countriesExample": "e.g., Thailand, Japan, Italy",
+    "locationExample": "e.g., Home, Coffee Shop, Bank...",
+    "retirementAccountExample": "e.g., TFSA, RRSP, 401(k)...",
+    "retirementAmountExample": "e.g., 10000",
+    "retirementDescExample": "e.g., Tax-free growth...",
+    "goalExample": "e.g., New MacBook, Vacation, Car...",
+    "percentageExample": "e.g., 50",
+    "creditCard": "Credit Card"
   },
   "hints": {
     "perfectForPaychecks": "💡 Perfect for paychecks! (e.g., \"every other Thursday\")",
@@ -431,7 +441,11 @@
     "needs": "💡 Needs",
     "wants": "🎯 Wants",
     "savings": "💰 Savings",
-    "essentialExpenses": "Essential expenses"
+    "essentialExpenses": "Essential expenses",
+    "discretionarySpending": "Discretionary spending",
+    "groupSimilarHoldings": "💡 Group similar holdings for category view",
+    "tickerHelp": "◆ <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)",
+    "startDateLabel": "Start Date"
   },
   "sideHustle": {
     "businessName": "Business Name",
