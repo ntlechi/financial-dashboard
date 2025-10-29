@@ -41,7 +41,7 @@ const PrivacyPolicy = ({ onClose }) => {
             <div className="space-y-3">
               <div className="bg-gray-700/50 rounded-lg p-3">
                 <p className="font-semibold text-white mb-1">Financial Data (Your Input):</p>
-                <p>We collect the financial information you voluntarily enter into Kampoul (income, expenses, assets, etc.). This is your data. You are the sole operator of it.</p>
+                <p>We collect the financial information you voluntarily enter into Kompul (income, expenses, assets, etc.). This is your data. You are the sole operator of it.</p>
               </div>
               <div className="bg-gray-700/50 rounded-lg p-3">
                 <p className="font-semibold text-white mb-1">Account Information:</p>
@@ -63,7 +63,7 @@ const PrivacyPolicy = ({ onClose }) => {
               Your data has one purpose: to help you achieve your mission of financial freedom. We do not share personally identifying information publicly or with third parties, except when required by law.
             </p>
             <ul className="space-y-2 list-disc list-inside">
-              <li>To provide and maintain the core services of Kampoul.</li>
+              <li>To provide and maintain the core services of Kompul.</li>
               <li>To calculate the financial metrics and intelligence you see on your dashboard.</li>
               <li>To securely sync your data across your devices.</li>
               <li>To send you mission-critical account and service notifications.</li>
