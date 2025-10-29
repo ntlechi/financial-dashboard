@@ -8428,7 +8428,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               {/* Description */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  Description
+                  {t('common.description')}
                 </label>
                 <input
                   type="text"
@@ -8443,7 +8443,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
-                    Amount
+                    {t('common.amount')}
                   </label>
                   <input
                     type="number"
@@ -8455,15 +8455,15 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
-                    Type
+                    {t('common.type')}
                   </label>
                   <select
                     value={editingRecurring.type || 'expense'}
                     onChange={(e) => setEditingRecurring({...editingRecurring, type: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="expense">Expense</option>
-                    <option value="income">Income</option>
+                    <option value="expense">{t('dashboard.expense')}</option>
+                    <option value="income">{t('dashboard.income')}</option>
                   </select>
                 </div>
               </div>
@@ -8471,17 +8471,17 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               {/* Frequency */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  Frequency
+                  {t('transactions.frequency')}
                 </label>
                 <select
                   value={editingRecurring.frequency || 'monthly'}
                   onChange={(e) => setEditingRecurring({...editingRecurring, frequency: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                 >
-                  <option value="weekly">📅 Weekly</option>
-                  <option value="bi-weekly">📅📅 Bi-weekly (Every 2 Weeks)</option>
-                  <option value="monthly">🗓️ Monthly</option>
-                  <option value="yearly">📆 Yearly</option>
+                  <option value="weekly">📅 {t('frequencies.weekly')}</option>
+                  <option value="bi-weekly">📅📅 {t('frequencies.biWeekly')}</option>
+                  <option value="monthly">🗓️ {t('frequencies.monthly')}</option>
+                  <option value="yearly">📆 {t('frequencies.yearly')}</option>
                 </select>
               </div>
               
