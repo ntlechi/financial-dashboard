@@ -1259,7 +1259,7 @@ const GoalsCard = ({ data, onEdit }) => {
           <div className="inline-block bg-amber-500/10 rounded-full p-6 mb-4">
             <Target className="w-12 h-12 text-amber-400 mx-auto" />
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">No Goals Yet</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">{t('emptyStatesExtended.noGoalsYet')}</h3>
           <p className="text-gray-400 mb-6">
             Set your financial goals and track your progress!
           </p>
@@ -1674,7 +1674,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
       {accounts.length === 0 && (
         <div className="text-center py-8">
           <ShieldCheck className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-          <p className="text-gray-400">No retirement accounts configured</p>
+          <p className="text-gray-400">{t('emptyStatesExtended.noRetirementAccounts')}</p>
           <p className="text-sm text-gray-500 mt-1">{t('emptyStates.clickEditToAddRetirementAccounts')}</p>
         </div>
       )}
@@ -3364,14 +3364,14 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-1">
               <Calculator className="w-6 h-6 mr-3 text-cyan-400" />
-              Budget Calculator
+              {t('budget.budgetCalculatorTitle')}
             </h2>
-            <p className="text-gray-400">Plan your finances with proven budgeting methods.</p>
+            <p className="text-gray-400">{t('budget.planFinancesDescription')}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <div className="flex items-center bg-gray-900/50 rounded-full p-1 space-x-1">
-              <button onClick={() => setBudgetType('50-30-20')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '50-30-20' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>50/30/20 Rule</button>
-              <button onClick={() => setBudgetType('6-jars')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '6-jars' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>6 Jars System</button>
+              <button onClick={() => setBudgetType('50-30-20')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '50-30-20' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>{t('budget.fiftyThirtyTwentyRule')}</button>
+              <button onClick={() => setBudgetType('6-jars')} className={`px-3 py-1 rounded-full text-sm font-semibold ${budgetType === '6-jars' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>{t('budget.sixJarsSystem')}</button>
             </div>
             
             <button
@@ -3387,7 +3387,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
               }`}
             >
               <Target className="w-4 h-4 mr-2" />
-              {showFFCalculator ? 'Hide FF Calculator' : 'Financial Freedom'}
+              {showFFCalculator ? t('budget.hideFFCalculator') : t('budget.financialFreedom')}
               {!checkFeatureAccess('financial-calculators') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
             </button>
             
@@ -3404,7 +3404,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
               }`}
             >
               <CreditCard className="w-4 h-4 mr-2" />
-              {showDebtCalculator ? 'Hide Debt Calculator' : 'Debt Payoff'}
+              {showDebtCalculator ? t('budget.hideDebtCalculator') : t('budget.debtPayoff')}
               {!checkFeatureAccess('financial-calculators') && <Crown className="w-3 h-3 ml-1 text-amber-400" />}
             </button>
           </div>
@@ -3413,7 +3413,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-gray-700/30 rounded-xl p-6 border border-gray-600/30">
-          <label className="block text-white text-lg font-bold mb-4">Monthly Income Input</label>
+          <label className="block text-white text-lg font-bold mb-4">{t('budget.monthlyIncomeInput')}</label>
           <input
             type="number"
             value={monthlyIncome || ''}
@@ -3424,13 +3424,13 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         </div>
         
         <div className="bg-green-900/20 rounded-xl p-6 border-2 border-green-800/40">
-          <label className="block text-green-400 text-lg font-bold mb-4">Monthly Income</label>
+          <label className="block text-green-400 text-lg font-bold mb-4">{t('budget.monthlyIncome')}</label>
           <div className="text-3xl font-bold text-white mb-2">${(parseFloat(income) || 0).toLocaleString()}</div>
-          <p className="text-gray-400">Ready for budgeting</p>
+          <p className="text-gray-400">{t('budget.readyForBudgeting')}</p>
         </div>
         
         <div className="bg-blue-900/20 rounded-xl p-6 border-2 border-blue-800/40">
-          <label className="block text-blue-400 text-lg font-bold mb-4">After Budgeting</label>
+          <label className="block text-blue-400 text-lg font-bold mb-4">{t('budget.afterBudgeting')}</label>
           <div className={`text-3xl font-bold mb-2 ${remainingBalance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             ${Math.abs(parseFloat(remainingBalance) || 0).toLocaleString()}
           </div>
@@ -3439,14 +3439,14 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </p>
           <div className="mt-3 pt-3 border-t border-blue-800/40">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-blue-300">Total Allocation:</span>
+              <span className="text-blue-300">{t('budget.totalAllocation')}</span>
               <span className={`font-semibold ${totalPercentage === 100 ? 'text-green-400' : totalPercentage > 100 ? 'text-red-400' : 'text-yellow-400'}`}>
                 {totalPercentage}%
               </span>
             </div>
             {totalPercentage !== 100 && (
               <p className="text-xs text-gray-400 mt-1">
-                {totalPercentage > 100 ? 'Reduce percentages to 100%' : t('dashboard.addTransaction') + ' more percentage allocations'}
+                {totalPercentage > 100 ? t('budget.reducePercentages') : t('dashboard.addTransaction') + ' more percentage allocations'}
               </p>
             )}
           </div>
@@ -3457,7 +3457,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-green-900/30 rounded-xl p-6 border-2 border-green-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-green-400">💡 Needs</h3>
+              <h3 className="text-2xl font-bold text-green-400">{t('budget.needs')}</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3470,12 +3470,12 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
                 <span className="text-green-400 text-sm font-semibold">%</span>
               </div>
             </div>
-            <p className="text-gray-300 mb-4">Essential expenses</p>
+            <p className="text-gray-300 mb-4">{t('budget.essentialExpenses')}</p>
             <div className="text-4xl font-bold text-white">${(parseFloat(fiftyThirtyTwenty.needs) || 0).toLocaleString()}</div>
           </div>
           <div className="bg-yellow-900/30 rounded-xl p-6 border-2 border-yellow-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-yellow-400">🎯 Wants</h3>
+              <h3 className="text-2xl font-bold text-yellow-400">{t('budget.wants')}</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -3493,7 +3493,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
           </div>
           <div className="bg-blue-900/30 rounded-xl p-6 border-2 border-blue-800/40">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-2xl font-bold text-blue-400">💰 Savings</h3>
+              <h3 className="text-2xl font-bold text-blue-400">{t('budget.savings')}</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -5342,8 +5342,8 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 ) : (
                   <div className="text-center py-12 text-gray-400">
                     <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-semibold mb-2">No Data Yet</p>
-                    <p className="text-sm">Start adding transactions to see your analytics!</p>
+                    <p className="text-lg font-semibold mb-2">{t('emptyStatesExtended.noDataYet')}</p>
+                    <p className="text-sm">{t('emptyStatesExtended.startAddingTransactions')}</p>
                   </div>
                 )}
               </div>
@@ -5387,7 +5387,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               
               <input
                 type="text"
-                placeholder="Description"
+                placeholder={t('placeholders.description')}
                 value={newItem.description}
                 onChange={(e) => setNewItem({...newItem, description: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
@@ -5395,7 +5395,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               
               <input
                 type="number"
-                placeholder="Amount"
+                placeholder={t('placeholders.amount')}
                 value={newItem.amount === 0 ? '0' : (newItem.amount || '')}
                 onChange={(e) => setNewItem({...newItem, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-violet-500 focus:outline-none"
@@ -5464,7 +5464,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               
               <input
                 type="text"
-                placeholder="Description"
+                placeholder={t('placeholders.description')}
                 value={editingItem.description}
                 onChange={(e) => setEditingItem({...editingItem, description: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -5472,7 +5472,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               
               <input
                 type="number"
-                placeholder="Amount"
+                placeholder={t('placeholders.amount')}
                 value={editingItem.amount === 0 ? '0' : (editingItem.amount || '')}
                 onChange={(e) => setEditingItem({...editingItem, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7033,7 +7033,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g., AAPL, TSLA, MSFT"
+                    placeholder={t('examples.exampleTicker')}
                     value={newHolding.symbol}
                     onChange={(e) => setNewHolding({...newHolding, symbol: e.target.value.toUpperCase()})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7046,7 +7046,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g., Apple Inc."
+                    placeholder={t('examples.exampleCompany')}
                     value={newHolding.name}
                     onChange={(e) => setNewHolding({...newHolding, name: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7088,7 +7088,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </label>
                     <input
                       type="number"
-                      placeholder="e.g., 10"
+                      placeholder={t('examples.exampleShares')}
                       value={newHolding.shares === 0 ? '0' : (newHolding.shares || '')}
                       onChange={(e) => setNewHolding({...newHolding, shares: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7106,7 +7106,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </label>
                     <input
                       type="number"
-                      placeholder="e.g., 150.00"
+                      placeholder={t('examples.exampleAvgCost')}
                       value={newHolding.avgCost === 0 ? '0' : (newHolding.avgCost || '')}
                       onChange={(e) => setNewHolding({...newHolding, avgCost: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7126,7 +7126,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </label>
                     <input
                       type="number"
-                      placeholder="e.g., 175.50"
+                      placeholder={t('examples.exampleCurrentPrice')}
                       value={newHolding.currentPrice === 0 ? '0' : (newHolding.currentPrice || '')}
                       onChange={(e) => setNewHolding({...newHolding, currentPrice: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7144,7 +7144,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </label>
                     <input
                       type="number"
-                      placeholder="e.g., 2.5"
+                      placeholder={t('examples.exampleDividendYield')}
                       value={newHolding.dividendYield === 0 ? '0' : (newHolding.dividendYield || '')}
                       onChange={(e) => setNewHolding({...newHolding, dividendYield: e.target.value})}
                       className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7263,7 +7263,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             <div className="space-y-4">
                 <input
                   type="text"
-                  placeholder="Company Name"
+                  placeholder={t('placeholders.companyName')}
                   value={editingHolding.name}
                   onChange={(e) => setEditingHolding({...editingHolding, name: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7272,7 +7272,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 <div className="grid grid-cols-2 gap-4">
                   <input
                     type="number"
-                    placeholder="Shares"
+                    placeholder={t('placeholders.shares')}
                     value={editingHolding.shares === 0 ? '0' : (editingHolding.shares || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, shares: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7280,7 +7280,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   
                   <input
                     type="number"
-                    placeholder="Avg Cost"
+                    placeholder={t('placeholders.avgCost')}
                     value={editingHolding.avgCost === 0 ? '0' : (editingHolding.avgCost || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, avgCost: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7290,7 +7290,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 <div className="grid grid-cols-2 gap-4">
                   <input
                     type="number"
-                    placeholder="Current Price"
+                    placeholder={t('placeholders.currentPrice')}
                     value={editingHolding.currentPrice === 0 ? '0' : (editingHolding.currentPrice || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, currentPrice: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -7298,7 +7298,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   
                   <input
                     type="number"
-                    placeholder="Dividend Yield %"
+                    placeholder={t('placeholders.dividendYield')}
                     value={editingHolding.dividendYield === 0 ? '0' : (editingHolding.dividendYield || '')}
                     onChange={(e) => setEditingHolding({...editingHolding, dividendYield: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -8439,7 +8439,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g., Netflix Subscription"
+                  placeholder={t('examples.netflixSubscription')}
                   value={editingRecurring.description || ''}
                   onChange={(e) => setEditingRecurring({...editingRecurring, description: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
@@ -8721,14 +8721,14 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     value={dateRange.start}
                     onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
                     className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none mb-3 md:mb-2 text-base md:text-sm"
-                    placeholder="Start Date"
+                    placeholder={t('placeholders.startDate')}
                   />
                   <input
                     type="date"
                     value={dateRange.end}
                     onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
                     className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
-                    placeholder="End Date"
+                    placeholder={t('placeholders.endDate')}
                   />
                 </div>
                 
@@ -8834,7 +8834,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
           <div className="space-y-4">
               <input
                 type="text"
-                placeholder="Description"
+                placeholder={t('placeholders.description')}
                 value={editingTransaction.description}
                 onChange={(e) => setEditingTransaction({...editingTransaction, description: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -8842,7 +8842,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               
               <input
                 type="number"
-                placeholder="Amount"
+                placeholder={t('placeholders.amount')}
                 value={editingTransaction.amount ? Math.abs(parseFloat(editingTransaction.amount) || 0) : ''}
                 onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -10157,7 +10157,7 @@ const TravelTab = ({ data, setData, userId }) => {
             <Card className="bg-gradient-to-br from-blue-900/20 to-emerald-900/20 border-blue-500/30">
               <div className="text-center py-12">
                 <Target className="w-16 h-16 text-blue-400 mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-bold text-white mb-2">No Trips Planned Yet</h3>
+                <h3 className="text-xl font-bold text-white mb-2">{t('emptyStatesExtended.noTripsPlannedYet')}</h3>
                 <p className="text-gray-400 mb-6 max-w-md mx-auto">
                   Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.
                 </p>
@@ -10368,7 +10368,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
                   <input
                     type="text"
-                    placeholder="e.g., Southeast Asia Adventure"
+                    placeholder={t('examples.southeastAsiaAdventure')}
                     value={newTrip.name}
                     onChange={(e) => setNewTrip({...newTrip, name: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10389,7 +10389,7 @@ const TravelTab = ({ data, setData, userId }) => {
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Description</label>
                 <textarea
-                  placeholder="Brief description of your trip..."
+                  placeholder={t('examples.tripDescriptionExample')}
                   value={newTrip.description}
                   onChange={(e) => setNewTrip({...newTrip, description: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10440,7 +10440,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Type country name and press comma or Enter"
+                  placeholder={t('examples.countryInputExample')}
                   value={newTrip.countryInput || ''}
                   onChange={(e) => {
                     setNewTrip({...newTrip, countryInput: e.target.value});
@@ -10531,7 +10531,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 <label className="block text-sm text-gray-300 mb-1">Description</label>
                 <input
                   type="text"
-                  placeholder="e.g., Hotel in Bangkok, Street food, Train ticket..."
+                  placeholder={t('examples.travelExpenseExample')}
                   value={newExpense.description}
                   onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none"
@@ -10684,7 +10684,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    Your Story <span className="text-red-400">*</span>
                  </label>
                  <textarea
-                   placeholder="What made this moment special? Capture the feeling, the scene, the memory..."
+                   placeholder={t('examples.momentStoryExample')}
                    value={momentText}
                    onChange={(e) => setMomentText(e.target.value)}
                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 min-h-[150px] resize-none"
@@ -10736,7 +10736,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
                    <input
                      type="text"
-                     placeholder="e.g., Southeast Asia Adventure"
+                     placeholder={t('examples.southeastAsiaAdventure')}
                      value={editingTrip.name}
                      onChange={(e) => setEditingTrip({...editingTrip, name: e.target.value})}
                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10757,7 +10757,7 @@ const TravelTab = ({ data, setData, userId }) => {
                <div>
                  <label className="block text-sm text-gray-300 mb-1">Description</label>
                  <textarea
-                   placeholder="Brief description of your trip..."
+                   placeholder={t('examples.tripDescriptionExample')}
                    value={editingTrip.description}
                    onChange={(e) => setEditingTrip({...editingTrip, description: e.target.value})}
                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10819,7 +10819,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Type country name and press comma or Enter"
+                  placeholder={t('examples.countryInputExample')}
                   value={editingTrip.countryInput || ''}
                   onChange={(e) => {
                     setEditingTrip({...editingTrip, countryInput: e.target.value});
@@ -13998,7 +13998,7 @@ function App() {
                     
                     <input
                       type="password"
-                      placeholder="Set Your Password"
+                      placeholder={t('auth.setPasswordPlaceholder')}
                       value={authForm.password}
                       onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
                       className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
@@ -14030,7 +14030,7 @@ function App() {
                 {authMode === 'signup' && (
                 <input
                   type="text"
-                  placeholder="First Name"
+                  placeholder={t('auth.firstNamePlaceholder')}
                   value={authForm.name}
                   onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
                   className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
@@ -14039,7 +14039,7 @@ function App() {
                 
                 <input
                   type="email"
-                  placeholder="Email Address"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={authForm.email}
                   onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
                   className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
@@ -14047,7 +14047,7 @@ function App() {
                 
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder={t('auth.passwordPlaceholder')}
                   value={authForm.password}
                   onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
                   className="w-full bg-gray-700/50 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-amber-500 focus:outline-none"
@@ -15057,7 +15057,7 @@ function App() {
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g., First Debt Payment, Emergency Fund Milestone..."
+                      placeholder={t('examples.momentDescriptionExample')}
                       value={newMoment.title}
                       onChange={(e) => setNewMoment({...newMoment, title: e.target.value})}
                       className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-3 rounded-xl border-2 border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-amber-500/50"
@@ -15071,7 +15071,7 @@ function App() {
                       Your Story *
                     </label>
                     <textarea
-                      placeholder="Share the story behind this moment... How did it feel? What did you learn? Why is it meaningful?"
+                      placeholder={t('examples.momentStoryExample')}
                       value={newMoment.story}
                       onChange={(e) => setNewMoment({...newMoment, story: e.target.value})}
                       rows={5}
@@ -15282,7 +15282,7 @@ function App() {
                             <div className="col-span-4">
                               <input
                                 type="text"
-                                placeholder="Account Name"
+                                placeholder={t('placeholders.accountName')}
                                 value={account.name}
                                 onChange={(e) => {
                                   const updatedAccounts = [...tempCardData.accounts];
@@ -15312,7 +15312,7 @@ function App() {
                             <div className="col-span-4">
                               <input
                                 type="number"
-                                placeholder="Balance"
+                                placeholder={t('placeholders.balance')}
                                 value={account.balance || ''}
                                 onChange={(e) => {
                                   const updatedAccounts = [...tempCardData.accounts];
@@ -15551,7 +15551,7 @@ function App() {
                                       setTempCardData({...currentData, accounts: updatedAccounts});
                                     }}
                                     className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none cursor-pointer"
-                                    placeholder="Select due date"
+                                    placeholder={t('placeholders.selectDueDate')}
                                   />
                                   
                                   {/* Custom Calendar */}
@@ -16033,7 +16033,7 @@ function App() {
                               <label className="block text-xs text-gray-400 mb-1">Value</label>
                               <input
                                 type="number"
-                                placeholder="Enter amount"
+                                placeholder={t('placeholders.enterAmount')}
                                 value={Math.abs(item.value) || ''}
                                 onChange={(e) => {
                                   const updatedBreakdown = [...tempCardData.breakdown];
@@ -16124,8 +16124,8 @@ function App() {
                         <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500/20">
                           <Wallet className="w-8 h-8 text-amber-400" />
                         </div>
-                        <h4 className="text-lg font-semibold mb-2">No Retirement Accounts</h4>
-                        <p className="text-sm">Add your retirement accounts like TFSA, RRSP, 401(k), IRA, etc.</p>
+                        <h4 className="text-lg font-semibold mb-2">{t('emptyStatesExtended.noRetirementAccounts')}</h4>
+                        <p className="text-sm">{t('emptyStatesExtended.addRetirementAccountsDescription')}</p>
                       </div>
                       <button
                         onClick={() => {
