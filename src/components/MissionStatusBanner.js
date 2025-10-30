@@ -3,6 +3,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getRankFromXp } from '../utils/xp';
 import { Gamepad2, X, Award, Zap, Target, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const RANK_INSIGNIA = {
   'Recruit': { icon: '^', material: 'bronze', color: '#CD7F32' },
@@ -14,6 +15,7 @@ const RANK_INSIGNIA = {
 };
 
 export default function MissionStatusBanner({ userId, refreshTrigger }) {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [showGuide, setShowGuide] = useState(false);
 
@@ -56,22 +58,22 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
             </div>
             <div>
               <div className="text-sm sm:text-base flex items-center gap-2">
-                <span className="font-semibold">Status:</span> {current.name} <span className="opacity-80">(Lvl {current.level})</span>
+                <span className="font-semibold">{t('banner.status')}:</span> {current.name} <span className="opacity-80">({t('banner.level')} {current.level})</span>
                 <button
                   onClick={() => setShowGuide(true)}
                   className="text-amber-400 hover:text-amber-300 transition-colors p-1 hover:bg-amber-900/20 rounded"
-                  title="How to Play"
+                  title={t('banner.howToPlay')}
                 >
                   <Gamepad2 className="w-4 h-4" />
                 </button>
               </div>
               {/* FIX: Show total XP earned (motivating!) */}
               <div className="text-xs font-bold text-amber-400">
-                ⚡ {(profile.xpPoints || 0).toLocaleString()} XP Earned
+                ⚡ {(profile.xpPoints || 0).toLocaleString()} {t('banner.xpEarned')}
               </div>
               {next && (
                 <div className="text-xs opacity-90">
-                  {next.xpRequired - (profile.xpPoints || 0)} XP to {next.name}
+                  {next.xpRequired - (profile.xpPoints || 0)} {t('banner.xpTo')} {next.name}
                 </div>
               )}
             </div>
@@ -80,10 +82,10 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
         {/* Progress Bar with Next Rank Preview */}
         <div className="w-full sm:w-80">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-gray-400">Progress to Next Rank</span>
+            <span className="text-xs text-gray-400">{t('banner.progressToNextRank')}</span>
             {next && (
               <div className="flex items-center gap-1">
-                <span className="text-xs text-gray-400">Next:</span>
+                <span className="text-xs text-gray-400">{t('banner.next')}:</span>
                 <div 
                   className="w-4 h-4 rounded-full border flex items-center justify-center text-xs"
                   style={{ 

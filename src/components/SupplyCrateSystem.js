@@ -6,8 +6,10 @@ import React, { useState, useEffect } from 'react';
 import { Package, Plus, Edit3, Trash2, X, Award, DollarSign } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useTranslation } from 'react-i18next';
 
 export default function SupplyCrateSystem({ data, setData, userId, currentMonth, awardXp, setXpRefreshTrigger }) {
+  const { t } = useTranslation();
   const [crates, setCrates] = useState([]);
   const [showAddCrate, setShowAddCrate] = useState(false);
   const [editingCrate, setEditingCrate] = useState(null);
