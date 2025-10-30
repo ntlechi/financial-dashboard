@@ -108,8 +108,8 @@ const PLAN_MAPPING = {
   // Founder's Circle
   'price_1SEtrg82nQ0x7qb2NBJr0IVU': SUBSCRIPTION_TIERS.FOUNDERS_CIRCLE,
   
-  // Early Adopter
-  'price_1SH2rg82nQ0x7qb2wte7rkSV': SUBSCRIPTION_TIERS.CLIMBER, // Using Climber tier for Early Adopter
+  // Early Adopter -> grant Operator-level access
+  'price_1SH2rg82nQ0x7qb2wte7rkSV': SUBSCRIPTION_TIERS.OPERATOR,
   
   // Climber Plan
   'price_1SEtk682nQ0x7qb2d80smPaj': SUBSCRIPTION_TIERS.CLIMBER, // Monthly
@@ -634,16 +634,45 @@ async function handleSubscriptionCreated(subscription) {
 
 // Handle subscription updates (plan changes, etc.)
 async function handleSubscriptionUpdated(subscription) {
-  const userId = subscription.metadata?.userId;
-  
-  if (!userId) {
-    console.error('Missing userId in subscription metadata');
-    return;
-  }
+  let userId = subscription.metadata?.userId;
 
   // Map Stripe price ID to subscription tier
   const priceId = subscription.items.data[0]?.price.id;
   const subscriptionTier = PLAN_MAPPING[priceId];
+
+  // Fallback: resolve user by Stripe customer email if metadata.userId is missing
+  if (!userId) {
+    console.error('Missing userId in subscription metadata');
+    try {
+      if (subscription.customer) {
+        const customer = await stripe.customers.retrieve(subscription.customer);
+        if (customer && !customer.deleted && customer.email) {
+          try {
+            const authUser = await admin.auth().getUserByEmail(customer.email);
+            userId = authUser.uid;
+            console.log('✅ Resolved user by email in Firebase Auth:', userId);
+          } catch (authErr) {
+            console.log('ℹ️ Not in Firebase Auth, trying Firestore:', authErr.message);
+            const usersSnapshot = await db.collection('users')
+              .where('email', '==', customer.email)
+              .limit(1)
+              .get();
+            if (!usersSnapshot.empty) {
+              userId = usersSnapshot.docs[0].id;
+              console.log('✅ Resolved user by email in Firestore:', userId);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('❌ Fallback resolution failed:', e);
+    }
+  }
+
+  if (!userId) {
+    console.error('❌ Could not resolve user for subscription.updated');
+    return;
+  }
 
   await updateUserSubscription(userId, {
     tier: subscriptionTier,
