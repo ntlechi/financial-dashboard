@@ -962,5 +962,48 @@
     "whySavedSuccess": "💫 Votre \"Pourquoi\" a été sauvegardé !",
     "firstWhyStatement": "🎯 Première Déclaration de \"Pourquoi\" ! +50 XP",
     "failedToSave": "Échec de la sauvegarde"
+  },
+  "reset": {
+    "title": "Réinitialiser les Données du Tableau de Bord",
+    "sampleDataTitle": "Données Financières d'Exemple (sécurisé pour niveau gratuit)",
+    "sampleDataDesc": "Transactions d'exemple et tableau de bord uniquement. Aucune donnée fantôme. Parfait pour apprendre !",
+    "wholeAppTitle": "Réinitialiser Toute l'App",
+    "nuclear": "Nucléaire",
+    "wholeAppDesc": "Tout EFFACER – toutes les données, moments, entreprises, voyages, carnet. Nouveau départ complet.",
+    "startDate": "Date de Début du Suivi :",
+    "startDateHint": "Ceci sera votre date de début de suivi financier",
+    "willReset": "Réinitialisera :",
+    "willLoad": "Chargera :",
+    "willDelete": "Supprimera :",
+    "financial": {
+      "transactions": "Transactions et dépenses récurrentes",
+      "cards": "Cartes du tableau (liquidités, dettes, objectifs)",
+      "metrics": "Indicateurs financiers et historique"
+    },
+    "sample": {
+      "transactions": "Transactions d'exemple (dernier mois)",
+      "dashboard": "Données de tableau de bord d'exemple",
+      "metrics": "Indicateurs financiers d'exemple"
+    },
+    "delete": {
+      "allFinancial": "Toutes les transactions et données financières",
+      "investments": "Portefeuille d'investissement et positions",
+      "business": "Revenus/dépenses d'entreprises",
+      "moments": "Tous les moments et entrées du carnet",
+      "travel": "Voyages et journal",
+      "metrics": "Indicateurs du tableau et historique"
+    },
+    "keeps": {
+      "momentsEtc": "CONSERVE : Moments, carnet, entreprises, voyages, investissements",
+      "xp": "CONSERVE : Votre XP et rang !",
+      "moments": "CONSERVE : Moments, carnet"
+    },
+    "resets": {
+      "xp": "RÉINITIALISE : XP à 0"
+    },
+    "deletes": {
+      "everything": "SUPPRIME : TOUT !"
+    },
+    "resetButton": "Réinitialiser les Données"
   }
 }

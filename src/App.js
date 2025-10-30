@@ -16648,7 +16648,7 @@ function App() {
         <FixedModal
           isOpen={showResetModal}
           onClose={closeResetModal}
-          title="🔄 Reset Dashboard Data"
+          title={`🔄 ${t('reset.title')}`}
           size="md"
         >
           <div className="space-y-4">
@@ -16698,9 +16698,9 @@ function App() {
                       className="mt-1 text-amber-400"
                     />
                     <div>
-                      <div className="text-white font-medium">📊 Sample Financial Data (FREE tier safe)</div>
+                      <div className="text-white font-medium">📊 {t('reset.sampleDataTitle')}</div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Example transactions & dashboard only. No phantom data. Perfect for learning!
+                        {t('reset.sampleDataDesc')}
                       </div>
                     </div>
                   </label>
@@ -16715,11 +16715,11 @@ function App() {
                     />
                     <div>
                       <div className="text-white font-medium flex items-center gap-2">
-                        🗑️ Reset Whole App
-                        <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Nuclear</span>
+                        🗑️ {t('reset.wholeAppTitle')}
+                        <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">{t('reset.nuclear')}</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Clear EVERYTHING - all data, moments, businesses, travel, logbook. Complete fresh start.
+                        {t('reset.wholeAppDesc')}
                       </div>
                     </div>
                   </label>
@@ -16727,9 +16727,7 @@ function App() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-white font-medium">
-                  Start Date for Tracking:
-                </label>
+                <label className="block text-white font-medium">{t('reset.startDate')}</label>
                 <input
                   type="date"
                   value={resetStartDate}
@@ -16737,46 +16735,44 @@ function App() {
                   className="w-full max-w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-red-400 focus:outline-none"
                   style={{ maxWidth: '100%' }}
                 />
-                <p className="text-xs text-gray-400">
-                  This will be your financial tracking start date
-                </p>
+                <p className="text-xs text-gray-400">{t('reset.startDateHint')}</p>
               </div>
 
               <div className="bg-gray-700/30 rounded-lg p-3">
                 <h5 className="text-white font-medium mb-2">
-                  {resetType === 'financial-only' && '💰 Will Reset:'}
-                  {resetType === 'sample-financial' && '📊 Will Load:'}
-                  {resetType === 'whole-app' && '🗑️ Will Delete:'}
+                  {resetType === 'financial-only' && `💰 ${t('reset.willReset')}`}
+                  {resetType === 'sample-financial' && `📊 ${t('reset.willLoad')}`}
+                  {resetType === 'whole-app' && `🗑️ ${t('reset.willDelete')}`}
                 </h5>
                 <div className="text-sm space-y-1 text-gray-300">
                   {resetType === 'financial-only' && (
                     <>
-                      <div>?�� Transactions & recurring expenses</div>
-                      <div>?�� Dashboard cards (cash, debt, goals)</div>
-                      <div>?�� Financial metrics & history</div>
-                      <div className="text-green-400 mt-2">? KEEPS: Moments, logbook, businesses, travel, investments</div>
-                      <div className="text-green-400">? KEEPS: Your XP and rank!</div>
+                      <div>• {t('reset.financial.transactions')}</div>
+                      <div>• {t('reset.financial.cards')}</div>
+                      <div>• {t('reset.financial.metrics')}</div>
+                      <div className="text-green-400 mt-2">✓ {t('reset.keeps.momentsEtc')}</div>
+                      <div className="text-green-400">✓ {t('reset.keeps.xp')}</div>
                     </>
                   )}
                   {resetType === 'sample-financial' && (
                     <>
-                      <div>?�� Sample transactions (last month)</div>
-                      <div>?�� Sample dashboard data</div>
-                      <div>?�� Example financial metrics</div>
-                      <div className="text-green-400 mt-2">? KEEPS: Moments, logbook</div>
-                      <div className="text-amber-400">?��️ RESETS: XP to 0</div>
+                      <div>• {t('reset.sample.transactions')}</div>
+                      <div>• {t('reset.sample.dashboard')}</div>
+                      <div>• {t('reset.sample.metrics')}</div>
+                      <div className="text-green-400 mt-2">✓ {t('reset.keeps.moments')}</div>
+                      <div className="text-amber-400">⚠️ {t('reset.resets.xp')}</div>
                     </>
                   )}
                   {resetType === 'whole-app' && (
                     <>
-                      <div>?�� All transactions & financial data</div>
-                      <div>?�� Investment portfolio & holdings</div>
-                      <div>?�� Business income/expense records</div>
-                      <div>?�� All moments & logbook entries</div>
-                      <div>?�� Travel plans & journal</div>
-                      <div>?�� Dashboard metrics & history</div>
-                      <div className="text-red-400 mt-2">?��️ DELETES: EVERYTHING!</div>
-                      <div className="text-red-400">?��️ RESETS: XP to 0</div>
+                      <div>• {t('reset.delete.allFinancial')}</div>
+                      <div>• {t('reset.delete.investments')}</div>
+                      <div>• {t('reset.delete.business')}</div>
+                      <div>• {t('reset.delete.moments')}</div>
+                      <div>• {t('reset.delete.travel')}</div>
+                      <div>• {t('reset.delete.metrics')}</div>
+                      <div className="text-red-400 mt-2">⚠️ {t('reset.deletes.everything')}</div>
+                      <div className="text-red-400">⚠️ {t('reset.resets.xp')}</div>
                     </>
                   )}
                 </div>
@@ -16788,14 +16784,14 @@ function App() {
                 onClick={closeResetModal}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={confirmResetData}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Trash2 className="w-4 h-4" />
-                Reset Data
+                {t('reset.resetButton')}
               </button>
             </div>
         </FixedModal>

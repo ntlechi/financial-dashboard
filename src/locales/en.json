@@ -600,5 +600,48 @@
       "q4": "How do I contact support?",
       "a4": "Email us at support@survivebackpacking.com or use the contact form in Settings. Founder members get priority support with 24-hour response times. Include your account email and detailed description of the issue for fastest resolution."
     }
+  },
+  "reset": {
+    "title": "Reset Dashboard Data",
+    "sampleDataTitle": "Sample Financial Data (FREE tier safe)",
+    "sampleDataDesc": "Example transactions & dashboard only. No phantom data. Perfect for learning!",
+    "wholeAppTitle": "Reset Whole App",
+    "nuclear": "Nuclear",
+    "wholeAppDesc": "Clear EVERYTHING - all data, moments, businesses, travel, logbook. Complete fresh start.",
+    "startDate": "Start Date for Tracking:",
+    "startDateHint": "This will be your financial tracking start date",
+    "willReset": "Will Reset:",
+    "willLoad": "Will Load:",
+    "willDelete": "Will Delete:",
+    "financial": {
+      "transactions": "Transactions & recurring expenses",
+      "cards": "Dashboard cards (cash, debt, goals)",
+      "metrics": "Financial metrics & history"
+    },
+    "sample": {
+      "transactions": "Sample transactions (last month)",
+      "dashboard": "Sample dashboard data",
+      "metrics": "Example financial metrics"
+    },
+    "delete": {
+      "allFinancial": "All transactions & financial data",
+      "investments": "Investment portfolio & holdings",
+      "business": "Business income/expense records",
+      "moments": "All moments & logbook entries",
+      "travel": "Travel plans & journal",
+      "metrics": "Dashboard metrics & history"
+    },
+    "keeps": {
+      "momentsEtc": "KEEPS: Moments, logbook, businesses, travel, investments",
+      "xp": "KEEPS: Your XP and rank!",
+      "moments": "KEEPS: Moments, logbook"
+    },
+    "resets": {
+      "xp": "RESETS: XP to 0"
+    },
+    "deletes": {
+      "everything": "DELETES: EVERYTHING!"
+    },
+    "resetButton": "Reset Data"
   }
 }
