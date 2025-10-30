@@ -4,6 +4,7 @@ import { db } from '../firebase';
 import { getRankFromXp, RANKS } from '../utils/xp';
 import { SUBSCRIPTION_TIERS } from '../utils/subscriptionUtils';
 import { Crown, Lock, Star, Target, Shield, Trophy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const RANK_INSIGNIA = {
   'Recruit': {
@@ -51,6 +52,7 @@ const RANK_INSIGNIA = {
 };
 
 export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -90,19 +92,19 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 border border-amber-500/30">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Rank & Medals</h1>
-            <p className="text-gray-400">Your progression through Kompul ranks</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('ranks.title')}</h1>
+            <p className="text-gray-400">{t('ranks.subtitle')}</p>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-amber-400">{current.name}</div>
-            <div className="text-sm text-gray-400">Level {current.level}</div>
+            <div className="text-sm text-gray-400">{t('ranks.level')} {current.level}</div>
           </div>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <div className="flex justify-between text-sm text-gray-300 mb-2">
-              <span>Progress to {next?.name || 'Max Rank'}</span>
+              <span>{t('ranks.progressTo')} {next?.name || t('ranks.maxRank')}</span>
               <span>{progress}%</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-3">
@@ -114,7 +116,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
           </div>
           <div className="text-right">
             <div className="text-lg font-bold text-white">{profile.xpPoints || 0} XP</div>
-            <div className="text-xs text-gray-400">Total Earned</div>
+            <div className="text-xs text-gray-400">{t('ranks.totalEarned')}</div>
           </div>
         </div>
       </div>

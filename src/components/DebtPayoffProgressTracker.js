@@ -70,8 +70,8 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
             <TrendingDown className="w-6 h-6 text-rose-400" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">Debt Tracker</h3>
-            <p className="text-gray-400 text-sm">Track your debt payoff progress</p>
+            <h3 className="text-xl font-bold text-white">{t('debtTracker.title')}</h3>
+            <p className="text-gray-400 text-sm">{t('debtTracker.subtitle')}</p>
           </div>
         </div>
         <button
@@ -155,7 +155,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
                 <div key={account.id || index} className="bg-gray-800/50 rounded-lg p-2 border border-gray-600">
                   <div className="flex justify-between items-center mb-1">
                     <div>
-                      <div className="text-white text-sm font-medium">{account.name || `Debt ${index + 1}`}</div>
+                      <div className="text-white text-sm font-medium">{account.name || t('debtTracker.debtNumber', { number: index + 1 })}</div>
                       <div className="text-xs text-gray-400">
                         {(account.interestRate || 0).toFixed(1)}% • {t('debtTracker.min')}: ${formatNumber(account.minPayment || 0)}
                       </div>
