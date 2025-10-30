@@ -815,6 +815,13 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
     : 0;
   const yearsToGoal = Math.floor(monthsToGoal / 12);
   const remainingMonths = monthsToGoal % 12;
+  const ffStatus = (() => {
+    if (progressPercentage >= 100) return t('dashboard.goalReached');
+    if (progressPercentage >= 75) return t('dashboard.goodProgressStatus');
+    if (progressPercentage >= 50) return t('dashboard.buildingStatus');
+    if (progressPercentage > 0) return t('dashboard.needsWorkStatus');
+    return t('dashboard.needsWorkStatus');
+  })();
 
   return (
     <Card className="col-span-1 md:col-span-3 lg:col-span-3 min-h-[320px] flex flex-col bg-gradient-to-br from-green-900/40 to-emerald-900/40">
@@ -838,17 +845,14 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
             {progressPercentage.toFixed(1)}%
           </div>
           <div className="text-sm mt-2 font-semibold text-green-200">
-            {progressPercentage >= 100 ? 'Goal Reached!' : 
-             progressPercentage >= 75 ? 'Almost There!' :
-             progressPercentage >= 50 ? 'Halfway!' :
-             progressPercentage >= 25 ? 'Good Progress' : 'Getting Started'}
+            {ffStatus}
           </div>
         </div>
         
         <div>
           <div className="flex justify-between text-sm text-green-200 mb-2">
-            <span>Current: ${formatNumber(parseFloat(data.currentInvestments) || 0)}</span>
-            <span>Target: ${formatNumber(parseFloat(data.targetAmount) || 0)}</span>
+            <span>{t('dashboard.currentLabel')}: ${formatNumber(parseFloat(data.currentInvestments) || 0)}</span>
+            <span>{t('dashboard.goalLabel')}: ${formatNumber(parseFloat(data.targetAmount) || 0)}</span>
           </div>
           <ProgressBar 
             value={data.currentInvestments} 
@@ -894,10 +898,10 @@ const SavingsRateCard = ({ data, onEdit }) => {
   };
 
   const getRateStatus = (rate) => {
-    if (rate >= 50) return 'Excellent';
-    if (rate >= 30) return 'Good';
-    if (rate >= 20) return 'Fair';
-    return 'Needs Work';
+    if (rate >= 50) return t('dashboard.goodProgressStatus');
+    if (rate >= 30) return t('dashboard.buildingStatus');
+    if (rate >= 20) return t('dashboard.needsWorkStatus');
+    return t('dashboard.needsWorkStatus');
   };
 
   return (
