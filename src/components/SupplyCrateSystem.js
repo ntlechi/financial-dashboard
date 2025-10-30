@@ -7,6 +7,7 @@ import { Package, Plus, Edit3, Trash2, X, Award, DollarSign } from 'lucide-react
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useTranslation } from 'react-i18next';
+import { formatNumber } from '../utils/localeUtils';
 
 export default function SupplyCrateSystem({ data, setData, userId, currentMonth, awardXp, setXpRefreshTrigger }) {
   const { t } = useTranslation();
@@ -192,16 +193,16 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="bg-black/30 rounded-lg p-4">
             <div className="text-sm text-gray-400 mb-1">Total Allocated</div>
-            <div className="text-2xl font-bold text-white">${totalAllocated.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${formatNumber(totalAllocated)}</div>
           </div>
           <div className="bg-black/30 rounded-lg p-4">
             <div className="text-sm text-gray-400 mb-1">Total Spent</div>
-            <div className="text-2xl font-bold text-red-400">${totalSpent.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-red-400">${formatNumber(totalSpent)}</div>
           </div>
           <div className="bg-black/30 rounded-lg p-4">
             <div className="text-sm text-gray-400 mb-1">Total Remaining</div>
             <div className={`text-2xl font-bold ${totalRemaining >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              ${Math.abs(totalRemaining).toLocaleString()}
+              ${formatNumber(Math.abs(totalRemaining))}
             </div>
           </div>
         </div>
@@ -288,7 +289,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                     <span className={`font-bold ${
                       status.status === 'depleted' ? 'text-red-400' : 'text-white'
                     }`}>
-                      ${spent.toLocaleString()} / ${crate.allocated.toLocaleString()}
+                      ${formatNumber(spent)} / ${formatNumber(crate.allocated)}
                     </span>
                   </div>
                   <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
@@ -313,11 +314,11 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                   <div className={`text-2xl font-bold ${
                     remaining <= 0 ? 'text-red-400' : remaining < crate.allocated * 0.2 ? 'text-yellow-400' : 'text-green-400'
                   }`}>
-                    ${Math.abs(remaining).toLocaleString()}
+                    ${formatNumber(Math.abs(remaining))}
                   </div>
                   {remaining < 0 && (
                     <div className="text-xs text-red-300 mt-1">
-                      ⚠️ Over budget by ${Math.abs(remaining).toLocaleString()}
+                      ⚠️ Over budget by ${formatNumber(Math.abs(remaining))}
                     </div>
                   )}
                 </div>
@@ -325,7 +326,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                 {/* Burn Rate Indicator */}
                 {remaining > 0 && (
                   <div className="mt-3 text-xs text-gray-400">
-                    💨 Burn rate: ${(spent / new Date().getDate()).toFixed(2)}/day
+                    💨 Burn rate: ${((spent / new Date().getDate())).toFixed(2)}/day
                   </div>
                 )}
               </div>

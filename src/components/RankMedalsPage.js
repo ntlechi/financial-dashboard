@@ -5,6 +5,7 @@ import { getRankFromXp, RANKS } from '../utils/xp';
 import { SUBSCRIPTION_TIERS } from '../utils/subscriptionUtils';
 import { Crown, Lock, Star, Target, Shield, Trophy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { formatNumber } from '../utils/localeUtils';
 
 const RANK_INSIGNIA = {
   'Recruit': {
@@ -180,7 +181,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
                 
                 {isCurrentRank && (
                   <div className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                    CURRENT
+                    {t('ranks.current')}
                   </div>
                 )}
               </div>
@@ -197,9 +198,9 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
 
                 {/* XP Requirement */}
                 <div className="flex justify-between items-center pt-2 border-t border-gray-700">
-                  <span className="text-xs text-gray-400">XP Required:</span>
+                  <span className="text-xs text-gray-400">{t('ranks.xpRequired')}</span>
                   <span className={`text-sm font-semibold ${isUnlocked ? 'text-green-400' : 'text-gray-500'}`}>
-                    {rank.xpRequired.toLocaleString()}
+                    {formatNumber(rank.xpRequired)}
                   </span>
                 </div>
               </div>
@@ -212,9 +213,9 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700">
         <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
           <Trophy className="w-6 h-6 text-amber-400" />
-          Achievement Badges
+          {t('ranks.achievementBadges')}
         </h2>
-        <p className="text-gray-400 mb-6">Earn special badges for major financial milestones</p>
+        <p className="text-gray-400 mb-6">{t('ranks.badgesSubtitle')}</p>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Sample Badges - These would be dynamic based on user achievements */}
@@ -222,24 +223,24 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
             <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
               <Target className="w-6 h-6 text-white" />
             </div>
-            <div className="text-sm font-semibold text-white">First Goal</div>
-            <div className="text-xs text-gray-400">Create your first financial goal</div>
+            <div className="text-sm font-semibold text-white">{t('ranks.badgeFirstGoal')}</div>
+            <div className="text-xs text-gray-400">{t('ranks.badgeFirstGoalDesc')}</div>
           </div>
           
           <div className="bg-gray-700/50 rounded-lg p-4 text-center border border-gray-600">
             <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
               <Shield className="w-6 h-6 text-white" />
             </div>
-            <div className="text-sm font-semibold text-white">Emergency Fund</div>
-            <div className="text-xs text-gray-400">Build 3-month emergency fund</div>
+            <div className="text-sm font-semibold text-white">{t('ranks.badgeEmergencyFund')}</div>
+            <div className="text-xs text-gray-400">{t('ranks.badgeEmergencyFundDesc')}</div>
           </div>
           
           <div className="bg-gray-700/50 rounded-lg p-4 text-center border border-gray-600">
             <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
               <Star className="w-6 h-6 text-white" />
             </div>
-            <div className="text-sm font-semibold text-white">Investment Starter</div>
-            <div className="text-xs text-gray-400">Make your first investment</div>
+            <div className="text-sm font-semibold text-white">{t('ranks.badgeFirst$1k')}</div>
+            <div className="text-xs text-gray-400">{t('ranks.badgeFirst$1kDesc')}</div>
           </div>
           
           <div className="bg-gray-700/50 rounded-lg p-4 text-center border border-gray-600">
