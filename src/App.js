@@ -40,6 +40,7 @@ import UpdateNotification from './components/UpdateNotification';
 import { hasFeatureAccess, hasDashboardCardAccess, getRequiredTier, isFoundersCircleAvailable, SUBSCRIPTION_TIERS } from './utils/subscriptionUtils';
 import { formatDateForUser, getTodayInUserTimezone, getTimezoneInfo } from './utils/timezoneUtils';
 import StealthCard from './components/StealthCard';
+import { formatNumber } from './utils/localeUtils';
 import { 
   isOnline, 
   getOfflineSummary
@@ -846,8 +847,8 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         
         <div>
           <div className="flex justify-between text-sm text-green-200 mb-2">
-            <span>Current: ${(parseFloat(data.currentInvestments) || 0).toLocaleString()}</span>
-            <span>Target: ${(parseFloat(data.targetAmount) || 0).toLocaleString()}</span>
+            <span>Current: ${formatNumber(parseFloat(data.currentInvestments) || 0)}</span>
+            <span>Target: ${formatNumber(parseFloat(data.targetAmount) || 0)}</span>
           </div>
           <ProgressBar 
             value={data.currentInvestments} 
@@ -858,7 +859,7 @@ const FinancialFreedomCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-green-100 bg-green-900/30 rounded-lg p-3 border border-green-500/30">
-          Investing <span className="text-green-400 font-semibold">${(parseFloat(data.monthlyContribution) || 0).toLocaleString()}</span>/mo → 
+          Investing <span className="text-green-400 font-semibold">${formatNumber(parseFloat(data.monthlyContribution) || 0)}</span>/mo → 
           <span className="text-white font-semibold"> {yearsToGoal}y {remainingMonths}m</span> {t('dashboard.toGoal')}
         </div>
       </div>
@@ -946,7 +947,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-white rounded-lg p-3 bg-blue-900/30 border border-blue-500/30">
-          Saving <span className="font-bold">${(parseFloat(data.monthly) || 0).toLocaleString()}</span> of <span className="font-bold">${(parseFloat(data.monthlyIncome) || 0).toLocaleString()}</span> monthly income
+          Saving <span className="font-bold">${formatNumber(parseFloat(data.monthly) || 0)}</span> of <span className="font-bold">${formatNumber(parseFloat(data.monthlyIncome) || 0)}</span> monthly income
         </div>
       </div>
     </Card>

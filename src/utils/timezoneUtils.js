@@ -1,6 +1,8 @@
 // 🌍 TIMEZONE UTILITIES - Global timezone support for worldwide users
 // This file handles all timezone-related operations for Kompul
 
+import { getUserLocale } from './localeUtils';
+
 // 🎯 Get user's timezone
 export const getUserTimezone = () => {
   try {
@@ -21,8 +23,8 @@ export const formatDateForUser = (dateString, options = {}) => {
   try {
     const userTimezone = getUserTimezone();
     const date = new Date(dateString + 'T00:00:00');
-    
-    return new Intl.DateTimeFormat('en-US', {
+    const locale = getUserLocale();
+    return new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone,
       year: 'numeric',
       month: 'short',
@@ -39,14 +41,12 @@ export const formatDateForUser = (dateString, options = {}) => {
 export const getTodayInUserTimezone = () => {
   const now = new Date();
   const userTimezone = getUserTimezone();
-  
+  const locale = 'en-CA';
   try {
-    // Get current date in user's timezone
-    const today = new Intl.DateTimeFormat('en-CA', {
+    const today = new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone
     }).format(now);
-    
-    return today; // Returns YYYY-MM-DD format
+    return today;
   } catch (error) {
     console.warn('Could not get today in user timezone:', error);
     return now.toISOString().split('T')[0];
@@ -58,8 +58,8 @@ export const convertUTCToUserTimezone = (utcDateString) => {
   try {
     const userTimezone = getUserTimezone();
     const utcDate = new Date(utcDateString + 'T00:00:00Z');
-    
-    return new Intl.DateTimeFormat('en-CA', {
+    const locale = 'en-CA';
+    return new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone
     }).format(utcDate);
   } catch (error) {
@@ -74,23 +74,18 @@ export const getRelativeTime = (dateString) => {
     const userTimezone = getUserTimezone();
     const inputDate = new Date(dateString + 'T00:00:00');
     const today = new Date();
-    
-    // Set both dates to start of day in user's timezone
-    const inputDateInTz = new Intl.DateTimeFormat('en-CA', {
+    const locale = 'en-CA';
+    const inputDateInTz = new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone
     }).format(inputDate);
-    
-    const todayInTz = new Intl.DateTimeFormat('en-CA', {
+    const todayInTz = new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone
     }).format(today);
-    
     if (inputDateInTz === todayInTz) {
       return 'Today';
     }
-    
     const diffTime = new Date(inputDateInTz) - new Date(todayInTz);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
     if (diffDays === 1) {
       return 'Tomorrow';
     } else if (diffDays === -1) {
@@ -100,7 +95,6 @@ export const getRelativeTime = (dateString) => {
     } else if (diffDays < -1) {
       return `${Math.abs(diffDays)} days ago`;
     }
-    
     return formatDateForUser(dateString);
   } catch (error) {
     console.warn('Relative time calculation error:', error);
@@ -184,14 +178,14 @@ export const getMonthName = (dateString, format = 'long') => {
   try {
     const userTimezone = getUserTimezone();
     const date = new Date(dateString + 'T00:00:00');
-    
-    return new Intl.DateTimeFormat('en-US', {
+    const locale = getUserLocale();
+    return new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone,
       month: format
     }).format(date);
   } catch (error) {
     console.warn('Month name formatting error:', error);
-    return new Date(dateString).toLocaleDateString('en-US', { month: format });
+    return new Date(dateString).toLocaleDateString(getUserLocale(), { month: format });
   }
 };
 
@@ -200,14 +194,14 @@ export const getDayOfWeek = (dateString, format = 'long') => {
   try {
     const userTimezone = getUserTimezone();
     const date = new Date(dateString + 'T00:00:00');
-    
-    return new Intl.DateTimeFormat('en-US', {
+    const locale = getUserLocale();
+    return new Intl.DateTimeFormat(locale, {
       timeZone: userTimezone,
       weekday: format
     }).format(date);
   } catch (error) {
     console.warn('Day of week formatting error:', error);
-    return new Date(dateString).toLocaleDateString('en-US', { weekday: format });
+    return new Date(dateString).toLocaleDateString(getUserLocale(), { weekday: format });
   }
 };
 

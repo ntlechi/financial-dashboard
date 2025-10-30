@@ -2,6 +2,7 @@
 // Frontend integration for Stripe checkout
 
 import { loadStripe } from '@stripe/stripe-js';
+import { getUserLocale } from './localeUtils';
 
 // Initialize Stripe with publishable key
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
@@ -132,7 +133,7 @@ export async function createPortalSession(userId) {
  * @returns {string} - Formatted price
  */
 export function formatPrice(amount, currency = 'USD') {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(getUserLocale(), {
     style: 'currency',
     currency: currency,
   }).format(amount / 100);
