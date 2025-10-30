@@ -410,6 +410,25 @@ const SAMPLE_STRINGS = {
 function getInitialData(lang) {
   const L = SAMPLE_STRINGS[lang] || SAMPLE_STRINGS.en;
   // Note: numeric structure remains the same; only display strings are localized
+  // Dynamic date helpers for recurring sample data
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const todayDate = today.getDate();
+  const makeMonthlyDates = (day) => {
+    const thisMonthTarget = new Date(currentYear, currentMonth, day);
+    const next = thisMonthTarget.getDate() >= todayDate ? thisMonthTarget : new Date(currentYear, currentMonth + 1, day);
+    const last = thisMonthTarget.getDate() > todayDate ? new Date(currentYear, currentMonth - 1, day) : thisMonthTarget;
+    const created = new Date(currentYear, currentMonth - 2, day);
+    return {
+      nextDueDate: next.toISOString().split('T')[0],
+      lastProcessed: last.toISOString().split('T')[0],
+      createdDate: created.toISOString().split('T')[0],
+    };
+  };
+  const rentDates = makeMonthlyDates(1);
+  const netflixDates = makeMonthlyDates(5);
+  const carInsDates = makeMonthlyDates(15);
   return {
   financialFreedom: {
     targetAmount: 500000,  // More realistic first goal
@@ -539,9 +558,9 @@ function getInitialData(lang) {
       dayOfWeek: null,
       monthOfYear: null,
       isActive: true,
-      nextDueDate: '2025-02-01',
-      lastProcessed: '2025-01-01',
-      createdDate: '2024-12-01',
+      nextDueDate: rentDates.nextDueDate,
+      lastProcessed: rentDates.lastProcessed,
+      createdDate: rentDates.createdDate,
       tags: ['essential', 'housing']
     },
     {
@@ -556,9 +575,9 @@ function getInitialData(lang) {
       dayOfWeek: null,
       monthOfYear: null,
       isActive: true,
-      nextDueDate: '2025-02-05',
-      lastProcessed: '2025-01-05',
-      createdDate: '2024-11-05',
+      nextDueDate: netflixDates.nextDueDate,
+      lastProcessed: netflixDates.lastProcessed,
+      createdDate: netflixDates.createdDate,
       tags: ['subscription', 'entertainment']
     },
     {
@@ -573,9 +592,9 @@ function getInitialData(lang) {
       dayOfWeek: null,
       monthOfYear: null,
       isActive: true,
-      nextDueDate: '2025-02-15',
-      lastProcessed: '2025-01-15',
-      createdDate: '2024-10-15',
+      nextDueDate: carInsDates.nextDueDate,
+      lastProcessed: carInsDates.lastProcessed,
+      createdDate: carInsDates.createdDate,
       tags: ['insurance', 'essential']
     }
   ],
