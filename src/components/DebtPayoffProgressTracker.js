@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { TrendingDown, Edit, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { formatNumber } from '../utils/localeUtils';
 
 export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUpgrade }) {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-rose-400">
-              ${totalDebt.toLocaleString()}
+              ${formatNumber(totalDebt)}
             </div>
             <div className="text-sm text-gray-400">{t('debtTracker.totalDebt')}</div>
           </div>
@@ -84,7 +85,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
 
       {/* Total Debt Display */}
       <div className="mb-4">
-        <p className="text-4xl font-extrabold text-white">${totalDebt.toLocaleString()}</p>
+        <p className="text-4xl font-extrabold text-white">${formatNumber(totalDebt)}</p>
         <p className="text-sm text-gray-400">{t('debtTracker.acrossAccounts', { count: accountCount })}</p>
       </div>
 
@@ -103,8 +104,8 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
               ></div>
             </div>
             <div className="flex justify-between text-xs text-gray-400 mt-1">
-              <span>${totalPaid.toLocaleString()} {t('debtTracker.paid')}</span>
-              <span>${totalInitialDebt.toLocaleString()} {t('debtTracker.total')}</span>
+              <span>${formatNumber(totalPaid)} {t('debtTracker.paid')}</span>
+              <span>${formatNumber(totalInitialDebt)} {t('debtTracker.total')}</span>
             </div>
           </>
         ) : (
@@ -156,17 +157,17 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
                     <div>
                       <div className="text-white text-sm font-medium">{account.name || `Debt ${index + 1}`}</div>
                       <div className="text-xs text-gray-400">
-                        {(account.interestRate || 0).toFixed(1)}% • {t('debtTracker.min')}: ${(account.minPayment || 0).toLocaleString()}
+                        {(account.interestRate || 0).toFixed(1)}% • {t('debtTracker.min')}: ${formatNumber(account.minPayment || 0)}
                       </div>
                       <div className={`text-xs ${statusColor} font-medium`}>
                         {t('debtTracker.due')}: {dueDate}{t('debtTracker.th')} • {statusText}
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-rose-400 font-bold text-sm">${(account.balance || 0).toLocaleString()}</div>
+                      <div className="text-rose-400 font-bold text-sm">${formatNumber(account.balance || 0)}</div>
                       {(account.initialDebt || 0) > 0 && (
                         <div className="text-xs text-green-400">
-                          ${(account.amountPaid || 0).toLocaleString()} {t('debtTracker.paid')}
+                          ${formatNumber(account.amountPaid || 0)} {t('debtTracker.paid')}
                         </div>
                       )}
                     </div>

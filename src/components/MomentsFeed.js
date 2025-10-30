@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Award, Camera, DollarSign, MapPin, Share2, Edit, Filter, BarChart2, Calendar, Image, Tag, X, Plus, Trash2, Search, BookOpen, Link, ChevronDown, ChevronUp, Copy, Briefcase } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { getUserLocale, formatNumber } from '../utils/localeUtils';
 
 const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment }) => {
   const { t } = useTranslation();
@@ -293,7 +294,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                   <div className="flex flex-wrap items-center gap-2 text-xs font-semibold mt-3" style={{ color: '#FBBF24' }}>
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3"/> 
-                      {new Date(moment.timestamp).toLocaleDateString('en-US', { 
+                      {new Date(moment.timestamp).toLocaleDateString(getUserLocale(), { 
                         month: 'long', 
                         day: 'numeric', 
                         year: 'numeric' 
@@ -315,7 +316,7 @@ const MomentsFeed = ({ data, userId, onEditMoment, onShareMoment, onDeleteMoment
                           <span className="text-sm font-semibold text-purple-300">{moment.linkedTransaction.businessName}</span>
                         </div>
                         <span className={`text-sm font-bold ${moment.linkedTransaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
-                          {moment.linkedTransaction.type === 'income' ? '+' : '-'}${(parseFloat(moment.linkedTransaction.amount) || 0).toLocaleString()}
+                          {moment.linkedTransaction.type === 'income' ? '+' : '-'}${formatNumber(parseFloat(moment.linkedTransaction.amount) || 0)}
                         </span>
                       </div>
                     </div>

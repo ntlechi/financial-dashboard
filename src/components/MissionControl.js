@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Target, Calendar, Edit, Save, TrendingUp, Award, Rocket, CheckCircle, Circle, DollarSign } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { getUserLocale, formatNumber } from '../utils/localeUtils';
 
 const MissionControl = ({ 
   data, 
@@ -277,21 +278,21 @@ const MissionControl = ({
                 <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-500/30">
                   <div className="text-sm text-blue-300 mb-2">{t('missionControl.currentSavings')}</div>
                   <div className="text-3xl font-black text-white">
-                    ${northStarGoal.currentAmount.toLocaleString()}
+                    ${formatNumber(northStarGoal.currentAmount)}
                   </div>
                 </div>
                 
                 <div className="bg-purple-900/30 rounded-xl p-6 border border-purple-500/30">
                   <div className="text-sm text-purple-300 mb-2">{t('missionControl.targetAmount')}</div>
                   <div className="text-3xl font-black text-white">
-                    ${northStarGoal.targetAmount.toLocaleString()}
+                    ${formatNumber(northStarGoal.targetAmount)}
                   </div>
                 </div>
                 
                 <div className="bg-amber-900/30 rounded-xl p-6 border border-amber-500/30 sm:col-span-2">
                   <div className="text-sm text-amber-300 mb-2">{t('missionControl.remaining')}</div>
                   <div className="text-3xl font-black text-amber-400">
-                    ${(northStarGoal.targetAmount - northStarGoal.currentAmount).toLocaleString()}
+                    ${formatNumber(northStarGoal.targetAmount - northStarGoal.currentAmount)}
                   </div>
                 </div>
               </div>
@@ -305,7 +306,7 @@ const MissionControl = ({
                   <div className="text-center">
                     <div className="text-sm text-green-300 mb-1">{t('missionControl.projectedFreedomDate')}</div>
                     <div className="text-2xl font-black text-green-400">
-                      {projectedDate.toLocaleDateString('fr-FR', { 
+                      {projectedDate.toLocaleDateString(getUserLocale(), { 
                         month: 'long', 
                         day: 'numeric', 
                         year: 'numeric' 
@@ -323,7 +324,7 @@ const MissionControl = ({
             {/* Target Date */}
             {northStarGoal.targetDate && (
               <div className="mt-6 text-center text-sm text-gray-400">
-                {t('missionControl.targetDate')} {new Date(northStarGoal.targetDate + 'T12:00:00').toLocaleDateString('fr-FR', { 
+                {t('missionControl.targetDate')} {new Date(northStarGoal.targetDate + 'T12:00:00').toLocaleDateString(getUserLocale(), { 
                   month: 'long', 
                   day: 'numeric', 
                   year: 'numeric' 
@@ -404,8 +405,8 @@ const MissionControl = ({
                   {/* Progress Bar */}
                   <div className="mb-4">
                     <div className="flex justify-between text-sm text-gray-400 mb-2">
-                      <span>${mission.currentAmount.toLocaleString()}</span>
-                      <span>${mission.targetAmount.toLocaleString()}</span>
+                      <span>${formatNumber(mission.currentAmount)}</span>
+                      <span>${formatNumber(mission.targetAmount)}</span>
                     </div>
                     <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
                       <div 
@@ -427,7 +428,7 @@ const MissionControl = ({
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-black text-blue-400">
-                        ${(mission.targetAmount - mission.currentAmount).toLocaleString()}
+                        ${formatNumber(mission.targetAmount - mission.currentAmount)}
                       </div>
                       <div className="text-xs text-gray-400">{t('missionControl.remaining')}</div>
                     </div>
@@ -438,7 +439,7 @@ const MissionControl = ({
                     <div className="mt-4 pt-4 border-t border-gray-700 text-center">
                       <div className="text-xs text-gray-400 flex items-center justify-center gap-2">
                         <Calendar className="w-3 h-3" />
-                        {t('missionControl.target')} {new Date(mission.targetDate + 'T12:00:00').toLocaleDateString('fr-FR', { 
+                        {t('missionControl.target')} {new Date(mission.targetDate + 'T12:00:00').toLocaleDateString(getUserLocale(), { 
                           month: 'short', 
                           day: 'numeric', 
                           year: 'numeric' 
