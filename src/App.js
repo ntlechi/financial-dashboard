@@ -1,3 +1,4 @@
+import { getUserLocale } from './utils/localeUtils';
 /* eslint-disable no-undef */
 import React from 'react';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -1469,7 +1470,7 @@ const GoalsCard = ({ data, onEdit }) => {
                   
                   {goal.targetDate && (
                     <div className="text-center text-xs text-gray-400">
-                      Target: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString('en-US', { 
+                      Target: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString(getUserLocale(), { 
                         year: 'numeric', 
                         month: 'short', 
                         day: 'numeric' 

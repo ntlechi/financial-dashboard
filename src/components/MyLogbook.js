@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import { createBackup } from '../utils/dataSafetyUtils';
 import { getTodayPrompt } from '../utils/journalPrompts';
 import { useTranslation } from 'react-i18next';
+import { formatDate as formatDateByLocale } from '../utils/localeUtils';
 
 export default function MyLogbook({ 
   data, 
@@ -183,7 +184,7 @@ export default function MyLogbook({
 
   // Format date
   const formatDate = (timestamp) => {
-    return new Date(timestamp).toLocaleDateString('en-US', {
+    return formatDateByLocale(timestamp, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
