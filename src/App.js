@@ -261,9 +261,155 @@ const processDueRecurringExpenses = (recurringExpenses, existingTransactions) =>
   };
 };
 
-// 🎯 REALISTIC BEGINNER SAMPLE DATA
+// 🎯 REALISTIC BEGINNER SAMPLE DATA (Language-aware)
 // Designed for someone just starting their financial journey
-const initialData = {
+
+// Minimal language detector with localStorage override
+function getAppLanguage() {
+  try {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('appLanguage') : null;
+    if (stored) return stored;
+    const nav = typeof navigator !== 'undefined' ? navigator.language || navigator.languages?.[0] : 'en';
+    if (!nav) return 'en';
+    const lc = nav.toLowerCase();
+    if (lc.startsWith('fr')) return 'fr';
+    if (lc.startsWith('es')) return 'es';
+    return 'en';
+  } catch (_) {
+    return 'en';
+  }
+}
+
+const SAMPLE_STRINGS = {
+  en: {
+    accounts: {
+      checking: 'Checking Account',
+      savings: 'Savings Account',
+      emergency: 'Emergency Savings',
+      creditCard: 'Credit Card',
+      tfsa: { name: 'TFSA', desc: 'Tax-free growth and withdrawals' },
+      rrsp: { name: 'RRSP', desc: 'Tax-deferred retirement savings' }
+    },
+    tx: {
+      salary: 'Salary - Full Time Job',
+      rent: 'Rent Payment',
+      groceries: 'Groceries',
+      gas: 'Gas',
+      ccPayment: 'Credit Card Payment',
+      netflix: 'Netflix',
+      coffee: 'Coffee',
+      carInsurance: 'Car Insurance'
+    },
+    travelCats: {
+      accommodation: 'Accommodation',
+      food: 'Food & Dining',
+      transport: 'Transportation',
+      activities: 'Activities',
+      shopping: 'Shopping',
+      other: 'Other'
+    },
+    goals: {
+      emergency: 'Emergency Fund (3 months)',
+      payCc: 'Pay Off Credit Card',
+      vacation: 'Vacation Fund'
+    },
+    catNames: {
+      rent: 'Rent',
+      transportation: 'Transportation',
+      groceries: 'Groceries',
+      debtPayment: 'Debt Payment',
+      entertainment: 'Entertainment',
+      other: 'Other'
+    }
+  },
+  fr: {
+    accounts: {
+      checking: 'Compte chèque',
+      savings: 'Compte épargne',
+      emergency: 'Épargne d’urgence',
+      creditCard: 'Carte de crédit',
+      tfsa: { name: 'CELI', desc: 'Croissance et retraits non imposables' },
+      rrsp: { name: 'REER', desc: 'Épargne-retraite à imposition différée' }
+    },
+    tx: {
+      salary: 'Salaire - Emploi à temps plein',
+      rent: 'Paiement du loyer',
+      groceries: 'Épicerie',
+      gas: 'Essence',
+      ccPayment: 'Paiement de carte de crédit',
+      netflix: 'Netflix',
+      coffee: 'Café',
+      carInsurance: 'Assurance auto'
+    },
+    travelCats: {
+      accommodation: 'Hébergement',
+      food: 'Nourriture & restaurants',
+      transport: 'Transport',
+      activities: 'Activités',
+      shopping: 'Magasinage',
+      other: 'Autre'
+    },
+    goals: {
+      emergency: "Fonds d'urgence (3 mois)",
+      payCc: 'Rembourser la carte de crédit',
+      vacation: 'Fonds vacances'
+    },
+    catNames: {
+      rent: 'Loyer',
+      transportation: 'Transport',
+      groceries: 'Épicerie',
+      debtPayment: 'Paiement de dette',
+      entertainment: 'Divertissement',
+      other: 'Autre'
+    }
+  },
+  es: {
+    accounts: {
+      checking: 'Cuenta corriente',
+      savings: 'Cuenta de ahorros',
+      emergency: 'Ahorros de emergencia',
+      creditCard: 'Tarjeta de crédito',
+      tfsa: { name: 'CTA (TFSA)', desc: 'Crecimiento y retiros libres de impuestos' },
+      rrsp: { name: 'RSP (RRSP)', desc: 'Ahorro para jubilación con impuestos diferidos' }
+    },
+    tx: {
+      salary: 'Salario - Trabajo de tiempo completo',
+      rent: 'Pago de alquiler',
+      groceries: 'Comestibles',
+      gas: 'Gasolina',
+      ccPayment: 'Pago de tarjeta de crédito',
+      netflix: 'Netflix',
+      coffee: 'Café',
+      carInsurance: 'Seguro de auto'
+    },
+    travelCats: {
+      accommodation: 'Alojamiento',
+      food: 'Comida y restaurantes',
+      transport: 'Transporte',
+      activities: 'Actividades',
+      shopping: 'Compras',
+      other: 'Otro'
+    },
+    goals: {
+      emergency: 'Fondo de emergencia (3 meses)',
+      payCc: 'Pagar tarjeta de crédito',
+      vacation: 'Fondo de vacaciones'
+    },
+    catNames: {
+      rent: 'Alquiler',
+      transportation: 'Transporte',
+      groceries: 'Comestibles',
+      debtPayment: 'Pago de deuda',
+      entertainment: 'Entretenimiento',
+      other: 'Otro'
+    }
+  }
+};
+
+function getInitialData(lang) {
+  const L = SAMPLE_STRINGS[lang] || SAMPLE_STRINGS.en;
+  // Note: numeric structure remains the same; only display strings are localized
+  return {
   financialFreedom: {
     targetAmount: 500000,  // More realistic first goal
     currentInvestments: 0,  // Just starting out
@@ -277,8 +423,8 @@ const initialData = {
   cashOnHand: {
     total: 2500,  // Small but realistic emergency fund
     accounts: [
-        { id: 1, name: 'Checking Account', balance: 1200, type: 'Checking' },
-        { id: 2, name: 'Savings Account', balance: 1300, type: 'Savings' },
+        { id: 1, name: L.accounts.checking, balance: 1200, type: 'Checking' },
+        { id: 2, name: L.accounts.savings, balance: 1300, type: 'Savings' },
     ],
     history: [ { date: '2025-08-09', total: 2500 } ]
   },
@@ -286,14 +432,14 @@ const initialData = {
     total: 1300,  // Building emergency fund (goal: 3-6 months expenses)
     goal: 6000,  // 3 months of $2,000 expenses
     accounts: [
-        { id: 1, name: 'Emergency Savings', balance: 1300 }
+        { id: 1, name: L.accounts.emergency, balance: 1300 }
     ],
     history: [ { date: '2025-08-09', total: 1300 } ]
   },
   debt: {
     total: 2800,  // Small credit card debt
     accounts: [
-        { id: 1, name: 'Credit Card', balance: 2800, initialDebt: 5000, amountPaid: 2200, interestRate: 19.99, minPayment: 75, dueDate: 15, notificationsEnabled: true, notificationDays: 3 },
+        { id: 1, name: L.accounts.creditCard, balance: 2800, initialDebt: 5000, amountPaid: 2200, interestRate: 19.99, minPayment: 75, dueDate: 15, notificationsEnabled: true, notificationDays: 3 },
     ],
     history: [
         { date: '2025-06-30', total: 3200 },
@@ -306,7 +452,7 @@ const initialData = {
     breakdown: [
       { id: 1, name: 'Cash & Savings', value: 2500, color: 'bg-sky-500', type: 'asset' },
       { id: 2, name: 'Vehicle', value: 5000, color: 'bg-emerald-500', type: 'asset' },
-      { id: 3, name: 'Credit Card Debt', value: -2800, color: 'bg-red-500', type: 'liability' },
+      { id: 3, name: L.accounts.creditCard + ' Debt', value: -2800, color: 'bg-red-500', type: 'liability' },
     ],
     history: [ { date: '2025-08-09', total: 4700 } ]
   },
@@ -319,12 +465,12 @@ const initialData = {
   expenses: { 
     total: 1297,  // Matches actual transaction total
     categories: [
-      { id: 1, name: 'Rent', amount: 900, color: 'bg-red-500' },
-      { id: 2, name: 'Transportation', amount: 50, color: 'bg-yellow-500' },
-      { id: 3, name: 'Groceries', amount: 120, color: 'bg-green-500' },
-      { id: 4, name: 'Debt Payment', amount: 200, color: 'bg-blue-500' },
-      { id: 5, name: 'Entertainment', amount: 27, color: 'bg-purple-500' },
-      { id: 6, name: 'Other', amount: 0, color: 'bg-gray-400' },
+      { id: 1, name: L.catNames.rent, amount: 900, color: 'bg-red-500' },
+      { id: 2, name: L.catNames.transportation, amount: 50, color: 'bg-yellow-500' },
+      { id: 3, name: L.catNames.groceries, amount: 120, color: 'bg-green-500' },
+      { id: 4, name: L.catNames.debtPayment, amount: 200, color: 'bg-blue-500' },
+      { id: 5, name: L.catNames.entertainment, amount: 27, color: 'bg-purple-500' },
+      { id: 6, name: L.catNames.other, amount: 0, color: 'bg-gray-400' },
     ]
   },
   cashflow: { total: 1703 },  // $3,000 income - $1,297 expenses = $1,703 savings
@@ -335,9 +481,9 @@ const initialData = {
     monthlyIncome: 3000
   },
   goals: [
-    { id: 1, name: 'Emergency Fund (3 months)', targetAmount: 6000, currentAmount: 1300, targetDate: '2026-06-30' },
-    { id: 2, name: 'Pay Off Credit Card', targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
-    { id: 3, name: 'Vacation Fund', targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
+    { id: 1, name: L.goals.emergency, targetAmount: 6000, currentAmount: 1300, targetDate: '2026-06-30' },
+    { id: 2, name: L.goals.payCc, targetAmount: 2800, currentAmount: 400, targetDate: '2025-12-31' },
+    { id: 3, name: L.goals.vacation, targetAmount: 1500, currentAmount: 200, targetDate: '2026-03-15' },
   ],
   // 🔧 FIX: No businesses in sample data (Side Hustle is Operator-only feature)
   // FREE tier users shouldn't have phantom businesses affecting their calculations
@@ -351,38 +497,38 @@ const initialData = {
     accounts: [
       {
         id: 'tfsa',
-        name: 'TFSA',
+        name: L.accounts.tfsa.name,
         contributed: 0,  // Just starting out
         limit: 88000,
         goal: 10000,  // Realistic first goal
         type: 'tax-free',
-        description: 'Tax-free growth and withdrawals'
+        description: L.accounts.tfsa.desc
       },
       {
         id: 'rrsp', 
-        name: 'RRSP',
+        name: L.accounts.rrsp.name,
         contributed: 0,  // Just starting out
         limit: 31560,
         goal: 5000,  // Realistic first goal
         type: 'tax-deferred',
-        description: 'Tax-deferred retirement savings'
+        description: L.accounts.rrsp.desc
       }
     ]
   },
   transactions: [
     // 🔧 FIX: Use relative dates (days ago from today) so sample data is ALWAYS in the past!
-    { id: 1, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Salary - Full Time Job', amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
-    { id: 2, date: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Rent Payment', amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
-    { id: 3, date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Groceries', amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
-    { id: 4, date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Gas', amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
-    { id: 5, date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Credit Card Payment', amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
-    { id: 6, date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Netflix', amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
-    { id: 7, date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: 'Coffee', amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 1, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.salary, amount: 3000, type: 'income', category: 'personal', subcategory: 'salary' },
+    { id: 2, date: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.rent, amount: -900, type: 'expense', category: 'personal', subcategory: 'housing' },
+    { id: 3, date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.groceries, amount: -120, type: 'expense', category: 'personal', subcategory: 'food' },
+    { id: 4, date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.gas, amount: -50, type: 'expense', category: 'personal', subcategory: 'transport' },
+    { id: 5, date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.ccPayment, amount: -200, type: 'expense', category: 'personal', subcategory: 'debt' },
+    { id: 6, date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.netflix, amount: -15, type: 'expense', category: 'personal', subcategory: 'entertainment' },
+    { id: 7, date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], description: L.tx.coffee, amount: -12, type: 'expense', category: 'personal', subcategory: 'entertainment' },
   ],
   recurringExpenses: [
     {
       id: 1,
-      description: 'Rent Payment',
+      description: L.tx.rent,
       amount: 900,  // Updated to match realistic beginner rent
       type: 'expense',
       category: 'personal',
@@ -399,7 +545,7 @@ const initialData = {
     },
     {
       id: 2,
-      description: 'Netflix',
+      description: L.tx.netflix,
       amount: 15,
       type: 'expense',
       category: 'personal',
@@ -416,7 +562,7 @@ const initialData = {
     },
     {
       id: 3,
-      description: 'Car Insurance',
+      description: L.tx.carInsurance,
       amount: 150,
       type: 'expense',
       category: 'personal',
@@ -549,7 +695,11 @@ const initialData = {
       give: 5
     }
   }
-};
+  };
+}
+
+// Build initial data using detected language
+const initialData = getInitialData(getAppLanguage());
 
 const Card = ({ children, className = '' }) => (
   <div className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-lg p-6 ${className}`}>
@@ -12060,9 +12210,9 @@ function App() {
               setShowQuickStart(true);
             }
             
-            // New user - initialize with sample data
+            // New user - initialize with sample data (language-aware)
             console.log('New user detected, initializing with sample data');
-            const newUserData = { ...initialData };
+            const newUserData = { ...getInitialData(getAppLanguage()) };
             await setDoc(docRef, newUserData);
             setData(newUserData);
             showNotification(t('notifications.welcomeDashboardReady'), 'success');
@@ -12079,8 +12229,8 @@ function App() {
   // };
           console.error('Error loading user data:', error);
           showNotification('Error loading your data. Please try refreshing.', 'error');
-          // Fallback to initial data
-          setData(initialData);
+          // Fallback to initial data (language-aware)
+          setData(getInitialData(getAppLanguage()));
         }
         
         // 💳 Load user's subscription data
@@ -12962,6 +13112,7 @@ function App() {
       // 📊 SAMPLE FINANCIAL DATA ONLY (FREE tier safe!)
       // Only populates transactions & dashboard - no businesses, travel, investments
       const startDate = new Date(resetStartDate);
+      const langInitial = getInitialData(getAppLanguage());
       
       // 🛡️ PRESERVE non-financial data
       const preservedData = {
@@ -12972,8 +13123,8 @@ function App() {
       };
       
       resetData = {
-        ...initialData,
-        transactions: initialData.transactions.map((t, index) => {
+        ...langInitial,
+        transactions: langInitial.transactions.map((t, index) => {
           const daysToSubtract = index * 2;
           const transactionDate = new Date(startDate);
           transactionDate.setDate(startDate.getDate() - daysToSubtract);
@@ -12982,7 +13133,7 @@ function App() {
             date: transactionDate.toISOString().split('T')[0]
           };
         }),
-        recurringExpenses: initialData.recurringExpenses.map(r => ({
+        recurringExpenses: langInitial.recurringExpenses.map(r => ({
           ...r,
           nextDueDate: calculateNextDueDate(
             r.frequency,
@@ -12996,14 +13147,14 @@ function App() {
         })),
         monthlyHistory: [{
           month: resetStartDate.substring(0, 7),
-          netWorth: initialData.netWorth.total,
-          income: initialData.income.total,
-          expenses: initialData.expenses.total,
-          cashflow: initialData.cashflow.total || initialData.cashflow.monthly || 0,
+          netWorth: langInitial.netWorth.total,
+          income: langInitial.income.total,
+          expenses: langInitial.expenses.total,
+          cashflow: langInitial.cashflow.total || langInitial.cashflow.monthly || 0,
           businessIncome: 0, // ? No business data in sample
           businessExpenses: 0,
           investmentValue: 0, // ? No investment data in sample
-          savingsRate: initialData.savingsRate.current
+          savingsRate: langInitial.savingsRate.current
         }],
         
         // ? Override to remove premium features (FREE tier safe!)
