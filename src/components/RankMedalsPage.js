@@ -57,6 +57,13 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Helper function to get translated rank name
+  const getRankName = (rankName) => {
+    if (!rankName) return '';
+    const rankKey = rankName.toLowerCase().replace(' ', '');
+    return t(`ranks.${rankKey}`, rankName); // fallback to original if translation missing
+  };
+
   useEffect(() => {
     async function loadProfile() {
       if (!userId) return;
@@ -97,7 +104,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
             <p className="text-gray-400">{t('ranks.subtitle')}</p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-amber-400">{current.name}</div>
+            <div className="text-2xl font-bold text-amber-400">{getRankName(current.name)}</div>
             <div className="text-sm text-gray-400">{t('ranks.level')} {current.level}</div>
           </div>
         </div>
@@ -105,7 +112,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <div className="flex justify-between text-sm text-gray-300 mb-2">
-              <span>{t('ranks.progressTo')} {next?.name || t('ranks.maxRank')}</span>
+              <span>{t('ranks.progressTo')} {next ? getRankName(next.name) : t('ranks.maxRank')}</span>
               <span>{progress}%</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-3">
@@ -173,7 +180,7 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
                   </div>
                   <div>
                     <div className={`font-bold ${isCurrentRank ? 'text-amber-400' : isUnlocked ? 'text-white' : 'text-gray-500'}`}>
-                      {rank.name}
+                      {getRankName(rank.name)}
                     </div>
                     <div className="text-xs text-gray-400">Level {rank.level}</div>
                   </div>
