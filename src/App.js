@@ -373,7 +373,6 @@ const SAMPLE_STRINGS = {
       creditCard: 'Tarjeta de crédito',
       tfsa: { name: 'CTA (TFSA)', desc: 'Crecimiento y retiros libres de impuestos' },
       rrsp: { name: 'RPA (RRSP)', desc: 'Ahorros para el retiro con impuestos diferidos' }
-      rrsp: { name: 'RSP (RRSP)', desc: 'Ahorro para jubilación con impuestos diferidos' }
     },
     tx: {
       salary: 'Salario - Trabajo de tiempo completo',
