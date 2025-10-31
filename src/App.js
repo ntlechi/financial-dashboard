@@ -322,6 +322,13 @@ const SAMPLE_STRINGS = {
       debtPayment: 'Debt Payment',
       entertainment: 'Entertainment',
       other: 'Other'
+    },
+    sampleAssets: {
+      cashAndSavings: 'Cash & Savings',
+      vehicle: 'Vehicle'
+    },
+    sampleIncome: {
+      fullTimeJob: 'Full-Time Job'
     }
   },
   fr: {
@@ -363,6 +370,13 @@ const SAMPLE_STRINGS = {
       debtPayment: 'Paiement de dette',
       entertainment: 'Divertissement',
       other: 'Autre'
+    },
+    sampleAssets: {
+      cashAndSavings: 'Espèces & Épargne',
+      vehicle: 'Véhicule'
+    },
+    sampleIncome: {
+      fullTimeJob: 'Emploi à temps plein'
     }
   },
   es: {
@@ -397,6 +411,22 @@ const SAMPLE_STRINGS = {
       payCc: 'Pagar tarjeta de crédito',
       vacation: 'Fondo de vacaciones'
     },
+    catNames: {
+      rent: 'Alquiler',
+      transportation: 'Transporte',
+      groceries: 'Comestibles',
+      debtPayment: 'Pago de deuda',
+      entertainment: 'Entretenimiento',
+      other: 'Otro'
+    },
+    sampleAssets: {
+      cashAndSavings: 'Efectivo y Ahorros',
+      vehicle: 'Vehículo'
+    },
+    sampleIncome: {
+      fullTimeJob: 'Trabajo de tiempo completo'
+    }
+  },
     catNames: {
       rent: 'Alquiler',
       transportation: 'Transporte',
