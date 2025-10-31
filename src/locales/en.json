@@ -366,7 +366,24 @@
     "retirementAccountsSubtitle": "Building your legacy, one contribution at a time.",
     "taxFreeGrowth": "Tax-free growth and withdrawals",
     "taxDeferredRetirement": "Tax-deferred retirement savings",
-    "totalRoomAvailable": "Total Room Available"
+    "totalRoomAvailable": "Total Room Available",
+    "expense": "Expense",
+    "income": "Income",
+    "addExpense": "Add Expense",
+    "addIncome": "Add Income"
+  },
+  "categories": {
+    "personal": "Personal",
+    "business": "Business"
+  },
+  "days": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   },
   "settings": {
     "title": "Settings",
@@ -1168,7 +1185,19 @@
     "sortDateNewest": "📅 Date (Newest First)",
     "sortDateOldest": "📅 Date (Oldest First)",
     "sortAmountHigh": "💰 Amount (High to Low)",
-    "sortAmountLow": "💰 Amount (Low to High)"
+    "sortAmountLow": "💰 Amount (Low to High)",
+    "editRecurring": "Edit Recurring",
+    "editRecurringExpense": "Edit Recurring Expense",
+    "editRecurringIncome": "Edit Recurring Income",
+    "deleteRecurring": "Delete this recurring expense?",
+    "dayOfWeek": "Day of Week",
+    "nextDueDate": "Next Due Date",
+    "activeWillProcess": "Active (will process automatically)",
+    "saveChanges": "Save Changes",
+    "autoCategorize": "Auto-categorize",
+    "categorizeForTracking": "Categorize for better tracking",
+    "subcategory": "Subcategory",
+    "frequency": "Frequency"
   },
   "accounts": {
     "cash": "Cash",

@@ -8697,20 +8697,20 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               {(editingRecurring.frequency === 'weekly' || editingRecurring.frequency === 'bi-weekly') && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
-                    Day of Week
+                    {t('transactions.dayOfWeek')}
                   </label>
                   <select
                     value={editingRecurring.dayOfWeek || 1}
                     onChange={(e) => setEditingRecurring({...editingRecurring, dayOfWeek: parseInt(e.target.value)})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value={0}>Sunday</option>
-                    <option value={1}>Monday</option>
-                    <option value={2}>Tuesday</option>
-                    <option value={3}>Wednesday</option>
-                    <option value={4}>Thursday</option>
-                    <option value={5}>Friday</option>
-                    <option value={6}>Saturday</option>
+                    <option value={0}>{t('days.sunday')}</option>
+                    <option value={1}>{t('days.monday')}</option>
+                    <option value={2}>{t('days.tuesday')}</option>
+                    <option value={3}>{t('days.wednesday')}</option>
+                    <option value={4}>{t('days.thursday')}</option>
+                    <option value={5}>{t('days.friday')}</option>
+                    <option value={6}>{t('days.saturday')}</option>
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
                     {editingRecurring.frequency === 'bi-weekly' ? t('hints.perfectForPaychecks') : t('hints.chooseRecurringDay')}
@@ -8722,33 +8722,33 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
-                    Category
+                    {t('common.category')}
                   </label>
                   <select
                     value={editingRecurring.category || 'personal'}
                     onChange={(e) => setEditingRecurring({...editingRecurring, category: e.target.value, subcategory: ''})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="personal">👤 Personal</option>
-                    <option value="business">🏢 Business</option>
+                    <option value="personal">👤 {t('categories.personal')}</option>
+                    <option value="business">🏢 {t('categories.business')}</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
-                    Subcategory
+                    {t('transactions.subcategory')}
                   </label>
                   <select
                     value={editingRecurring.subcategory || ''}
                     onChange={(e) => setEditingRecurring({...editingRecurring, subcategory: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
                   >
-                    <option value="">🤖 Auto-categorize</option>
+                    <option value="">🤖 {t('transactions.autoCategorize')}</option>
                     {subcategoryOptions[editingRecurring.category || 'personal']?.[editingRecurring.type || 'expense']?.map(sub => (
                       <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
                     ))}
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
-                    💡 Categorize for better tracking
+                    💡 {t('transactions.categorizeForTracking')}
                   </p>
                 </div>
               </div>
@@ -8756,7 +8756,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               {/* Next Due Date */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  Next Due Date
+                  {t('transactions.nextDueDate')}
                 </label>
                 <input
                   type="date"
@@ -8777,7 +8777,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   className="w-4 h-4 rounded border-gray-600"
                 />
                 <label htmlFor="edit-active" className="text-sm text-gray-300">
-                  Active (will process automatically)
+                  {t('transactions.activeWillProcess')}
                 </label>
               </div>
             </div>
@@ -8788,14 +8788,14 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onClick={() => setEditingRecurring(null)}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleEditRecurringExpense}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
-                Save Changes
+                {t('transactions.saveChanges')}
               </button>
             </div>
         </FixedModal>
