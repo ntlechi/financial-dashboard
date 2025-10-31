@@ -3480,6 +3480,7 @@ const DebtPayoffCalculator = () => {
 
 // Budget Calculator Component with the critical layout fix
 const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }) => {
+  const { t } = useTranslation();
   const [budgetType, setBudgetType] = useState('50-30-20');
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
   const [showFFCalculator, setShowFFCalculator] = useState(false);
