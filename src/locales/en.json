@@ -484,6 +484,24 @@
     "dailyBudgetLabel": "Daily Budget",
     "remainingLabel": "Remaining"
   },
+  "banner": {
+    "status": "Status",
+    "level": "Level",
+    "xpEarned": "XP Earned",
+    "xpTo": "XP to",
+    "progressToNextRank": "Progress to Next Rank",
+    "next": "Next",
+    "howToPlay": "How to Play",
+    "dataProtected": "Data Protected",
+    "lastBackup": "Last backup:",
+    "lessThan1HourAgo": "Less than 1 hour ago",
+    "hoursAgo": "{{hours}} hour{{plural}} ago",
+    "view": "View",
+    "exportRecommended": "Export Recommended",
+    "exportWeekly": "Export your data weekly for extra safety!",
+    "lastExport": "Last export: {{days}} day{{plural}} ago",
+    "export": "Export"
+  },
   "moments": {
     "yourMoments": "💫 Your Moments",
     "everyMilestone": "Every milestone. Every sacrifice. Every win — remembered forever.",

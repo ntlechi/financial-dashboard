@@ -14336,10 +14336,10 @@ function App() {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-green-400 font-semibold text-sm">🛡️ Data Protected</p>
+                        <p className="text-green-400 font-semibold text-sm">🛡️ {t('banner.dataProtected')}</p>
                         <p className="text-green-200 text-xs">
                           {backupAge !== null 
-                            ? `Last backup: ${backupAge < 1 ? 'Less than 1 hour ago' : `${backupAge} hour${backupAge > 1 ? 's' : ''} ago`}`
+                            ? `${t('banner.lastBackup')} ${backupAge < 1 ? t('banner.lessThan1HourAgo') : t('banner.hoursAgo', { hours: backupAge, plural: backupAge > 1 ? 's' : '' })}`
                             : 'Creating first backup...'}
                         </p>
                       </div>
@@ -14351,7 +14351,7 @@ function App() {
                       }}
                       className="text-green-400 hover:text-green-300 text-xs font-medium px-3 py-1 rounded bg-green-600/20 hover:bg-green-600/30 transition-colors"
                     >
-                      View
+                      {t('banner.view')}
                     </button>
                   </div>
                 </div>
@@ -14367,11 +14367,11 @@ function App() {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-blue-400 font-semibold text-sm">💾 Export Recommended</p>
+                          <p className="text-blue-400 font-semibold text-sm">💾 {t('banner.exportRecommended')}</p>
                           <p className="text-blue-200 text-xs">
                             {exportAge !== null 
-                              ? `Last export: ${exportAge} day${exportAge > 1 ? 's' : ''} ago`
-                              : 'Export your data weekly for extra safety!'}
+                              ? t('banner.lastExport', { days: exportAge, plural: exportAge > 1 ? 's' : '' })
+                              : t('banner.exportWeekly')}
                           </p>
                         </div>
                       </div>
@@ -14382,7 +14382,7 @@ function App() {
                         }}
                         className="text-blue-400 hover:text-blue-300 text-xs font-medium px-3 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
                       >
-                        Export
+                        {t('banner.export')}
                       </button>
                     </div>
                   </div>

@@ -840,6 +840,24 @@
     "dailyBudgetLabel": "Budget Quotidien",
     "remainingLabel": "Restant"
   },
+  "banner": {
+    "status": "Statut",
+    "level": "Niveau",
+    "xpEarned": "XP Gagnés",
+    "xpTo": "XP jusqu'à",
+    "progressToNextRank": "Progrès vers le Prochain Rang",
+    "next": "Suivant",
+    "howToPlay": "Comment Jouer",
+    "dataProtected": "Données Protégées",
+    "lastBackup": "Dernière sauvegarde :",
+    "lessThan1HourAgo": "Il y a moins d'1 heure",
+    "hoursAgo": "Il y a {{hours}} heure{{plural}}",
+    "view": "Voir",
+    "exportRecommended": "Export Recommandé",
+    "exportWeekly": "Exportez vos données chaque semaine pour plus de sécurité !",
+    "lastExport": "Dernier export : Il y a {{days}} jour{{plural}}",
+    "export": "Exporter"
+  },
   "moments": {
     "yourMoments": "💫 Vos Moments",
     "everyMilestone": "Chaque jalon. Chaque sacrifice. Chaque victoire — souvenus pour toujours.",

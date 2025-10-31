@@ -275,6 +275,8 @@
     "welcomeDashboardReady": "¡Bienvenido! Tu panel está listo."
   },
   "dashboard": {
+    "welcome": "Bienvenido de nuevo",
+    "welcomeMessage": "Toma el comando de tu misión financiera.",
     "yourFinancialSnapshot": "Tu Instantánea Financiera",
     "calculatedRealTime": "Calculado en tiempo real desde tus transacciones y metas",
     "netWorth": "Patrimonio Neto",
@@ -802,6 +804,24 @@
     "savingsProgress": "Progreso de Ahorros",
     "dailyBudgetLabel": "Presupuesto Diario",
     "remainingLabel": "Restante"
+  },
+  "banner": {
+    "status": "Estado",
+    "level": "Nivel",
+    "xpEarned": "XP Ganados",
+    "xpTo": "XP hasta",
+    "progressToNextRank": "Progreso al Próximo Rango",
+    "next": "Siguiente",
+    "howToPlay": "Cómo Jugar",
+    "dataProtected": "Datos Protegidos",
+    "lastBackup": "Última copia de seguridad:",
+    "lessThan1HourAgo": "Hace menos de 1 hora",
+    "hoursAgo": "Hace {{hours}} hora{{plural}}",
+    "view": "Ver",
+    "exportRecommended": "Export Recomendado",
+    "exportWeekly": "¡Exporta tus datos semanalmente para mayor seguridad!",
+    "lastExport": "Última exportación: Hace {{days}} día{{plural}}",
+    "export": "Exportar"
   },
   "moments": {
     "yourMoments": "💫 Tus Momentos",
