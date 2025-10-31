@@ -10182,7 +10182,7 @@ const TravelTab = ({ data, setData, userId }) => {
                         <svg className="w-12 h-12 text-purple-400/50 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p className="text-purple-400 font-medium mb-1">Your wishlist is empty</p>
+                        <p className="text-purple-400 font-medium mb-1">{t('travel.yourWishlistIsEmpty')}</p>
                         <p className="text-gray-400 text-sm">{t('dashboard.addTransaction')} countries you dream of visiting!</p>
                         <button
                           onClick={() => setShowAddWishlistCountry(true)}
@@ -10262,7 +10262,7 @@ const TravelTab = ({ data, setData, userId }) => {
                       <HelpCircle className="w-5 h-5" />
                     </button>
                     <div className="absolute right-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 bottom-full mb-2 w-72 sm:w-80 bg-gray-900 text-white text-sm rounded-lg p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-2xl border border-amber-500/30 z-50">
-                      <div className="font-bold text-amber-400 mb-2">How It Works:</div>
+                      <div className="font-bold text-amber-400 mb-2">{t('travel.howItWorks')}</div>
                       <div className="space-y-2 text-xs text-gray-300">
                         <p><strong>1. Set Your Travel Savings:</strong> Enter your total travel fund (top right edit button)</p>
                         <p><strong>2. Plan Your Days:</strong> Allocate days to different cost tiers:
@@ -10470,7 +10470,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
                 {trip.expenses && trip.expenses.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Expenses</h4>
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">{t('travel.recentExpenses')}</h4>
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       {trip.expenses.slice(0, 3).map(expense => (
                         <div key={expense.id} className="flex justify-between items-start text-xs group">
@@ -11182,7 +11182,7 @@ const TravelTab = ({ data, setData, userId }) => {
                {/* Basic Settings in Mobile-Friendly Grid */}
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                  <div>
-                   <label className="block text-sm text-gray-300 mb-1">Total Travel Savings</label>
+                   <label className="block text-sm text-gray-300 mb-1">{t('travel.totalTravelSavings')}</label>
                    <input
                      type="number"
                      placeholder="50000"
@@ -11194,11 +11194,11 @@ const TravelTab = ({ data, setData, userId }) => {
                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
                      style={{ fontSize: '16px' }}
                    />
-                   <p className="text-xs text-gray-400 mt-1 hidden sm:block">Your total funds available for travel</p>
+                   <p className="text-xs text-gray-400 mt-1 hidden sm:block">{t('travel.totalFundsAvailable')}</p>
                  </div>
-
+                 
                  <div>
-                   <label className="block text-sm text-gray-300 mb-1">Home Currency</label>
+                   <label className="block text-sm text-gray-300 mb-1">{t('travel.homeCurrency')}</label>
                    <select
                      value={runwaySettings.homeCurrency}
                      onChange={(e) => setRunwaySettings({
@@ -11215,7 +11215,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     <option value="THB">THB - Thai Baht</option>
                     <option value="COP">COP - Colombian Peso</option>
                   </select>
-                   <p className="text-xs text-gray-400 mt-1 hidden sm:block">Your primary currency for calculations</p>
+                   <p className="text-xs text-gray-400 mt-1 hidden sm:block">{t('travel.primaryCurrencyCalculations')}</p>
                  </div>
                </div>
 
@@ -11243,7 +11243,7 @@ const TravelTab = ({ data, setData, userId }) => {
                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none text-base"
                        style={{ fontSize: '16px' }}
                      />
-                     <p className="text-xs text-green-300 mt-1 hidden sm:block">Days in Southeast Asia, Eastern Europe, India</p>
+                     <p className="text-xs text-green-300 mt-1 hidden sm:block">{t('travel.daysInCheapDestinations')}</p>
                    </div>
 
                    <div className="bg-yellow-900/30 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
@@ -11265,7 +11265,7 @@ const TravelTab = ({ data, setData, userId }) => {
                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-yellow-400 focus:outline-none text-base"
                        style={{ fontSize: '16px' }}
                      />
-                     <p className="text-xs text-yellow-300 mt-1 hidden sm:block">Days in South America, Southern Europe</p>
+                     <p className="text-xs text-yellow-300 mt-1 hidden sm:block">{t('travel.daysInModerateDestinations')}</p>
                    </div>
 
                    <div className="bg-red-900/30 rounded-lg p-2 sm:p-3 border border-red-600/30">
@@ -11287,7 +11287,7 @@ const TravelTab = ({ data, setData, userId }) => {
                        className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-red-400 focus:outline-none text-base"
                        style={{ fontSize: '16px' }}
                      />
-                     <p className="text-xs text-red-300 mt-1 hidden sm:block">Days in Western Europe, Scandinavia, Japan</p>
+                     <p className="text-xs text-red-300 mt-1 hidden sm:block">{t('travel.daysInExpensiveDestinations')}</p>
                    </div>
                  </div>
                </div>
@@ -14112,9 +14112,9 @@ function App() {
         <div className="fixed top-4 left-4 right-4 z-50 p-3 rounded-lg shadow-lg bg-orange-600 text-white border border-orange-500">
           <div className="flex items-center justify-center gap-2">
             <span className="text-orange-200">🧳</span>
-            <span className="font-medium">Offline Mode</span>
+            <span className="font-medium">{t('common.offlineMode')}</span>
             <span className="text-orange-200">?��</span>
-            <span className="text-sm">Data will sync when connected</span>
+            <span className="text-sm">{t('common.dataWillSync')}</span>
             {offlineSummary.pendingSync > 0 && (
               <>
                 <span className="text-orange-200">?��</span>
@@ -14178,7 +14178,7 @@ function App() {
                         <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        <h3 className="text-green-400 font-semibold">Account Already Created from Payment</h3>
+                        <h3 className="text-green-400 font-semibold">{t('common.accountCreatedFromPayment')}</h3>
                       </div>
                       <p className="text-green-200 text-sm">
                         We found an account for <strong>{existingUserWithPayment?.email}</strong> with an active subscription. 
@@ -14802,9 +14802,9 @@ function App() {
                           <th className="text-right py-2 text-gray-300">Income</th>
                           <th className="text-right py-2 text-gray-300">Expenses</th>
                           <th className="text-right py-2 text-gray-300">Cash Flow</th>
-                          <th className="text-right py-2 text-gray-300">Business Profit</th>
-                          <th className="text-right py-2 text-gray-300">Investment Value</th>
-                          <th className="text-right py-2 text-gray-300">Savings Rate</th>
+                          <th className="text-right py-2 text-gray-300">{t('common.businessProfit')}</th>
+                          <th className="text-right py-2 text-gray-300">{t('common.investmentValue')}</th>
+                          <th className="text-right py-2 text-gray-300">{t('common.savingsRateLabel')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -15395,7 +15395,7 @@ function App() {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
+                      <label className="block text-sm text-gray-300 mb-1">{t('editor.targetAmount')}</label>
                       <input
                         type="number"
                         value={tempCardData.targetAmount || ''}
@@ -15404,7 +15404,7 @@ function App() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-300 mb-1">Current Investments</label>
+                      <label className="block text-sm text-gray-300 mb-1">{t('editor.currentInvestments')}</label>
                       <input
                         type="number"
                         value={tempCardData.currentInvestments || ''}
@@ -15415,7 +15415,7 @@ function App() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-300 mb-1">Monthly Contribution</label>
+                      <label className="block text-sm text-gray-300 mb-1">{t('editor.monthlyContribution')}</label>
                       <input
                         type="number"
                         value={tempCardData.monthlyContribution || ''}
@@ -15424,7 +15424,7 @@ function App() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-300 mb-1">Annual Return %</label>
+                      <label className="block text-sm text-gray-300 mb-1">{t('editor.annualReturn')}</label>
                       <input
                         type="number"
                         value={tempCardData.annualReturn || ''}
@@ -15441,7 +15441,7 @@ function App() {
                 <>
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-lg font-semibold text-white">Bank Accounts</h4>
+                      <h4 className="text-lg font-semibold text-white">{t('editor.bankAccounts')}</h4>
                       <button
                         onClick={() => {
                           const newAccount = {
@@ -15541,7 +15541,7 @@ function App() {
                 <>
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-lg font-semibold text-white">Debt Accounts</h4>
+                      <h4 className="text-lg font-semibold text-white">{t('editor.debtAccounts')}</h4>
                       <button
                         onClick={() => {
                           const newAccount = {
