@@ -10851,38 +10851,26 @@ const TravelTab = ({ data, setData, userId }) => {
              setMomentText('');
              setMomentTrip(null);
            }}
-           title={`💫 Capture a Moment - ${momentTrip.name}`}
+           title={t('travel.captureMoment', { tripName: momentTrip.name })}
            size="md"
          >
            <div className="space-y-4">
-             <div className="flex justify-between items-center mb-4">
-               <div>
-                 <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>💫 Add Travel Moment</h3>
-                 <p className="text-sm text-gray-400">{momentTrip.name}</p>
-               </div>
-               <button
-                 onClick={() => {
-                   setShowMomentModal(false);
-                   setMomentTrip(null);
-                   setMomentText('');
-                 }}
-                 className="text-gray-400 hover:text-white"
-               >
-                 <X className="w-5 h-5" />
-               </button>
+             <div className="mb-4">
+               <h3 className="text-xl font-bold" style={{ color: '#F59E0B' }}>{t('travel.addTravelMoment')}</h3>
+               <p className="text-sm text-gray-400">{momentTrip.name}</p>
              </div>
              
              <div className="space-y-4">
                {/* Inspiring Message */}
                <div className="bg-gradient-to-r from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
                  <p className="text-amber-200 text-sm italic text-center">
-                   💰✈️ "You didn't work for money. You worked for moments like this."
+                   {t('travel.momentQuote')}
                  </p>
                </div>
 
                <div>
                  <label className="block text-sm text-gray-300 mb-2">
-                   Your Story <span className="text-red-400">*</span>
+                   {t('travel.yourStory')} <span className="text-red-400">*</span>
                  </label>
                  <textarea
                    placeholder={t('examples.momentStoryExample')}
@@ -10893,7 +10881,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    autoFocus
                  />
                  <p className="text-xs text-gray-500 mt-2">
-                   💡 Pro tip: Write about the emotions, the people, the unexpected surprises. These stories are your treasure!
+                   {t('travel.momentProTip')}
                  </p>
                </div>
              </div>
@@ -10907,7 +10895,7 @@ const TravelTab = ({ data, setData, userId }) => {
                  }}
                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
-                 Cancel
+                 {t('common.cancel')}
                </button>
                <button
                  onClick={handleAddMomentToTrip}
@@ -10916,7 +10904,7 @@ const TravelTab = ({ data, setData, userId }) => {
                  style={momentText.trim() ? { backgroundColor: '#F59E0B' } : {}}
                >
                  <Plus className="w-4 h-4" />
-                 Save Moment
+                 {t('travel.saveMoment')}
                </button>
              </div>
            </div>
