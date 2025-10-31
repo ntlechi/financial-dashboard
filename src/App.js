@@ -2618,6 +2618,7 @@ const CashFlowCard = ({ data, income, expenses, transactions = [] }) => {
 
 // Financial Freedom Calculator Component
 const FinancialFreedomCalculator = () => {
+  const { t } = useTranslation();
   const [currentAge, setCurrentAge] = useState(30);
   const [targetAmount, setTargetAmount] = useState(2000000);
   const [currentSavings, setCurrentSavings] = useState(100000);
@@ -2973,6 +2974,7 @@ const FinancialFreedomCalculator = () => {
 
 // Debt Payoff Calculator Component
 const DebtPayoffCalculator = () => {
+  const { t } = useTranslation();
   const [debts, setDebts] = useState([
     { id: 1, name: 'Credit Card 1', balance: 5000, interestRate: 19.99, minPayment: 100 },
     { id: 2, name: 'Credit Card 2', balance: 10000, interestRate: 22.99, minPayment: 200 },
