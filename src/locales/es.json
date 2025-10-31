@@ -702,7 +702,20 @@
     "recurringItems": "Elementos Recurrentes",
     "passive": "Pasivo",
     "next": "Siguiente:",
-    "deleteRecurringItem": "¿Eliminar este elemento recurrente?"
+    "deleteRecurringItem": "¿Eliminar este elemento recurrente?",
+    "addItemTo": "Agregar Elemento a {{name}}",
+    "addRecurringTo": "Agregar Elemento Recurrente a {{name}}",
+    "editIncomeItem": "Editar Elemento de Ingreso",
+    "editExpenseItem": "Editar Elemento de Gasto",
+    "incomeItem": "Elemento de Ingreso",
+    "expenseItem": "Elemento de Gasto",
+    "addIncome": "Agregar Ingreso",
+    "addExpense": "Agregar Gasto",
+    "passiveIncomeLabel": "Ingreso Pasivo",
+    "passiveIncomeTooltipFull": "💡 El ingreso pasivo cuenta para tu Ratio de Libertad (ingreso que ganas sin trabajo activo)",
+    "passiveIncomeTooltipShort": "💡 El ingreso pasivo cuenta para tu Ratio de Libertad",
+    "itemName": "Nombre del Elemento",
+    "amount": "Cantidad"
   },
   "travel": {
     "title": "Viaje",

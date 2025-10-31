@@ -5561,7 +5561,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <FixedModal
           isOpen={showAddItem}
           onClose={() => setShowAddItem(false)}
-          title={`Add Item to ${selectedBusiness.name}`}
+          title={t('sideHustle.addItemTo', { name: selectedBusiness.name })}
           size="md"
         >
           <div className="space-y-4">
@@ -5574,7 +5574,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  Income
+                  {t('sideHustle.income')}
                 </button>
                 <button
                   onClick={() => setItemType('expense')}
@@ -5584,7 +5584,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  Expense
+                  {t('sideHustle.expenses')}
                 </button>
               </div>
               
@@ -5623,9 +5623,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       className="w-5 h-5 rounded border-amber-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-gray-800"
                     />
                     <div>
-                      <span className="text-white font-semibold">Passive Income</span>
+                      <span className="text-white font-semibold">{t('sideHustle.passiveIncomeLabel')}</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
+                        {t('sideHustle.passiveIncomeTooltipFull')}
                       </p>
                     </div>
                   </label>
@@ -5638,13 +5638,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 onClick={() => setShowAddItem(false)}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleAddItem}
                 className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Add {itemType === 'income' ? 'Income' : 'Expense'}
+                {itemType === 'income' ? t('sideHustle.addIncome') : t('sideHustle.addExpense')}
               </button>
             </div>
         </FixedModal>
@@ -5655,13 +5655,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <FixedModal
           isOpen={!!editingItem}
           onClose={() => setEditingItem(null)}
-          title={`Edit ${editingItem.type === 'income' ? 'Income' : 'Expense'} Item`}
+          title={editingItem.type === 'income' ? t('sideHustle.editIncomeItem') : t('sideHustle.editExpenseItem')}
           size="md"
         >
           <div className="space-y-4">
               <div className="bg-gray-700/30 rounded-lg p-3 text-center">
                 <span className={`text-sm font-semibold ${editingItem.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
-                  {editingItem.type === 'income' ? '📈 Income Item' : '📉 Expense Item'}
+                  {editingItem.type === 'income' ? `📈 ${t('sideHustle.incomeItem')}` : `📉 ${t('sideHustle.expenseItem')}`}
                 </span>
               </div>
               
@@ -5700,9 +5700,9 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       className="w-5 h-5 rounded border-amber-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-gray-800"
                     />
                     <div>
-                      <span className="text-white font-semibold">Passive Income</span>
+                      <span className="text-white font-semibold">{t('sideHustle.passiveIncomeLabel')}</span>
                       <p className="text-xs text-amber-300 mt-1">
-                        💡 Passive income counts toward your Freedom Ratio
+                        {t('sideHustle.passiveIncomeTooltipShort')}
                       </p>
                     </div>
                   </label>
@@ -5715,13 +5715,13 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 onClick={() => setEditingItem(null)}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleEditItem}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Save Changes
+                {t('sideHustle.saveChanges')}
               </button>
             </div>
         </FixedModal>
@@ -5732,7 +5732,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <FixedModal
           isOpen={showAddRecurring}
           onClose={() => setShowAddRecurring(false)}
-          title={`Add Recurring Item to ${selectedBusiness.name}`}
+          title={t('sideHustle.addRecurringTo', { name: selectedBusiness.name })}
           size="lg"
         >
           <div className="space-y-4">
@@ -5746,7 +5746,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  Income
+                  {t('sideHustle.income')}
                 </button>
                 <button
                   onClick={() => setRecurringType('expense')}
@@ -5756,14 +5756,14 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  Expense
+                  {t('sideHustle.expenses')}
                 </button>
               </div>
 
               {/* Item Name */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  Item Name
+                  {t('sideHustle.itemName')}
                 </label>
                 <input
                   type="text"
@@ -5778,7 +5778,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-300 mb-2">
-                    Amount
+                    {t('sideHustle.amount')}
                   </label>
                   <input
                     type="number"

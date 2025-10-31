@@ -798,7 +798,20 @@
     "recurringItems": "Recurring Items",
     "passive": "Passive",
     "next": "Next:",
-    "deleteRecurringItem": "Delete this recurring item?"
+    "deleteRecurringItem": "Delete this recurring item?",
+    "addItemTo": "Add Item to {{name}}",
+    "addRecurringTo": "Add Recurring Item to {{name}}",
+    "editIncomeItem": "Edit Income Item",
+    "editExpenseItem": "Edit Expense Item",
+    "incomeItem": "Income Item",
+    "expenseItem": "Expense Item",
+    "addIncome": "Add Income",
+    "addExpense": "Add Expense",
+    "passiveIncomeLabel": "Passive Income",
+    "passiveIncomeTooltipFull": "💡 Passive income counts toward your Freedom Ratio (income you earn without active work)",
+    "passiveIncomeTooltipShort": "💡 Passive income counts toward your Freedom Ratio",
+    "itemName": "Item Name",
+    "amount": "Amount"
   },
   "faq": {
     "title": "Help & FAQ",

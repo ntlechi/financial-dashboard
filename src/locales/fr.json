@@ -740,7 +740,20 @@
     "recurringItems": "Éléments Récurrents",
     "passive": "Passif",
     "next": "Prochain :",
-    "deleteRecurringItem": "Supprimer cet élément récurrent ?"
+    "deleteRecurringItem": "Supprimer cet élément récurrent ?",
+    "addItemTo": "Ajouter un élément à {{name}}",
+    "addRecurringTo": "Ajouter un élément récurrent à {{name}}",
+    "editIncomeItem": "Modifier l'élément de revenu",
+    "editExpenseItem": "Modifier l'élément de dépense",
+    "incomeItem": "Élément de revenu",
+    "expenseItem": "Élément de dépense",
+    "addIncome": "Ajouter un revenu",
+    "addExpense": "Ajouter une dépense",
+    "passiveIncomeLabel": "Revenu Passif",
+    "passiveIncomeTooltipFull": "💡 Le revenu passif compte pour votre Ratio de Liberté (revenu que vous gagnez sans travail actif)",
+    "passiveIncomeTooltipShort": "💡 Le revenu passif compte pour votre Ratio de Liberté",
+    "itemName": "Nom de l'élément",
+    "amount": "Montant"
   },
   "travel": {
     "operatorsWorldMap": "Carte du Monde de l'Opérateur",
