@@ -349,7 +349,7 @@ const MissionControl = ({
                 {t('missionControl.howToSetNorthStar')}
               </p>
               <p className="text-sm text-amber-300">
-                Faites défiler jusqu'aux <span className="font-bold">Missions Actives</span> ci-dessous et cliquez sur le bouton <span className="font-bold">⭐ Définir comme Étoile Polaire</span> sur votre objectif ultime !
+                {t('missionControl.scrollToActiveMissions')}
               </p>
             </div>
           </div>
@@ -372,7 +372,7 @@ const MissionControl = ({
           <div>
             <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30 mb-6 text-center">
               <p className="text-amber-300 text-sm">
-                ⭐ Cliquez sur <span className="font-bold">"Définir comme Étoile Polaire"</span> sur votre objectif de vie ultime ci-dessous !
+                {t('missionControl.clickSetAsNorthStar')}
               </p>
             </div>
             
