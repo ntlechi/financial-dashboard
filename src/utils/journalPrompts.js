@@ -1378,12 +1378,464 @@ export const journalPrompts = [
       es: "¿Qué significa 'ingreso pasivo' para tu vida soñada?"
     },
     category: "money" 
+  },
+  
+  // Continue building to 365 (Prompts 151-200)
+  { 
+    id: 151, 
+    text: {
+      en: "What tradition from your family do you want to continue?",
+      fr: "Quelle tradition de votre famille voulez-vous continuer ?",
+      es: "¿Qué tradición de tu familia quieres continuar?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 152, 
+    text: {
+      en: "What do you want your children to be proud of you for?",
+      fr: "De quoi voulez-vous que vos enfants soient fiers de vous ?",
+      es: "¿Por qué quieres que tus hijos estén orgullosos de ti?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 153, 
+    text: {
+      en: "Can you confidently say 'no' when you want to?",
+      fr: "Pouvez-vous dire 'non' avec confiance quand vous le voulez ?",
+      es: "¿Puedes decir 'no' con confianza cuando quieres?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 154, 
+    text: {
+      en: "What's a fond childhood memory?",
+      fr: "Quel est un souvenir d'enfance affectueux ?",
+      es: "¿Cuál es un recuerdo tierno de la infancia?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 155, 
+    text: {
+      en: "When you achieve your dream life, what will it mean?",
+      fr: "Lorsque vous atteindrez votre vie de rêve, que signifiera-t-elle ?",
+      es: "Cuando logres tu vida soñada, ¿qué significará?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 156, 
+    text: {
+      en: "When's the last time someone truly understood you?",
+      fr: "Quand était la dernière fois que quelqu'un vous a vraiment compris ?",
+      es: "¿Cuándo fue la última vez que alguien te entendió realmente?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 157, 
+    text: {
+      en: "What could you live without that others find necessary?",
+      fr: "De quoi pourriez-vous vous passer que d'autres trouvent nécessaire ?",
+      es: "¿De qué podrías vivir sin que otros encuentran necesario?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 158, 
+    text: {
+      en: "What three simple things bring you the most joy?",
+      fr: "Quelles trois choses simples vous apportent le plus de joie ?",
+      es: "¿Qué tres cosas simples te traen más alegría?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 159, 
+    text: {
+      en: "When do you feel most at peace?",
+      fr: "Quand vous sentez-vous le plus en paix ?",
+      es: "¿Cuándo te sientes más en paz?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 160, 
+    text: {
+      en: "What's your favorite thing about your family?",
+      fr: "Quelle est votre chose préférée à propos de votre famille ?",
+      es: "¿Cuál es tu cosa favorita de tu familia?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 161, 
+    text: {
+      en: "If you could switch lives with a friend for a day, who and why?",
+      fr: "Si vous pouviez échanger votre vie avec un ami pour une journée, qui et pourquoi ?",
+      es: "Si pudieras cambiar vidas con un amigo por un día, ¿quién y por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 162, 
+    text: {
+      en: "What's your earliest money memory? How did it shape you?",
+      fr: "Quel est votre premier souvenir d'argent ? Comment vous a-t-il façonné ?",
+      es: "¿Cuál es tu primer recuerdo de dinero? ¿Cómo te moldeó?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 163, 
+    text: {
+      en: "What skill would you love to learn?",
+      fr: "Quelle compétence aimeriez-vous apprendre ?",
+      es: "¿Qué habilidad te encantaría aprender?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 164, 
+    text: {
+      en: "What fictional character do you relate to most?",
+      fr: "À quel personnage fictif vous identifiez-vous le plus ?",
+      es: "¿Con qué personaje ficticio te identificas más?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 165, 
+    text: {
+      en: "If your life was a movie, who would play you?",
+      fr: "Si votre vie était un film, qui vous jouerait ?",
+      es: "Si tu vida fuera una película, ¿quién te interpretaría?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 166, 
+    text: {
+      en: "Write a letter of gratitude to someone who impacted your life.",
+      fr: "Écrivez une lettre de gratitude à quelqu'un qui a impacté votre vie.",
+      es: "Escribe una carta de gratitud a alguien que impactó tu vida."
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 167, 
+    text: {
+      en: "Describe going out of your comfort zone and being glad you did.",
+      fr: "Décrivez un moment où vous êtes sorti de votre zone de confort et où vous êtes content de l'avoir fait.",
+      es: "Describe salir de tu zona de confort y estar contento de haberlo hecho."
+    },
+    category: "growth" 
+  },
+  { 
+    id: 168, 
+    text: {
+      en: "What song lyrics speak to your soul? Why?",
+      fr: "Quelles paroles de chanson parlent à votre âme ? Pourquoi ?",
+      es: "¿Qué letras de canciones hablan a tu alma? ¿Por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 169, 
+    text: {
+      en: "What's more important: what you do or who you do it with?",
+      fr: "Qu'est-ce qui est plus important : ce que vous faites ou avec qui vous le faites ?",
+      es: "¿Qué es más importante: lo que haces o con quién lo haces?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 170, 
+    text: {
+      en: "If you could give the world one message, what would it be?",
+      fr: "Si vous pouviez donner un message au monde, quel serait-il ?",
+      es: "Si pudieras dar un mensaje al mundo, ¿cuál sería?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 171, 
+    text: {
+      en: "Write a list of positive affirmations about yourself.",
+      fr: "Écrivez une liste d'affirmations positives sur vous-même.",
+      es: "Escribe una lista de afirmaciones positivas sobre ti mismo."
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 172, 
+    text: {
+      en: "What has been your biggest life lesson this year?",
+      fr: "Quelle a été votre plus grande leçon de vie cette année ?",
+      es: "¿Cuál ha sido tu mayor lección de vida este año?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 173, 
+    text: {
+      en: "What worried you that turned out to be less scary?",
+      fr: "Qu'est-ce qui vous inquiétait et qui s'est avéré moins effrayant ?",
+      es: "¿Qué te preocupó que resultó ser menos aterrador?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 174, 
+    text: {
+      en: "Write a short story about your life so far.",
+      fr: "Écrivez une courte histoire sur votre vie jusqu'à présent.",
+      es: "Escribe una historia corta sobre tu vida hasta ahora."
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 175, 
+    text: {
+      en: "If you could change one thing about how you feel about yourself, what?",
+      fr: "Si vous pouviez changer une chose dans ce que vous ressentez envers vous-même, quoi ?",
+      es: "Si pudieras cambiar una cosa sobre cómo te sientes acerca de ti mismo, ¿qué?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 176, 
+    text: {
+      en: "How do you motivate yourself to do unexciting tasks?",
+      fr: "Comment vous motivez-vous à faire des tâches peu excitantes ?",
+      es: "¿Cómo te motivas para hacer tareas poco emocionantes?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 177, 
+    text: {
+      en: "What's your current self-care mantra?",
+      fr: "Quel est votre mantra actuel d'auto-soin ?",
+      es: "¿Cuál es tu mantra actual de autocuidado?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 178, 
+    text: {
+      en: "If you opened a door to anywhere, where would you go?",
+      fr: "Si vous ouvriez une porte vers n'importe où, où iriez-vous ?",
+      es: "Si abrieras una puerta a cualquier lugar, ¿dónde irías?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 179, 
+    text: {
+      en: "When you wake up, you wish you could just...",
+      fr: "Lorsque vous vous réveillez, vous aimeriez juste...",
+      es: "Cuando te despiertas, desearías poder simplemente..."
+    },
+    category: "daily" 
+  },
+  { 
+    id: 180, 
+    text: {
+      en: "What do you want to manifest in your life right now?",
+      fr: "Que voulez-vous manifester dans votre vie en ce moment ?",
+      es: "¿Qué quieres manifestar en tu vida en este momento?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 181, 
+    text: {
+      en: "Do you have the right people to help you achieve your goals?",
+      fr: "Avez-vous les bonnes personnes pour vous aider à atteindre vos objectifs ?",
+      es: "¿Tienes a las personas adecuadas para ayudarte a lograr tus objetivos?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 182, 
+    text: {
+      en: "When disconnected from yourself, how do you reconnect?",
+      fr: "Lorsque vous êtes déconnecté de vous-même, comment vous reconnectez-vous ?",
+      es: "Cuando estás desconectado de ti mismo, ¿cómo te reconectas?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 183, 
+    text: {
+      en: "If you could change one thing in the world, what?",
+      fr: "Si vous pouviez changer une chose dans le monde, quoi ?",
+      es: "Si pudieras cambiar una cosa en el mundo, ¿qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 184, 
+    text: {
+      en: "Describe the person you aspire to be.",
+      fr: "Décrivez la personne que vous aspirez à être.",
+      es: "Describe la persona que aspiras a ser."
+    },
+    category: "goals" 
+  },
+  { 
+    id: 185, 
+    text: {
+      en: "Who would your soulmate be? Describe them.",
+      fr: "Qui serait votre âme sœur ? Décrivez-la.",
+      es: "¿Quién sería tu alma gemela? Descríbela."
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 186, 
+    text: {
+      en: "Describe the first time you felt you were in love.",
+      fr: "Décrivez la première fois que vous avez senti que vous étiez amoureux.",
+      es: "Describe la primera vez que sentiste que estabas enamorado."
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 187, 
+    text: {
+      en: "Do you believe everything happens for a reason?",
+      fr: "Croyez-vous que tout arrive pour une raison ?",
+      es: "¿Crees que todo sucede por una razón?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 188, 
+    text: {
+      en: "When disappointed, how do you cheer yourself up?",
+      fr: "Lorsque vous êtes déçu, comment vous remontez-vous le moral ?",
+      es: "Cuando estás decepcionado, ¿cómo te animas?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 189, 
+    text: {
+      en: "What are your relationship 'deal breakers'?",
+      fr: "Quels sont vos 'ruptures de marché' relationnels ?",
+      es: "¿Cuáles son tus 'deal breakers' en las relaciones?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 190, 
+    text: {
+      en: "Write about a time you showed incredible resilience.",
+      fr: "Écrivez sur un moment où vous avez montré une résilience incroyable.",
+      es: "Escribe sobre un momento en que mostraste una resiliencia increíble."
+    },
+    category: "wins" 
+  },
+  { 
+    id: 191, 
+    text: {
+      en: "How do you feel about the present moment?",
+      fr: "Comment vous sentez-vous par rapport au moment présent ?",
+      es: "¿Cómo te sientes acerca del momento presente?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 192, 
+    text: {
+      en: "Do you think you should be happy all the time?",
+      fr: "Pensez-vous que vous devriez être heureux tout le temps ?",
+      es: "¿Crees que deberías estar feliz todo el tiempo?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 193, 
+    text: {
+      en: "What's your next step toward your current goal?",
+      fr: "Quelle est votre prochaine étape vers votre objectif actuel ?",
+      es: "¿Cuál es tu próximo paso hacia tu objetivo actual?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 194, 
+    text: {
+      en: "What's the hardest thing you've had to do?",
+      fr: "Quelle est la chose la plus difficile que vous ayez dû faire ?",
+      es: "¿Cuál es la cosa más difícil que has tenido que hacer?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 195, 
+    text: {
+      en: "What's your favorite character in a book/movie? Why?",
+      fr: "Quel est votre personnage préféré dans un livre/film ? Pourquoi ?",
+      es: "¿Cuál es tu personaje favorito en un libro/película? ¿Por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 196, 
+    text: {
+      en: "When your 'cup' is empty, you feel...",
+      fr: "Lorsque votre 'coupe' est vide, vous vous sentez...",
+      es: "Cuando tu 'taza' está vacía, te sientes..."
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 197, 
+    text: {
+      en: "What boundaries protect your energy?",
+      fr: "Quelles limites protègent votre énergie ?",
+      es: "¿Qué límites protegen tu energía?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 198, 
+    text: {
+      en: "What's something about your family that surprises you?",
+      fr: "Qu'est-ce qui vous surprend à propos de votre famille ?",
+      es: "¿Qué es algo sobre tu familia que te sorprende?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 199, 
+    text: {
+      en: "What's the most memorable meal you've shared with someone?",
+      fr: "Quel est le repas le plus mémorable que vous ayez partagé avec quelqu'un ?",
+      es: "¿Cuál es la comida más memorable que has compartido con alguien?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 200, 
+    text: {
+      en: "What's blocking you from living a life you love?",
+      fr: "Qu'est-ce qui vous empêche de vivre une vie que vous aimez ?",
+      es: "¿Qué te impide vivir una vida que amas?"
+    },
+    category: "growth" 
   }
 ];
 
 // NOTE: This file is being translated in batches due to size.
-// Current progress: Prompts 1-150 translated (EN/FR/ES) - 36% complete!
-// Remaining: Prompts 151-420 to be added in next batches
+// Current progress: Prompts 1-200 translated (EN/FR/ES) - 48% complete!
+// Remaining: Prompts 201-420 to be added in next batches
 
 // Shuffle algorithm (seeded for consistency per user)
 export const shufflePrompts = (prompts, seed) => {
