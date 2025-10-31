@@ -5381,25 +5381,25 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     {/* KPI Cards */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       <div className="bg-green-900/20 rounded-lg p-4 border border-green-500/30">
-                        <div className="text-xs text-green-300 mb-1">Total Revenue</div>
+                        <div className="text-xs text-green-300 mb-1">{t('sideHustle.totalRevenue')}</div>
                         <div className="text-2xl font-bold text-green-400">
                           ${(kpis.totalRevenue || 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
                         </div>
                       </div>
                       <div className="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
-                        <div className="text-xs text-red-300 mb-1">Total Expenses</div>
+                        <div className="text-xs text-red-300 mb-1">{t('sideHustle.totalExpenses')}</div>
                         <div className="text-2xl font-bold text-red-400">
                           ${(kpis.totalExpenses || 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
                         </div>
                       </div>
                       <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
-                        <div className="text-xs text-amber-300 mb-1">Total Profit</div>
+                        <div className="text-xs text-amber-300 mb-1">{t('sideHustle.totalProfit')}</div>
                         <div className="text-2xl font-bold text-amber-400">
                           ${(kpis.totalProfit || 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
                         </div>
                       </div>
                       <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
-                        <div className="text-xs text-blue-300 mb-1">Growth (MoM)</div>
+                        <div className="text-xs text-blue-300 mb-1">{t('sideHustle.growthMoM')}</div>
                         <div className={`text-2xl font-bold ${kpis.growth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           {kpis.growth >= 0 ? '+' : ''}{kpis.growth.toFixed(1)}%
                         </div>
@@ -5416,7 +5416,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                             onChange={(e) => setShowIncome(e.target.checked)}
                             className="rounded border-gray-600 text-green-600 focus:ring-green-500"
                           />
-                          <span className="text-sm text-green-300">Income</span>
+                          <span className="text-sm text-green-300">{t('sideHustle.income')}</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input
@@ -5425,7 +5425,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                             onChange={(e) => setShowExpenses(e.target.checked)}
                             className="rounded border-gray-600 text-red-600 focus:ring-red-500"
                           />
-                          <span className="text-sm text-red-300">Expenses</span>
+                          <span className="text-sm text-red-300">{t('sideHustle.expenses')}</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input
@@ -5434,7 +5434,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                             onChange={(e) => setShowProfit(e.target.checked)}
                             className="rounded border-gray-600 text-amber-600 focus:ring-amber-500"
                           />
-                          <span className="text-sm text-amber-300">Profit</span>
+                          <span className="text-sm text-amber-300">{t('sideHustle.profit')}</span>
                         </label>
                       </div>
                       <select
@@ -5450,7 +5450,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
 
                     {/* Performance Chart */}
                     <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-                      <h4 className="text-sm font-semibold text-gray-300 mb-4">Performance Trend</h4>
+                      <h4 className="text-sm font-semibold text-gray-300 mb-4">{t('sideHustle.performanceTrend')}</h4>
                       <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={filteredData}>
                           <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -5491,15 +5491,15 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="border-b border-gray-700">
-                                <th className="text-left py-2 text-gray-400 font-semibold">Metric</th>
-                                <th className="text-right py-2 text-gray-400 font-semibold">Last Year</th>
-                                <th className="text-right py-2 text-gray-400 font-semibold">This Year</th>
-                                <th className="text-right py-2 text-gray-400 font-semibold">Change</th>
+                                <th className="text-left py-2 text-gray-400 font-semibold">{t('sideHustle.metric')}</th>
+                                <th className="text-right py-2 text-gray-400 font-semibold">{t('sideHustle.lastYear')}</th>
+                                <th className="text-right py-2 text-gray-400 font-semibold">{t('sideHustle.thisYear')}</th>
+                                <th className="text-right py-2 text-gray-400 font-semibold">{t('sideHustle.change')}</th>
                               </tr>
                             </thead>
                             <tbody>
                               <tr className="border-b border-gray-700/50">
-                                <td className="py-3 text-white">Revenue</td>
+                                <td className="py-3 text-white">{t('sideHustle.revenue')}</td>
                                 <td className="text-right text-green-300">${yoyComparison.lastYear.income.toLocaleString()}</td>
                                 <td className="text-right text-green-400 font-semibold">${yoyComparison.current.income.toLocaleString()}</td>
                                 <td className={`text-right font-bold ${yoyComparison.growth.revenue >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -5507,7 +5507,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                                 </td>
                               </tr>
                               <tr className="border-b border-gray-700/50">
-                                <td className="py-3 text-white">Expenses</td>
+                                <td className="py-3 text-white">{t('sideHustle.expenses')}</td>
                                 <td className="text-right text-red-300">${yoyComparison.lastYear.expenses.toLocaleString()}</td>
                                 <td className="text-right text-red-400 font-semibold">${yoyComparison.current.expenses.toLocaleString()}</td>
                                 <td className={`text-right font-bold ${yoyComparison.growth.expenses >= 0 ? 'text-red-400' : 'text-green-400'}`}>
@@ -5515,7 +5515,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                                 </td>
                               </tr>
                               <tr>
-                                <td className="py-3 text-white font-semibold">Net Profit</td>
+                                <td className="py-3 text-white font-semibold">{t('sideHustle.netProfit')}</td>
                                 <td className="text-right text-amber-300">${yoyComparison.lastYear.profit.toLocaleString()}</td>
                                 <td className="text-right text-amber-400 font-bold">${yoyComparison.current.profit.toLocaleString()}</td>
                                 <td className={`text-right font-bold ${yoyComparison.growth.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -5870,7 +5870,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       className="w-5 h-5 rounded border-amber-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-gray-800"
                     />
                     <div>
-                      <span className="text-white font-semibold">Passive Income</span>
+                      <span className="text-white font-semibold">{t('sideHustle.passiveIncome')}</span>
                       <p className="text-xs text-amber-300 mt-1">
                         💡 Passive income counts toward your Freedom Ratio (income you earn without active work)
                       </p>
@@ -5920,7 +5920,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <AlertTriangle className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-red-400 font-semibold mb-1">Warning: Permanent Action</h4>
+                    <h4 className="text-red-400 font-semibold mb-1">{t('sideHustle.warningPermanentAction')}</h4>
                     <p className="text-sm text-gray-300">
                       Are you sure you want to delete "<span className="font-semibold text-white">{businessToDelete.name}</span>"?
                     </p>
@@ -5932,24 +5932,24 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </div>
 
               <div className="bg-gray-700/30 rounded-lg p-3">
-                <h5 className="text-white font-medium mb-2">Business Details:</h5>
+                <h5 className="text-white font-medium mb-2">{t('sideHustle.businessDetails')}</h5>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Total Income:</span>
+                    <span className="text-gray-400">{t('sideHustle.totalIncome')}</span>
                     <span className="text-green-400">${(parseFloat(businessToDelete.totalIncome) || 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Total Expenses:</span>
+                    <span className="text-gray-400">{t('sideHustle.totalExpenses')}</span>
                     <span className="text-red-400">${(parseFloat(businessToDelete.totalExpenses) || 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Net Profit:</span>
+                    <span className="text-gray-400">{t('sideHustle.netProfit')}:</span>
                     <span className={`${businessToDelete.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       ${(parseFloat(businessToDelete.netProfit) || 0).toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Records:</span>
+                    <span className="text-gray-400">{t('sideHustle.records')}</span>
                     <span className="text-gray-300">
                       {(businessToDelete.incomeItems?.length || 0) + (businessToDelete.expenseItems?.length || 0)} items
                     </span>
@@ -8832,7 +8832,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <svg className="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              <span className="text-base md:text-sm">Filters</span>
+              <span className="text-base md:text-sm">{t('transactions.filters')}</span>
               {(selectedCategories.length > 0 || dateRange.start || dateRange.end || selectedTypes.length < 3) && (
                 <span className="bg-blue-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   {[
@@ -8867,7 +8867,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Transaction Type Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Transaction Type</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">{t('transactions.transactionType')}</label>
                   <div className="space-y-2">
                     {['income', 'expense', 'transfer'].map(type => (
                       <label key={type} className="flex items-center gap-2 cursor-pointer">
@@ -8891,7 +8891,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 
                 {/* Category Filter - Mobile friendly */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Category</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">{t('transactions.categoryFilter')}</label>
                   <select
                     multiple
                     value={selectedCategories}
@@ -8911,12 +8911,12 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     <option value="personal">Personal</option>
                     <option value="business">Business</option>
                   </select>
-                  <p className="text-xs text-gray-400 mt-2 md:mt-1">Hold Ctrl/Cmd for multiple</p>
+                  <p className="text-xs text-gray-400 mt-2 md:mt-1">{t('transactions.holdCtrlCmd')}</p>
                 </div>
                 
                 {/* Date Range Filter - Large tap targets */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Date Range</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">{t('transactions.dateRange')}</label>
                   <input
                     type="date"
                     value={dateRange.start}
@@ -8935,7 +8935,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 
                 {/* Sort By - Large tap target */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">Sort By</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-3 md:mb-2">{t('transactions.sortBy')}</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
@@ -16827,7 +16827,7 @@ function App() {
                   Survive Backpacking
                 </a>
               </h3>
-              <p className="text-gray-400 text-sm">{t('auth.welcomeMessage')}</p>
+              <p className="text-gray-400 text-sm">{t('footer.tagline')}</p>
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-end items-center space-x-6 text-sm">
@@ -17096,7 +17096,7 @@ function App() {
                   type="email"
                   value={feedbackData.email}
                   onChange={(e) => setFeedbackData({...feedbackData, email: e.target.value})}
-                  placeholder="your@email.com"
+                  placeholder={t('placeholders.emailAddress')}
                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 />
               </div>

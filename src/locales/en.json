@@ -136,7 +136,8 @@
     "accountName": "Account Name",
     "balance": "Balance",
     "enterAmount": "Enter amount",
-    "selectDueDate": "Select due date"
+    "selectDueDate": "Select due date",
+    "emailAddress": "your@email.com"
   },
   "examples": {
     "netflixSubscription": "e.g., Netflix Subscription",
@@ -913,6 +914,21 @@
     "addRecurringTo": "Add Recurring Item to {{name}}",
     "editIncomeItem": "Edit Income Item",
     "editExpenseItem": "Edit Expense Item",
+    "totalRevenue": "Total Revenue",
+    "totalExpenses": "Total Expenses",
+    "totalProfit": "Total Profit",
+    "growthMoM": "Growth (MoM)",
+    "performanceTrend": "Performance Trend",
+    "metric": "Metric",
+    "lastYear": "Last Year",
+    "thisYear": "This Year",
+    "change": "Change",
+    "revenue": "Revenue",
+    "profit": "Profit",
+    "warningPermanentAction": "Warning: Permanent Action",
+    "businessDetails": "Business Details:",
+    "totalIncome": "Total Income:",
+    "records": "Records:",
     "incomeItem": "Income Item",
     "expenseItem": "Expense Item",
     "addIncome": "Add Income",
@@ -1096,7 +1112,13 @@
     "transactionCount": "transaction",
     "transactionCount_plural": "transactions",
     "categoryBreakdown": "Category Breakdown",
-    "noTransactions": "No transactions to display"
+    "noTransactions": "No transactions to display",
+    "transactionType": "Transaction Type",
+    "categoryFilter": "Category",
+    "dateRange": "Date Range",
+    "sortBy": "Sort By",
+    "holdCtrlCmd": "Hold Ctrl/Cmd for multiple",
+    "filters": "Filters"
   },
   "accounts": {
     "cash": "Cash",
