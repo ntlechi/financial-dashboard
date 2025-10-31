@@ -834,7 +834,11 @@
     "daysPlanned": "jours planifiés",
     "remainingFunds": "Fonds Restants",
     "daysPossible": "jours possibles",
-    "extendJourneyTip": "💡 Prolongez votre voyage en choisissant des destinations moins chères avec les fonds restants"
+    "extendJourneyTip": "💡 Prolongez votre voyage en choisissant des destinations moins chères avec les fonds restants",
+    "startPlanningAdventure": "Commencez à planifier votre prochaine aventure ! Suivez les budgets, les dépenses et les devises pour tous vos voyages.",
+    "savingsProgress": "Progrès de l'Épargne",
+    "dailyBudgetLabel": "Budget Quotidien",
+    "remainingLabel": "Restant"
   },
   "moments": {
     "yourMoments": "💫 Vos Moments",

@@ -10216,9 +10216,9 @@ const TravelTab = ({ data, setData, userId }) => {
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-2">
-              🗺️ Trip Planning & Budgets
+              {t('travel.tripPlanningBudgets')}
             </h2>
-            <p className="text-gray-400">Manage your travel budgets and track expenses by trip</p>
+            <p className="text-gray-400">{t('travel.manageYourTravel')}</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -10226,14 +10226,14 @@ const TravelTab = ({ data, setData, userId }) => {
               className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
             >
               <Calculator className="w-4 h-4 mr-2" />
-              {showRunwayCalculator ? 'Hide' : 'Show'} Travel Runway
+              {showRunwayCalculator ? t('travel.hideTravelRunway') : t('travel.showTravelRunway')}
             </button>
             <button
               onClick={() => setShowAddTrip(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Plan New Trip
+              {t('travel.planNewTrip')}
             </button>
           </div>
         </div>
@@ -10252,10 +10252,10 @@ const TravelTab = ({ data, setData, userId }) => {
               
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 mb-2">
-                  <h3 className="text-2xl font-bold text-white">🌍 Travel Runway Calculator</h3>
+                  <h3 className="text-2xl font-bold text-white">{t('travel.travelRunwayCalculator')}</h3>
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-6">
-                  <p className="text-slate-300">Smart destination-based travel planning with cost tiers</p>
+                  <p className="text-slate-300">{t('travel.smartDestinationBased')}</p>
                   {/* 💡 Help Tooltip - Left side on mobile */}
                   <div className="group relative">
                     <button className="text-slate-400 hover:text-amber-400 transition-colors">
@@ -10284,42 +10284,42 @@ const TravelTab = ({ data, setData, userId }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
                     <div className="text-3xl font-bold text-slate-200">{runway.totalPossibleDays}</div>
-                    <div className="text-slate-300">Total Possible Days</div>
+                    <div className="text-slate-300">{t('travel.totalPossibleDays')}</div>
                   </div>
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
                     <div className="text-3xl font-bold text-slate-200">{runway.weeksRemaining}</div>
-                    <div className="text-slate-300">Weeks of Travel</div>
+                    <div className="text-slate-300">{t('travel.weeksOfTravel')}</div>
                   </div>
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-4 border border-slate-500/40">
                     <div className="text-3xl font-bold text-slate-200">{runway.monthsRemaining}</div>
-                    <div className="text-slate-300">Months of Travel</div>
+                    <div className="text-slate-300">{t('travel.monthsOfTravel')}</div>
                   </div>
                 </div>
 
                 {/* Destination Cost Breakdown */}
                 <div className="bg-gradient-to-br from-slate-800/30 to-slate-700/30 rounded-lg p-4 mb-6 border border-slate-500/40">
-                  <h4 className="text-lg font-semibold text-slate-200 mb-4">🎯 Your Travel Plan</h4>
+                  <h4 className="text-lg font-semibold text-slate-200 mb-4">{t('travel.yourTravelPlan')}</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/40">
-                      <div className="text-emerald-300 font-semibold">🟢 Cheap Destinations</div>
-                      <div className="text-white text-lg">{runway.tripPlan.cheap} days</div>
-                      <div className="text-emerald-300">${runway.costTiers.cheap}/day</div>
-                      <div className="text-emerald-200">Total: ${(parseFloat(runway.plannedCosts.cheap) || 0).toLocaleString()}</div>
-                      <div className="text-xs text-emerald-300 mt-1">Southeast Asia, Eastern Europe, India</div>
+                      <div className="text-emerald-300 font-semibold">{t('travel.cheapDestinations')}</div>
+                      <div className="text-white text-lg">{runway.tripPlan.cheap} {t('travel.days')}</div>
+                      <div className="text-emerald-300">${runway.costTiers.cheap}{t('travel.perDay')}</div>
+                      <div className="text-emerald-200">{t('travel.total')} ${(parseFloat(runway.plannedCosts.cheap) || 0).toLocaleString()}</div>
+                      <div className="text-xs text-emerald-300 mt-1">{t('travel.southeastAsiaEasternEurope')}</div>
                     </div>
                     <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 border border-amber-500/40">
-                      <div className="text-amber-300 font-semibold">🟡 Moderate Destinations</div>
-                      <div className="text-white text-lg">{runway.tripPlan.moderate} days</div>
-                      <div className="text-amber-300">${runway.costTiers.moderate}/day</div>
-                      <div className="text-amber-200">Total: ${(parseFloat(runway.plannedCosts.moderate) || 0).toLocaleString()}</div>
-                      <div className="text-xs text-amber-300 mt-1">South America, Southern Europe</div>
+                      <div className="text-amber-300 font-semibold">{t('travel.moderateDestinations')}</div>
+                      <div className="text-white text-lg">{runway.tripPlan.moderate} {t('travel.days')}</div>
+                      <div className="text-amber-300">${runway.costTiers.moderate}{t('travel.perDay')}</div>
+                      <div className="text-amber-200">{t('travel.total')} ${(parseFloat(runway.plannedCosts.moderate) || 0).toLocaleString()}</div>
+                      <div className="text-xs text-amber-300 mt-1">{t('travel.southAmericaSouthernEurope')}</div>
                     </div>
                     <div className="bg-gradient-to-br from-rose-600/20 to-pink-600/20 rounded-lg p-3 border border-rose-500/40">
-                      <div className="text-rose-300 font-semibold">🔴 Expensive Destinations</div>
-                      <div className="text-white text-lg">{runway.tripPlan.expensive} days</div>
-                      <div className="text-rose-300">${runway.costTiers.expensive}/day</div>
-                      <div className="text-rose-200">Total: ${(parseFloat(runway.plannedCosts.expensive) || 0).toLocaleString()}</div>
-                      <div className="text-xs text-rose-300 mt-1">Western Europe, Scandinavia, Japan</div>
+                      <div className="text-rose-300 font-semibold">{t('travel.expensiveDestinations')}</div>
+                      <div className="text-white text-lg">{runway.tripPlan.expensive} {t('travel.days')}</div>
+                      <div className="text-rose-300">${runway.costTiers.expensive}{t('travel.perDay')}</div>
+                      <div className="text-rose-200">{t('travel.total')} ${(parseFloat(runway.plannedCosts.expensive) || 0).toLocaleString()}</div>
+                      <div className="text-xs text-rose-300 mt-1">{t('travel.westernEuropeScandinaviaJapan')}</div>
                     </div>
                   </div>
                 </div>
@@ -10327,23 +10327,23 @@ const TravelTab = ({ data, setData, userId }) => {
                 {/* Financial Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
-                    <div className="text-slate-300">Total Travel Funds</div>
+                    <div className="text-slate-300">{t('travel.totalTravelFunds')}</div>
                     <div className="text-xl font-bold text-white">${(parseFloat(runway.totalFunds) || 0).toLocaleString()} {data.travel?.homeCurrency || 'CAD'}</div>
                   </div>
                   <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/30 rounded-lg p-3 border border-slate-500/40">
-                    <div className="text-slate-300">Planned Trip Cost</div>
+                    <div className="text-slate-300">{t('travel.plannedTripCost')}</div>
                     <div className="text-xl font-bold text-white">${(parseFloat(runway.totalPlannedCost) || 0).toLocaleString()}</div>
-                    <div className="text-xs text-slate-400">{runway.totalPlannedDays} days planned</div>
+                    <div className="text-xs text-slate-400">{runway.totalPlannedDays} {t('travel.daysPlanned')}</div>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 rounded-lg p-3 border border-emerald-500/30">
-                    <div className="text-emerald-200">Remaining Funds</div>
+                    <div className="text-emerald-200">{t('travel.remainingFunds')}</div>
                     <div className="text-xl font-bold text-emerald-400">${(parseFloat(runway.remainingFunds) || 0).toLocaleString()}</div>
-                    <div className="text-xs text-emerald-300">+{runway.extensionDays} days possible</div>
+                    <div className="text-xs text-emerald-300">+{runway.extensionDays} {t('travel.daysPossible')}</div>
                   </div>
                 </div>
                 
                 <div className="text-xs text-slate-400 text-center">
-                  💡 Extend your journey by choosing cheaper destinations with remaining funds
+                  {t('travel.extendJourneyTip')}
                 </div>
               </div>
             </div>
@@ -10360,7 +10360,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 <Target className="w-16 h-16 text-blue-400 mx-auto mb-4 opacity-50" />
                 <h3 className="text-xl font-bold text-white mb-2">{t('emptyStatesExtended.noTripsPlannedYet')}</h3>
                 <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                  Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.
+                  {t('travel.startPlanningAdventure')}
                 </p>
                 <button
                   onClick={() => setShowAddTrip(true)}
@@ -10436,7 +10436,7 @@ const TravelTab = ({ data, setData, userId }) => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm text-gray-300 mb-1">
-                    <span>Savings Progress</span>
+                    <span>{t('travel.savingsProgress')}</span>
                     <span>{Math.round(progress)}%</span>
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-2">
@@ -10457,11 +10457,11 @@ const TravelTab = ({ data, setData, userId }) => {
                     <div className="text-white font-medium">{new Date(trip.startDate).toLocaleDateString()}</div>
                   </div>
                   <div className="bg-gray-700/30 rounded-lg p-2">
-                    <div className="text-sm text-gray-400">Daily Budget</div>
+                    <div className="text-sm text-gray-400">{t('travel.dailyBudgetLabel')}</div>
                     <div className="text-white font-medium">${trip.estimatedDailySpend}</div>
                   </div>
                   <div className="bg-gray-700/30 rounded-lg p-2">
-                    <div className="text-sm text-gray-400">Remaining</div>
+                    <div className="text-sm text-gray-400">{t('travel.remainingLabel')}</div>
                     <div className={`font-medium ${remainingBudget >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       ${(parseFloat(remainingBudget) || 0).toLocaleString()}
                     </div>

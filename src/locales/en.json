@@ -478,7 +478,11 @@
     "daysPlanned": "days planned",
     "remainingFunds": "Remaining Funds",
     "daysPossible": "days possible",
-    "extendJourneyTip": "💡 Extend your journey by choosing cheaper destinations with remaining funds"
+    "extendJourneyTip": "💡 Extend your journey by choosing cheaper destinations with remaining funds",
+    "startPlanningAdventure": "Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.",
+    "savingsProgress": "Savings Progress",
+    "dailyBudgetLabel": "Daily Budget",
+    "remainingLabel": "Remaining"
   },
   "moments": {
     "yourMoments": "💫 Your Moments",

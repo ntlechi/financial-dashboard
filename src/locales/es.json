@@ -797,7 +797,11 @@
     "daysPlanned": "días planificados",
     "remainingFunds": "Fondos Restantes",
     "daysPossible": "días posibles",
-    "extendJourneyTip": "💡 Extiende tu viaje eligiendo destinos más baratos con los fondos restantes"
+    "extendJourneyTip": "💡 Extiende tu viaje eligiendo destinos más baratos con los fondos restantes",
+    "startPlanningAdventure": "¡Comienza a planificar tu próxima aventura! Rastrea presupuestos, gastos y monedas para todos tus viajes.",
+    "savingsProgress": "Progreso de Ahorros",
+    "dailyBudgetLabel": "Presupuesto Diario",
+    "remainingLabel": "Restante"
   },
   "moments": {
     "title": "Momentos",
