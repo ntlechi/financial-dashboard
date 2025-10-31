@@ -1830,12 +1830,464 @@ export const journalPrompts = [
       es: "¿Qué te impide vivir una vida que amas?"
     },
     category: "growth" 
+  },
+  
+  // Prompts 201-250
+  { 
+    id: 201, 
+    text: {
+      en: "What makes you feel most in control of your life?",
+      fr: "Qu'est-ce qui vous fait sentir le plus en contrôle de votre vie ?",
+      es: "¿Qué te hace sentir más en control de tu vida?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 202, 
+    text: {
+      en: "What's your biggest regret worry when you reach the end?",
+      fr: "Quelle est votre plus grande inquiétude de regret lorsque vous atteignez la fin ?",
+      es: "¿Cuál es tu mayor preocupación de arrepentimiento cuando llegues al final?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 203, 
+    text: {
+      en: "What book has influenced your life? How?",
+      fr: "Quel livre a influencé votre vie ? Comment ?",
+      es: "¿Qué libro ha influenciado tu vida? ¿Cómo?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 204, 
+    text: {
+      en: "What's making you happy right this second?",
+      fr: "Qu'est-ce qui vous rend heureux en ce moment précis ?",
+      es: "¿Qué te está haciendo feliz en este preciso segundo?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 205, 
+    text: {
+      en: "How does your body feel in this moment?",
+      fr: "Comment votre corps se sent-il en ce moment ?",
+      es: "¿Cómo se siente tu cuerpo en este momento?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 206, 
+    text: {
+      en: "What's your core values in life?",
+      fr: "Quelles sont vos valeurs fondamentales dans la vie ?",
+      es: "¿Cuáles son tus valores fundamentales en la vida?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 207, 
+    text: {
+      en: "How would your friends describe you?",
+      fr: "Comment vos amis vous décriraient-ils ?",
+      es: "¿Cómo te describirían tus amigos?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 208, 
+    text: {
+      en: "What's on your bucket list?",
+      fr: "Qu'est-ce qui est sur votre liste de choses à faire avant de mourir ?",
+      es: "¿Qué hay en tu lista de deseos?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 209, 
+    text: {
+      en: "Are rules made to be broken or followed? Why?",
+      fr: "Les règles sont-elles faites pour être enfreintes ou suivies ? Pourquoi ?",
+      es: "¿Las reglas están hechas para romperse o seguirse? ¿Por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 210, 
+    text: {
+      en: "When did you last feel a huge adrenaline rush?",
+      fr: "Quand avez-vous ressenti une énorme poussée d'adrénaline pour la dernière fois ?",
+      es: "¿Cuándo sentiste por última vez una gran descarga de adrenalina?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 211, 
+    text: {
+      en: "How does your current home make you feel?",
+      fr: "Comment votre maison actuelle vous fait-elle sentir ?",
+      es: "¿Cómo te hace sentir tu hogar actual?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 212, 
+    text: {
+      en: "What do you struggle to understand about yourself?",
+      fr: "Qu'est-ce que vous avez du mal à comprendre à propos de vous-même ?",
+      es: "¿Qué te cuesta entender sobre ti mismo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 213, 
+    text: {
+      en: "On your happiest days, what are you doing?",
+      fr: "Lors de vos jours les plus heureux, que faites-vous ?",
+      es: "En tus días más felices, ¿qué estás haciendo?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 214, 
+    text: {
+      en: "What could improve your life right now?",
+      fr: "Qu'est-ce qui pourrait améliorer votre vie en ce moment ?",
+      es: "¿Qué podría mejorar tu vida en este momento?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 215, 
+    text: {
+      en: "When you hear 'Dream Life,' what do you think?",
+      fr: "Lorsque vous entendez 'Vie de Rêve', à quoi pensez-vous ?",
+      es: "Cuando escuchas 'Vida Soñada', ¿qué piensas?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 216, 
+    text: {
+      en: "What do you need to feel the way you want to feel?",
+      fr: "De quoi avez-vous besoin pour vous sentir comme vous voulez vous sentir ?",
+      es: "¿Qué necesitas para sentirte como quieres sentirte?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 217, 
+    text: {
+      en: "What's causing you stress right now?",
+      fr: "Qu'est-ce qui vous cause du stress en ce moment ?",
+      es: "¿Qué te está causando estrés en este momento?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 218, 
+    text: {
+      en: "What do you want to teach other people?",
+      fr: "Que voulez-vous enseigner aux autres ?",
+      es: "¿Qué quieres enseñar a otras personas?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 219, 
+    text: {
+      en: "Close your eyes - imagine absolute joy. Describe that place.",
+      fr: "Fermez les yeux - imaginez une joie absolue. Décrivez cet endroit.",
+      es: "Cierra los ojos - imagina alegría absoluta. Describe ese lugar."
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 220, 
+    text: {
+      en: "Did you have imaginary friends growing up? Describe them.",
+      fr: "Aviez-vous des amis imaginaires en grandissant ? Décrivez-les.",
+      es: "¿Tenías amigos imaginarios al crecer? Descríbelos."
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 221, 
+    text: {
+      en: "What could move you one step closer to your dream life today?",
+      fr: "Qu'est-ce qui pourrait vous rapprocher d'un pas de votre vie de rêve aujourd'hui ?",
+      es: "¿Qué podría acercarte un paso más a tu vida soñada hoy?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 222, 
+    text: {
+      en: "How do you calm your mind?",
+      fr: "Comment calmez-vous votre esprit ?",
+      es: "¿Cómo calmas tu mente?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 223, 
+    text: {
+      en: "If you could do anything with zero limits, what would it be?",
+      fr: "Si vous pouviez faire n'importe quoi sans limites, que serait-ce ?",
+      es: "Si pudieras hacer cualquier cosa sin límites, ¿qué sería?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 224, 
+    text: {
+      en: "Three things about you not many people know - why?",
+      fr: "Trois choses sur vous que peu de gens connaissent - pourquoi ?",
+      es: "Tres cosas sobre ti que no mucha gente sabe - ¿por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 225, 
+    text: {
+      en: "Are you happy with how you spend time? What would you change?",
+      fr: "Êtes-vous satisfait de la façon dont vous passez votre temps ? Que changeriez-vous ?",
+      es: "¿Estás feliz con cómo pasas el tiempo? ¿Qué cambiarías?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 226, 
+    text: {
+      en: "Write about when someone showed you kindness at a low point.",
+      fr: "Écrivez sur le moment où quelqu'un vous a montré de la gentillesse dans un moment difficile.",
+      es: "Escribe sobre cuando alguien te mostró bondad en un momento difícil."
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 227, 
+    text: {
+      en: "What's your love language? Is it accurate?",
+      fr: "Quel est votre langage d'amour ? Est-ce précis ?",
+      es: "¿Cuál es tu lenguaje del amor? ¿Es preciso?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 228, 
+    text: {
+      en: "I feel most in control when I...",
+      fr: "Je me sens le plus en contrôle quand je...",
+      es: "Me siento más en control cuando..."
+    },
+    category: "growth" 
+  },
+  { 
+    id: 229, 
+    text: {
+      en: "Plan your perfect date. What does it include?",
+      fr: "Planifiez votre rendez-vous parfait. Qu'est-ce qu'il inclut ?",
+      es: "Planea tu cita perfecta. ¿Qué incluye?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 230, 
+    text: {
+      en: "What coping strategies help you manage emotions?",
+      fr: "Quelles stratégies d'adaptation vous aident à gérer vos émotions ?",
+      es: "¿Qué estrategias de afrontamiento te ayudan a manejar las emociones?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 231, 
+    text: {
+      en: "When is your cup nearing empty?",
+      fr: "Quand votre coupe est-elle presque vide ?",
+      es: "¿Cuándo tu taza se está acercando a vacía?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 232, 
+    text: {
+      en: "Does your life look like you thought it would?",
+      fr: "Votre vie ressemble-t-elle à ce que vous pensiez qu'elle serait ?",
+      es: "¿Tu vida se ve como pensabas que sería?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 233, 
+    text: {
+      en: "What's your biggest priority today?",
+      fr: "Quelle est votre plus grande priorité aujourd'hui ?",
+      es: "¿Cuál es tu mayor prioridad hoy?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 234, 
+    text: {
+      en: "Do you feel like the star of your own life?",
+      fr: "Vous sentez-vous comme la star de votre propre vie ?",
+      es: "¿Te sientes como la estrella de tu propia vida?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 235, 
+    text: {
+      en: "What's your favorite season and why?",
+      fr: "Quelle est votre saison préférée et pourquoi ?",
+      es: "¿Cuál es tu estación favorita y por qué?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 236, 
+    text: {
+      en: "What would you do if no one was watching?",
+      fr: "Que feriez-vous si personne ne regardait ?",
+      es: "¿Qué harías si nadie estuviera mirando?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 237, 
+    text: {
+      en: "What are you looking forward to today?",
+      fr: "Qu'attendez-vous avec impatience aujourd'hui ?",
+      es: "¿Qué esperas con ansias hoy?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 238, 
+    text: {
+      en: "Did you have a 'good' childhood?",
+      fr: "Avez-vous eu une 'bonne' enfance ?",
+      es: "¿Tuviste una 'buena' infancia?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 239, 
+    text: {
+      en: "What was the first thought this morning?",
+      fr: "Quelle a été votre première pensée ce matin ?",
+      es: "¿Cuál fue el primer pensamiento esta mañana?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 240, 
+    text: {
+      en: "How does your body feel when stressed?",
+      fr: "Comment votre corps se sent-il lorsqu'il est stressé ?",
+      es: "¿Cómo se siente tu cuerpo cuando está estresado?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 241, 
+    text: {
+      en: "What's making you happy at this exact moment?",
+      fr: "Qu'est-ce qui vous rend heureux en ce moment précis ?",
+      es: "¿Qué te está haciendo feliz en este momento exacto?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 242, 
+    text: {
+      en: "Who taught you a big life lesson? What was it?",
+      fr: "Qui vous a enseigné une grande leçon de vie ? Quelle était-elle ?",
+      es: "¿Quién te enseñó una gran lección de vida? ¿Cuál fue?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 243, 
+    text: {
+      en: "Right now, do you love yourself?",
+      fr: "En ce moment, vous aimez-vous vous-même ?",
+      es: "En este momento, ¿te amas a ti mismo?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 244, 
+    text: {
+      en: "What do holidays mean to you?",
+      fr: "Que signifient les vacances pour vous ?",
+      es: "¿Qué significan las vacaciones para ti?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 245, 
+    text: {
+      en: "Describe one day that changed everything for you.",
+      fr: "Décrivez un jour qui a tout changé pour vous.",
+      es: "Describe un día que cambió todo para ti."
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 246, 
+    text: {
+      en: "Five positive changes that would improve your life today?",
+      fr: "Cinq changements positifs qui amélioreraient votre vie aujourd'hui ?",
+      es: "¿Cinco cambios positivos que mejorarían tu vida hoy?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 247, 
+    text: {
+      en: "What habit do you wish you had? Why?",
+      fr: "Quelle habitude aimeriez-vous avoir ? Pourquoi ?",
+      es: "¿Qué hábito desearías tener? ¿Por qué?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 248, 
+    text: {
+      en: "I feel most like myself when I...",
+      fr: "Je me sens le plus moi-même quand je...",
+      es: "Me siento más como yo mismo cuando..."
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 249, 
+    text: {
+      en: "Would you rather live by the beach or mountains? Why?",
+      fr: "Préféreriez-vous vivre à la plage ou dans les montagnes ? Pourquoi ?",
+      es: "¿Preferirías vivir en la playa o en las montañas? ¿Por qué?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 250, 
+    text: {
+      en: "Write a letter to your future self. When will you read it?",
+      fr: "Écrivez une lettre à votre futur vous. Quand la lirez-vous ?",
+      es: "Escribe una carta a tu yo futuro. ¿Cuándo la leerás?"
+    },
+    category: "time" 
   }
 ];
 
 // NOTE: This file is being translated in batches due to size.
-// Current progress: Prompts 1-200 translated (EN/FR/ES) - 48% complete!
-// Remaining: Prompts 201-420 to be added in next batches
+// Current progress: Prompts 1-250 translated (EN/FR/ES) - 60% complete! 🎉
+// Remaining: Prompts 251-420 (170 prompts left)
 
 // Shuffle algorithm (seeded for consistency per user)
 export const shufflePrompts = (prompts, seed) => {
