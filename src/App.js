@@ -972,7 +972,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-white rounded-lg p-3 bg-blue-900/30 border border-blue-500/30">
-          {t('dashboard.savingOfMonthlyIncome', { monthly: formatNumber(parseFloat(data.monthly) || 0), monthlyIncome: formatNumber(parseFloat(data.monthlyIncome) || 0) })}
+          {t('dashboard.savingOfMonthlyIncome', { monthly: `$${formatNumber(parseFloat(data.monthly) || 0)}`, monthlyIncome: `$${formatNumber(parseFloat(data.monthlyIncome) || 0)}` })}
         </div>
       </div>
     </Card>
@@ -1515,7 +1515,7 @@ const GoalsCard = ({ data, onEdit }) => {
                   
                   {goal.targetDate && (
                     <div className="text-center text-xs text-gray-400">
-                      Target: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString(getUserLocale(), { 
+                      {t('dashboard.goalLabel')}: {new Date(goal.targetDate + 'T12:00:00').toLocaleDateString(getUserLocale(), { 
                         year: 'numeric', 
                         month: 'short', 
                         day: 'numeric' 
@@ -1802,7 +1802,11 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     {account.name}
                     {isGoalReached && <span className="text-xs">🏆</span>}
                   </h4>
-                  <p className="text-xs text-gray-300 mt-1">{account.description}</p>
+                  <p className="text-xs text-gray-300 mt-1">
+                    {account.type === 'tax-free' ? t('dashboard.taxFreeGrowth') : 
+                     account.type === 'tax-deferred' ? t('dashboard.taxDeferredRetirement') : 
+                     account.description}
+                  </p>
                 </div>
                 <span className={`text-sm font-semibold ${textColor} px-2 py-1 ${bgColor} rounded border ${borderColor}`}>
                   {progress.toFixed(1)}%
