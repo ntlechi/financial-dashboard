@@ -240,6 +240,7 @@
     "title": "Dashboard",
     "welcome": "Welcome back",
     "welcomeMessage": "Take command of your financial mission.",
+    "thisMonth": "This Month",
     "netWorth": "Net Worth",
     "totalAssets": "Total Assets",
     "totalLiabilities": "Total Liabilities",
@@ -491,7 +492,14 @@
     "savings": "💰 Savings",
     "essentialExpenses": "Essential expenses",
     "discretionarySpending": "Discretionary spending",
+    "futureInvestments": "Future & investments",
     "groupSimilarHoldings": "💡 Group similar holdings for category view",
+    "necessities": "Necessities",
+    "freedom": "Freedom",
+    "longTermSavings": "Savings",
+    "education": "Education",
+    "play": "Play",
+    "give": "Give",
     "tickerHelp": "◆ <strong>Ticker:</strong> Stock symbol (e.g., AAPL, TSLA)",
     "startDateLabel": "Start Date"
   },
@@ -708,5 +716,30 @@
   },
   "sampleIncome": {
     "fullTimeJob": "Full-Time Job"
+  },
+  "transactions": {
+    "netFlow": "Net Flow",
+    "avgTransaction": "Avg Transaction",
+    "last30Days": "Last 30 days",
+    "transactionCount": "transaction",
+    "transactionCount_plural": "transactions",
+    "categoryBreakdown": "Category Breakdown",
+    "noTransactions": "No transactions to display"
+  },
+  "accounts": {
+    "cash": "Cash",
+    "checking": "Checking",
+    "savings": "Savings",
+    "credit": "Credit",
+    "investmentAccount": "Investment Account"
+  },
+  "footer": {
+    "tagline": "Dashboard for the modern hustler. Keep building.",
+    "userId": "User ID:",
+    "exportData": "Export Data to CSV",
+    "resetData": "Reset Data",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "allRightsReserved": "All rights reserved."
   }
 }

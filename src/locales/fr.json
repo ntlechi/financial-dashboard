@@ -833,7 +833,14 @@
     "savings": "💰 Épargne",
     "essentialExpenses": "Dépenses essentielles",
     "discretionarySpending": "Dépenses discrétionnaires",
+    "futureInvestments": "Futur & investissements",
     "groupSimilarHoldings": "💡 Regrouper les titres similaires pour la vue par catégorie",
+    "necessities": "Nécessités",
+    "freedom": "Liberté",
+    "longTermSavings": "Épargne",
+    "education": "Éducation",
+    "play": "Loisirs",
+    "give": "Donner",
     "tickerHelp": "◆ <strong>Ticker:</strong> Symbole boursier (ex: AAPL, TSLA)",
     "startDateLabel": "Date de Début"
   },
@@ -1045,5 +1052,14 @@
   },
   "sampleIncome": {
     "fullTimeJob": "Emploi à Temps Plein"
+  },
+  "footer": {
+    "tagline": "Tableau de bord pour l'entrepreneur moderne. Continuez à bâtir.",
+    "userId": "ID Utilisateur :",
+    "exportData": "Exporter les Données en CSV",
+    "resetData": "Réinitialiser les Données",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions d'Utilisation",
+    "allRightsReserved": "Tous droits réservés."
   }
 }

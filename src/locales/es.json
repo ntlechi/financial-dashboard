@@ -450,6 +450,7 @@
     "savings": "Cuenta de Ahorros",
     "cash": "Efectivo",
     "credit": "Crédito",
+    "investmentAccount": "Cuenta de Inversión",
     "other": "Otro"
   },
   "frequencies": {
@@ -484,6 +485,13 @@
   },
   "transactions": {
     "title": "Transacciones",
+    "netFlow": "Flujo Neto",
+    "avgTransaction": "Transacción Promedio",
+    "last30Days": "Últimos 30 días",
+    "transactionCount": "transacción",
+    "transactionCount_plural": "transacciones",
+    "categoryBreakdown": "Desglose por Categoría",
+    "noTransactions": "No hay transacciones para mostrar",
     "addTransaction": "Agregar Transacción",
     "editTransaction": "Editar Transacción",
     "deleteTransaction": "Eliminar Transacción",
@@ -727,7 +735,14 @@
     "savings": "💰 Ahorros",
     "essentialExpenses": "Gastos esenciales",
     "discretionarySpending": "Gastos discrecionales",
+    "futureInvestments": "Futuro e inversiones",
     "groupSimilarHoldings": "💡 Agrupa valores similares para la vista por categoría",
+    "necessities": "Necesidades",
+    "freedom": "Libertad",
+    "longTermSavings": "Ahorros",
+    "education": "Educación",
+    "play": "Diversión",
+    "give": "Dar",
     "tickerHelp": "◆ <strong>Ticker:</strong> Símbolo bursátil (ej: AAPL, TSLA)",
     "startDateLabel": "Fecha de Inicio"
   },
@@ -924,5 +939,14 @@
   },
   "sampleIncome": {
     "fullTimeJob": "Trabajo a Tiempo Completo"
+  },
+  "footer": {
+    "tagline": "Panel para el emprendedor moderno. Sigue construyendo.",
+    "userId": "ID de Usuario:",
+    "exportData": "Exportar Datos a CSV",
+    "resetData": "Restablecer Datos",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "allRightsReserved": "Todos los derechos reservados."
   }
 }

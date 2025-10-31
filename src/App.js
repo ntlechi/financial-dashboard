@@ -3706,7 +3706,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
                 <span className="text-blue-400 text-sm font-semibold">%</span>
               </div>
             </div>
-            <p className="text-gray-300 mb-4">Future & investments</p>
+            <p className="text-gray-300 mb-4">{t('budget.futureInvestments')}</p>
             <div className="text-4xl font-bold text-white">${(parseFloat(fiftyThirtyTwenty.savings) || 0).toLocaleString()}</div>
           </div>
         </div>
@@ -3715,7 +3715,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
       {budgetType === '6-jars' && (
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="bg-green-900/30 rounded-xl p-4 border-2 border-green-800/40 text-center">
-            <h4 className="text-sm font-bold text-green-400 mb-2">🏠 Necessities</h4>
+            <h4 className="text-sm font-bold text-green-400 mb-2">🏠 {t('budget.necessities')}</h4>
             <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.necessities) || 0).toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3730,7 +3730,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-purple-900/30 rounded-xl p-4 border-2 border-purple-800/40 text-center">
-            <h4 className="text-sm font-bold text-purple-400 mb-2">💰 Freedom</h4>
+            <h4 className="text-sm font-bold text-purple-400 mb-2">💰 {t('budget.freedom')}</h4>
             <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.financialFreedom) || 0).toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3745,7 +3745,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-blue-900/30 rounded-xl p-4 border-2 border-blue-800/40 text-center">
-            <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 Savings</h4>
+            <h4 className="text-sm font-bold text-blue-400 mb-2">🎯 {t('budget.longTermSavings')}</h4>
             <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.longTermSavings) || 0).toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3760,7 +3760,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-amber-900/30 rounded-xl p-4 border-2 border-amber-800/40 text-center">
-            <h4 className="text-sm font-bold text-amber-400 mb-2">📚 Education</h4>
+            <h4 className="text-sm font-bold text-amber-400 mb-2">📚 {t('budget.education')}</h4>
             <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.education) || 0).toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3775,7 +3775,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-pink-900/30 rounded-xl p-4 border-2 border-pink-800/40 text-center">
-            <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 Play</h4>
+            <h4 className="text-sm font-bold text-pink-400 mb-2">🎉 {t('budget.play')}</h4>
             <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.play) || 0).toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -3790,7 +3790,7 @@ const BudgetCalculatorTab = ({ checkFeatureAccess, showUpgradePromptForFeature }
             </div>
           </div>
           <div className="bg-teal-900/30 rounded-xl p-4 border-2 border-teal-800/40 text-center">
-            <h4 className="text-sm font-bold text-teal-400 mb-2">?��️ Give</h4>
+            <h4 className="text-sm font-bold text-teal-400 mb-2">❤️ {t('budget.give')}</h4>
             <div className="text-xl font-bold text-white mb-1">${(parseFloat(sixJars.give) || 0).toLocaleString()}</div>
             <div className="flex items-center justify-center gap-1">
               <input
@@ -8429,7 +8429,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
             <PieChart className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-400" />
             💰 {t('dashboard.spendingByCategory')}
           </div>
-          <span className="text-xs md:text-sm text-gray-400 font-normal">(This Month)</span>
+          <span className="text-xs md:text-sm text-gray-400 font-normal">({t('dashboard.thisMonth')})</span>
         </h3>
         
         {spendingByCategory.length > 0 ? (
@@ -8449,7 +8449,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       className="w-5 h-5 md:w-4 md:h-4 rounded-full flex-shrink-0" 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm md:text-sm text-gray-200 capitalize">{item.category}</span>
+                    <span className="text-sm md:text-sm text-gray-200 capitalize">{t(`categories.${item.category}`)}</span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-3">
                     <span className="text-sm font-semibold text-white">${(parseFloat(item.amount) || 0).toLocaleString()}</span>
@@ -15190,21 +15190,21 @@ function App() {
         </main>
 
         <footer className="text-center mt-12 text-gray-500">
-          <p>Dashboard for the modern hustler. Keep building.</p>
+          <p>{t('footer.tagline')}</p>
           <div className="flex justify-center items-center gap-6 mt-4">
-            <p className="text-xs">User ID: {userId}</p>
+            <p className="text-xs">{t('footer.userId')} {userId}</p>
             <button
               onClick={exportAllData}
               className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
             >
-              Export Data to CSV
+              {t('footer.exportData')}
             </button>
             <button
               onClick={openResetModal}
               className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-1"
             >
               <Trash2 className="w-3 h-3" />
-              Reset Data
+              {t('footer.resetData')}
             </button>
           </div>
         </footer>
@@ -16849,16 +16849,16 @@ function App() {
                 onClick={() => setShowPrivacyPolicy(true)}
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Privacy Policy
+                {t('footer.privacyPolicy')}
               </button>
               <button
                 onClick={() => setShowTermsOfService(true)}
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Terms of Service
+                {t('footer.termsOfService')}
               </button>
               <span className="text-gray-500">
-                © {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. All rights reserved.
+                © {new Date().getFullYear()} <a href="https://survivebackpacking.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Survive Backpacking</a>. {t('footer.allRightsReserved')}
               </span>
             </div>
           </div>
