@@ -19,6 +19,12 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
   const [profile, setProfile] = useState(null);
   const [showGuide, setShowGuide] = useState(false);
 
+  // Helper function to get translated rank name
+  const getRankName = (rankName) => {
+    const rankKey = rankName.toLowerCase().replace(' ', '');
+    return t(`ranks.${rankKey}`, rankName); // fallback to original if translation missing
+  };
+
   useEffect(() => {
     let isMounted = true;
     async function load() {
@@ -58,7 +64,7 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
             </div>
             <div>
               <div className="text-sm sm:text-base flex items-center gap-2">
-                <span className="font-semibold">{t('banner.status')}:</span> {current.name} <span className="opacity-80">({t('banner.level')} {current.level})</span>
+                <span className="font-semibold">{t('banner.status')}:</span> {getRankName(current.name)} <span className="opacity-80">({t('banner.level')} {current.level})</span>
                 <button
                   onClick={() => setShowGuide(true)}
                   className="text-amber-400 hover:text-amber-300 transition-colors p-1 hover:bg-amber-900/20 rounded"
@@ -73,7 +79,7 @@ export default function MissionStatusBanner({ userId, refreshTrigger }) {
               </div>
               {next && (
                 <div className="text-xs opacity-90">
-                  {next.xpRequired - (profile.xpPoints || 0)} {t('banner.xpTo')} {next.name}
+                  {next.xpRequired - (profile.xpPoints || 0)} {t('banner.xpTo')} {getRankName(next.name)}
                 </div>
               )}
             </div>
