@@ -130,6 +130,8 @@
     "create": "Crear",
     "update": "Actualizar",
     "remove": "Eliminar",
+    "showLess": "Menos",
+    "showMore": "Mostrar {count} Más",
     "continue": "Continuar",
     "finish": "Finalizar",
     "complete": "Completar",
@@ -298,6 +300,20 @@
     "monthsOfExpenses": "meses de gastos",
     "basedOnYearAvg": "Basado en {yearly}/año prom ({monthly}/mes)",
     "basedOnMonthAvg": "Basado en {monthly}/mes prom",
+    "autoCalculated": "Auto-calculado",
+    "savingOfMonthlyIncome": "Ahorrando {monthly} de {monthlyIncome} de ingresos mensuales",
+    "breakdown": "Desglose",
+    "assets": "Activos",
+    "liabilities": "Pasivos",
+    "cashOnHand": "efectivo disponible",
+    "runwayProgress": "Progreso de la Pista",
+    "runwayProgressPercent": "{percent}% de la meta de {months} meses",
+    "zeroMonths": "0 meses",
+    "monthsGoal": "{months} meses (meta)",
+    "accountBreakdown": "Desglose de Cuentas",
+    "accountCount": "{count} cuentas",
+    "currentMonthExpenses": "Gastos del mes actual",
+    "perMonth": "/mes",
     "hoverToView": "Pasa el cursor para ver",
     "currentMonth": "Mes Actual",
     "previousMonths": "Meses Anteriores",
@@ -858,5 +874,22 @@
     "foundersCircle": "Círculo de Fundadores",
     "freePlan": "Plan Gratuito",
     "demoUser": "Usuario Demo"
+  },
+  "creditScore": {
+    "poor": "Pobre",
+    "fair": "Regular",
+    "good": "Bueno",
+    "veryGood": "Muy Bueno",
+    "exceptional": "Excepcional",
+    "scoreHistory": "Historial de Puntuación",
+    "score": "Puntuación",
+    "max": "Máx"
+  },
+  "sampleAssets": {
+    "cashAndSavings": "Efectivo y Ahorros",
+    "vehicle": "Vehículo"
+  },
+  "sampleIncome": {
+    "fullTimeJob": "Trabajo a Tiempo Completo"
   }
 }

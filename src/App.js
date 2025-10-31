@@ -471,8 +471,8 @@ function getInitialData(lang) {
   netWorth: { 
     total: 4700,  // Small positive net worth ($2,500 cash + $5,000 car - $2,800 debt)
     breakdown: [
-      { id: 1, name: 'Cash & Savings', value: 2500, color: 'bg-sky-500', type: 'asset' },
-      { id: 2, name: 'Vehicle', value: 5000, color: 'bg-emerald-500', type: 'asset' },
+      { id: 1, name: L.sampleAssets.cashAndSavings, value: 2500, color: 'bg-sky-500', type: 'asset' },
+      { id: 2, name: L.sampleAssets.vehicle, value: 5000, color: 'bg-emerald-500', type: 'asset' },
       { id: 3, name: L.accounts.creditCard + ' Debt', value: -2800, color: 'bg-red-500', type: 'liability' },
     ],
     history: [ { date: '2025-08-09', total: 4700 } ]
@@ -480,7 +480,7 @@ function getInitialData(lang) {
   income: { 
     total: 3000,  // Entry-level job income
     sources: [
-      { id: 1, name: 'Full-Time Job', amount: 3000, type: 'active' },
+      { id: 1, name: L.sampleIncome.fullTimeJob, amount: 3000, type: 'active' },
     ]
   },
   expenses: { 
@@ -915,7 +915,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </h2>
         <div className="flex items-center gap-2">
           <div className="text-xs px-2 py-1 rounded bg-blue-900/30 border border-blue-500/30 text-blue-200">
-            Auto-calculated
+            {t('dashboard.autoCalculated')}
           </div>
           <button
             onClick={() => onEdit('savingsRateTarget', data)}
@@ -939,8 +939,8 @@ const SavingsRateCard = ({ data, onEdit }) => {
         
         <div>
           <div className="flex justify-between text-sm text-white mb-2">
-            <span>Current: {data.current}%</span>
-            <span>Target: {data.target}%</span>
+            <span>{t('dashboard.currentLabel')}: {data.current}%</span>
+            <span>{t('dashboard.goalLabel')}: {data.target}%</span>
           </div>
           <ProgressBar 
             value={data.current} 
@@ -951,7 +951,7 @@ const SavingsRateCard = ({ data, onEdit }) => {
         </div>
         
         <div className="text-center text-sm text-white rounded-lg p-3 bg-blue-900/30 border border-blue-500/30">
-          Saving <span className="font-bold">${formatNumber(parseFloat(data.monthly) || 0)}</span> of <span className="font-bold">${formatNumber(parseFloat(data.monthlyIncome) || 0)}</span> monthly income
+          {t('dashboard.savingOfMonthlyIncome', { monthly: formatNumber(parseFloat(data.monthly) || 0), monthlyIncome: formatNumber(parseFloat(data.monthlyIncome) || 0) })}
         </div>
       </div>
     </Card>
@@ -1159,11 +1159,11 @@ const CreditScoreCard = ({ data, onEdit }) => {
   };
 
   const getScoreStatus = (score) => {
-    if (score >= 800) return 'Exceptional';
-    if (score >= 740) return 'Very Good';
-    if (score >= 670) return 'Good';
-    if (score >= 580) return 'Fair';
-    return 'Poor';
+    if (score >= 800) return t('creditScore.exceptional');
+    if (score >= 740) return t('creditScore.veryGood');
+    if (score >= 670) return t('creditScore.good');
+    if (score >= 580) return t('creditScore.fair');
+    return t('creditScore.poor');
   };
 
   // Score progress calculation available if needed
@@ -1375,15 +1375,15 @@ const CreditScoreCard = ({ data, onEdit }) => {
         {/* Credit Score History Chart */}
         {data.history && data.history.length > 0 && (
           <div className="bg-gray-800/30 rounded-lg p-3">
-            <div className="text-sm text-gray-300 mb-2 font-semibold">📈 Score History</div>
+            <div className="text-sm text-gray-300 mb-2 font-semibold">📈 {t('creditScore.scoreHistory')}</div>
             <svg ref={svgRef}></svg>
           </div>
         )}
         
         <div>
           <div className="flex justify-between text-sm text-gray-300 mb-2">
-            <span>Score: {data.current}</span>
-            <span>Max: 850</span>
+            <span>{t('creditScore.score')}: {data.current}</span>
+            <span>{t('creditScore.max')}: 850</span>
           </div>
           <ProgressBar 
             value={data.current} 
@@ -1393,11 +1393,11 @@ const CreditScoreCard = ({ data, onEdit }) => {
         </div>
         
         <div className="grid grid-cols-5 gap-1 text-xs text-center">
-          <div className="text-red-400">Poor<br/>300-579</div>
-          <div className="text-orange-400">Fair<br/>580-669</div>
-          <div className="text-yellow-400">Good<br/>670-739</div>
-          <div className="text-green-400">V.Good<br/>740-799</div>
-          <div className="text-emerald-400">Exceptional<br/>800-850</div>
+          <div className="text-red-400">{t('creditScore.poor')}<br/>300-579</div>
+          <div className="text-orange-400">{t('creditScore.fair')}<br/>580-669</div>
+          <div className="text-yellow-400">{t('creditScore.good')}<br/>670-739</div>
+          <div className="text-green-400">{t('creditScore.veryGood')}<br/>740-799</div>
+          <div className="text-emerald-400">{t('creditScore.exceptional')}<br/>800-850</div>
         </div>
       </div>
     </Card>
@@ -1629,12 +1629,12 @@ const NetWorthCard = ({ data, onEdit }) => {
       <div className="mt-3 flex gap-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#84CC16'}}></div>
-          <span className="text-sm text-gray-300">Assets: <span className="stealth-target">${(parseFloat(totalAssets) || 0).toLocaleString()}</span></span>
+          <span className="text-sm text-gray-300">{t('dashboard.totalAssets')}: <span className="stealth-target">${formatNumber(parseFloat(totalAssets) || 0)}</span></span>
         </div>
         {totalLiabilities > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#F43F5E'}}></div>
-            <span className="text-sm text-gray-300">Liabilities: <span className="stealth-target">${(parseFloat(totalLiabilities) || 0).toLocaleString()}</span></span>
+            <span className="text-sm text-gray-300">{t('dashboard.totalLiabilities')}: <span className="stealth-target">${formatNumber(parseFloat(totalLiabilities) || 0)}</span></span>
           </div>
         )}
       </div>
@@ -1643,13 +1643,13 @@ const NetWorthCard = ({ data, onEdit }) => {
     {/* 📋 NET WORTH BREAKDOWN - Side by Side Layout */}
     {data.breakdown && data.breakdown.length > 0 && (
       <div className="border-t border-sky-800/50 pt-4 mt-4">
-        <h3 className="text-xs sm:text-sm font-semibold text-sky-300 uppercase tracking-wide mb-3">Breakdown</h3>
+        <h3 className="text-xs sm:text-sm font-semibold text-sky-300 uppercase tracking-wide mb-3">{t('dashboard.breakdown')}</h3>
         
         <div className="grid grid-cols-2 gap-4">
           {/* Assets Section - Left Column */}
           {data.breakdown.filter(item => item.type === 'asset').length > 0 && (
             <div>
-              <h4 className="text-xs text-green-400 font-semibold mb-2">💰 Assets</h4>
+              <h4 className="text-xs text-green-400 font-semibold mb-2">💰 {t('dashboard.assets')}</h4>
               <div className="space-y-2">
                 {(showAllAssets 
                   ? data.breakdown.filter(item => item.type === 'asset')
@@ -1666,7 +1666,7 @@ const NetWorthCard = ({ data, onEdit }) => {
                     className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
                   >
                     {showAllAssets ? (
-                      <><ChevronUp className="w-3 h-3" /> Less</>
+                      <><ChevronUp className="w-3 h-3" /> {t('common.showLess')}</>
                     ) : (
                       <><ChevronDown className="w-3 h-3" /> +{data.breakdown.filter(item => item.type === 'asset').length - maxVisibleItems}</>
                     )}
@@ -1679,7 +1679,7 @@ const NetWorthCard = ({ data, onEdit }) => {
           {/* Liabilities Section - Right Column */}
           {data.breakdown.filter(item => item.type === 'liability').length > 0 && (
             <div>
-              <h4 className="text-xs text-red-400 font-semibold mb-2">💳 Liabilities</h4>
+              <h4 className="text-xs text-red-400 font-semibold mb-2">💳 {t('dashboard.liabilities')}</h4>
               <div className="space-y-2">
                 {(showAllLiabilities 
                   ? data.breakdown.filter(item => item.type === 'liability')
@@ -1696,7 +1696,7 @@ const NetWorthCard = ({ data, onEdit }) => {
                     className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
                   >
                     {showAllLiabilities ? (
-                      <><ChevronUp className="w-3 h-3" /> Less</>
+                      <><ChevronUp className="w-3 h-3" /> {t('common.showLess')}</>
                     ) : (
                       <><ChevronDown className="w-3 h-3" /> +{data.breakdown.filter(item => item.type === 'liability').length - maxVisibleItems}</>
                     )}
@@ -2021,14 +2021,14 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
     
     {/* 💰 Cash Amount (Secondary) */}
     <p className="text-lg text-gray-300 mb-4 stealth-target">
-      ${(parseFloat(data.total) || 0).toLocaleString()} cash on hand
+      ${formatNumber(parseFloat(data.total) || 0)} {t('dashboard.cashOnHand')}
     </p>
     
     {/* 📊 RUNWAY PROGRESS BAR */}
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2 text-xs sm:text-sm">
-        <span className="text-gray-400">Runway Progress</span>
-        <span className="text-white font-semibold">{progressPercent.toFixed(0)}% of {goalMonths}-month goal</span>
+        <span className="text-gray-400">{t('dashboard.runwayProgress')}</span>
+        <span className="text-white font-semibold">{t('dashboard.runwayProgressPercent', { percent: progressPercent.toFixed(0), months: goalMonths })}</span>
       </div>
       <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
         <div 
@@ -2039,14 +2039,14 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
         </div>
       </div>
       <div className="flex justify-between items-center mt-1 text-xs text-gray-500">
-        <span>0 months</span>
-        <span>{goalMonths} months (goal)</span>
+        <span>{t('dashboard.zeroMonths')}</span>
+        <span>{t('dashboard.monthsGoal', { months: goalMonths })}</span>
       </div>
     </div>
     
     {/* 📋 ACCOUNT BREAKDOWN */}
     <div className="border-t border-teal-800/50 pt-4">
-      <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide mb-3">Account Breakdown</h3>
+      <h3 className="text-xs sm:text-sm font-semibold text-teal-300 uppercase tracking-wide mb-3">{t('dashboard.accountBreakdown')}</h3>
       <div className="space-y-2 mb-3">
         {(showAllAccounts ? data.accounts : data.accounts.slice(0, maxVisibleAccounts)).map(account => (
           <div key={account.id} className="flex justify-between items-center text-xs sm:text-sm">
@@ -2063,17 +2063,17 @@ const CashOnHandCard = ({ data, rainyDayGoal, transactions = [], onEdit }) => {
             className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
           >
             {showAllAccounts ? (
-              <><ChevronUp className="w-3 h-3" /> Show Less</>
+              <><ChevronUp className="w-3 h-3" /> {t('common.showLess')}</>
             ) : (
-              <><ChevronDown className="w-3 h-3" /> Show {data.accounts.length - maxVisibleAccounts} More</>
+              <><ChevronDown className="w-3 h-3" /> {t('common.showMore', { count: data.accounts.length - maxVisibleAccounts })}</>
             )}
           </button>
         )}
       </div>
       <div className="text-[10px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
-        <span>{data.accounts.length} accounts</span>
+        <span>{t('dashboard.accountCount', { count: data.accounts.length })}</span>
         <span>•</span>
-        <span>Current month expenses: <span className="stealth-target">${(parseFloat(avgMonthlyExpenses) || 0).toLocaleString()}/mo</span></span>
+        <span>{t('dashboard.currentMonthExpenses')}: <span className="stealth-target">${formatNumber(parseFloat(avgMonthlyExpenses) || 0)}{t('dashboard.perMonth')}</span></span>
       </div>
     </div>
   </Card>

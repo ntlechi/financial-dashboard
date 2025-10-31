@@ -128,6 +128,8 @@
     "choose": "Choisir",
     "create": "Créer",
     "update": "Mettre à jour",
+    "showLess": "Moins",
+    "showMore": "Afficher {count} de Plus",
     "remove": "Supprimer",
     "continue": "Continuer",
     "finish": "Terminer",
@@ -319,6 +321,21 @@
     "monthsOfExpenses": "mois de dépenses",
     "basedOnYearAvg": "Basé sur {yearly}/an moy ({monthly}/mois)",
     "basedOnMonthAvg": "Basé sur {monthly}/mois moy",
+    "autoCalculated": "Auto-calculé",
+    "savingOfMonthlyIncome": "Épargner {monthly} sur {monthlyIncome} de revenus mensuels",
+    "breakdown": "Répartition",
+    "assets": "Actifs",
+    "liabilities": "Passifs",
+    "cashOnHand": "liquidités disponibles",
+    "runwayProgress": "Progression de la Piste",
+    "runwayProgressPercent": "{percent}% de l'objectif de {months} mois",
+    "zeroMonths": "0 mois",
+    "monthsGoal": "{months} mois (objectif)",
+    "accountBreakdown": "Répartition des Comptes",
+    "accountCount": "{count} comptes",
+    "currentMonthExpenses": "Dépenses du mois en cours",
+    "perMonth": "/mois",
+    "months": "mois",
     "hoverToView": "Survoler pour voir",
     "currentMonth": "Mois Actuel",
     "previousMonths": "Mois Précédents",
@@ -1005,5 +1022,22 @@
       "everything": "SUPPRIME : TOUT !"
     },
     "resetButton": "Réinitialiser les Données"
+  },
+  "creditScore": {
+    "poor": "Faible",
+    "fair": "Passable",
+    "good": "Bon",
+    "veryGood": "Très Bon",
+    "exceptional": "Exceptionnel",
+    "scoreHistory": "Historique du Score",
+    "score": "Score",
+    "max": "Max"
+  },
+  "sampleAssets": {
+    "cashAndSavings": "Liquidités et Épargne",
+    "vehicle": "Véhicule"
+  },
+  "sampleIncome": {
+    "fullTimeJob": "Emploi à Temps Plein"
   }
 }

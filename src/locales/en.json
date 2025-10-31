@@ -98,6 +98,8 @@
     "create": "Create",
     "update": "Update",
     "remove": "Remove",
+    "showLess": "Less",
+    "showMore": "Show {count} More",
     "continue": "Continue",
     "finish": "Finish",
     "complete": "Complete",
@@ -295,6 +297,21 @@
     "monthsOfExpenses": "months of expenses",
     "basedOnYearAvg": "Based on {yearly}/year avg ({monthly}/month)",
     "basedOnMonthAvg": "Based on {monthly}/month avg",
+    "autoCalculated": "Auto-calculated",
+    "savingOfMonthlyIncome": "Saving {monthly} of {monthlyIncome} monthly income",
+    "breakdown": "Breakdown",
+    "assets": "Assets",
+    "liabilities": "Liabilities",
+    "cashOnHand": "cash on hand",
+    "runwayProgress": "Runway Progress",
+    "runwayProgressPercent": "{percent}% of {months}-month goal",
+    "zeroMonths": "0 months",
+    "monthsGoal": "{months} months (goal)",
+    "accountBreakdown": "Account Breakdown",
+    "accountCount": "{count} accounts",
+    "currentMonthExpenses": "Current month expenses",
+    "perMonth": "/mo",
+    "months": "months",
     "hoverToView": "Hover to view",
     "currentMonth": "Current Month",
     "previousMonths": "Previous Months",
@@ -643,5 +660,22 @@
       "everything": "DELETES: EVERYTHING!"
     },
     "resetButton": "Reset Data"
+  },
+  "creditScore": {
+    "poor": "Poor",
+    "fair": "Fair",
+    "good": "Good",
+    "veryGood": "V.Good",
+    "exceptional": "Exceptional",
+    "scoreHistory": "Score History",
+    "score": "Score",
+    "max": "Max"
+  },
+  "sampleAssets": {
+    "cashAndSavings": "Cash & Savings",
+    "vehicle": "Vehicle"
+  },
+  "sampleIncome": {
+    "fullTimeJob": "Full-Time Job"
   }
 }
