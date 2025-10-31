@@ -791,7 +791,21 @@
     "shareMoment": "Partager le moment",
     "deleteMoment": "Supprimer le moment",
     "copiedToClipboard": "Copié dans le presse-papiers !",
-    "failedToCopy": "Échec de la copie dans le presse-papiers"
+    "failedToCopy": "Échec de la copie dans le presse-papiers",
+    "editMomentTitle": "✏️ Modifier le Moment",
+    "createNewMoment": "💫 Créer un Nouveau Moment",
+    "titleLabel": "Titre *",
+    "yourStoryLabel": "Votre Histoire *",
+    "tipBeSpecific": "💡 Conseil : Soyez précis ! Votre futur vous adorera lire ceci.",
+    "locationOptional": "Lieu (optionnel)",
+    "dateLabel": "Date",
+    "markAsAchievement": "🏆 Marquer comme Réalisation (affiche un badge spécial)",
+    "businessMoment": "💼 Moment d'Entreprise",
+    "linkedToActivity": "✨ Ce moment est lié à votre activité commerciale",
+    "whatAreMoments": "💫 Qu'est-ce que les Moments ?",
+    "momentsDescription": "Les moments capturent le côté émotionnel de votre parcours financier. Ce ne sont pas seulement des chiffres - ce sont les histoires de votre croissance, de vos victoires et de vos leçons apprises. Dans des années, vous vous souviendrez non seulement de ce que vous avez accompli, mais aussi de ce que vous avez ressenti.",
+    "updateMoment": "Mettre à Jour le Moment",
+    "createMoment": "Créer un Moment"
   },
   "quickStart": {
     "welcomeTitle": "🧭 Bienvenue sur Kompul !",

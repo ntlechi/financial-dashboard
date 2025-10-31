@@ -753,7 +753,21 @@
     "showLess": "Mostrar Menos",
     "deleteMoment": "Eliminar Momento",
     "editMoment": "Editar Momento",
-    "shareMoment": "Compartir Momento"
+    "shareMoment": "Compartir Momento",
+    "editMomentTitle": "✏️ Editar Momento",
+    "createNewMoment": "💫 Crear Nuevo Momento",
+    "titleLabel": "Título *",
+    "yourStoryLabel": "Tu Historia *",
+    "tipBeSpecific": "💡 Consejo: ¡Sé específico! Tu yo futuro adorará leer esto.",
+    "locationOptional": "Ubicación (opcional)",
+    "dateLabel": "Fecha",
+    "markAsAchievement": "🏆 Marcar como Logro (muestra insignia especial)",
+    "businessMoment": "💼 Momento de Negocio",
+    "linkedToActivity": "✨ Este momento está vinculado a tu actividad comercial",
+    "whatAreMoments": "💫 ¿Qué son los Momentos?",
+    "momentsDescription": "Los momentos capturan el lado emocional de tu viaje financiero. No son solo números - son las historias de tu crecimiento, tus victorias y tus lecciones aprendidas. Dentro de años, recordarás no solo lo que lograste, sino cómo se sintió.",
+    "updateMoment": "Actualizar Momento",
+    "createMoment": "Crear Momento"
   },
   "financialFreedom": {
     "title": "Calculadora de Libertad Financiera",

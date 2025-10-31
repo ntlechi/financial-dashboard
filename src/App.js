@@ -15249,14 +15249,14 @@ function App() {
             <FixedModal
               isOpen={showMomentModal}
               onClose={() => setShowMomentModal(false)}
-              title={editingMoment ? '✏️ Edit Moment' : '💫 Create New Moment'}
+              title={editingMoment ? t('moments.editMomentTitle') : t('moments.createNewMoment')}
               size="lg"
             >
               <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                   {/* Title */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
-                      Title *
+                      {t('moments.titleLabel')}
                     </label>
                     <input
                       type="text"
@@ -15271,7 +15271,7 @@ function App() {
                   {/* Story */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
-                      Your Story *
+                      {t('moments.yourStoryLabel')}
                     </label>
                     <textarea
                       placeholder={t('examples.momentStoryExample')}
@@ -15281,7 +15281,7 @@ function App() {
                       className="w-full bg-gradient-to-br from-gray-700 to-gray-800 text-white px-4 py-4 rounded-xl border-2 border-gray-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/30 transition-all duration-300 placeholder:text-gray-400 shadow-lg hover:shadow-xl hover:border-amber-500/50 resize-none leading-relaxed"
                     />
                     <p className="text-xs text-gray-400 mt-1">
-                      💡 Tip: Be specific! Future you will love reading this.
+                      {t('moments.tipBeSpecific')}
                     </p>
                   </div>
 
@@ -15289,7 +15289,7 @@ function App() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-300 mb-2">
-                        Location (optional)
+                        {t('moments.locationOptional')}
                       </label>
                       <input
                         type="text"
@@ -15301,7 +15301,7 @@ function App() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-300 mb-2">
-                        Date
+                        {t('moments.dateLabel')}
                       </label>
                       <input
                         type="date"
@@ -15323,7 +15323,7 @@ function App() {
                       className="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500"
                     />
                     <label htmlFor="isAchievement" className="text-sm text-purple-200 font-medium cursor-pointer">
-                      🏆 Mark as Achievement (shows special badge)
+                      {t('moments.markAsAchievement')}
                     </label>
                   </div>
 
@@ -15332,22 +15332,22 @@ function App() {
                     <div className="bg-purple-900/30 border-2 border-purple-500/40 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <Briefcase className="w-5 h-5 text-purple-400" />
-                        <h4 className="text-sm font-bold text-purple-300">💼 Business Moment</h4>
+                        <h4 className="text-sm font-bold text-purple-300">{t('moments.businessMoment')}</h4>
                       </div>
                       <div className="grid grid-cols-2 gap-3 text-sm">
                         <div>
-                          <p className="text-gray-400 text-xs">Business</p>
+                          <p className="text-gray-400 text-xs">{t('moments.business')}</p>
                           <p className="text-white font-semibold">{newMoment.linkedTransaction.businessName}</p>
                         </div>
                         <div>
-                          <p className="text-gray-400 text-xs">Amount</p>
+                          <p className="text-gray-400 text-xs">{t('sideHustle.amount')}</p>
                           <p className={`font-bold ${newMoment.linkedTransaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
                             {newMoment.linkedTransaction.type === 'income' ? '+' : '-'}${(parseFloat(newMoment.linkedTransaction.amount) || 0).toLocaleString()}
                           </p>
                         </div>
                       </div>
                       <p className="text-xs text-purple-200 mt-3">
-                        ✨ This moment is linked to your business activity
+                        {t('moments.linkedToActivity')}
                       </p>
                     </div>
                   )}
@@ -15355,12 +15355,10 @@ function App() {
                   {/* Info Box */}
                   <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4">
                     <p className="text-sm text-purple-200">
-                      <strong>💫 What are Moments?</strong>
+                      <strong>{t('moments.whatAreMoments')}</strong>
                     </p>
                     <p className="text-xs text-gray-400 mt-2">
-                      Moments capture the emotional side of your financial journey. They're not just numbers - 
-                      they're the stories of your growth, your wins, and your lessons learned. 
-                      Years from now, you'll look back and remember not just what you achieved, but how it felt.
+                      {t('moments.momentsDescription')}
                     </p>
                   </div>
                 </div>
@@ -15370,7 +15368,7 @@ function App() {
                     onClick={() => setShowMomentModal(false)}
                     className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button
                     onClick={handleSaveMoment}
@@ -15378,7 +15376,7 @@ function App() {
                     className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     <Award className="w-5 h-5" />
-                    {editingMoment ? 'Update Moment' : 'Create Moment'}
+                    {editingMoment ? t('moments.updateMoment') : t('moments.createMoment')}
                   </button>
                 </div>
             </FixedModal>
