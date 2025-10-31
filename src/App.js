@@ -10566,7 +10566,7 @@ const TravelTab = ({ data, setData, userId }) => {
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.tripName')}</label>
                   <input
                     type="text"
                     placeholder={t('examples.southeastAsiaAdventure')}
@@ -10576,7 +10576,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Target Budget (CAD)</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.targetBudget')}</label>
                   <input
                     type="number"
                     placeholder="45000"
@@ -10588,7 +10588,7 @@ const TravelTab = ({ data, setData, userId }) => {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-1">Description</label>
+                <label className="block text-sm text-gray-300 mb-1">{t('travel.description')}</label>
                 <textarea
                   placeholder={t('examples.tripDescriptionExample')}
                   value={newTrip.description}
@@ -10600,7 +10600,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Start Date</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.startDate')}</label>
                   <input
                     type="date"
                     value={newTrip.startDate}
@@ -10610,7 +10610,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">End Date</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.endDate')}</label>
                   <input
                     type="date"
                     value={newTrip.endDate}
@@ -10620,7 +10620,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Daily Budget (CAD)</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.dailyBudget')}</label>
                   <input
                     type="number"
                     placeholder="500"
@@ -10637,7 +10637,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Countries (Paint the Map!)
+                  {t('travel.countriesPaintMap')}
                 </label>
                 <input
                   type="text"
@@ -10675,7 +10675,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                  {t('travel.countryInputTip')}
                 </p>
                 {Array.isArray(newTrip.countries) && newTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -10704,13 +10704,13 @@ const TravelTab = ({ data, setData, userId }) => {
                 onClick={() => setShowAddTrip(false)}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleAddTrip}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Create Trip
+                {t('travel.createTrip')}
               </button>
             </div>
         </FixedModal>
@@ -10724,12 +10724,12 @@ const TravelTab = ({ data, setData, userId }) => {
             setShowExpenseModal(false);
             setSelectedTrip(null);
           }}
-          title={`Add Expense - ${selectedTrip.name}`}
+          title={t('travel.addExpense', { tripName: selectedTrip.name })}
           size="md"
         >
           <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-300 mb-1">Description</label>
+                <label className="block text-sm text-gray-300 mb-1">{t('travel.description')}</label>
                 <input
                   type="text"
                   placeholder={t('examples.travelExpenseExample')}
@@ -10742,7 +10742,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Amount</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.amount')}</label>
                   <input
                     type="number"
                     placeholder="0.00"
@@ -10754,7 +10754,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Currency</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.currency')}</label>
                   <select
                     value={newExpense.currency}
                     onChange={(e) => setNewExpense({...newExpense, currency: e.target.value})}
@@ -10774,7 +10774,7 @@ const TravelTab = ({ data, setData, userId }) => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Category</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.category')}</label>
                   <select
                     value={newExpense.category}
                     onChange={(e) => setNewExpense({...newExpense, category: e.target.value})}
@@ -10789,7 +10789,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-300 mb-1">Date</label>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.date')}</label>
                   <input
                     type="date"
                     value={newExpense.date}
@@ -10803,11 +10803,11 @@ const TravelTab = ({ data, setData, userId }) => {
               {newExpense.currency !== 'CAD' && newExpense.amount && (
                 <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
                   <div className="text-sm text-blue-200">
-                    💱 <strong>Currency Conversion:</strong> {newExpense.amount} {newExpense.currency} ?�� 
+                    <strong>{t('travel.currencyConversion')}</strong> {newExpense.amount} {newExpense.currency} ≈ 
                     <span className="font-bold"> ${convertCurrency(parseFloat(newExpense.amount) || 0, newExpense.currency, 'CAD').toFixed(2)} CAD</span>
                   </div>
                   <div className="text-xs text-blue-300 mt-1">
-                    * Rates are estimates. Actual conversion may vary.
+                    {t('travel.ratesDisclaimer')}
                   </div>
                 </div>
               )}
@@ -10828,17 +10828,17 @@ const TravelTab = ({ data, setData, userId }) => {
                 }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleAddExpense}
                 disabled={!newExpense.description || !newExpense.amount}
                 className="bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
-                                 <Plus className="w-4 h-4" />
-                 {t('dashboard.addTransaction')}
-               </button>
-             </div>
+                <Plus className="w-4 h-4" />
+                {t('dashboard.addTransaction')}
+              </button>
+            </div>
         </FixedModal>
       )}
 
@@ -10918,77 +10918,77 @@ const TravelTab = ({ data, setData, userId }) => {
            onClose={() => setEditingTrip(null)}
            title={t('modalTitles.editTrip')}
            size="lg"
-         >
-           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <div>
-                   <label className="block text-sm text-gray-300 mb-1">Trip Name</label>
-                   <input
-                     type="text"
-                     placeholder={t('examples.southeastAsiaAdventure')}
-                     value={editingTrip.name}
-                     onChange={(e) => setEditingTrip({...editingTrip, name: e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                   />
-                 </div>
-                 <div>
-                   <label className="block text-sm text-gray-300 mb-1">Target Budget (CAD)</label>
-                   <input
-                     type="number"
-                     placeholder="45000"
-                     value={editingTrip.targetBudget === 0 ? '0' : (editingTrip.targetBudget || '')}
-                     onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                   />
-                 </div>
-               </div>
-
-               <div>
-                 <label className="block text-sm text-gray-300 mb-1">Description</label>
-                 <textarea
-                   placeholder={t('examples.tripDescriptionExample')}
-                   value={editingTrip.description}
-                   onChange={(e) => setEditingTrip({...editingTrip, description: e.target.value})}
-                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                   rows="2"
-                 />
-               </div>
-
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                 <div>
-                   <label className="block text-sm text-gray-300 mb-1">Start Date</label>
-                   <input
-                     type="date"
-                     value={editingTrip.startDate}
-                     onChange={(e) => setEditingTrip({...editingTrip, startDate: e.target.value})}
-                     className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
-                     style={{ maxWidth: '100%' }}
-                   />
-                 </div>
-                 <div>
-                   <label className="block text-sm text-gray-300 mb-1">End Date</label>
-                   <input
-                     type="date"
-                     value={editingTrip.endDate}
-                     onChange={(e) => setEditingTrip({...editingTrip, endDate: e.target.value})}
-                     className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
-                     style={{ maxWidth: '100%' }}
-                   />
-                 </div>
-                 <div>
-                   <label className="block text-sm text-gray-300 mb-1">Daily Budget (CAD)</label>
-                   <input
-                     type="number"
-                     placeholder="500"
-                     value={editingTrip.estimatedDailySpend === 0 ? '0' : (editingTrip.estimatedDailySpend || '')}
-                     onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value})}
-                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
-                   />
-                 </div>
-               </div>
+        >
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.tripName')}</label>
+                  <input
+                    type="text"
+                    placeholder={t('examples.southeastAsiaAdventure')}
+                    value={editingTrip.name}
+                    onChange={(e) => setEditingTrip({...editingTrip, name: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.targetBudget')}</label>
+                  <input
+                    type="number"
+                    placeholder="45000"
+                    value={editingTrip.targetBudget === 0 ? '0' : (editingTrip.targetBudget || '')}
+                    onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+              </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-1">Current Savings (CAD)</label>
+                <label className="block text-sm text-gray-300 mb-1">{t('travel.description')}</label>
+                <textarea
+                  placeholder={t('examples.tripDescriptionExample')}
+                  value={editingTrip.description}
+                  onChange={(e) => setEditingTrip({...editingTrip, description: e.target.value})}
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  rows="2"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.startDate')}</label>
+                  <input
+                    type="date"
+                    value={editingTrip.startDate}
+                    onChange={(e) => setEditingTrip({...editingTrip, startDate: e.target.value})}
+                    className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
+                    style={{ maxWidth: '100%' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.endDate')}</label>
+                  <input
+                    type="date"
+                    value={editingTrip.endDate}
+                    onChange={(e) => setEditingTrip({...editingTrip, endDate: e.target.value})}
+                    className="w-full max-w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-blue-400 focus:outline-none text-base"
+                    style={{ maxWidth: '100%' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">{t('travel.dailyBudget')}</label>
+                  <input
+                    type="number"
+                    placeholder="500"
+                    value={editingTrip.estimatedDailySpend === 0 ? '0' : (editingTrip.estimatedDailySpend || '')}
+                    onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value})}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+             <div>
+               <label className="block text-sm text-gray-300 mb-1">{t('travel.currentSavings')}</label>
                 <input
                   type="number"
                   placeholder="0"
@@ -11004,7 +11004,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Countries (Edit Your Map!)
+                  {t('travel.countriesEditMap')}
                 </label>
                 <input
                   type="text"
@@ -11044,7 +11044,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-amber-400 focus:outline-none"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Type a country name, then press <span className="font-semibold text-amber-300">comma</span> or <span className="font-semibold text-amber-300">Enter</span> to add it!
+                  {t('travel.countryInputTip')}
                 </p>
                 {Array.isArray(editingTrip.countries) && editingTrip.countries.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -11073,13 +11073,13 @@ const TravelTab = ({ data, setData, userId }) => {
                  onClick={() => setEditingTrip(null)}
                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
-                 Cancel
+                 {t('common.cancel')}
                </button>
                <button
                  onClick={handleEditTrip}
                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                >
-                 Save Changes
+                 {t('travel.saveChanges')}
                </button>
              </div>
          </FixedModal>
@@ -11093,22 +11093,22 @@ const TravelTab = ({ data, setData, userId }) => {
             setShowAddWishlistCountry(false);
             setWishlistCountryInput('');
           }}
-          title="⭐ Add Country to Wishlist"
+          title={t('travel.addCountryToWishlist')}
           size="md"
         >
           <div className="space-y-4">
               <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
                 <p className="text-sm text-purple-200 mb-2">
-                  ?�� <strong>Quick Wishlist</strong> - {t('dashboard.addTransaction')} countries you dream of visiting!
+                  <strong>{t('travel.quickWishlist')}</strong> - {t('travel.quickWishlistDesc')}
                 </p>
                 <p className="text-xs text-gray-400">
-                  No need to create a full trip. Just type the country name and we'll add it to your wishlist.
+                  {t('travel.quickWishlistInfo')}
                 </p>
               </div>
               
               <div>
                 <label className="block text-sm text-gray-300 mb-2">
-                  Country Name
+                  {t('travel.countryName')}
                 </label>
                 <input
                   type="text"
@@ -11124,7 +11124,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   autoFocus
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 First letter will be automatically capitalized
+                  {t('travel.firstLetterCapitalized')}
                 </p>
               </div>
             </div>
@@ -11137,7 +11137,7 @@ const TravelTab = ({ data, setData, userId }) => {
                 }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleAddWishlistCountry}
