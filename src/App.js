@@ -6730,7 +6730,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
             {data.investments.holdings.filter(h => h.dripEnabled).length} {t('dashboard.active')}
           </p>
           <p className="text-sm text-gray-300 mt-2 stealth-target">
-            ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.dividendAccumulated) || 0), 0)).toLocaleString()} accumulated
+            ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.dividendAccumulated) || 0), 0)).toLocaleString()} {t('investment.accumulated')}
           </p>
         </Card>
       </div>
@@ -6741,7 +6741,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-white flex items-center">
               <PieChart className="w-6 h-6 mr-3 text-blue-400" />
-              Portfolio Allocation
+              {t('investment.portfolioAllocation')}
             </h3>
             
             {/* Toggle between Ticker and Category views */}
@@ -6754,7 +6754,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
-                By Ticker
+                {t('investment.byTicker')}
               </button>
               <button
                 onClick={() => setAllocationView('category')}
@@ -6764,7 +6764,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
-                By Category
+                {t('investment.byCategory')}
               </button>
             </div>
           </div>
@@ -6786,7 +6786,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               </div>
             )) : (
               <div className="col-span-2 text-center text-gray-400 py-4">
-                {t('dashboard.addYourFirstInvestment')} to see portfolio allocation
+                {t('dashboard.addYourFirstInvestment')} {t('investment.toSeeAllocation')}
               </div>
             )}
           </div>
@@ -6795,7 +6795,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
         <Card>
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
             <BarChart3 className="w-6 h-6 mr-3 text-green-400" />
-            Performance History
+            {t('investment.performanceHistory')}
           </h3>
           <div className="w-full overflow-hidden">
             <svg ref={lineChartRef} className="w-full h-auto"></svg>
@@ -6807,7 +6807,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <Card style={{ backgroundColor: '#18212F' }} className="border-amber-500/30">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
             <Repeat className="w-6 h-6 mr-3 text-amber-400" />
-            💰 Dividend Income Tracker
+            {t('investment.dividendIncomeTracker')}
           </h3>
         
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -6815,14 +6815,14 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}
               </div>
-              <div className="text-sm text-amber-200">Monthly Income</div>
+              <div className="text-sm text-amber-200">{t('investment.monthlyIncome')}</div>
             </div>
             
             <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
               <div className="text-2xl font-bold text-amber-300">
                 ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 4).toFixed(0)}
               </div>
-              <div className="text-sm text-amber-200">Quarterly Income</div>
+              <div className="text-sm text-amber-200">{t('investment.quarterlyIncome')}</div>
             </div>
             
             <div className="bg-gradient-to-br from-amber-600/20 to-yellow-600/20 rounded-lg p-3 text-center border border-amber-500/40">
@@ -6836,7 +6836,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
               <div className="text-2xl font-bold text-amber-300">
                 {((parseFloat(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)) || 0) / (parseFloat(actualTotalValue) || 1) * 100).toFixed(2)}%
               </div>
-              <div className="text-sm text-amber-200">Portfolio Yield</div>
+              <div className="text-sm text-amber-200">{t('investment.portfolioYield')}</div>
             </div>
           </div>
         
@@ -6845,7 +6845,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       {/* Upcoming Dividends */}
             <div className="bg-gradient-to-br from-amber-900/20 to-yellow-900/20 rounded-lg p-4 border border-amber-500/30">
               <h4 className="text-lg font-semibold text-amber-200 mb-3 flex items-center">
-                📅 Upcoming Dividends
+                {t('investment.upcomingDividends')}
               </h4>
             <div className="space-y-3">
               {data.investments.holdings
@@ -6875,7 +6875,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           {/* DRIP Status */}
           <div style={{ backgroundColor: '#141F3B' }} className="rounded-lg p-4 border border-blue-500/30">
             <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-              🔄 DRIP Status
+              {t('investment.dripStatus')}
             </h4>
             <div className="space-y-3">
               {data.investments.holdings
@@ -6885,7 +6885,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <div>
                       <div className="font-semibold text-white">{holding.symbol}</div>
                       <div className="text-xs text-gray-400">
-                        ${holding.dividendAccumulated} accumulated
+                        ${holding.dividendAccumulated} {t('investment.accumulated')}
                       </div>
                     </div>
                     <div className="text-right">
@@ -6893,14 +6893,14 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         holding.dripEnabled ? 'text-cyan-300' : 'text-gray-400'
                       }`}>
                         <Tooltip 
-                          text="DRIP (Dividend Reinvestment Plan) automatically uses dividend payments to buy more shares of the same stock, compounding your investment growth over time."
+                          text={t('investment.dripTooltip')}
                         >
-                          {holding.dripEnabled ? '🔄 DRIP ON' : '💵 CASH'}
+                          {holding.dripEnabled ? t('investment.dripOn') : t('investment.dripCash')}
                         </Tooltip>
                       </div>
                       {holding.dripEnabled && (
                         <div className="text-xs text-cyan-200">
-                          {holding.dripProgress.toFixed(1)}% to next share
+                          {holding.dripProgress.toFixed(1)}% {t('investment.toNextShare')}
                         </div>
                       )}
                     </div>
@@ -6914,7 +6914,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       <div className="mt-6" style={{ backgroundColor: '#141F3B' }}>
         <div className="rounded-lg p-4 border border-blue-500/30">
         <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-          📊 Dividend Breakdown by Holding
+          {t('investment.dividendBreakdownByHolding')}
         </h4>
           <div className="space-y-2">
             {data.investments.holdings
@@ -6938,7 +6938,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                           ${(parseFloat(holding.annualDividend) || 0).toLocaleString()}
                         </div>
                         <div className="text-xs text-gray-400">
-                          {percentage.toFixed(1)}% of total
+                          {percentage.toFixed(1)}% {t('investment.ofTotal')}
                         </div>
                       </div>
                     </div>
@@ -6949,13 +6949,12 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           
                       <div className="mt-4 p-3 bg-purple-800/20 rounded border border-purple-600/30">
               <div className="text-sm text-purple-200 mb-2">
-                💡 <strong>Income Strategy:</strong> Your ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()} annual dividend income provides 
+                <strong>{t('investment.incomeStrategy')}</strong> Your ${(data.investments.holdings.reduce((sum, h) => sum + (parseFloat(h.annualDividend) || 0), 0)).toLocaleString()} annual dividend income provides 
                 <span className="font-semibold"> ${(data.investments.holdings.reduce((sum, h) => sum + h.annualDividend, 0) / 12).toFixed(0)}{t('dashboard.perMonth')} </span>
-                in passive income - perfect for travel funding! 🌍
+                {t('investment.inPassiveIncome')}
               </div>
               <div className="text-xs text-purple-300 border-t border-purple-600/30 pt-2">
-                📅 <strong>Auto-Generated Dates:</strong> Dividend dates are automatically estimated based on common ETF/stock payment schedules. 
-                Major ETFs (VTI, SPY) typically pay quarterly (Mar/Jun/Sep/Dec), while REITs like O pay monthly.
+                <strong>{t('investment.autoGeneratedDates')}</strong> {t('investment.autoGeneratedDatesInfo')}
               </div>
             </div>
         </div>
@@ -6964,7 +6963,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
       {/* Holdings with DRIP */}
       <Card>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-white">Holdings & DRIP Calculator</h3>
+          <h3 className="text-xl font-bold text-white">{t('investment.holdingsDripCalculator')}</h3>
           <button
             onClick={() => setShowAddHolding(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
@@ -6980,9 +6979,9 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 {/* Getting Started Guide */}
                 <div className="text-center mb-8">
                   <BarChart3 className="w-16 h-16 text-violet-400 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-white mb-2">💼 Getting Started with Investing</h3>
+                  <h3 className="text-3xl font-bold text-white mb-2">{t('investment.gettingStartedWithInvesting')}</h3>
                   <p className="text-gray-300 text-lg">
-                    New to investing? Don't worry! Here's everything you need to know.
+                    {t('investment.newToInvesting')}
                   </p>
                 </div>
 
@@ -6997,38 +6996,38 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
                       <li dangerouslySetInnerHTML={{__html: t('budget.tickerHelp')}}></li>
-                      <li>◆ <strong>Shares:</strong> How many you own</li>
-                      <li>◆ <strong>Price:</strong> What you paid per share</li>
+                      <li>◆ <strong>{t('investment.sharesLabel')}</strong> {t('investment.sharesHowMany')}</li>
+                      <li>◆ <strong>{t('investment.priceLabel')}</strong> {t('investment.priceWhatPaid')}</li>
                     </ul>
                   </div>
 
                   {/* Step 2 */}
                   <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-lg p-6 border border-blue-600/30">
                     <div className="text-3xl mb-3 font-bold text-blue-300">2</div>
-                    <h4 className="text-lg font-bold text-white mb-2">Track Your Growth</h4>
+                    <h4 className="text-lg font-bold text-white mb-2">{t('investment.trackYourGrowth')}</h4>
                     <p className="text-sm text-gray-300 mb-3">
-                      Watch your portfolio come to life:
+                      {t('investment.watchPortfolio')}
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>◆ See real-time value</li>
-                      <li>◆ Track gains & losses</li>
-                      <li>◆ View allocation charts</li>
-                      <li>◆ Monitor dividends</li>
+                      <li>◆ {t('investment.seeRealTimeValue')}</li>
+                      <li>◆ {t('investment.trackGainsLosses')}</li>
+                      <li>◆ {t('investment.viewAllocationCharts')}</li>
+                      <li>◆ {t('investment.monitorDividends')}</li>
                     </ul>
                   </div>
 
                   {/* Step 3 */}
                   <div className="bg-gradient-to-br from-green-900/40 to-green-800/20 rounded-lg p-6 border border-green-600/30">
                     <div className="text-3xl mb-3 font-bold text-green-300">3</div>
-                    <h4 className="text-lg font-bold text-white mb-2">Build Wealth</h4>
+                    <h4 className="text-lg font-bold text-white mb-2">{t('investment.buildWealth')}</h4>
                     <p className="text-sm text-gray-300 mb-3">
-                      Enable DRIP to grow faster:
+                      {t('investment.enableDripToGrow')}
                     </p>
                     <ul className="text-sm text-gray-400 space-y-1">
-                      <li>◆ Auto-reinvest dividends</li>
-                      <li>◆ Compound your returns</li>
-                      <li>◆ Build wealth passively</li>
-                      <li>◆ Track your progress</li>
+                      <li>◆ {t('investment.autoReinvestDividends')}</li>
+                      <li>◆ {t('investment.compoundReturns')}</li>
+                      <li>◆ {t('investment.buildWealthPassively')}</li>
+                      <li>◆ {t('investment.trackProgress')}</li>
                     </ul>
                   </div>
                 </div>
@@ -7039,27 +7038,27 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
-                    Beginner Tips
+                    {t('investment.beginnerTips')}
                   </h4>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">💡 Start Small:</strong> You don't need thousands to start. Even one share counts!
+                        <strong className="text-white">{t('investment.startSmall')}</strong> {t('investment.startSmallDesc')}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">📚 Learn As You Go:</strong> Each investment teaches you something new.
+                        <strong className="text-white">{t('investment.learnAsYouGo')}</strong> {t('investment.learnAsYouGoDesc')}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">🎯 Diversify:</strong> Don't put all eggs in one basket. Spread your investments.
+                        <strong className="text-white">{t('investment.diversify')}</strong> {t('investment.diversifyDesc')}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">
-                        <strong className="text-white">⏳ Think Long-Term:</strong> Wealth builds over time. Be patient!
+                        <strong className="text-white">{t('investment.thinkLongTerm')}</strong> {t('investment.thinkLongTermDesc')}
                       </p>
                     </div>
                   </div>
@@ -7115,16 +7114,16 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     </span>
                     {holding.withholdingTax > 0 && (
                       <span className="text-xs text-red-400">
-                        {holding.withholdingTax}% Tax
+                        {holding.withholdingTax}% {t('investment.tax')}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500">{holding.shares} shares</p>
+                  <p className="text-xs text-gray-500">{holding.shares} {t('investment.shares')}</p>
                 </div>
                 
                 <div className="text-center">
                   <div className="text-lg font-bold text-white">${holding.currentPrice.toFixed(2)}</div>
-                  <div className="text-xs text-gray-400">Current Price</div>
+                  <div className="text-xs text-gray-400">{t('investment.currentPrice')}</div>
                   <div className={`text-xs ${holding.currentPrice >= holding.avgCost ? 'text-green-400' : 'text-red-400'}`}>
                     {((holding.currentPrice - holding.avgCost) / holding.avgCost * 100).toFixed(1)}%
                   </div>
@@ -7136,7 +7135,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     id={`total-value-${holding.id}`}
                     text={t('tooltips.holdingTotalValue')}
                   >
-                    <div className="text-xs text-gray-400">Total Value</div>
+                    <div className="text-xs text-gray-400">{t('investment.totalValue')}</div>
                   </InfoTooltip>
                 </div>
                 
@@ -7146,7 +7145,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     id={`dividend-${holding.id}`}
                     text={t('tooltips.annualDividend')}
                   >
-                    <div className="text-xs text-gray-400">Annual Dividend</div>
+                    <div className="text-xs text-gray-400">{t('dashboard.annualDividends')}</div>
                   </InfoTooltip>
                   <div className="text-xs text-cyan-300">{holding.dividendYield}% {t('dashboard.yield')}</div>
                 </div>
@@ -7231,7 +7230,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       id="ticker-info"
                       text={t('tooltips.stockTicker')}
                     >
-                      <span>Stock Ticker Symbol</span>
+                      <span>{t('investment.stockTickerSymbol')}</span>
                     </InfoTooltip>
                   </label>
                   <input
@@ -7245,7 +7244,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 
                 <div>
                   <label className="block text-sm text-gray-300 mb-1">
-                    Company Name
+                    {t('investment.companyName')}
                   </label>
                   <input
                     type="text"
@@ -7258,7 +7257,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 
                 <div>
                   <label className="block text-sm text-gray-300 mb-1">
-                    Category <span className="text-blue-400">(for allocation grouping)</span>
+                    {t('investment.category')} <span className="text-blue-400">{t('investment.forAllocationGrouping')}</span>
                   </label>
                   <select
                     value={newHolding.category}
@@ -7286,7 +7285,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         id="shares-info"
                         text={t('tooltips.shares')}
                       >
-                        <span>Shares Owned</span>
+                        <span>{t('investment.sharesOwned')}</span>
                       </InfoTooltip>
                     </label>
                     <input
@@ -7304,7 +7303,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         id="avg-cost-info"
                         text={t('tooltips.averageCost')}
                       >
-                        <span>Avg Cost per Share</span>
+                        <span>{t('investment.avgCostPerShare')}</span>
                       </InfoTooltip>
                     </label>
                     <input
@@ -7324,7 +7323,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         id="current-price-info"
                         text={t('tooltips.currentPrice')}
                       >
-                        <span>Current Price</span>
+                        <span>{t('investment.currentPrice')}</span>
                       </InfoTooltip>
                     </label>
                     <input
@@ -7342,7 +7341,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                         id="dividend-yield-info"
                         text={t('tooltips.dividendYield')}
                       >
-                        <span>Dividend Yield %</span>
+                        <span>{t('investment.dividendYield')}</span>
                       </InfoTooltip>
                     </label>
                     <input
@@ -7357,7 +7356,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Account Type</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('investment.accountType')}</label>
                     <select
                       value={newHolding.accountType}
                       onChange={(e) => setNewHolding({...newHolding, accountType: e.target.value})}
@@ -7376,7 +7375,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   </div>
                   
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Currency</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('investment.currency')}</label>
                     <select
                       value={newHolding.currency}
                       onChange={(e) => setNewHolding({...newHolding, currency: e.target.value})}
@@ -7396,7 +7395,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       onChange={(e) => setNewHolding({...newHolding, dripEnabled: e.target.checked})}
                       className="rounded"
                     />
-                    <label className="text-white">Enable DRIP</label>
+                    <label className="text-white">{t('investment.enableDRIP')}</label>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -7406,20 +7405,20 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                       onChange={(e) => setNewHolding({...newHolding, isUSStock: e.target.checked})}
                       className="rounded"
                     />
-                    <label className="text-white">US Stock</label>
+                    <label className="text-white">{t('investment.usStock')}</label>
                   </div>
                 </div>
                 
                 {newHolding.isUSStock && (
                   <div className="p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-                    <div className="text-red-400 font-semibold text-sm mb-1">US Stock Tax Notice</div>
+                    <div className="text-red-400 font-semibold text-sm mb-1">{t('investment.usStockTaxNotice')}</div>
                     <div className="text-xs text-gray-300">
                       {(() => {
                         const account = data.registeredAccounts?.accounts?.find(acc => acc.name === newHolding.accountType);
                         if (account && account.type === 'tax-deferred') {
-                          return `US withholding tax: 15% (reduced rate for ${newHolding.accountType} - tax-deferred account)`;
+                          return t('investment.usWithholdingTaxReduced', { accountType: newHolding.accountType });
                         } else {
-                          return `US withholding tax: 30% (standard rate for ${newHolding.accountType || 'this account type'})`;
+                          return t('investment.usWithholdingTaxStandard', { accountType: newHolding.accountType || 'this account type' });
                         }
                       })()}
                     </div>
@@ -7429,10 +7428,9 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 {/* Auto-Generated Dividend Date Info */}
                 {parseFloat(newHolding.dividendYield) > 0 && (
                   <div className="p-3 bg-green-900/20 rounded-lg border border-green-600/30">
-                    <div className="text-green-400 font-semibold text-sm mb-1">📅 Auto-Generated Dividend Date</div>
+                    <div className="text-green-400 font-semibold text-sm mb-1">{t('investment.autoGeneratedDividendDate')}</div>
                     <div className="text-xs text-gray-300">
-                      Next dividend date will be automatically estimated based on common payment schedules for {newHolding.symbol || 'this symbol'}. 
-                      Major ETFs typically pay quarterly (Mar/Jun/Sep/Dec), while monthly dividend stocks use the 10th of each month.
+                      {t('investment.dividendDateInfo', { symbol: newHolding.symbol || 'this symbol' })}
                     </div>
                   </div>
                 )}
@@ -7443,7 +7441,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   onClick={() => setShowAddHolding(false)}
                   className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleAddHolding}
@@ -7460,7 +7458,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
           <FixedModal
             isOpen={!!editingHolding}
             onClose={() => setEditingHolding(null)}
-            title={`Edit ${editingHolding.symbol}`}
+            title={t('investment.editTitle', { symbol: editingHolding.symbol })}
             size="md"
           >
             <div className="space-y-4">
@@ -7510,7 +7508,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Account Type</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('investment.accountType')}</label>
                     <select
                       value={editingHolding.accountType || (data.registeredAccounts?.accounts?.[0]?.name || 'Taxable')}
                       onChange={(e) => setEditingHolding({...editingHolding, accountType: e.target.value})}
@@ -7529,7 +7527,7 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   </div>
                   
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Currency</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('investment.currency')}</label>
                     <select
                       value={editingHolding.currency || 'CAD'}
                       onChange={(e) => setEditingHolding({...editingHolding, currency: e.target.value})}
@@ -7548,19 +7546,19 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                     onChange={(e) => setEditingHolding({...editingHolding, isUSStock: e.target.checked})}
                     className="rounded"
                   />
-                  <label className="text-white">US Stock (affects withholding tax)</label>
+                  <label className="text-white">{t('investment.usStockWithTax')}</label>
                 </div>
                 
                 {editingHolding.isUSStock && (
                   <div className="p-3 bg-red-900/20 rounded-lg border border-red-600/30">
-                    <div className="text-red-400 font-semibold text-sm mb-1">US Stock Tax Notice</div>
+                    <div className="text-red-400 font-semibold text-sm mb-1">{t('investment.usStockTaxNotice')}</div>
                     <div className="text-xs text-gray-300">
                       {(() => {
                         const account = data.registeredAccounts?.accounts?.find(acc => acc.name === editingHolding.accountType);
                         if (account && account.type === 'tax-deferred') {
-                          return `US withholding tax: 15% (reduced rate for ${editingHolding.accountType} - tax-deferred account)`;
+                          return t('investment.usWithholdingTaxReduced', { accountType: editingHolding.accountType });
                         } else {
-                          return `US withholding tax: 30% (standard rate for ${editingHolding.accountType || 'this account type'})`;
+                          return t('investment.usWithholdingTaxStandard', { accountType: editingHolding.accountType || 'this account type' });
                         }
                       })()}
                     </div>
@@ -7573,13 +7571,13 @@ const InvestmentTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   onClick={() => setEditingHolding(null)}
                   className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={() => handleEditHolding(editingHolding)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  Save Changes
+                  {t('common.saveChanges')}
                 </button>
               </div>
           </FixedModal>
