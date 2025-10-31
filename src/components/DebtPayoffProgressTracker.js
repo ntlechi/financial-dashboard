@@ -135,7 +135,7 @@ export default function DebtPayoffProgressTracker({ data, onEdit, userPlan, onUp
               
               let paymentStatus = 'upcoming';
               let statusColor = 'text-blue-400';
-              let statusText = `Due in ${daysUntilDue} days`;
+              let statusText = t('debtTracker.dueInDays', { days: daysUntilDue });
               
               if (daysUntilDue === 0) {
                 paymentStatus = 'due-today';
