@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, Award, Star, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const RANK_INSIGNIA = {
   'Recruit': {
@@ -41,9 +42,17 @@ const RANK_INSIGNIA = {
 };
 
 export default function RankUpModal({ isOpen, onClose, newRank, oldRank, xpGained }) {
+  const { t } = useTranslation();
   const [showAnimation, setShowAnimation] = useState(false);
   const [showInsignia, setShowInsignia] = useState(false);
   const [showText, setShowText] = useState(false);
+
+  // Helper function to get translated rank name
+  const getRankName = (rankName) => {
+    if (!rankName) return '';
+    const rankKey = rankName.toLowerCase().replace(' ', '');
+    return t(`ranks.${rankKey}`, rankName); // fallback to original if translation missing
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -99,14 +108,14 @@ export default function RankUpModal({ isOpen, onClose, newRank, oldRank, xpGaine
               {insignia.icon}
             </div>
             <div className="text-sm text-gray-400 uppercase tracking-wider">
-              {insignia.material} • {newRank.name}
+              {insignia.material} • {getRankName(newRank.name)}
             </div>
           </div>
 
           {/* Rank Details */}
           <div className={`transition-all duration-1000 delay-1000 ${showText ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
             <h2 className="text-2xl font-bold text-white mb-2">
-              {oldRank?.name} → {newRank.name}
+              {oldRank?.name ? getRankName(oldRank.name) : ''} → {getRankName(newRank.name)}
             </h2>
             <p className="text-gray-300 mb-4">
               Level {oldRank?.level || 1} → Level {newRank.level}
