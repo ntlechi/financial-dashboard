@@ -10012,17 +10012,17 @@ const TravelTab = ({ data, setData, userId }) => {
                           <div className="flex items-center justify-center gap-2 text-sm">
                             {hoveredCountry.isVisited && (
                               <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/40 font-semibold">
-                                ? Completed Expedition
+                                ? {t('travel.completedExpedition')}
                               </span>
                             )}
                             {hoveredCountry.isPlanned && (
                               <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/40 font-semibold">
-                                🔵 Future Mission
+                                🔵 {t('travel.futureMission')}
                               </span>
                             )}
                             {!hoveredCountry.isVisited && !hoveredCountry.isPlanned && (
                               <span className="px-3 py-1 bg-gray-600/20 text-gray-400 rounded-full border border-gray-600/40">
-                                🌍 Unexplored
+                                🌍 {t('travel.unexplored')}
                               </span>
                             )}
                           </div>
@@ -10035,15 +10035,15 @@ const TravelTab = ({ data, setData, userId }) => {
                   <div className="mt-4 flex flex-wrap items-center justify-center gap-6 text-sm bg-slate-900/60 rounded-lg p-3 border border-amber-900/30">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-sm bg-amber-500 border-2 border-amber-600"></div>
-                      <span className="text-amber-200 font-semibold">Completed Expeditions</span>
+                      <span className="text-amber-200 font-semibold">{t('travel.completedExpeditions')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-sm bg-sky-400 border-2 border-sky-600"></div>
-                      <span className="text-sky-200 font-semibold">Future Missions</span>
+                      <span className="text-sky-200 font-semibold">{t('travel.futureMissions')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-sm bg-gray-700 border-2 border-gray-600"></div>
-                      <span className="text-gray-400">Unexplored</span>
+                      <span className="text-gray-400">{t('travel.unexplored')}</span>
                     </div>
                   </div>
                   
@@ -10060,7 +10060,7 @@ const TravelTab = ({ data, setData, userId }) => {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
-                    View Detailed Country List
+                    {t('travel.viewDetailedCountryList')}
                   </summary>
                 <div className="space-y-4">
                   {totalVisited > 0 && (
@@ -10069,7 +10069,7 @@ const TravelTab = ({ data, setData, userId }) => {
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        Completed Expeditions
+                        {t('travel.completedExpeditions')}
                       </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                         {allVisitedCountries.map(country => {
@@ -10080,7 +10080,7 @@ const TravelTab = ({ data, setData, userId }) => {
                               className="group relative bg-amber-900/20 hover:bg-amber-900/40 border border-amber-600/40 rounded-lg p-3 transition-all cursor-pointer"
                             >
                               <div className="text-amber-400 font-semibold text-sm">{capitalizeCountryName(country)}</div>
-                              <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
+                              <div className="text-xs text-gray-400">{trips.length} {trips.length > 1 ? t('travel.trips') : t('travel.trip')}</div>
                               
                               {/* Tooltip */}
                               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
@@ -10088,7 +10088,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-amber-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Completed ?��</div>
+                                      <div className="text-gray-400">{t('travel.statusCompleted')}</div>
                                     </div>
                                   ))}
                                 </div>
@@ -10106,7 +10106,7 @@ const TravelTab = ({ data, setData, userId }) => {
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                         </svg>
-                        Future Missions
+                        {t('travel.futureMissions')}
                       </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                         {allPlannedCountries.map(country => {
@@ -10117,7 +10117,7 @@ const TravelTab = ({ data, setData, userId }) => {
                               className="group relative bg-blue-900/20 hover:bg-blue-900/40 border border-blue-600/40 rounded-lg p-3 transition-all cursor-pointer"
                             >
                               <div className="text-blue-400 font-semibold text-sm">{capitalizeCountryName(country)}</div>
-                              <div className="text-xs text-gray-400">{trips.length} trip{trips.length > 1 ? 's' : ''}</div>
+                              <div className="text-xs text-gray-400">{trips.length} {trips.length > 1 ? t('travel.trips') : t('travel.trip')}</div>
                               
                               {/* Tooltip */}
                               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
@@ -10125,7 +10125,7 @@ const TravelTab = ({ data, setData, userId }) => {
                                   {trips.map((trip, idx) => (
                                     <div key={idx} className="py-1">
                                       <div className="font-semibold text-blue-300">{trip.name}</div>
-                                      <div className="text-gray-400">Status: Planned 📅</div>
+                                      <div className="text-gray-400">{t('travel.statusPlanned')}</div>
                                     </div>
                                   ))}
                                 </div>
@@ -10144,14 +10144,14 @@ const TravelTab = ({ data, setData, userId }) => {
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
-                        My Travel Wishlist
+                        {t('travel.myTravelWishlist')}
                       </h3>
                       <button
                         onClick={() => setShowAddWishlistCountry(true)}
                         className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2 transition-colors"
                       >
                         <Plus className="w-4 h-4" />
-                        {t('dashboard.addTransaction')}
+                        {t('travel.addTransaction')}
                       </button>
                     </div>
                     
