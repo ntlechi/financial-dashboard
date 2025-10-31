@@ -1,5 +1,6 @@
 import React from 'react';
 import { Lock, Crown, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { hasFeatureAccess } from '../utils/featureUnlocks';
 
 export default function FeatureGate({ 
@@ -7,13 +8,16 @@ export default function FeatureGate({
   currentRank, 
   children, 
   onUpgrade,
-  upgradeMessage = "Upgrade to unlock this feature"
+  upgradeMessage
 }) {
+  const { t } = useTranslation();
   const hasAccess = hasFeatureAccess(currentRank, feature);
 
   if (hasAccess) {
     return children;
   }
+
+  const message = upgradeMessage || t('featureGate.upgradeMessage');
 
   return (
     <div className="relative">
@@ -29,15 +33,15 @@ export default function FeatureGate({
             <Lock className="w-8 h-8 text-white" />
           </div>
           
-          <h3 className="text-xl font-bold text-white mb-2">Feature Locked</h3>
+          <h3 className="text-xl font-bold text-white mb-2">{t('featureGate.featureLocked')}</h3>
           <p className="text-gray-300 text-sm mb-4">
-            {upgradeMessage}
+            {message}
           </p>
           
           <div className="bg-amber-900/20 border border-amber-500/30 rounded-lg p-3 mb-4">
             <div className="flex items-center gap-2 text-amber-400 text-sm">
               <Crown className="w-4 h-4" />
-              <span>Available at higher rank</span>
+              <span>{t('featureGate.availableAtHigherRank')}</span>
             </div>
           </div>
           
@@ -45,7 +49,7 @@ export default function FeatureGate({
             onClick={onUpgrade}
             className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 flex items-center gap-2 mx-auto"
           >
-            View Requirements
+            {t('featureGate.viewRequirements')}
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -53,5 +57,3 @@ export default function FeatureGate({
     </div>
   );
 }
-
-

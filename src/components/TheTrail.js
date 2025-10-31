@@ -3,8 +3,10 @@ import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore'
 import { db } from '../firebase';
 import { BookOpen, CheckCircle, Circle, Award, ArrowRight, Clock } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useTranslation } from 'react-i18next';
 
 export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
+  const { t } = useTranslation();
   const [missions, setMissions] = useState([]);
   const [completedMissions, setCompletedMissions] = useState(new Set());
   const [selectedMission, setSelectedMission] = useState(null);
@@ -78,12 +80,12 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
           setXpRefreshTrigger(prev => prev + 1);
         }
         
-        showNotification('🎯 Mission Complete! +25 XP', 'success');
+        showNotification(t('trail.missionCompleteXP'), 'success');
         checkForBadges(updated.length);
       }
     } catch (error) {
       console.error('Error marking mission complete:', error);
-      showNotification('Error saving progress', 'error');
+      showNotification(t('trail.errorSavingProgress'), 'error');
     }
   };
 
@@ -103,7 +105,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
         setXpRefreshTrigger(prev => prev + 1);
       }
       
-      showNotification(`🏆 ${badge.name} Unlocked! +${badge.xp} XP`, 'success');
+      showNotification(t('trail.badgeUnlocked', { name: badge.name, xp: badge.xp }), 'success');
     }
   };
 
@@ -119,9 +121,9 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
         await awardXp(db, userId, 50);
         setXpRefreshTrigger(prev => prev + 1);
       }
-      showNotification('✅ Correct! +50 XP', 'success');
+      showNotification(t('trail.correctXP'), 'success');
     } else {
-      showNotification('📚 Keep learning!', 'info');
+      showNotification(t('trail.keepLearning'), 'info');
     }
   };
 
@@ -158,7 +160,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
     return (
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
-        <p className="text-gray-400 mt-4">Loading The Trail...</p>
+        <p className="text-gray-400 mt-4">{t('trail.loadingTrail')}</p>
       </div>
     );
   }
@@ -193,7 +195,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
                 {completedMissions.has(selectedMission.id) && (
                   <span className="flex items-center gap-1 text-green-400">
                     <CheckCircle className="w-4 h-4" />
-                    Completed
+                    {t('trail.completed')}
                   </span>
                 )}
               </div>
@@ -227,7 +229,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
               onClick={() => setShowDrill(true)}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors mb-6"
             >
-              Continue to Drill →
+              {t('trail.continueToDrill')}
             </button>
           )}
 
@@ -236,7 +238,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
             <div className="bg-blue-900/20 rounded-lg p-6 border border-blue-600/30 mb-6">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <Award className="w-5 h-5 text-blue-400" />
-                Knowledge Check
+                {t('trail.knowledgeCheck')}
               </h3>
               <p className="text-gray-200 mb-4 font-semibold">{selectedMission.drillQuestion}</p>
               
@@ -268,7 +270,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
                     disabled={completedMissions.has(selectedMission.id)}
                     className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-colors mb-3"
                   >
-                    {completedMissions.has(selectedMission.id) ? '✓ Mission Complete' : 'Mark as Complete (+25 XP)'}
+                    {completedMissions.has(selectedMission.id) ? t('trail.missionComplete') : t('trail.markAsComplete')}
                   </button>
 
                   {/* CTA Button */}
@@ -307,28 +309,28 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
           <BookOpen className="w-8 h-8 text-blue-400" />
-          The Trail
+          {t('trail.theTrail')}
         </h2>
         <p className="text-gray-300 text-lg">
-          Core missions spanning Financial Freedom, Becoming Great, Entrepreneurship, Essential Survival, and Traveler's Wisdom.
+          {t('trail.coreDescription')}
         </p>
         <div className="mt-4 flex items-center gap-4 text-sm">
           <span className="text-gray-400">
-            Progress: <span className="text-blue-400 font-bold">{completedMissions.size}</span> / {missions.length} missions
+            {t('trail.progress')} <span className="text-blue-400 font-bold">{completedMissions.size}</span> / {missions.length} {t('trail.missions')}
           </span>
           {completedMissions.size >= 5 && (
             <span className="px-3 py-1 bg-green-900/30 border border-green-600/30 text-green-400 rounded-full text-xs font-semibold">
-              🏆 Scout Badge
+              {t('trail.scoutBadge')}
             </span>
           )}
           {completedMissions.size >= 15 && (
             <span className="px-3 py-1 bg-purple-900/30 border border-purple-600/30 text-purple-400 rounded-full text-xs font-semibold">
-              🏆 Pathfinder Badge
+              {t('trail.pathfinderBadge')}
             </span>
           )}
           {completedMissions.size >= 30 && (
             <span className="px-3 py-1 bg-amber-900/30 border border-amber-600/30 text-amber-400 rounded-full text-xs font-semibold">
-              🏆 Guide Badge
+              {t('trail.guideBadge')}
             </span>
           )}
         </div>
@@ -338,8 +340,8 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
       {missions.length === 0 ? (
         <div className="text-center py-12 bg-gray-800/30 rounded-xl border border-gray-700/50">
           <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-400 mb-2">No missions available yet.</p>
-          <p className="text-sm text-gray-500">Check back soon for new content!</p>
+          <p className="text-gray-400 mb-2">{t('trail.noMissionsYet')}</p>
+          <p className="text-sm text-gray-500">{t('trail.checkBackSoon')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -375,7 +377,7 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
                     <Clock className="w-3 h-3" />
                     {mission.readTime}
                   </span>
-                  {isCompleted && <span className="text-green-400 font-semibold">Completed</span>}
+                  {isCompleted && <span className="text-green-400 font-semibold">{t('trail.completed')}</span>}
                 </div>
               </div>
             );

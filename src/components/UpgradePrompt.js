@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Lock, Crown, Zap, Rocket, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const UpgradePrompt = ({ 
   onClose, 
@@ -9,55 +10,57 @@ const UpgradePrompt = ({
   currentPlan = 'free',
   isFoundersCircleAvailable = false 
 }) => {
+  const { t } = useTranslation();
+
   const planDetails = {
     'climber': {
-      name: 'Climber Plan',
-      price: '$7.99 USD /month',
+      name: t('upgradePrompt.climberPlan'),
+      price: t('upgradePrompt.priceClimber'),
       icon: Zap,
       color: 'from-blue-600 to-blue-700',
       features: [
-        'Full Advanced Dashboard',
-        'All Financial Calculators',
-        'Advanced Analytics & Reports',
-        'Goal Tracking & Projections'
+        t('upgradePrompt.featureFullDashboard'),
+        t('upgradePrompt.featureAllCalculators'),
+        t('upgradePrompt.featureAdvancedAnalytics'),
+        t('upgradePrompt.featureGoalTracking')
       ]
     },
     'operator': {
-      name: 'Operator Plan',
-      price: '$14.99 USD /month',
+      name: t('upgradePrompt.operatorPlan'),
+      price: t('upgradePrompt.priceOperator'),
       icon: Rocket,
       color: 'from-purple-600 to-purple-700',
       features: [
-        'Side Hustle Management',
-        'Investment Portfolio Tracking',
-        'Travel Mode & Multi-Currency',
-        'Advanced Business Analytics'
+        t('upgradePrompt.featureSideHustle'),
+        t('upgradePrompt.featureInvestmentPortfolio'),
+        t('upgradePrompt.featureTravelMode'),
+        t('upgradePrompt.featureBusinessAnalytics')
       ]
     }
   };
 
   const foundersCircle = {
-    name: "Founder's Circle",
-    price: '$7.49 USD /month',
+    name: t('upgradePrompt.foundersCircle'),
+    price: t('upgradePrompt.priceFounders'),
     icon: Crown,
     color: 'from-amber-500 to-yellow-600',
     features: [
-      'Full Operator Plan Access',
-      'Lifetime Price Lock',
-      'Exclusive Founder Badge',
-      'Early Access to New Features'
+      t('upgradePrompt.featureOperatorAccess'),
+      t('upgradePrompt.featureLifetimeLock'),
+      t('upgradePrompt.featureFounderBadge'),
+      t('upgradePrompt.featureEarlyAccess')
     ]
   };
 
   const getFeatureDescription = (feature) => {
     const descriptions = {
-      'Side Hustle Management': 'Track your business income, expenses, and profit margins. Calculate quarterly taxes and see how your side hustle accelerates your path to financial freedom.',
-      'Investment Portfolio': 'Monitor your investments, track dividends, analyze performance, and project your portfolio growth with advanced analytics.',
-      'Travel Mode': 'Multi-currency support and location-based financial tracking for digital nomads and frequent travelers.',
-      'Advanced Dashboard': 'Unlock all dashboard cards including detailed analytics, projections, and comprehensive financial insights.',
-      'Advanced Analytics': 'Deep dive into your financial patterns with detailed reports, trends analysis, and predictive modeling.'
+      'Side Hustle Management': t('upgradePrompt.descSideHustle'),
+      'Investment Portfolio': t('upgradePrompt.descInvestmentPortfolio'),
+      'Travel Mode': t('upgradePrompt.descTravelMode'),
+      'Advanced Dashboard': t('upgradePrompt.descAdvancedDashboard'),
+      'Advanced Analytics': t('upgradePrompt.descAdvancedAnalytics')
     };
-    return descriptions[feature] || `Unlock ${feature} to take your financial management to the next level.`;
+    return descriptions[feature] || t('upgradePrompt.descDefault', { feature });
   };
 
   const plan = planDetails[requiredPlan];
@@ -73,8 +76,8 @@ const UpgradePrompt = ({
               <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-2xl font-bold text-white">Unlock {featureName}</h2>
-              <p className="text-gray-400 text-xs sm:text-sm">Upgrade to access this powerful feature</p>
+              <h2 className="text-lg sm:text-2xl font-bold text-white">{t('upgradePrompt.unlockFeature', { featureName })}</h2>
+              <p className="text-gray-400 text-xs sm:text-sm">{t('upgradePrompt.upgradeToAccess')}</p>
             </div>
           </div>
           <button
@@ -89,7 +92,7 @@ const UpgradePrompt = ({
         <div className="p-4 sm:p-6 overflow-y-auto flex-1">
           {/* Feature Description */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">Why You'll Love {featureName}</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">{t('upgradePrompt.whyYouWillLove', { featureName })}</h3>
             <p className="text-gray-300 leading-relaxed">
               {getFeatureDescription(featureName)}
             </p>
@@ -101,8 +104,8 @@ const UpgradePrompt = ({
               <div className="flex items-center mb-3">
                 <Crown className="w-6 h-6 text-amber-400 mr-3" />
                 <div>
-                  <h4 className="text-lg font-bold text-amber-400">🔥 Limited Launch Offer</h4>
-                  <p className="text-amber-200 text-sm">Get full Operator access for just $7.49 USD /month</p>
+                  <h4 className="text-lg font-bold text-amber-400">{t('upgradePrompt.limitedLaunchOffer')}</h4>
+                  <p className="text-amber-200 text-sm">{t('upgradePrompt.fullOperatorAccess')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mb-4">
@@ -117,7 +120,7 @@ const UpgradePrompt = ({
                 onClick={() => onUpgrade('founders-circle')}
                 className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
               >
-                Claim Founder's Spot - {foundersCircle.price}
+                {t('upgradePrompt.claimFoundersSpot', { price: foundersCircle.price })}
               </button>
             </div>
           )}
@@ -129,7 +132,7 @@ const UpgradePrompt = ({
                 <PlanIcon className="w-6 h-6 text-blue-400 mr-3" />
                 <div>
                   <h4 className="text-lg font-bold text-white">{plan.name}</h4>
-                  <p className="text-gray-400 text-sm">Required for {featureName}</p>
+                  <p className="text-gray-400 text-sm">{t('upgradePrompt.requiredFor', { featureName })}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mb-4">
@@ -144,7 +147,7 @@ const UpgradePrompt = ({
                 onClick={() => onUpgrade(requiredPlan)}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
               >
-                Upgrade to {plan.name} - {plan.price}
+                {t('upgradePrompt.upgradeTo', { planName: plan.name, price: plan.price })}
               </button>
             </div>
           )}
@@ -155,7 +158,7 @@ const UpgradePrompt = ({
               onClick={() => onUpgrade('view-all')}
               className="text-blue-400 hover:text-blue-300 text-sm font-medium"
             >
-              View All Plans & Pricing →
+              {t('upgradePrompt.viewAllPlans')}
             </button>
           </div>
         </div>
@@ -163,7 +166,7 @@ const UpgradePrompt = ({
         {/* Footer - Sticky */}
         <div className="border-t border-gray-700 p-3 sm:p-4 text-center flex-shrink-0">
           <p className="text-gray-400 text-xs sm:text-sm">
-            ✅ 30-Day Money-Back Guarantee • Cancel Anytime • Instant Access
+            {t('upgradePrompt.moneyBackGuarantee')}
           </p>
         </div>
       </div>
