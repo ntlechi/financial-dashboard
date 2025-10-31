@@ -3186,12 +3186,645 @@ export const journalPrompts = [
       es: "¿Qué le dirías a tu yo más joven?"
     },
     category: "time" 
+  },
+  
+  // FINAL BATCH 8 - Prompts 351-365 (The last 15 daily prompts!) + bonus prompts
+  { 
+    id: 351, 
+    text: {
+      en: "What's one thing you're tolerating that you shouldn't?",
+      fr: "Quelle est une chose que vous tolérez et que vous ne devriez pas ?",
+      es: "¿Qué es una cosa que estás tolerando que no deberías?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 352, 
+    text: {
+      en: "What would freedom look like for you?",
+      fr: "À quoi ressemblerait la liberté pour vous ?",
+      es: "¿Cómo se vería la libertad para ti?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 353, 
+    text: {
+      en: "What's one thing you need to hear right now?",
+      fr: "Quelle est une chose que vous devez entendre en ce moment ?",
+      es: "¿Qué es una cosa que necesitas escuchar en este momento?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 354, 
+    text: {
+      en: "What does happiness mean to you?",
+      fr: "Que signifie le bonheur pour vous ?",
+      es: "¿Qué significa la felicidad para ti?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 355, 
+    text: {
+      en: "What's your relationship with time?",
+      fr: "Quelle est votre relation avec le temps ?",
+      es: "¿Cuál es tu relación con el tiempo?"
+    },
+    category: "time" 
+  },
+  { 
+    id: 356, 
+    text: {
+      en: "What part of your day do you look forward to most?",
+      fr: "Quelle partie de votre journée attendez-vous le plus avec impatience ?",
+      es: "¿Qué parte de tu día esperas más con ansias?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 357, 
+    text: {
+      en: "What is your body asking for today?",
+      fr: "Que demande votre corps aujourd'hui ?",
+      es: "¿Qué está pidiendo tu cuerpo hoy?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 358, 
+    text: {
+      en: "What does abundance mean to you?",
+      fr: "Que signifie l'abondance pour vous ?",
+      es: "¿Qué significa la abundancia para ti?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 359, 
+    text: {
+      en: "What lesson has life been trying to teach you?",
+      fr: "Quelle leçon la vie a-t-elle essayé de vous enseigner ?",
+      es: "¿Qué lección ha estado tratando de enseñarte la vida?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 360, 
+    text: {
+      en: "What are you most proud of right now?",
+      fr: "De quoi êtes-vous le plus fier en ce moment ?",
+      es: "¿De qué estás más orgulloso en este momento?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 361, 
+    text: {
+      en: "What would make today feel like a win?",
+      fr: "Qu'est-ce qui ferait qu'aujourd'hui ressemble à une victoire ?",
+      es: "¿Qué haría que hoy se sienta como una victoria?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 362, 
+    text: {
+      en: "What kind of person do you want to become?",
+      fr: "Quel genre de personne voulez-vous devenir ?",
+      es: "¿Qué tipo de persona quieres llegar a ser?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 363, 
+    text: {
+      en: "What are you ready to welcome into your life?",
+      fr: "Qu'êtes-vous prêt à accueillir dans votre vie ?",
+      es: "¿Qué estás listo para dar la bienvenida a tu vida?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 364, 
+    text: {
+      en: "What makes your soul come alive?",
+      fr: "Qu'est-ce qui fait vibrer votre âme ?",
+      es: "¿Qué hace que tu alma cobre vida?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 365, 
+    text: {
+      en: "Looking back on this year, what are you most grateful for?",
+      fr: "En repensant à cette année, de quoi êtes-vous le plus reconnaissant ?",
+      es: "Mirando hacia atrás en este año, ¿de qué estás más agradecido?"
+    },
+    category: "gratitude" 
+  },
+  
+  // BONUS PROMPTS (366-420) - Extra reflections for deeper journaling
+  { 
+    id: 366, 
+    text: {
+      en: "If you could change one decision from your past, what would it be?",
+      fr: "Si vous pouviez changer une décision de votre passé, laquelle serait-ce ?",
+      es: "Si pudieras cambiar una decisión de tu pasado, ¿cuál sería?"
+    },
+    category: "time" 
+  },
+  { 
+    id: 367, 
+    text: {
+      en: "What does financial freedom mean to you specifically?",
+      fr: "Que signifie la liberté financière pour vous spécifiquement ?",
+      es: "¿Qué significa la libertad financiera para ti específicamente?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 368, 
+    text: {
+      en: "Describe your perfect day from morning to night.",
+      fr: "Décrivez votre journée parfaite du matin au soir.",
+      es: "Describe tu día perfecto desde la mañana hasta la noche."
+    },
+    category: "goals" 
+  },
+  { 
+    id: 369, 
+    text: {
+      en: "What skill would you master if you had unlimited time?",
+      fr: "Quelle compétence maîtriseriez-vous si vous aviez un temps illimité ?",
+      es: "¿Qué habilidad dominarías si tuvieras tiempo ilimitado?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 370, 
+    text: {
+      en: "Who do you need to forgive (including yourself)?",
+      fr: "Qui devez-vous pardonner (y compris vous-même) ?",
+      es: "¿A quién necesitas perdonar (incluyéndote a ti mismo)?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 371, 
+    text: {
+      en: "What legacy do you want to leave behind?",
+      fr: "Quel héritage voulez-vous laisser derrière vous ?",
+      es: "¿Qué legado quieres dejar?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 372, 
+    text: {
+      en: "What are the top 3 values that guide your life?",
+      fr: "Quelles sont les 3 valeurs principales qui guident votre vie ?",
+      es: "¿Cuáles son los 3 valores principales que guían tu vida?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 373, 
+    text: {
+      en: "What would you do if you had $10 million today?",
+      fr: "Que feriez-vous si vous aviez 10 millions de dollars aujourd'hui ?",
+      es: "¿Qué harías si tuvieras 10 millones de dólares hoy?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 374, 
+    text: {
+      en: "What's the bravest thing you've ever done?",
+      fr: "Quelle est la chose la plus courageuse que vous ayez jamais faite ?",
+      es: "¿Qué es lo más valiente que has hecho?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 375, 
+    text: {
+      en: "How do you define success in your relationships?",
+      fr: "Comment définissez-vous le succès dans vos relations ?",
+      es: "¿Cómo defines el éxito en tus relaciones?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 376, 
+    text: {
+      en: "What negative pattern keeps repeating in your life?",
+      fr: "Quel schéma négatif continue de se répéter dans votre vie ?",
+      es: "¿Qué patrón negativo sigue repitiéndose en tu vida?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 377, 
+    text: {
+      en: "If you could have dinner with anyone (dead or alive), who and why?",
+      fr: "Si vous pouviez dîner avec n'importe qui (mort ou vivant), qui et pourquoi ?",
+      es: "Si pudieras cenar con alguien (vivo o muerto), ¿quién y por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 378, 
+    text: {
+      en: "What does your intuition tell you right now?",
+      fr: "Que vous dit votre intuition en ce moment ?",
+      es: "¿Qué te dice tu intuición en este momento?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 379, 
+    text: {
+      en: "What's the biggest lie you tell yourself?",
+      fr: "Quel est le plus grand mensonge que vous vous racontez ?",
+      es: "¿Cuál es la mayor mentira que te dices a ti mismo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 380, 
+    text: {
+      en: "How do you sabotage your own success?",
+      fr: "Comment sabotez-vous votre propre succès ?",
+      es: "¿Cómo saboteas tu propio éxito?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 381, 
+    text: {
+      en: "What does unconditional love mean to you?",
+      fr: "Que signifie l'amour inconditionnel pour vous ?",
+      es: "¿Qué significa el amor incondicional para ti?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 382, 
+    text: {
+      en: "What are you pretending not to know?",
+      fr: "Que faites-vous semblant de ne pas savoir ?",
+      es: "¿Qué estás pretendiendo no saber?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 383, 
+    text: {
+      en: "How has money shaped your worldview?",
+      fr: "Comment l'argent a-t-il façonné votre vision du monde ?",
+      es: "¿Cómo ha moldeado el dinero tu visión del mundo?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 384, 
+    text: {
+      en: "What would you do if you had only one year left to live?",
+      fr: "Que feriez-vous s'il ne vous restait qu'un an à vivre ?",
+      es: "¿Qué harías si solo te quedara un año de vida?"
+    },
+    category: "time" 
+  },
+  { 
+    id: 385, 
+    text: {
+      en: "What truth are you avoiding?",
+      fr: "Quelle vérité évitez-vous ?",
+      es: "¿Qué verdad estás evitando?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 386, 
+    text: {
+      en: "How has your relationship with money changed over time?",
+      fr: "Comment votre relation avec l'argent a-t-elle changé au fil du temps ?",
+      es: "¿Cómo ha cambiado tu relación con el dinero con el tiempo?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 387, 
+    text: {
+      en: "What are you most afraid people will discover about you?",
+      fr: "De quoi avez-vous le plus peur que les gens découvrent à votre sujet ?",
+      es: "¿De qué tienes más miedo que la gente descubra sobre ti?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 388, 
+    text: {
+      en: "If you could master one thing this year, what would it be?",
+      fr: "Si vous pouviez maîtriser une chose cette année, ce serait quoi ?",
+      es: "Si pudieras dominar una cosa este año, ¿qué sería?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 389, 
+    text: {
+      en: "What does your ideal work-life balance look like?",
+      fr: "À quoi ressemble votre équilibre travail-vie idéal ?",
+      es: "¿Cómo se ve tu equilibrio ideal entre trabajo y vida?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 390, 
+    text: {
+      en: "What childhood belief still influences you today?",
+      fr: "Quelle croyance d'enfance vous influence encore aujourd'hui ?",
+      es: "¿Qué creencia de la infancia todavía te influye hoy?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 391, 
+    text: {
+      en: "How do you want to grow in the next 5 years?",
+      fr: "Comment voulez-vous évoluer dans les 5 prochaines années ?",
+      es: "¿Cómo quieres crecer en los próximos 5 años?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 392, 
+    text: {
+      en: "What makes you feel most connected to others?",
+      fr: "Qu'est-ce qui vous fait sentir le plus connecté aux autres ?",
+      es: "¿Qué te hace sentir más conectado con los demás?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 393, 
+    text: {
+      en: "What's one thing you'd tell your teenage self?",
+      fr: "Quelle est une chose que vous diriez à votre adolescent ?",
+      es: "¿Qué es una cosa que le dirías a tu yo adolescente?"
+    },
+    category: "time" 
+  },
+  { 
+    id: 394, 
+    text: {
+      en: "How do you define wealth beyond money?",
+      fr: "Comment définissez-vous la richesse au-delà de l'argent ?",
+      es: "¿Cómo defines la riqueza más allá del dinero?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 395, 
+    text: {
+      en: "What dream have you given up on? Why?",
+      fr: "Quel rêve avez-vous abandonné ? Pourquoi ?",
+      es: "¿Qué sueño has abandonado? ¿Por qué?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 396, 
+    text: {
+      en: "What does 'enough' mean to you?",
+      fr: "Que signifie 'assez' pour vous ?",
+      es: "¿Qué significa 'suficiente' para ti?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 397, 
+    text: {
+      en: "How do you celebrate your wins?",
+      fr: "Comment célébrez-vous vos victoires ?",
+      es: "¿Cómo celebras tus victorias?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 398, 
+    text: {
+      en: "What belief about yourself would you like to change?",
+      fr: "Quelle croyance sur vous-même aimeriez-vous changer ?",
+      es: "¿Qué creencia sobre ti mismo te gustaría cambiar?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 399, 
+    text: {
+      en: "What does your future self need you to do today?",
+      fr: "De quoi votre futur moi a-t-il besoin que vous fassiez aujourd'hui ?",
+      es: "¿Qué necesita tu yo futuro que hagas hoy?"
+    },
+    category: "time" 
+  },
+  { 
+    id: 400, 
+    text: {
+      en: "How has your definition of success evolved?",
+      fr: "Comment votre définition du succès a-t-elle évolué ?",
+      es: "¿Cómo ha evolucionado tu definición del éxito?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 401, 
+    text: {
+      en: "What would you do differently if you could start over?",
+      fr: "Que feriez-vous différemment si vous pouviez recommencer ?",
+      es: "¿Qué harías diferente si pudieras empezar de nuevo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 402, 
+    text: {
+      en: "What's your relationship with failure?",
+      fr: "Quelle est votre relation avec l'échec ?",
+      es: "¿Cuál es tu relación con el fracaso?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 403, 
+    text: {
+      en: "How do you recharge when you're depleted?",
+      fr: "Comment vous rechargez-vous lorsque vous êtes épuisé ?",
+      es: "¿Cómo te recargas cuando estás agotado?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 404, 
+    text: {
+      en: "What conversation do you need to have that you've been avoiding?",
+      fr: "Quelle conversation devez-vous avoir que vous avez évitée ?",
+      es: "¿Qué conversación necesitas tener que has estado evitando?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 405, 
+    text: {
+      en: "What does your ideal retirement look like?",
+      fr: "À quoi ressemble votre retraite idéale ?",
+      es: "¿Cómo se ve tu jubilación ideal?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 406, 
+    text: {
+      en: "How do you want people to feel around you?",
+      fr: "Comment voulez-vous que les gens se sentent autour de vous ?",
+      es: "¿Cómo quieres que la gente se sienta a tu alrededor?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 407, 
+    text: {
+      en: "What limiting belief is holding you back from wealth?",
+      fr: "Quelle croyance limitante vous empêche d'accéder à la richesse ?",
+      es: "¿Qué creencia limitante te impide alcanzar la riqueza?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 408, 
+    text: {
+      en: "What would you create if you knew it would succeed?",
+      fr: "Que créeriez-vous si vous saviez que cela réussirait ?",
+      es: "¿Qué crearías si supieras que tendría éxito?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 409, 
+    text: {
+      en: "How do your daily habits align with your goals?",
+      fr: "Comment vos habitudes quotidiennes s'alignent-elles avec vos objectifs ?",
+      es: "¿Cómo se alinean tus hábitos diarios con tus objetivos?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 410, 
+    text: {
+      en: "What are you grateful for in this exact moment?",
+      fr: "De quoi êtes-vous reconnaissant en ce moment précis ?",
+      es: "¿De qué estás agradecido en este momento exacto?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 411, 
+    text: {
+      en: "What fear would you face if you were braver?",
+      fr: "Quelle peur affronteriez-vous si vous étiez plus courageux ?",
+      es: "¿Qué miedo enfrentarías si fueras más valiente?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 412, 
+    text: {
+      en: "How has your upbringing shaped your money beliefs?",
+      fr: "Comment votre éducation a-t-elle façonné vos croyances sur l'argent ?",
+      es: "¿Cómo ha moldeado tu crianza tus creencias sobre el dinero?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 413, 
+    text: {
+      en: "What does living authentically mean to you?",
+      fr: "Que signifie vivre authentiquement pour vous ?",
+      es: "¿Qué significa vivir auténticamente para ti?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 414, 
+    text: {
+      en: "What would make you feel most fulfilled right now?",
+      fr: "Qu'est-ce qui vous ferait sentir le plus épanoui en ce moment ?",
+      es: "¿Qué te haría sentir más realizado en este momento?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 415, 
+    text: {
+      en: "How do you handle difficult emotions?",
+      fr: "Comment gérez-vous les émotions difficiles ?",
+      es: "¿Cómo manejas las emociones difíciles?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 416, 
+    text: {
+      en: "What investment would you make in yourself today?",
+      fr: "Quel investissement feriez-vous en vous-même aujourd'hui ?",
+      es: "¿Qué inversión harías en ti mismo hoy?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 417, 
+    text: {
+      en: "What does your heart want that your mind keeps denying?",
+      fr: "Que veut votre cœur que votre esprit continue de nier ?",
+      es: "¿Qué quiere tu corazón que tu mente sigue negando?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 418, 
+    text: {
+      en: "How would you spend a million dollars to improve your life?",
+      fr: "Comment dépenseriez-vous un million de dollars pour améliorer votre vie ?",
+      es: "¿Cómo gastarías un millón de dólares para mejorar tu vida?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 419, 
+    text: {
+      en: "What pattern from your past keeps showing up?",
+      fr: "Quel schéma de votre passé continue d'apparaître ?",
+      es: "¿Qué patrón de tu pasado sigue apareciendo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 420, 
+    text: {
+      en: "If today were your last day, what would you regret not doing?",
+      fr: "Si aujourd'hui était votre dernier jour, que regretteriez-vous de ne pas avoir fait ?",
+      es: "Si hoy fuera tu último día, ¿qué lamentarías no haber hecho?"
+    },
+    category: "time" 
   }
 ];
 
-// NOTE: This file is being translated in batches due to size.
-// Current progress: Prompts 1-350 translated (EN/FR/ES) - 83% complete! 🎉🔥
-// Remaining: Prompts 351-420 (70 prompts left) - FINAL PUSH!
+// 🎉🎉🎉 TRANSLATION COMPLETE! ALL 420 PROMPTS TRANSLATED! 🎉🎉🎉
+// Progress: 420/420 prompts (100%!) - EN/FR/ES - MISSION ACCOMPLISHED!
 
 // Shuffle algorithm (seeded for consistency per user)
 export const shufflePrompts = (prompts, seed) => {
