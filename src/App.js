@@ -15006,17 +15006,16 @@ function App() {
                   <div className="w-16 h-16 mx-auto mb-4 bg-green-600/20 rounded-full flex items-center justify-center">
                     <Package className="w-8 h-8 text-green-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">📦 Supply Crate System</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">📦 {t('supplyCrate.title')}</h3>
                   <p className="text-gray-300 mb-4 max-w-lg mx-auto">
-                    Real-time budget management that shows you EXACTLY what you can spend, right now. 
-                    Like envelope budgeting, but gamified!
+                    {t('supplyCrate.description')}
                   </p>
                   <div className="bg-green-900/20 rounded-lg p-4 border border-green-600/30 mb-6 max-w-md mx-auto">
                     <div className="text-sm text-green-200 space-y-2">
-                      <p>💰 Assign monthly supplies to each category</p>
-                      <p>? Track burn rate in real-time</p>
-                      <p>? Visual warnings before overspending</p>
-                      <p>? The discipline tool you've been missing!</p>
+                      <p>💰 {t('supplyCrate.feature1')}</p>
+                      <p>📊 {t('supplyCrate.feature2')}</p>
+                      <p>⚠️ {t('supplyCrate.feature3')}</p>
+                      <p>🎯 {t('supplyCrate.feature4')}</p>
                     </div>
                   </div>
                   <button
@@ -15024,7 +15023,7 @@ function App() {
                     className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
                   >
                     <Crown className="w-5 h-5" />
-                    Upgrade to Climber
+                    {t('supplyCrate.upgradeButton')}
                   </button>
                 </div>
               )}

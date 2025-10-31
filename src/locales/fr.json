@@ -925,6 +925,15 @@
     "month": "Mois",
     "debtPayoffProgress": "Progression du Remboursement de Dette"
   },
+  "supplyCrate": {
+    "title": "Système de Caisse d'Approvisionnement",
+    "description": "Gestion budgétaire en temps réel qui vous montre EXACTEMENT ce que vous pouvez dépenser, maintenant. Comme le budgétisation par enveloppes, mais gamifiée !",
+    "feature1": "Assignez les approvisionnements mensuels à chaque catégorie",
+    "feature2": "Suivez le taux de consommation en temps réel",
+    "feature3": "Avertissements visuels avant les dépassements",
+    "feature4": "L'outil de discipline qui vous manquait !",
+    "upgradeButton": "Passer à Grimpeur"
+  },
   "faq": {
     "title": "Aide & FAQ",
     "searchPlaceholder": "Rechercher dans les FAQ...",

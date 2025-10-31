@@ -827,6 +827,15 @@
     "month": "Mes",
     "debtPayoffProgress": "Progreso de Pago de Deuda"
   },
+  "supplyCrate": {
+    "title": "Sistema de Caja de Suministros",
+    "description": "Gestión de presupuesto en tiempo real que te muestra EXACTAMENTE lo que puedes gastar, ahora mismo. ¡Como el presupuesto por sobres, pero gamificado!",
+    "feature1": "Asigna suministros mensuales a cada categoría",
+    "feature2": "Rastrea la tasa de consumo en tiempo real",
+    "feature3": "Advertencias visuales antes de gastar de más",
+    "feature4": "¡La herramienta de disciplina que te faltaba!",
+    "upgradeButton": "Actualizar a Escalador"
+  },
   "faq": {
     "title": "Ayuda y Preguntas Frecuentes",
     "searchPlaceholder": "Buscar en las preguntas frecuentes...",

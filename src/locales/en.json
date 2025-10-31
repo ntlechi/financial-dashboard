@@ -584,6 +584,15 @@
     "month": "Month",
     "debtPayoffProgress": "Debt Payoff Progress"
   },
+  "supplyCrate": {
+    "title": "Supply Crate System",
+    "description": "Real-time budget management that shows you EXACTLY what you can spend, right now. Like envelope budgeting, but gamified!",
+    "feature1": "Assign monthly supplies to each category",
+    "feature2": "Track burn rate in real-time",
+    "feature3": "Visual warnings before overspending",
+    "feature4": "The discipline tool you've been missing!",
+    "upgradeButton": "Upgrade to Climber"
+  },
   "sideHustle": {
     "businessName": "Business Name",
     "businessDescription": "Business Description",
