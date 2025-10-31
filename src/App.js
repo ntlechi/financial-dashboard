@@ -2800,13 +2800,13 @@ const FinancialFreedomCalculator = () => {
           <div className="group relative">
             <HelpCircle className="w-5 h-5 text-gray-400 hover:text-blue-400 cursor-help transition-colors" />
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
+              <h4 className="text-sm font-semibold text-blue-400 mb-2">{t('financialFreedom.howToUse')}</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>📊 Enter Your Info:</strong> Input your current age, savings, and monthly contribution.</p>
-                <p><strong>🎯 Set Your Target:</strong> How much do you need to be financially free?</p>
-                <p><strong>📈 Expected Return:</strong> Average annual investment return (7% is typical for stocks).</p>
-                <p><strong>🔮 See Your Timeline:</strong> The chart shows when you'll reach financial freedom!</p>
-                <p className="text-blue-400 mt-2">💡 Tip: The higher your monthly contribution and return rate, the faster you reach freedom!</p>
+                <p><strong>📊 {t('financialFreedom.tooltipEnterInfo')}</strong></p>
+                <p><strong>🎯 {t('financialFreedom.tooltipSetTarget')}</strong></p>
+                <p><strong>📈 {t('financialFreedom.tooltipExpectedReturn')}</strong></p>
+                <p><strong>🔮 {t('financialFreedom.tooltipSeeTimeline')}</strong></p>
+                <p className="text-blue-400 mt-2"><strong>💡 {t('financialFreedom.tooltipTip')}</strong></p>
               </div>
             </div>
           </div>
@@ -2825,7 +2825,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Target Amount</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.targetAmount')}</label>
             <input
               type="number"
               value={targetAmount === 0 ? '0' : (targetAmount || '')}
@@ -2843,7 +2843,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Monthly Contribution</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.monthlyContribution')}</label>
             <input
               type="number"
               value={monthlyContribution === 0 ? '0' : (monthlyContribution || '')}
@@ -2852,7 +2852,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Annual Return %</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.annualReturn')}</label>
             <input
               type="number"
               value={annualReturn === 0 ? '0' : (annualReturn || '')}
@@ -2882,7 +2882,7 @@ const FinancialFreedomCalculator = () => {
             <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.financialIndependence')}</label>
             <div className="bg-emerald-900/30 rounded px-3 py-2 border border-emerald-600">
               <div className="text-emerald-400 font-bold">{yearsToFI} {t('dashboard.years')}</div>
-              <div className="text-xs text-emerald-300">Age {targetAge}</div>
+              <div className="text-xs text-emerald-300">{t('financialFreedom.age')} {targetAge}</div>
               {/* Progress Bar */}
               <div className="mt-2">
                 <div className="w-full bg-gray-700 rounded-full h-1.5">
@@ -2892,7 +2892,7 @@ const FinancialFreedomCalculator = () => {
                   ></div>
                 </div>
                 <div className="text-xs text-emerald-300 mt-1">
-                  {((savings / target) * 100).toFixed(1)}% to FI Basecamp 🏕️
+                  {((savings / target) * 100).toFixed(1)}% {t('financialFreedom.toFIBasecamp')} 🏕️
                 </div>
               </div>
             </div>
@@ -2903,20 +2903,20 @@ const FinancialFreedomCalculator = () => {
         <div className="bg-gradient-to-r from-emerald-900/30 to-green-900/30 rounded-lg p-4 border border-emerald-500/30 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <div className="text-emerald-400 font-semibold mb-1">🎯 ETA to Freedom</div>
-              <div className="text-2xl font-bold text-white">{yearsToFI} {t('dashboard.years')} (Age {targetAge})</div>
+              <div className="text-emerald-400 font-semibold mb-1">🎯 {t('financialFreedom.etaToFreedom')}</div>
+              <div className="text-2xl font-bold text-white">{yearsToFI} {t('dashboard.years')} ({t('financialFreedom.age')} {targetAge})</div>
             </div>
             <div className="text-sm text-gray-300 max-w-md">
-              💡 Optimize your route by increasing monthly contribution or passive income to reach financial freedom faster!
+              💡 {t('financialFreedom.optimizeTip')}
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-600/30">
-            <h4 className="text-emerald-400 font-semibold mb-2">Financial Independence</h4>
+            <h4 className="text-emerald-400 font-semibold mb-2">{t('financialFreedom.financialIndependence')}</h4>
             <div className="text-2xl font-bold text-white">${(parseFloat(target) || 0).toLocaleString()}</div>
-            <div className="text-sm text-gray-300">Target amount needed</div>
+            <div className="text-sm text-gray-300">{t('financialFreedom.targetAmountNeeded')}</div>
             {/* Progress Bar Under Card */}
             <div className="mt-3">
               <div className="w-full bg-gray-700 rounded-full h-2">
@@ -2926,20 +2926,20 @@ const FinancialFreedomCalculator = () => {
                 ></div>
               </div>
               <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>Current: ${(savings/1000).toFixed(0)}K</span>
-                <span>Target: ${(target/1000000).toFixed(1)}M</span>
+                <span>{t('financialFreedom.current')}: ${(savings/1000).toFixed(0)}K</span>
+                <span>{t('financialFreedom.target')}: ${(target/1000000).toFixed(1)}M</span>
               </div>
             </div>
           </div>
           <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
-            <h4 className="text-blue-400 font-semibold mb-2">Monthly Passive Needed</h4>
+            <h4 className="text-blue-400 font-semibold mb-2">{t('financialFreedom.monthlyPassiveNeeded')}</h4>
             <div className="text-2xl font-bold text-white">${(parseFloat(monthlyPassiveNeeded) || 0).toLocaleString()}</div>
-            <div className="text-sm text-gray-300">To cover expenses</div>
+            <div className="text-sm text-gray-300">{t('financialFreedom.toCoverExpenses')}</div>
           </div>
           <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-600/30">
-            <h4 className="text-purple-400 font-semibold mb-2">4% Rule Amount</h4>
+            <h4 className="text-purple-400 font-semibold mb-2">{t('financialFreedom.fourPercentRule')}</h4>
             <div className="text-2xl font-bold text-white">${Math.round(parseFloat(requiredAmountFor4Percent) || 0).toLocaleString()}</div>
-            <div className="text-sm text-gray-300">For current lifestyle</div>
+            <div className="text-sm text-gray-300">{t('financialFreedom.forCurrentLifestyle')}</div>
           </div>
         </div>
       </Card>
@@ -3119,22 +3119,22 @@ const DebtPayoffCalculator = () => {
           <h3 className="text-xl font-bold text-white mb-2 flex items-center justify-between">
             <div className="flex items-center">
               <CreditCard className="w-6 h-6 mr-3 text-red-400" />
-              Debt Payoff Calculator
+              {t('debtPayoff.title')}
             </div>
             {/* Help Tooltip */}
           <div className="group relative">
             <HelpCircle className="w-5 h-5 text-gray-400 hover:text-blue-400 cursor-help transition-colors" />
             <div className="absolute right-0 top-8 w-80 bg-gray-900 border border-blue-500/30 rounded-lg p-4 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <h4 className="text-sm font-semibold text-blue-400 mb-2">How to Use This Calculator</h4>
+              <h4 className="text-sm font-semibold text-blue-400 mb-2">{t('debtPayoff.howToUse')}</h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p><strong>💳 {t('dashboard.addTransaction')} Your Debts:</strong> List all credit cards, loans, and their interest rates.</p>
-                <p><strong>💰 Extra Payment:</strong> How much extra can you pay beyond minimums?</p>
-                <p><strong>🏔️ Choose Strategy:</strong></p>
+                <p><strong>💳 {t('debtPayoff.tooltipAddDebts')}</strong></p>
+                <p><strong>💰 {t('debtPayoff.tooltipExtraPayment')}</strong></p>
+                <p><strong>🏔️ {t('debtPayoff.tooltipChooseStrategy')}</strong></p>
                 <ul className="ml-4 space-y-1">
-                  <li>❄️ <strong>Snowball:</strong> Pay smallest debt first (quick wins, motivation boost!)</li>
-                  <li>🔥 <strong>Avalanche:</strong> Pay highest interest first (save more money!)</li>
+                  <li>❄️ <strong>{t('debtPayoff.snowball')}:</strong> {t('debtPayoff.snowballDesc')}</li>
+                  <li>🔥 <strong>{t('debtPayoff.avalanche')}:</strong> {t('debtPayoff.avalancheDesc')}</li>
                 </ul>
-                <p className="text-blue-400 mt-2">💡 Tip: Snowball = Motivation. Avalanche = Math. Pick what keeps you going!</p>
+                <p className="text-blue-400 mt-2"><strong>💡 {t('debtPayoff.tooltipTip')}</strong></p>
               </div>
             </div>
           </div>
@@ -3145,9 +3145,9 @@ const DebtPayoffCalculator = () => {
               <div className="flex items-center gap-3">
                 <div className="text-3xl">🔥</div>
                 <div>
-                  <div className="text-red-400 font-semibold">Debt Liberation Countdown</div>
+                  <div className="text-red-400 font-semibold">{t('debtPayoff.liberationCountdown')}</div>
                   <div className="text-white text-sm">
-                    You're <span className="font-bold text-orange-400">{currentResult.payoffOrder[0].months} {t('dashboard.months')}</span> from your first cleared debt. Stay the course.
+                    {t('debtPayoff.countdownText')} <span className="font-bold text-orange-400">{currentResult.payoffOrder[0].months} {t('dashboard.months')}</span> {t('debtPayoff.countdownText2')}
                   </div>
                 </div>
               </div>
@@ -3164,7 +3164,7 @@ const DebtPayoffCalculator = () => {
                 strategy === 'snowball' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              🏔️ Debt Snowball (Smallest First)
+              🏔️ {t('debtPayoff.debtSnowball')}
             </button>
             <button
               onClick={() => setStrategy('avalanche')}
@@ -3172,31 +3172,31 @@ const DebtPayoffCalculator = () => {
                 strategy === 'avalanche' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              🔥 Debt Avalanche (Highest Interest)
+              🔥 {t('debtPayoff.debtAvalanche')}
             </button>
           </div>
           
           {/* Quick Templates */}
           <div className="bg-gray-800/30 rounded-lg p-3">
-            <p className="text-sm text-gray-400 mb-2">Quick Start Templates:</p>
+            <p className="text-sm text-gray-400 mb-2">{t('debtPayoff.quickTemplates')}:</p>
             <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => loadTemplate('credit-cards')}
                 className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
               >
-                💳 Credit Cards
+                💳 {t('debtPayoff.creditCards')}
               </button>
               <button
                 onClick={() => loadTemplate('student-loans')}
                 className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
               >
-                🎓 Student Loans
+                🎓 {t('debtPayoff.studentLoans')}
               </button>
               <button
                 onClick={() => loadTemplate('mixed')}
                 className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded transition-colors"
               >
-                🔄 Mixed Debts
+                🔄 {t('debtPayoff.mixedDebts')}
               </button>
             </div>
           </div>
@@ -3207,7 +3207,7 @@ const DebtPayoffCalculator = () => {
           {/* Debt List */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-white">Your Debts</h4>
+              <h4 className="font-semibold text-white">{t('debtPayoff.yourDebts')}</h4>
               <button
                 onClick={addDebt}
                 className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg transition-colors"
@@ -3219,10 +3219,10 @@ const DebtPayoffCalculator = () => {
             
             {/* Column Headers */}
             <div className="grid grid-cols-5 gap-2 text-xs text-gray-400 mb-2 px-3">
-              <div>Name</div>
-              <div>Balance</div>
-              <div>APR %</div>
-              <div>Min Payment</div>
+              <div>{t('debtPayoff.name')}</div>
+              <div>{t('debtPayoff.balance')}</div>
+              <div>{t('debtPayoff.aprPercent')}</div>
+              <div>{t('debtPayoff.minPayment')}</div>
               <div></div>
             </div>
             
@@ -3285,7 +3285,7 @@ const DebtPayoffCalculator = () => {
             
             <div className="mt-4 space-y-3">
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Extra Monthly Payment</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('debtPayoff.extraMonthlyPayment')}</label>
                 <input
                   type="number"
                   value={extraPayment === 0 ? '0' : (extraPayment || '')}
@@ -3319,18 +3319,18 @@ const DebtPayoffCalculator = () => {
                   onClick={() => setExtraPayment(0)}
                   className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white rounded transition-colors"
                 >
-                  Clear
+                  {t('debtPayoff.clear')}
                 </button>
               </div>
               
               {/* Debt Summary */}
               <div className="bg-gray-800/50 rounded-lg p-3 text-sm">
                 <div className="flex justify-between text-gray-300 mb-1">
-                  <span>Total Debts:</span>
+                  <span>{t('debtPayoff.totalDebts')}:</span>
                   <span className="font-semibold">{debts.length}</span>
                 </div>
                 <div className="flex justify-between text-gray-300">
-                  <span>Average APR:</span>
+                  <span>{t('debtPayoff.averageAPR')}:</span>
                   <span className="font-semibold">
                     {debts.length > 0 && debts.some(d => d.interestRate > 0) ? 
                       (debts.reduce((sum, debt) => sum + (debt.interestRate || 0), 0) / debts.filter(d => d.interestRate > 0).length).toFixed(1) + '%' : 
@@ -3345,28 +3345,28 @@ const DebtPayoffCalculator = () => {
           {/* Results */}
           <div>
             <h4 className="font-semibold text-white mb-3">
-              {strategy === 'snowball' ? '🏔️ Snowball' : '🔥 Avalanche'} Results
+              {strategy === 'snowball' ? `🏔️ ${t('debtPayoff.snowball')}` : `🔥 ${t('debtPayoff.avalanche')}`} {t('debtPayoff.results')}
             </h4>
             
             <div className="space-y-4">
               <div className="bg-gray-800/50 rounded-lg p-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-400">Total Debt</p>
+                    <p className="text-gray-400">{t('debtPayoff.totalDebt')}</p>
                     <p className="text-red-400 font-bold text-lg">${(parseFloat(totalDebt) || 0).toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400">Min Payments</p>
+                    <p className="text-gray-400">{t('debtPayoff.minPayments')}</p>
                     <p className="text-white font-bold">${(parseFloat(totalMinPayment) || 0).toLocaleString()}/mo</p>
                   </div>
                   <div>
-                    <p className="text-gray-400">Payoff Time</p>
+                    <p className="text-gray-400">{t('debtPayoff.payoffTime')}</p>
                     <p className="text-emerald-400 font-bold">
                       {currentResult.totalYears}y {currentResult.remainingMonths}m
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-400">Interest Paid</p>
+                    <p className="text-gray-400">{t('debtPayoff.interestPaid')}</p>
                     <p className="text-orange-400 font-bold">${Math.round(parseFloat(currentResult.totalInterestPaid) || 0).toLocaleString()}</p>
                   </div>
                 </div>
@@ -3374,32 +3374,32 @@ const DebtPayoffCalculator = () => {
 
               {/* Milestone Badges */}
               <div className="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg p-4 border border-orange-500/30">
-                <h5 className="text-orange-400 font-semibold mb-3">🏆 Liberation Milestones</h5>
+                <h5 className="text-orange-400 font-semibold mb-3">🏆 {t('debtPayoff.liberationMilestones')}</h5>
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
                     <div className="text-2xl">💥</div>
                     <div className="flex-1">
-                      <div className="text-white font-medium text-sm">First Debt Cleared</div>
+                      <div className="text-white font-medium text-sm">{t('debtPayoff.firstDebtCleared')}</div>
                       <div className="text-gray-400 text-xs">
                         {currentResult.payoffOrder.length > 0 
-                          ? `${currentResult.payoffOrder[0].months} months away`
-                          : t('dashboard.addTransaction') + ' debts to see timeline'}
+                          ? `${currentResult.payoffOrder[0].months} ${t('debtPayoff.monthsAway')}`
+                          : t('debtPayoff.addDebtsToSeeTimeline')}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
                     <div className="text-2xl">🎯</div>
                     <div className="flex-1">
-                      <div className="text-white font-medium text-sm">50% Debt Reduction</div>
+                      <div className="text-white font-medium text-sm">{t('debtPayoff.halfwayReduction')}</div>
                       <div className="text-gray-400 text-xs">
-                        Halfway to freedom
+                        {t('debtPayoff.halfwayToFreedom')}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
                     <div className="text-2xl">🕊️</div>
                     <div className="flex-1">
-                      <div className="text-white font-medium text-sm">All Debts Paid - You're Free</div>
+                      <div className="text-white font-medium text-sm">{t('debtPayoff.allDebtsPaid')}</div>
                       <div className="text-emerald-400 text-xs font-semibold">
                         {currentResult.totalYears}y {currentResult.remainingMonths}m ({(currentResult.totalYears * 12 + currentResult.remainingMonths)} {t('dashboard.monthsTotal')})
                       </div>
@@ -3410,17 +3410,17 @@ const DebtPayoffCalculator = () => {
               
               {/* Strategy Comparison */}
               <div className="bg-gray-800/50 rounded-lg p-4">
-                <h5 className="text-white font-semibold mb-3">Strategy Comparison</h5>
+                <h5 className="text-white font-semibold mb-3">{t('debtPayoff.strategyComparison')}</h5>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-blue-400">🏔️ Snowball:</span>
+                    <span className="text-blue-400">🏔️ {t('debtPayoff.snowball')}:</span>
                     <span className="text-white">
                       {snowballResult.totalYears}y {snowballResult.remainingMonths}m 
                       (${Math.round(parseFloat(snowballResult.totalInterestPaid) || 0).toLocaleString()} interest)
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-400">🔥 Avalanche:</span>
+                    <span className="text-purple-400">🔥 {t('debtPayoff.avalanche')}:</span>
                     <span className="text-white">
                       {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
                       (${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()} interest)
@@ -3428,7 +3428,7 @@ const DebtPayoffCalculator = () => {
                   </div>
                   <div className="border-t border-gray-600 pt-2 mt-2">
                     <div className="text-emerald-400 font-semibold">
-                      💰 Avalanche saves: ${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()}
+                      💰 {t('debtPayoff.avalancheSaves')}: ${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -3436,13 +3436,13 @@ const DebtPayoffCalculator = () => {
               
               {/* Payoff Order */}
               <div className="bg-gray-800/50 rounded-lg p-4">
-                <h5 className="text-white font-semibold mb-3">Payoff Order</h5>
+                <h5 className="text-white font-semibold mb-3">{t('debtPayoff.payoffOrder')}</h5>
                 <div className="space-y-2 text-sm">
                   {currentResult.payoffOrder.map((payoff, index) => (
                     <div key={index} className="flex justify-between items-center">
                       <span className="text-gray-300">{index + 1}. {payoff.name}</span>
                       <span className="text-emerald-400 font-medium">
-                        Month {payoff.month}
+                        {t('debtPayoff.month')} {payoff.month}
                       </span>
                     </div>
                   ))}
@@ -3454,7 +3454,7 @@ const DebtPayoffCalculator = () => {
         
         {/* Progress Visualization */}
         <div className="bg-gray-800/30 rounded-lg p-4">
-          <h5 className="text-white font-semibold mb-3">Debt Payoff Progress</h5>
+          <h5 className="text-white font-semibold mb-3">{t('debtPayoff.debtPayoffProgress')}</h5>
           <div className="space-y-3">
             {debts.map((debt) => {
               const progress = Math.max(0, Math.min(100, ((debt.balance / (debt.balance + extraPayment * 12)) * 100)));
