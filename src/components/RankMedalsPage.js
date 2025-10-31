@@ -12,43 +12,43 @@ const RANK_INSIGNIA = {
     icon: '^',
     material: 'bronze',
     color: '#CD7F32',
-    description: 'The first stripe. A symbol of starting the climb.',
-    requirements: 'Start your financial journey'
+    descriptionKey: 'recruitDesc',
+    requirementsKey: 'recruitReq'
   },
   'Climber': {
     icon: '⛏️',
     material: 'bronze', 
     color: '#CD7F32',
-    description: 'Signifies the user now has the tools to make a serious ascent.',
-    requirements: '1,000 XP • Log transactions, create budgets'
+    descriptionKey: 'climberDesc',
+    requirementsKey: 'climberReq'
   },
   'Operator': {
     icon: '🧭',
     material: 'silver',
     color: '#C0C0C0', 
-    description: 'The user is now a navigator, an operator in control of their own mission.',
-    requirements: '5,000 XP • Manage side hustles, track investments'
+    descriptionKey: 'operatorDesc',
+    requirementsKey: 'operatorReq'
   },
   'Pathfinder': {
     icon: '🗺️',
     material: 'silver',
     color: '#C0C0C0',
-    description: 'The user is not just navigating; they are charting new territory.',
-    requirements: '15,000 XP • Advanced financial operations'
+    descriptionKey: 'pathfinderDesc',
+    requirementsKey: 'pathfinderReq'
   },
   'Vanguard': {
     icon: '🦅',
     material: 'gold',
     color: '#FFD700',
-    description: 'Represents leadership and being at the forefront of the movement.',
-    requirements: '30,000 XP • Master-level financial control'
+    descriptionKey: 'vanguardDesc',
+    requirementsKey: 'vanguardReq'
   },
   'Free Agent': {
     icon: '🕊️',
     material: 'gold',
     color: '#FFD700',
-    description: 'The ultimate symbol of freedom and having earned one\'s time back.',
-    requirements: '60,000 XP • Financial independence achieved'
+    descriptionKey: 'freeAgentDesc',
+    requirementsKey: 'freeAgentReq'
   }
 };
 
@@ -146,12 +146,12 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
                 <div className="absolute inset-0 bg-gray-900/80 rounded-xl flex items-center justify-center z-10">
                   <div className="text-center">
                     <Lock className="w-12 h-12 text-gray-500 mx-auto mb-3" />
-                    <div className="text-gray-400 font-semibold mb-2">Operator+ Required</div>
+                    <div className="text-gray-400 font-semibold mb-2">{t('ranks.operatorRequired')}</div>
                     <button
                       onClick={onUpgrade}
                       className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                     >
-                      Upgrade to View
+                      {t('ranks.upgradeToView')}
                     </button>
                   </div>
                 </div>
@@ -189,11 +189,11 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
               {/* Rank Details */}
               <div className="space-y-3">
                 <div className="text-sm text-gray-300">
-                  {insignia.requirements}
+                  {t(`ranks.${insignia.requirementsKey}`)}
                 </div>
                 
                 <div className="text-xs text-gray-400 italic">
-                  "{insignia.description}"
+                  "{t(`ranks.${insignia.descriptionKey}`)}"
                 </div>
 
                 {/* XP Requirement */}
@@ -247,8 +247,8 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
             <div className="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center mx-auto mb-2">
               <Crown className="w-6 h-6 text-white" />
             </div>
-            <div className="text-sm font-semibold text-white">Debt Free</div>
-            <div className="text-xs text-gray-400">Eliminate all debt</div>
+            <div className="text-sm font-semibold text-white">{t('ranks.badgeDebtFree')}</div>
+            <div className="text-xs text-gray-400">{t('ranks.badgeDebtFreeDesc')}</div>
           </div>
         </div>
       </div>
@@ -258,15 +258,15 @@ export default function RankMedalsPage({ userId, userPlan, onUpgrade }) {
         <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-xl p-6 border border-purple-500/30">
           <div className="text-center">
             <Crown className="w-16 h-16 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-white mb-2">Unlock the Full Progression Ladder</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">{t('ranks.unlockFullLadder')}</h3>
             <p className="text-gray-300 mb-6">
-              Upgrade to Operator or Founder's Circle to see all ranks, track achievements, and access advanced gamification features.
+              {t('ranks.upgradeDescription')}
             </p>
             <button
               onClick={onUpgrade}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
             >
-              Upgrade Now
+              {t('ranks.upgradeNow')}
             </button>
           </div>
         </div>
