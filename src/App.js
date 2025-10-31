@@ -2794,7 +2794,7 @@ const FinancialFreedomCalculator = () => {
           <h3 className="text-xl font-bold text-white mb-2 flex items-center justify-between">
             <div className="flex items-center">
               <Target className="w-6 h-6 mr-3 text-emerald-400" />
-              Financial Freedom Calculator
+              {t('financialFreedom.title')}
             </div>
             {/* Help Tooltip */}
           <div className="group relative">
@@ -2811,12 +2811,12 @@ const FinancialFreedomCalculator = () => {
             </div>
           </div>
           </h3>
-          <p className="text-emerald-300/80 text-sm ml-9">🏔️ Calculate your trail to financial independence</p>
+          <p className="text-emerald-300/80 text-sm ml-9">🏔️ {t('financialFreedom.subtitle')}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Current Age</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.currentAge')}</label>
             <input
               type="number"
               value={currentAge === 0 ? '0' : (currentAge || '')}
@@ -2834,7 +2834,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Current Savings</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.currentSavings')}</label>
             <input
               type="number"
               value={currentSavings === 0 ? '0' : (currentSavings || '')}
@@ -2861,7 +2861,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Monthly Expenses</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.monthlyExpenses')}</label>
             <input
               type="number"
               value={monthlyExpenses === 0 ? '0' : (monthlyExpenses || '')}
@@ -2870,7 +2870,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Current Passive Income</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.currentPassiveIncome')}</label>
             <input
               type="number"
               value={passiveIncome === 0 ? '0' : (passiveIncome || '')}
@@ -2879,7 +2879,7 @@ const FinancialFreedomCalculator = () => {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Financial Independence</label>
+            <label className="block text-sm text-gray-300 mb-1">{t('financialFreedom.financialIndependence')}</label>
             <div className="bg-emerald-900/30 rounded px-3 py-2 border border-emerald-600">
               <div className="text-emerald-400 font-bold">{yearsToFI} {t('dashboard.years')}</div>
               <div className="text-xs text-emerald-300">Age {targetAge}</div>
