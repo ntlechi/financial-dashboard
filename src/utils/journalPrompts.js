@@ -2734,12 +2734,464 @@ export const journalPrompts = [
       es: "¿Cuál fue el último sueño que recuerdas? ¿Qué significa?"
     },
     category: "reflection" 
+  },
+  
+  // Batch 7 - Prompts 301-350
+  { 
+    id: 301, 
+    text: {
+      en: "What's standing between you and joy?",
+      fr: "Qu'est-ce qui se dresse entre vous et la joie ?",
+      es: "¿Qué se interpone entre tú y la alegría?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 302, 
+    text: {
+      en: "What is the most beautiful place you've visited?",
+      fr: "Quel est le plus bel endroit que vous ayez visité ?",
+      es: "¿Cuál es el lugar más hermoso que has visitado?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 303, 
+    text: {
+      en: "How do you want to be remembered?",
+      fr: "Comment voulez-vous être souvenu ?",
+      es: "¿Cómo quieres ser recordado?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 304, 
+    text: {
+      en: "What does success mean to you?",
+      fr: "Que signifie le succès pour vous ?",
+      es: "¿Qué significa el éxito para ti?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 305, 
+    text: {
+      en: "What do you need more of in your life?",
+      fr: "De quoi avez-vous besoin de plus dans votre vie ?",
+      es: "¿Qué necesitas más en tu vida?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 306, 
+    text: {
+      en: "Where did you last truly rest?",
+      fr: "Où vous êtes-vous vraiment reposé pour la dernière fois ?",
+      es: "¿Dónde descansaste verdaderamente por última vez?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 307, 
+    text: {
+      en: "What's one area you'd like to improve?",
+      fr: "Quel est un domaine que vous aimeriez améliorer ?",
+      es: "¿Cuál es un área que te gustaría mejorar?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 308, 
+    text: {
+      en: "Reflect on a person who inspired you. What did you learn?",
+      fr: "Réfléchissez à une personne qui vous a inspiré. Qu'avez-vous appris ?",
+      es: "Reflexiona sobre una persona que te inspiró. ¿Qué aprendiste?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 309, 
+    text: {
+      en: "When do you feel most aligned?",
+      fr: "Quand vous sentez-vous le plus aligné ?",
+      es: "¿Cuándo te sientes más alineado?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 310, 
+    text: {
+      en: "What old habit or belief are you ready to release?",
+      fr: "Quelle vieille habitude ou croyance êtes-vous prêt à libérer ?",
+      es: "¿Qué viejo hábito o creencia estás listo para liberar?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 311, 
+    text: {
+      en: "What do you need to forgive yourself for?",
+      fr: "Pour quoi devez-vous vous pardonner ?",
+      es: "¿Por qué necesitas perdonarte a ti mismo?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 312, 
+    text: {
+      en: "What do you love most about your daily routine?",
+      fr: "Qu'aimez-vous le plus dans votre routine quotidienne ?",
+      es: "¿Qué es lo que más amas de tu rutina diaria?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 313, 
+    text: {
+      en: "How can you show up better for yourself today?",
+      fr: "Comment pouvez-vous mieux vous présenter pour vous-même aujourd'hui ?",
+      es: "¿Cómo puedes presentarte mejor para ti mismo hoy?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 314, 
+    text: {
+      en: "What does 'home' mean to you?",
+      fr: "Que signifie 'chez-soi' pour vous ?",
+      es: "¿Qué significa 'hogar' para ti?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 315, 
+    text: {
+      en: "When was the last time you felt proud of yourself?",
+      fr: "Quand avez-vous été fier de vous pour la dernière fois ?",
+      es: "¿Cuándo fue la última vez que te sentiste orgulloso de ti mismo?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 316, 
+    text: {
+      en: "What are you afraid to lose?",
+      fr: "De quoi avez-vous peur de perdre ?",
+      es: "¿Qué temes perder?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 317, 
+    text: {
+      en: "What brings you peace?",
+      fr: "Qu'est-ce qui vous apporte la paix ?",
+      es: "¿Qué te trae paz?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 318, 
+    text: {
+      en: "When did you last feel 'in flow'?",
+      fr: "Quand vous êtes-vous senti 'en flux' pour la dernière fois ?",
+      es: "¿Cuándo te sentiste 'en flujo' por última vez?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 319, 
+    text: {
+      en: "How are you holding yourself back?",
+      fr: "Comment vous retenez-vous ?",
+      es: "¿Cómo te estás reteniendo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 320, 
+    text: {
+      en: "What does a 'good life' look like for you?",
+      fr: "À quoi ressemble une 'bonne vie' pour vous ?",
+      es: "¿Cómo se ve una 'buena vida' para ti?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 321, 
+    text: {
+      en: "What emotion are you avoiding right now?",
+      fr: "Quelle émotion évitez-vous en ce moment ?",
+      es: "¿Qué emoción estás evitando en este momento?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 322, 
+    text: {
+      en: "Write about a time you chose courage over comfort.",
+      fr: "Écrivez sur un moment où vous avez choisi le courage plutôt que le confort.",
+      es: "Escribe sobre un momento en que elegiste el coraje sobre la comodidad."
+    },
+    category: "wins" 
+  },
+  { 
+    id: 323, 
+    text: {
+      en: "What would your ideal morning look like?",
+      fr: "À quoi ressemblerait votre matin idéal ?",
+      es: "¿Cómo se vería tu mañana ideal?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 324, 
+    text: {
+      en: "What are three things you're grateful for today?",
+      fr: "Quelles sont trois choses pour lesquelles vous êtes reconnaissant aujourd'hui ?",
+      es: "¿Cuáles son tres cosas por las que estás agradecido hoy?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 325, 
+    text: {
+      en: "When do you feel most alive?",
+      fr: "Quand vous sentez-vous le plus vivant ?",
+      es: "¿Cuándo te sientes más vivo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 326, 
+    text: {
+      en: "What boundary do you need to set for yourself?",
+      fr: "Quelle limite devez-vous fixer pour vous-même ?",
+      es: "¿Qué límite necesitas establecer para ti mismo?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 327, 
+    text: {
+      en: "What would you attempt if you knew you couldn't fail?",
+      fr: "Qu'essaieriez-vous si vous saviez que vous ne pouviez pas échouer ?",
+      es: "¿Qué intentarías si supieras que no puedes fallar?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 328, 
+    text: {
+      en: "Who do you feel safe with?",
+      fr: "Avec qui vous sentez-vous en sécurité ?",
+      es: "¿Con quién te sientes seguro?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 329, 
+    text: {
+      en: "What's one thing you wish people understood about you?",
+      fr: "Quelle est une chose que vous aimeriez que les gens comprennent à votre sujet ?",
+      es: "¿Qué es una cosa que deseas que la gente entendiera sobre ti?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 330, 
+    text: {
+      en: "What season of life are you in right now?",
+      fr: "Dans quelle saison de la vie êtes-vous en ce moment ?",
+      es: "¿En qué estación de la vida estás en este momento?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 331, 
+    text: {
+      en: "What are you putting off?",
+      fr: "Qu'est-ce que vous remettez à plus tard ?",
+      es: "¿Qué estás posponiendo?"
+    },
+    category: "daily" 
+  },
+  { 
+    id: 332, 
+    text: {
+      en: "What does your body need from you today?",
+      fr: "De quoi votre corps a-t-il besoin de vous aujourd'hui ?",
+      es: "¿Qué necesita tu cuerpo de ti hoy?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 333, 
+    text: {
+      en: "What are you afraid to admit?",
+      fr: "Qu'avez-vous peur d'admettre ?",
+      es: "¿Qué temes admitir?"
+    },
+    category: "emotions" 
+  },
+  { 
+    id: 334, 
+    text: {
+      en: "What's one thing that always makes you smile?",
+      fr: "Quelle est une chose qui vous fait toujours sourire ?",
+      es: "¿Qué es una cosa que siempre te hace sonreír?"
+    },
+    category: "gratitude" 
+  },
+  { 
+    id: 335, 
+    text: {
+      en: "What do you need to let go of?",
+      fr: "De quoi devez-vous vous libérer ?",
+      es: "¿De qué necesitas dejar ir?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 336, 
+    text: {
+      en: "What would your 80-year-old self tell you today?",
+      fr: "Que vous dirait votre moi de 80 ans aujourd'hui ?",
+      es: "¿Qué te diría tu yo de 80 años hoy?"
+    },
+    category: "time" 
+  },
+  { 
+    id: 337, 
+    text: {
+      en: "Where do you feel most at home?",
+      fr: "Où vous sentez-vous le plus chez vous ?",
+      es: "¿Dónde te sientes más en casa?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 338, 
+    text: {
+      en: "What story do you keep telling yourself?",
+      fr: "Quelle histoire continuez-vous à vous raconter ?",
+      es: "¿Qué historia sigues contándote a ti mismo?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 339, 
+    text: {
+      en: "What small win can you celebrate today?",
+      fr: "Quelle petite victoire pouvez-vous célébrer aujourd'hui ?",
+      es: "¿Qué pequeña victoria puedes celebrar hoy?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 340, 
+    text: {
+      en: "What does love mean to you?",
+      fr: "Que signifie l'amour pour vous ?",
+      es: "¿Qué significa el amor para ti?"
+    },
+    category: "relationships" 
+  },
+  { 
+    id: 341, 
+    text: {
+      en: "What would you do if money wasn't an issue?",
+      fr: "Que feriez-vous si l'argent n'était pas un problème ?",
+      es: "¿Qué harías si el dinero no fuera un problema?"
+    },
+    category: "money" 
+  },
+  { 
+    id: 342, 
+    text: {
+      en: "What makes you feel powerful?",
+      fr: "Qu'est-ce qui vous fait sentir puissant ?",
+      es: "¿Qué te hace sentir poderoso?"
+    },
+    category: "growth" 
+  },
+  { 
+    id: 343, 
+    text: {
+      en: "What are you making harder than it needs to be?",
+      fr: "Qu'est-ce que vous rendez plus difficile que nécessaire ?",
+      es: "¿Qué estás haciendo más difícil de lo que debe ser?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 344, 
+    text: {
+      en: "When was the last time you surprised yourself?",
+      fr: "Quand vous êtes-vous surpris pour la dernière fois ?",
+      es: "¿Cuándo te sorprendiste por última vez?"
+    },
+    category: "wins" 
+  },
+  { 
+    id: 345, 
+    text: {
+      en: "What's one thing you'd like to learn this year?",
+      fr: "Quelle est une chose que vous aimeriez apprendre cette année ?",
+      es: "¿Qué es una cosa que te gustaría aprender este año?"
+    },
+    category: "goals" 
+  },
+  { 
+    id: 346, 
+    text: {
+      en: "Who has shaped who you are today?",
+      fr: "Qui a façonné qui vous êtes aujourd'hui ?",
+      es: "¿Quién ha moldeado quién eres hoy?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 347, 
+    text: {
+      en: "What's calling your attention right now?",
+      fr: "Qu'est-ce qui attire votre attention en ce moment ?",
+      es: "¿Qué está llamando tu atención en este momento?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 348, 
+    text: {
+      en: "What does rest look like for you?",
+      fr: "À quoi ressemble le repos pour vous ?",
+      es: "¿Cómo se ve el descanso para ti?"
+    },
+    category: "wellness" 
+  },
+  { 
+    id: 349, 
+    text: {
+      en: "What part of your life feels out of alignment?",
+      fr: "Quelle partie de votre vie semble désalignée ?",
+      es: "¿Qué parte de tu vida se siente desalineada?"
+    },
+    category: "reflection" 
+  },
+  { 
+    id: 350, 
+    text: {
+      en: "What would you tell your younger self?",
+      fr: "Que diriez-vous à votre moi plus jeune ?",
+      es: "¿Qué le dirías a tu yo más joven?"
+    },
+    category: "time" 
   }
 ];
 
 // NOTE: This file is being translated in batches due to size.
-// Current progress: Prompts 1-300 translated (EN/FR/ES) - 71% complete! 🔥🔥
-// Remaining: Prompts 301-420 (120 prompts left) - HOME STRETCH!
+// Current progress: Prompts 1-350 translated (EN/FR/ES) - 83% complete! 🎉🔥
+// Remaining: Prompts 351-420 (70 prompts left) - FINAL PUSH!
 
 // Shuffle algorithm (seeded for consistency per user)
 export const shufflePrompts = (prompts, seed) => {
