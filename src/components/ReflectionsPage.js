@@ -1,6 +1,7 @@
 // 🎯 REFLECTIONS PAGE - Unified My Logbook + The Trail
 import React, { useState } from 'react';
 import { BookOpen, Compass } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import TheTrail from './TheTrail';
 import MyLogbook from './MyLogbook';
 
@@ -17,6 +18,7 @@ export default function ReflectionsPage({
 }) {
   // 🆕 Tab State
   const [activeTab, setActiveTab] = useState('logbook'); // 'logbook' or 'trail'
+  const { t } = useTranslation();
 
   // Export My Logbook to TXT
   const exportMyLogbookToTXT = () => {
@@ -119,10 +121,10 @@ export default function ReflectionsPage({
             <div className="text-center">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3 flex items-center justify-center gap-2 sm:gap-3">
                 <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-blue-400" />
-                Your Mission Logbook
+                {t('logbook.missionLogbook')}
               </h1>
               <p className="text-base sm:text-lg md:text-xl text-slate-300 font-medium px-4">
-                Your thoughts are the blueprint for your freedom. Capture them here.
+                {t('logbook.tagline')}
               </p>
             </div>
           )}

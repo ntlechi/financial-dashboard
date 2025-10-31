@@ -631,6 +631,8 @@
     "investmentAccount": "Compte d'Investissement"
   },
   "logbook": {
+    "missionLogbook": "Votre Journal de Mission",
+    "tagline": "Vos pensées sont le plan de votre liberté. Capturez-les ici.",
     "todaysReflection": "💭 Réflexion du Jour",
     "dayOf365": "Jour {{day}} de 365 • Cycle {{cycle}}",
     "progress": "Progrès",

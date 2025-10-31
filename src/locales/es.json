@@ -591,6 +591,8 @@
     "failedToSave": "Error al guardar"
   },
   "logbook": {
+    "missionLogbook": "Tu Diario de Misión",
+    "tagline": "Tus pensamientos son el plan para tu libertad. Capturarlos aquí.",
     "todaysReflection": "💭 Reflexión de Hoy",
     "dayOf365": "Día {{day}} de 365 • Ciclo {{cycle}}",
     "progress": "Progreso",

@@ -687,6 +687,8 @@
     "failedToSave": "Failed to save"
   },
   "logbook": {
+    "missionLogbook": "Your Mission Logbook",
+    "tagline": "Your thoughts are the blueprint for your freedom. Capture them here.",
     "todaysReflection": "💭 Today's Reflection",
     "dayOf365": "Day {{day}} of 365 • Cycle {{cycle}}",
     "progress": "Progress",
