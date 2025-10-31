@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import { useTranslation } from 'react-i18next';
 
 export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [missions, setMissions] = useState([]);
   const [completedMissions, setCompletedMissions] = useState(new Set());
   const [selectedMission, setSelectedMission] = useState(null);
@@ -15,6 +15,16 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [drillCompleted, setDrillCompleted] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  // Helper to get localized field from mission (supports both old single-language and new multi-language format)
+  const getLocalizedField = (field, fallback = '') => {
+    if (!field) return fallback;
+    // If it's already a string, return it (backward compatible)
+    if (typeof field === 'string') return field;
+    // If it's an object with language keys, get current language
+    const currentLang = i18n.language || 'en';
+    return field[currentLang] || field['en'] || fallback;
+  };
 
   // Fetch missions from Firestore
   useEffect(() => {
@@ -183,14 +193,14 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
             <div className="flex-1">
-              <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 border ${getCategoryColor(selectedMission.category)}`}>
-                {selectedMission.category}
+              <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 border ${getCategoryColor(getLocalizedField(selectedMission.category))}`}>
+                {getLocalizedField(selectedMission.category)}
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">{selectedMission.title}</h2>
+              <h2 className="text-2xl font-bold text-white mb-2">{getLocalizedField(selectedMission.title)}</h2>
               <div className="flex items-center gap-4 text-sm text-gray-400">
                 <span className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  {selectedMission.readTime}
+                  {getLocalizedField(selectedMission.readTime) || selectedMission.readTime}
                 </span>
                 {completedMissions.has(selectedMission.id) && (
                   <span className="flex items-center gap-1 text-green-400">
@@ -214,12 +224,12 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
           </div>
 
           {/* Mission Description */}
-          <p className="text-gray-300 mb-6 text-lg">{selectedMission.description}</p>
+          <p className="text-gray-300 mb-6 text-lg">{getLocalizedField(selectedMission.description)}</p>
 
           {/* Mission Content (Markdown) */}
           <div className="prose prose-invert max-w-none mb-8">
             <ReactMarkdown className="text-gray-200 leading-relaxed">
-              {selectedMission.content}
+              {getLocalizedField(selectedMission.content)}
             </ReactMarkdown>
           </div>
 
@@ -240,10 +250,10 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
                 <Award className="w-5 h-5 text-blue-400" />
                 {t('trail.knowledgeCheck')}
               </h3>
-              <p className="text-gray-200 mb-4 font-semibold">{selectedMission.drillQuestion}</p>
+              <p className="text-gray-200 mb-4 font-semibold">{getLocalizedField(selectedMission.drillQuestion)}</p>
               
               <div className="space-y-3 mb-4">
-                {selectedMission.drillOptions.map((option, index) => (
+                {(getLocalizedField(selectedMission.drillOptions) || selectedMission.drillOptions || []).map((option, index) => (
                   <button
                     key={index}
                     onClick={() => !drillCompleted && handleDrillAnswer(index)}
@@ -359,8 +369,8 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
                 }`}
               >
                 <div className="flex items-start justify-between mb-3">
-                  <div className={`px-3 py-1 rounded-full text-xs font-semibold border ${getCategoryColor(mission.category)}`}>
-                    {mission.category}
+                  <div className={`px-3 py-1 rounded-full text-xs font-semibold border ${getCategoryColor(getLocalizedField(mission.category))}`}>
+                    {getLocalizedField(mission.category)}
                   </div>
                   {isCompleted ? (
                     <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -369,8 +379,8 @@ export default function TheTrail({ userId, awardXp, setXpRefreshTrigger }) {
                   )}
                 </div>
                 
-                <h3 className="text-lg font-bold text-white mb-2">{mission.title}</h3>
-                <p className="text-gray-400 text-sm mb-3 line-clamp-2">{mission.description}</p>
+                <h3 className="text-lg font-bold text-white mb-2">{getLocalizedField(mission.title)}</h3>
+                <p className="text-gray-400 text-sm mb-3 line-clamp-2">{getLocalizedField(mission.description)}</p>
                 
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span className="flex items-center gap-1">
