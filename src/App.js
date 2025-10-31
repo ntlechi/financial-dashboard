@@ -426,15 +426,6 @@ const SAMPLE_STRINGS = {
     sampleIncome: {
       fullTimeJob: 'Trabajo de tiempo completo'
     }
-  },
-    catNames: {
-      rent: 'Alquiler',
-      transportation: 'Transporte',
-      groceries: 'Comestibles',
-      debtPayment: 'Pago de deuda',
-      entertainment: 'Entretenimiento',
-      other: 'Otro'
-    }
   }
 };
 
