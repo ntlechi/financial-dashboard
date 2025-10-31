@@ -4,7 +4,7 @@ import { Plus, Search, Tag, Calendar, Copy, Edit3, Trash2, ChevronDown, ChevronU
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { createBackup } from '../utils/dataSafetyUtils';
-import { getTodayPrompt } from '../utils/journalPrompts';
+import { getTodayPrompt, getPromptText } from '../utils/journalPrompts';
 import { useTranslation } from 'react-i18next';
 import { formatDate as formatDateByLocale } from '../utils/localeUtils';
 
@@ -18,7 +18,7 @@ export default function MyLogbook({
   showUpgradePromptForFeature,
   onExport
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // State
   const [entries, setEntries] = useState([]);
@@ -163,7 +163,8 @@ export default function MyLogbook({
   // 💫 NEW: Answer today's prompt
   const answerPrompt = () => {
     if (todayPrompt) {
-      setEntryTitle(`Prompt: ${todayPrompt.text.substring(0, 50)}...`);
+      const promptText = getPromptText(todayPrompt, i18n.language);
+      setEntryTitle(`Prompt: ${promptText.substring(0, 50)}...`);
       setEntryContent('');
       setEntryDate(new Date().toISOString().split('T')[0]);
       setEntryTags(todayPrompt.category);
@@ -538,7 +539,7 @@ export default function MyLogbook({
           
           <div className="bg-gray-800/60 rounded-lg p-5 mb-4 border border-purple-400/20">
             <p className="text-white text-lg leading-relaxed italic">
-              "{todayPrompt.text}"
+              "{getPromptText(todayPrompt, i18n.language)}"
             </p>
             <div className="mt-3 flex items-center gap-2">
               <Tag className="w-3 h-3 text-purple-400" />
