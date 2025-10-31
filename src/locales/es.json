@@ -349,7 +349,17 @@
     "addYourFirstGoal": "Agregar tu primera meta",
     "addTransaction": "Agregar",
     "noDebts": "Sin Deudas",
-    "noRetirementAccounts": "Sin Cuentas de Jubilación"
+    "noRetirementAccounts": "Sin Cuentas de Jubilación",
+    "totalContributed": "Total Contribuido",
+    "contributed": "Contribuido",
+    "limit": "Límite",
+    "toGo": "${{amount}} restantes",
+    "goalReached": "✓ ¡Meta Alcanzada!",
+    "contributionRate": "Tasa de Contribución",
+    "retirementAccountsSubtitle": "Construye tu legado, una contribución a la vez.",
+    "taxFreeGrowth": "Crecimiento y retiros libres de impuestos",
+    "taxDeferredRetirement": "Ahorros para el retiro con impuestos diferidos",
+    "totalRoomAvailable": "Espacio Total Disponible"
   },
   "debtTracker": {
     "minimumPayment": "Pago Mínimo",

@@ -340,7 +340,17 @@
     "personal": "Personal",
     "business": "Business",
     "incomeOnly": "Income Only",
-    "expensesOnly": "Expenses Only"
+    "expensesOnly": "Expenses Only",
+    "totalContributed": "Total Contributed",
+    "contributed": "Contributed",
+    "limit": "Limit",
+    "toGo": "${{amount}} to go",
+    "goalReached": "✓ Goal Reached!",
+    "contributionRate": "Contribution Rate",
+    "retirementAccountsSubtitle": "Building your legacy, one contribution at a time.",
+    "taxFreeGrowth": "Tax-free growth and withdrawals",
+    "taxDeferredRetirement": "Tax-deferred retirement savings",
+    "totalRoomAvailable": "Total Room Available"
   },
   "settings": {
     "title": "Settings",

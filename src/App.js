@@ -330,8 +330,8 @@ const SAMPLE_STRINGS = {
       savings: 'Compte épargne',
       emergency: 'Épargne d’urgence',
       creditCard: 'Carte de crédit',
-      tfsa: { name: 'CELI', desc: 'Croissance et retraits non imposables' },
-      rrsp: { name: 'REER', desc: 'Épargne-retraite à imposition différée' }
+      tfsa: { name: 'CELI', desc: 'Croissance et retraits sans impôt' },
+      rrsp: { name: 'REER', desc: 'Épargne-retraite à impôt différé' }
     },
     tx: {
       salary: 'Salaire - Emploi à temps plein',
@@ -372,6 +372,7 @@ const SAMPLE_STRINGS = {
       emergency: 'Ahorros de emergencia',
       creditCard: 'Tarjeta de crédito',
       tfsa: { name: 'CTA (TFSA)', desc: 'Crecimiento y retiros libres de impuestos' },
+      rrsp: { name: 'RPA (RRSP)', desc: 'Ahorros para el retiro con impuestos diferidos' }
       rrsp: { name: 'RSP (RRSP)', desc: 'Ahorro para jubilación con impuestos diferidos' }
     },
     tx: {
@@ -1744,7 +1745,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
             <Mountain className="w-6 h-6 mr-3 text-blue-400" />
             {t('dashboard.retirementAccounts')}
           </h2>
-          <p className="text-sm text-blue-200 mt-1 ml-9">Building your legacy, one contribution at a time.</p>
+          <p className="text-sm text-blue-200 mt-1 ml-9">{t('dashboard.retirementAccountsSubtitle')}</p>
         </div>
         <button
           onClick={() => onEdit('registeredAccounts', data)}
@@ -1793,13 +1794,13 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                   <div className="text-3xl font-bold text-white mb-1">
                     ${(parseFloat(account.contributed) || 0).toLocaleString()}
                   </div>
-                  <div className={`text-sm ${textColor}`}>Total Contributed</div>
+                  <div className={`text-sm ${textColor}`}>{t('dashboard.totalContributed')}</div>
                 </div>
                 
                 <div>
                   <div className="flex justify-between text-xs text-gray-300 mb-2">
-                    <span>Contributed: ${(parseFloat(roomUsed) || 0).toLocaleString()}</span>
-                    <span>Limit: ${(parseFloat(account.limit) || 0).toLocaleString()}</span>
+                    <span>{t('dashboard.contributed')}: ${(parseFloat(roomUsed) || 0).toLocaleString()}</span>
+                    <span>{t('dashboard.limit')}: ${(parseFloat(account.limit) || 0).toLocaleString()}</span>
                   </div>
                   <ProgressBar 
                     value={roomUsed} 
@@ -1817,7 +1818,7 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
                     <div className={`text-xs ${textColor} mb-1`}>{t('dashboard.annualGoal')}</div>
                     <div className="text-lg font-bold text-white">${(parseFloat(account.goal) || 0).toLocaleString()}</div>
                     <div className="text-[10px] text-gray-400 mt-1">
-                      {isGoalReached ? '✓ Goal Reached!' : `$${((parseFloat(account.goal) || 0) - (parseFloat(account.contributed) || 0)).toLocaleString()} to go`}
+                      {isGoalReached ? t('dashboard.goalReached') : t('dashboard.toGo', { amount: ((parseFloat(account.goal) || 0) - (parseFloat(account.contributed) || 0)).toLocaleString() })}
                     </div>
                   </div>
                 )}
@@ -1832,15 +1833,15 @@ const RegisteredAccountsCard = ({ data, onEdit }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-blue-400">${(parseFloat(totalContributed) || 0).toLocaleString()}</div>
-              <div className="text-xs text-gray-300 mt-1">Total Contributed</div>
+              <div className="text-xs text-gray-300 mt-1">{t('dashboard.totalContributed')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-white">${(parseFloat(totalRoom) || 0).toLocaleString()}</div>
-              <div className="text-xs text-gray-300 mt-1">Total Room Available</div>
+              <div className="text-xs text-gray-300 mt-1">{t('dashboard.totalRoomAvailable')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-blue-400">{((totalContributed/totalLimit)*100).toFixed(1)}%</div>
-              <div className="text-xs text-gray-300 mt-1">Contribution Rate</div>
+              <div className="text-xs text-gray-300 mt-1">{t('dashboard.contributionRate')}</div>
             </div>
           </div>
         </div>
@@ -13239,8 +13240,8 @@ function App() {
         },
         registeredAccounts: {
           accounts: [
-            { id: 'tfsa', name: 'TFSA', contributed: 0, limit: 88000, goal: 10000, type: 'tax-free', description: 'Tax-free growth and withdrawals' },
-            { id: 'rrsp', name: 'RRSP', contributed: 0, limit: 31560, goal: 5000, type: 'tax-deferred', description: 'Tax-deferred retirement savings' }
+            { id: 'tfsa', name: L.accounts.tfsa.name, contributed: 0, limit: 88000, goal: 10000, type: 'tax-free', description: L.accounts.tfsa.desc },
+            { id: 'rrsp', name: L.accounts.rrsp.name, contributed: 0, limit: 31560, goal: 5000, type: 'tax-deferred', description: L.accounts.rrsp.desc }
           ]
         },
         netWorth: { total: 0, breakdown: [], history: [{ date: resetStartDate, total: 0 }] },
@@ -13300,21 +13301,21 @@ function App() {
           accounts: [
             {
               id: 'tfsa',
-              name: 'TFSA',
+              name: L.accounts.tfsa.name,
               contributed: 0,
               limit: 88000,
               goal: 10000,
               type: 'tax-free',
-              description: 'Tax-free growth and withdrawals'
+              description: L.accounts.tfsa.desc
             },
             {
               id: 'rrsp', 
-              name: 'RRSP',
+              name: L.accounts.rrsp.name,
               contributed: 0,
               limit: 31560,
               goal: 5000,
               type: 'tax-deferred',
-              description: 'Tax-deferred retirement savings'
+              description: L.accounts.rrsp.desc
             }
           ]
         },
