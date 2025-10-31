@@ -1118,7 +1118,11 @@
     "dateRange": "Date Range",
     "sortBy": "Sort By",
     "holdCtrlCmd": "Hold Ctrl/Cmd for multiple",
-    "filters": "Filters"
+    "filters": "Filters",
+    "sortDateNewest": "📅 Date (Newest First)",
+    "sortDateOldest": "📅 Date (Oldest First)",
+    "sortAmountHigh": "💰 Amount (High to Low)",
+    "sortAmountLow": "💰 Amount (Low to High)"
   },
   "accounts": {
     "cash": "Cash",

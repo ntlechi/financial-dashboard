@@ -8941,10 +8941,10 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full bg-gray-700 text-white px-4 py-3 md:px-3 md:py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-base md:text-sm"
                   >
-                    <option value="date-desc">📅 Date (Newest First)</option>
-                    <option value="date-asc">📅 Date (Oldest First)</option>
-                    <option value="amount-desc">💰 Amount (High to Low)</option>
-                    <option value="amount-asc">💰 Amount (Low to High)</option>
+                    <option value="date-desc">{t('transactions.sortDateNewest')}</option>
+                    <option value="date-asc">{t('transactions.sortDateOldest')}</option>
+                    <option value="amount-desc">{t('transactions.sortAmountHigh')}</option>
+                    <option value="amount-asc">{t('transactions.sortAmountLow')}</option>
                   </select>
                 </div>
               </div>
