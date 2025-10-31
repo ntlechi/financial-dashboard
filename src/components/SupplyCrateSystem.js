@@ -56,13 +56,13 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
     const percentUsed = (spent / allocated) * 100;
 
     if (percentUsed >= 100) {
-      return { status: 'depleted', color: 'red', message: '🚨 Crate Empty!' };
+      return { status: 'depleted', color: 'red', message: `🚨 ${t('supplyCrateSystem.crateEmpty')}` };
     } else if (percentUsed >= 80) {
-      return { status: 'low', color: 'yellow', message: '⚠️ Running Low!' };
+      return { status: 'low', color: 'yellow', message: `⚠️ ${t('supplyCrateSystem.runningLow')}` };
     } else if (percentUsed >= 50) {
-      return { status: 'moderate', color: 'orange', message: '📊 Half Used' };
+      return { status: 'moderate', color: 'orange', message: `📊 ${t('supplyCrateSystem.halfUsed')}` };
     } else {
-      return { status: 'healthy', color: 'green', message: '✅ Supplies Good' };
+      return { status: 'healthy', color: 'green', message: `✅ ${t('supplyCrateSystem.suppliesGood')}` };
     }
   };
 
@@ -83,7 +83,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
       setCrates(updatedCrates);
     } catch (error) {
       console.error('Error saving supply crates:', error);
-      alert('Failed to save crates');
+      alert(t('supplyCrateSystem.saveFailed'));
     }
   };
 
@@ -135,7 +135,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
     const crateIndex = crates.findIndex(c => c.id === crateId);
     const xpDeduction = crateIndex === 0 ? 25 : 10; // Approximate (first = 25, others = 10)
     
-    if (!window.confirm(`Delete this Supply Crate?\\n\\n⚠️ You will lose ${xpDeduction} XP for deleting.\\nThis cannot be undone.`)) return;
+    if (!window.confirm(t('supplyCrateSystem.deleteConfirm', { xp: xpDeduction }))) return;
     
     const updatedCrates = crates.filter(c => c.id !== crateId);
     await saveCrates(updatedCrates);
@@ -145,7 +145,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
     if (setXpRefreshTrigger) {
       try {
         // Import deductXp at component level if needed, for now using alert
-        alert(`Supply Crate deleted. -${xpDeduction} XP`);
+        alert(t('supplyCrateSystem.crateDeleted', { xp: xpDeduction }));
         setXpRefreshTrigger(prev => prev + 1);
       } catch (error) {
         console.warn('XP deduction failed (crate delete)', error);
@@ -174,10 +174,10 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-3">
               <Package className="w-8 h-8 text-green-400" />
-              📦 Supply Crate System
+              📦 {t('supplyCrate.title')}
             </h2>
             <p className="text-gray-300 mt-2">
-              Real-time budget management. Know exactly what you can spend, right now.
+              {t('supplyCrateSystem.subtitle')}
             </p>
           </div>
           <button
@@ -185,22 +185,22 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors"
           >
             <Plus className="w-5 h-5" />
-            New Crate
+            {t('supplyCrateSystem.newCrate')}
           </button>
         </div>
 
         {/* Month Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="bg-black/30 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">Total Allocated</div>
+            <div className="text-sm text-gray-400 mb-1">{t('supplyCrateSystem.totalAllocated')}</div>
             <div className="text-2xl font-bold text-white">${formatNumber(totalAllocated)}</div>
           </div>
           <div className="bg-black/30 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">Total Spent</div>
+            <div className="text-sm text-gray-400 mb-1">{t('supplyCrateSystem.totalSpent')}</div>
             <div className="text-2xl font-bold text-red-400">${formatNumber(totalSpent)}</div>
           </div>
           <div className="bg-black/30 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">Total Remaining</div>
+            <div className="text-sm text-gray-400 mb-1">{t('supplyCrateSystem.totalRemaining')}</div>
             <div className={`text-2xl font-bold ${totalRemaining >= 0 ? 'text-green-400' : 'text-red-400'}`}>
               ${formatNumber(Math.abs(totalRemaining))}
             </div>
@@ -212,17 +212,16 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
       {crates.length === 0 ? (
         <div className="bg-gray-800/50 rounded-xl p-12 border border-gray-700 text-center">
           <Package className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-          <h3 className="text-xl font-bold text-white mb-2">No Supply Crates Yet</h3>
+          <h3 className="text-xl font-bold text-white mb-2">{t('supplyCrateSystem.noCratesYet')}</h3>
           <p className="text-gray-400 mb-6 max-w-md mx-auto">
-            Create your first Supply Crate to start tracking your budget in real-time. 
-            Each crate represents a spending category with a monthly limit.
+            {t('supplyCrateSystem.noCratesDescription')}
           </p>
           <button
             onClick={() => setShowAddCrate(true)}
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            Create First Crate
+            {t('supplyCrateSystem.createFirstCrate')}
           </button>
         </div>
       ) : (
@@ -285,7 +284,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                 {/* Progress Bar */}
                 <div className="mb-3">
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-400">Spent</span>
+                    <span className="text-gray-400">{t('supplyCrateSystem.spent')}</span>
                     <span className={`font-bold ${
                       status.status === 'depleted' ? 'text-red-400' : 'text-white'
                     }`}>
@@ -310,7 +309,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
 
                 {/* Remaining */}
                 <div className="bg-black/30 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">Supplies Remaining</div>
+                  <div className="text-xs text-gray-400 mb-1">{t('supplyCrateSystem.suppliesRemaining')}</div>
                   <div className={`text-2xl font-bold ${
                     remaining <= 0 ? 'text-red-400' : remaining < crate.allocated * 0.2 ? 'text-yellow-400' : 'text-green-400'
                   }`}>
@@ -318,7 +317,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                   </div>
                   {remaining < 0 && (
                     <div className="text-xs text-red-300 mt-1">
-                      ⚠️ Over budget by ${formatNumber(Math.abs(remaining))}
+                      ⚠️ {t('supplyCrateSystem.overBudgetBy')} ${formatNumber(Math.abs(remaining))}
                     </div>
                   )}
                 </div>
@@ -326,7 +325,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                 {/* Burn Rate Indicator */}
                 {remaining > 0 && (
                   <div className="mt-3 text-xs text-gray-400">
-                    💨 Burn rate: ${((spent / new Date().getDate())).toFixed(2)}/day
+                    💨 {t('supplyCrateSystem.burnRate')}: ${((spent / new Date().getDate())).toFixed(2)}/day
                   </div>
                 )}
               </div>
@@ -339,23 +338,20 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
       <div className="bg-gradient-to-r from-blue-900/30 to-indigo-900/30 rounded-lg p-5 border border-blue-500/40">
         <h3 className="text-lg font-bold text-blue-300 mb-2 flex items-center gap-2">
           <Award className="w-5 h-5" />
-          💡 How to Use Supply Crates
+          💡 {t('supplyCrateSystem.howToUse')}
         </h3>
         <div className="space-y-2 text-sm text-gray-300">
           <p>
-            <strong>1. Assign Your Supplies:</strong> At the start of each month, allocate your income into different crates 
-            (Food, Entertainment, Gas, etc.)
+            <strong>{t('supplyCrateSystem.step1Title')}</strong> {t('supplyCrateSystem.step1Description')}
           </p>
           <p>
-            <strong>2. Track Your Burn Rate:</strong> As you log expenses, watch the progress bars fill up in real-time. 
-            Green = plenty left. Yellow = getting low. Red = depleted!
+            <strong>{t('supplyCrateSystem.step2Title')}</strong> {t('supplyCrateSystem.step2Description')}
           </p>
           <p>
-            <strong>3. Make Smart Decisions:</strong> Before spending, check your crate. "Do I have $50 left in Entertainment?" 
-            This creates in-the-moment awareness that prevents overspending.
+            <strong>{t('supplyCrateSystem.step3Title')}</strong> {t('supplyCrateSystem.step3Description')}
           </p>
           <p className="text-amber-300 font-semibold">
-            🎯 <strong>Pro Tip:</strong> Start with 3-5 crates for your biggest spending areas. You can always add more later!
+            🎯 <strong>{t('supplyCrateSystem.proTip')}</strong> {t('supplyCrateSystem.proTipDescription')}
           </p>
         </div>
       </div>
@@ -365,7 +361,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 rounded-xl w-full max-w-md border border-green-500/40 shadow-2xl">
             <div className="flex justify-between items-center p-6 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-white">Create New Supply Crate</h3>
+              <h3 className="text-xl font-bold text-white">{t('supplyCrateSystem.createNewCrate')}</h3>
               <button
                 onClick={() => {
                   setShowAddCrate(false);
@@ -379,10 +375,10 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Crate Name</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('supplyCrateSystem.crateName')}</label>
                 <input
                   type="text"
-                  placeholder="e.g., Groceries, Gas, Entertainment..."
+                  placeholder={t('supplyCrateSystem.crateNamePlaceholder')}
                   value={newCrate.name}
                   onChange={(e) => setNewCrate({ ...newCrate, name: e.target.value })}
                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none"
@@ -406,39 +402,38 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Category</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('common.category')}</label>
                 <select
                   value={newCrate.category}
                   onChange={(e) => setNewCrate({ ...newCrate, category: e.target.value })}
                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none"
                 >
-                  <option value="needs">🏠 Needs (Essential)</option>
-                  <option value="wants">🎮 Wants (Lifestyle)</option>
-                  <option value="savings">💰 Savings & Goals</option>
-                  <option value="debt">💳 Debt Payments</option>
-                  <option value="emergency">🚨 Emergency Buffer</option>
+                  <option value="needs">🏠 {t('supplyCrateSystem.categoryNeeds')}</option>
+                  <option value="wants">🎮 {t('supplyCrateSystem.categoryWants')}</option>
+                  <option value="savings">💰 {t('supplyCrateSystem.categorySavings')}</option>
+                  <option value="debt">💳 {t('supplyCrateSystem.categoryDebt')}</option>
+                  <option value="emergency">🚨 {t('supplyCrateSystem.categoryEmergency')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Icon (Type or paste emoji)</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('supplyCrateSystem.icon')}</label>
                 <input
                   type="text"
-                  placeholder="Type emoji here: 📦 🍔 ⛽ 🎬 🏠"
+                  placeholder={t('supplyCrateSystem.iconPlaceholder')}
                   value={newCrate.icon}
                   onChange={(e) => setNewCrate({ ...newCrate, icon: e.target.value })}
                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none text-3xl text-center"
                   maxLength={2}
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 On iPhone/Android: Tap to open keyboard → tap emoji button → select emoji
+                  💡 {t('supplyCrateSystem.iconTip')}
                 </p>
               </div>
 
               <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-600/30">
                 <p className="text-xs text-blue-200">
-                  💡 <strong>Tip:</strong> Name your crate to match transaction descriptions for automatic tracking. 
-                  Example: "Food" crate will auto-track transactions with "food" in the description!
+                  💡 {t('supplyCrateSystem.autoTrackingTip')}
                 </p>
               </div>
             </div>
@@ -451,14 +446,14 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                 }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleAddCrate}
                 disabled={!newCrate.name || !newCrate.allocated}
                 className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-semibold transition-colors"
               >
-                Create Crate
+                {t('supplyCrateSystem.createCrate')}
               </button>
             </div>
           </div>
@@ -470,7 +465,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 rounded-xl w-full max-w-md border border-blue-500/40 shadow-2xl">
             <div className="flex justify-between items-center p-6 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-white">Edit Supply Crate</h3>
+              <h3 className="text-xl font-bold text-white">{t('supplyCrateSystem.editCrate')}</h3>
               <button
                 onClick={() => setEditingCrate(null)}
                 className="text-gray-400 hover:text-white transition-colors"
@@ -481,7 +476,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Crate Name</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('supplyCrateSystem.crateName')}</label>
                 <input
                   type="text"
                   value={editingCrate.name}
@@ -491,7 +486,7 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Monthly Allocation</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('supplyCrateSystem.monthlyAllocation')}</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
@@ -504,22 +499,22 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Category</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('common.category')}</label>
                 <select
                   value={editingCrate.category}
                   onChange={(e) => setEditingCrate({ ...editingCrate, category: e.target.value })}
                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                 >
-                  <option value="needs">🏠 Needs</option>
-                  <option value="wants">🎮 Wants</option>
-                  <option value="savings">💰 Savings</option>
-                  <option value="debt">💳 Debt</option>
-                  <option value="emergency">🚨 Emergency</option>
+                  <option value="needs">🏠 {t('supplyCrateSystem.categoryNeedsShort')}</option>
+                  <option value="wants">🎮 {t('supplyCrateSystem.categoryWantsShort')}</option>
+                  <option value="savings">💰 {t('supplyCrateSystem.categorySavingsShort')}</option>
+                  <option value="debt">💳 {t('supplyCrateSystem.categoryDebtShort')}</option>
+                  <option value="emergency">🚨 {t('supplyCrateSystem.categoryEmergencyShort')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Icon</label>
+                <label className="block text-sm text-gray-300 mb-2">{t('supplyCrateSystem.icon')}</label>
                 <input
                   type="text"
                   value={editingCrate.icon}
@@ -535,13 +530,13 @@ export default function SupplyCrateSystem({ data, setData, userId, currentMonth,
                 onClick={() => setEditingCrate(null)}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleEditCrate}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
               >
-                Save Changes
+                {t('common.save')}
               </button>
             </div>
           </div>

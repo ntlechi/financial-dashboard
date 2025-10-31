@@ -2945,26 +2945,26 @@ const FinancialFreedomCalculator = () => {
       </Card>
 
       <Card>
-        <h4 className="text-lg font-bold text-white mb-4">Financial Freedom Projection</h4>
+        <h4 className="text-lg font-bold text-white mb-4">{t('financialFreedom.projectionTitle')}</h4>
         <div className="flex justify-center">
           <svg ref={chartRef}></svg>
         </div>
         <div className="mt-4 flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-0.5 bg-blue-500"></div>
-            <span className="text-gray-300">Wealth Accumulation</span>
+            <span className="text-gray-300">{t('financialFreedom.wealthAccumulation')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-0.5 bg-purple-500"></div>
-            <span className="text-gray-300">Passive Income (4% rule)</span>
+            <span className="text-gray-300">{t('financialFreedom.passiveIncome4Percent')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-0.5 bg-green-500 border-dashed border border-green-500"></div>
-            <span className="text-gray-300">FI Target</span>
+            <span className="text-gray-300">{t('financialFreedom.fiTarget')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-0.5 bg-red-500 border-dashed border border-red-500"></div>
-            <span className="text-gray-300">Annual Expenses</span>
+            <span className="text-gray-300">{t('financialFreedom.annualExpenses')}</span>
           </div>
         </div>
       </Card>
