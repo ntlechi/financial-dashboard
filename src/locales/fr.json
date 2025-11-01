@@ -1612,5 +1612,94 @@
     "upgradeMessage": "Passez à un niveau supérieur pour déverrouiller cette fonctionnalité",
     "availableAtHigherRank": "Disponible à un rang supérieur",
     "viewRequirements": "Voir les Exigences"
+  },
+  "pricing": {
+    "chooseYourPlan": "Choisissez Votre Formule",
+    "currentPlan": "Formule Actuelle",
+    "free": "GRATUIT",
+    "monthly": "Mensuel",
+    "annual": "Annuel",
+    "save17Percent": "Économisez 17%",
+    "month": "mois",
+    "year": "an",
+    "monthBilledAnnually": "{{price}}/mois facturé annuellement",
+    "spotsLeft": "{{count}} restantes",
+    "spotsTaken": "{{taken}} sur {{total}} places prises",
+    "almostFull": "🔥 Presque complet ! Ne manquez pas cette opportunité !",
+    "moreFeatures": "+ {{count}} fonctionnalités supplémentaires",
+    "foundersCirclePhase": "Phase Cercle des Fondateurs",
+    "earlyAdopterPhase": "Phase Adopteurs Précoces",
+    "regularPricing": "Tarification Régulière",
+    "offerEndsIn": "L'offre {{phase}} se termine dans :",
+    "days": "Jours",
+    "hours": "Heures",
+    "minutes": "Minutes",
+    "seconds": "Secondes",
+    "guarantee": {
+      "title": "Garantie de Réussite de la Mission",
+      "description": "Essayez pendant 30 jours. Si cela ne vous donne pas plus de clarté et de contrôle que n'importe quelle application financière que vous avez utilisée auparavant, vous serez remboursé. Sans tracas. Sans questions."
+    },
+    "phases": {
+      "foundersMessage": "Offre limitée Cercle des Fondateurs - Verrouillez l'accès à vie au prix de lancement",
+      "earlyAdopterMessage": "Tarification Adopteurs Précoces disponible - Rejoignez avant le début des tarifs réguliers",
+      "regularMessage": "Sélectionnez la formule qui correspond à vos objectifs financiers"
+    },
+    "plans": {
+      "foundersCircle": {
+        "name": "Le Cercle des Fondateurs",
+        "description": "Obtenez un accès à vie à la Formule Opérateur pour moins cher que la formule Grimpeur.",
+        "cta": "Réclamez Votre Place de Fondateur",
+        "badge": "Offre Limitée"
+      },
+      "earlyAdopter": {
+        "name": "Formule Adopteur Précoce",
+        "description": "Vous avez manqué le Cercle des Fondateurs, mais vous pouvez toujours rejoindre l'expédition au tarif Adopteur Précoce.",
+        "cta": "Rejoindre les Adopteurs Précoces",
+        "badge": "Adopteur Précoce"
+      },
+      "recon": {
+        "name": "Kit de Reconnaissance",
+        "description": "Obtenez vos repères financiers. Gratuit pour toujours.",
+        "cta": "Commencez Votre Reconnaissance"
+      },
+      "climber": {
+        "name": "Formule Grimpeur",
+        "description": "L'équipement essentiel pour l'ascension.",
+        "cta": "Commencez l'Ascension"
+      },
+      "operator": {
+        "name": "Formule Opérateur",
+        "description": "L'arsenal complet pour construire votre empire.",
+        "cta": "Devenez un Opérateur",
+        "badgeMostPopular": "Le Plus Populaire"
+      }
+    },
+    "features": {
+      "everythingInOperator": "Tout dans la Formule Opérateur",
+      "everythingInRecon": "Tout dans le Kit de Reconnaissance",
+      "everythingInClimber": "Tout dans la Formule Grimpeur",
+      "sideHustleManagement": "Gestion d'Activité Secondaire",
+      "investmentPortfolio": "Portefeuille d'Investissement",
+      "travelMode": "Mode Voyage",
+      "freedomJournal": "Journal de Liberté",
+      "exportFreedomStory": "Exportez Votre Histoire de Liberté",
+      "permanentPriceLock": "Verrouillage permanent du prix",
+      "founderBadge": "Badge de Fondateur Exclusif",
+      "earlyAdopterBadge": "Badge d'Adopteur Précoce",
+      "earlyAccessFeatures": "Accès anticipé aux nouvelles fonctionnalités",
+      "monthlyBillingOnly": "Facturation mensuelle uniquement - moins de friction !",
+      "offRegularPrice": "43% de réduction sur le prix régulier",
+      "basicDashboardView": "Vue de Tableau de Bord Basique",
+      "fullBudgetCalculator": "Calculateur de Budget Complet",
+      "fullTransactionLogging": "Enregistrement Complet des Transactions",
+      "basicFinancialTracking": "Suivi Financier de Base",
+      "fullAdvancedDashboard": "Tableau de Bord Avancé Complet",
+      "allFinancialCalculators": "Tous les Calculateurs Financiers",
+      "debtPayoffTracker": "Suivi de Remboursement de Dettes",
+      "emergencyFundCalculator": "Calculateur de Fonds d'Urgence",
+      "goalTracking": "Suivi des Objectifs",
+      "advancedAnalytics": "Analyses Avancées",
+      "prioritySupport": "Support Prioritaire"
+    }
   }
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, Crown, Zap, Target, Rocket, Clock, Users, ChevronDown, ChevronUp } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 import { db } from '../firebase';
 import { getCurrentPricingPlans, getPricingPhaseInfo, getStripePriceId } from '../pricing';
 // Removed unused imports: isFoundersCircleAvailable, isEarlyAdopterAvailable
 
 const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan = null }) => {
+  const { t } = useTranslation();
   const [billingCycle, setBillingCycle] = useState('monthly');
   const [foundersCircleCount, setFoundersCircleCount] = useState(0);
   const [earlyAdopterCount, setEarlyAdopterCount] = useState(0);
@@ -15,6 +17,59 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
   // Get current pricing phase and plans
   const pricingPhaseInfo = getPricingPhaseInfo(foundersCircleCount, earlyAdopterCount);
   const currentPlans = getCurrentPricingPlans(foundersCircleCount, earlyAdopterCount);
+
+  // Helper function to get translated plan content
+  const getPlanTranslations = (planId) => {
+    const planKeyMap = {
+      'founders-circle': 'foundersCircle',
+      'early-adopter': 'earlyAdopter',
+      'recon': 'recon',
+      'climber': 'climber',
+      'operator': 'operator'
+    };
+    
+    const key = planKeyMap[planId] || planId;
+    return {
+      name: t(`pricing.plans.${key}.name`),
+      description: t(`pricing.plans.${key}.description`),
+      cta: t(`pricing.plans.${key}.cta`),
+      badge: planId === 'operator' && pricingPhaseInfo.isRegularPhase 
+        ? t(`pricing.plans.${key}.badgeMostPopular`)
+        : t(`pricing.plans.${key}.badge`)
+    };
+  };
+
+  // Helper function to translate features
+  const translateFeature = (feature) => {
+    const featureMap = {
+      'Everything in The Operator Plan': t('pricing.features.everythingInOperator'),
+      'Everything in Recon Kit': t('pricing.features.everythingInRecon'),
+      'Everything in Climber': t('pricing.features.everythingInClimber'),
+      'Side Hustle Management': t('pricing.features.sideHustleManagement'),
+      'Investment Portfolio': t('pricing.features.investmentPortfolio'),
+      'Travel Mode': t('pricing.features.travelMode'),
+      'Freedom Journal': t('pricing.features.freedomJournal'),
+      'Export Freedom Story': t('pricing.features.exportFreedomStory'),
+      'A permanent price lock': t('pricing.features.permanentPriceLock'),
+      'Exclusive Founder badge': t('pricing.features.founderBadge'),
+      'Early Adopter badge': t('pricing.features.earlyAdopterBadge'),
+      'Early access to new features': t('pricing.features.earlyAccessFeatures'),
+      'Monthly billing only - less friction!': t('pricing.features.monthlyBillingOnly'),
+      '43% off regular price': t('pricing.features.offRegularPrice'),
+      'Basic Dashboard View': t('pricing.features.basicDashboardView'),
+      'Full Budget Calculator': t('pricing.features.fullBudgetCalculator'),
+      'Full Transaction Logging': t('pricing.features.fullTransactionLogging'),
+      'Basic Financial Tracking': t('pricing.features.basicFinancialTracking'),
+      'Full Advanced Dashboard': t('pricing.features.fullAdvancedDashboard'),
+      'All Financial Calculators': t('pricing.features.allFinancialCalculators'),
+      'Debt Payoff Tracker': t('pricing.features.debtPayoffTracker'),
+      'Emergency Fund Calculator': t('pricing.features.emergencyFundCalculator'),
+      'Goal Tracking': t('pricing.features.goalTracking'),
+      'Advanced Analytics': t('pricing.features.advancedAnalytics'),
+      'Priority Support': t('pricing.features.prioritySupport')
+    };
+    return featureMap[feature] || feature;
+  };
 
   // Load subscriber counts from Firebase
   useEffect(() => {
@@ -120,6 +175,9 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
     const isHighlighted = highlightPlan === plan.id;
     const isPopular = plan.popular;
     const isCurrentPlan = currentPlan === plan.id;
+    
+    // Get translated content
+    const translations = getPlanTranslations(plan.id);
 
     return (
       <div
@@ -131,10 +189,10 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         } ${isCurrentPlan ? 'ring-2 ring-white ring-opacity-50' : ''}`}
       >
         {/* Badge */}
-        {plan.badge && (
+        {plan.badge && translations.badge && (
           <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
             <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-              {plan.badge}
+              {translations.badge}
             </span>
           </div>
         )}
@@ -143,7 +201,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         {isCurrentPlan && (
           <div className="absolute -top-3 right-4">
             <span className="bg-white text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
-              Current Plan
+              {t('pricing.currentPlan')}
             </span>
           </div>
         )}
@@ -153,29 +211,29 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
           <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center">
             <Icon className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-          <p className="text-white/80 text-sm">{plan.description}</p>
+          <h3 className="text-2xl font-bold text-white mb-2">{translations.name}</h3>
+          <p className="text-white/80 text-sm">{translations.description}</p>
         </div>
 
         {/* Pricing */}
         <div className="text-center mb-6">
           {plan.price === 0 ? (
-            <div className="text-4xl font-bold text-white">FREE</div>
+            <div className="text-4xl font-bold text-white">{t('pricing.free')}</div>
           ) : (
             <div>
               <div className="text-4xl font-bold text-white">
                 ${plan.monthlyOnly ? plan.price : (billingCycle === 'yearly' && plan.yearlyPrice ? plan.yearlyPrice : plan.price)}
-                <span className="text-lg text-white/80">/{plan.monthlyOnly ? 'month' : (billingCycle === 'yearly' ? 'year' : 'month')}</span>
+                <span className="text-lg text-white/80">/{plan.monthlyOnly ? t('pricing.month') : (billingCycle === 'yearly' ? t('pricing.year') : t('pricing.month'))}</span>
               </div>
               {!plan.monthlyOnly && billingCycle === 'yearly' && plan.yearlyPrice && (
                 <div className="text-sm text-white/60 mt-1">
-                  ${plan.price}/month billed annually
+                  {t('pricing.monthBilledAnnually', { price: `$${plan.price}` })}
                 </div>
               )}
               {/* Strike-through regular price for Founder's Circle */}
               {plan.id === 'founders-circle' && (
                 <div className="text-lg text-white/60 mt-1 line-through">
-                  ${billingCycle === 'yearly' ? '179.88' : '14.99'}/month
+                  ${billingCycle === 'yearly' ? '179.88' : '14.99'}/{t('pricing.month')}
                 </div>
               )}
               {plan.savings && (
@@ -195,7 +253,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               {plan.features.slice(0, 4).map((feature, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-white/80 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/90 text-sm">{feature}</span>
+                  <span className="text-white/90 text-sm">{translateFeature(feature)}</span>
                 </div>
               ))}
               
@@ -211,7 +269,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                     ) : (
                       <ChevronDown className="w-4 h-4" />
                     )}
-                    <span>+ {plan.features.length - 4} more features</span>
+                    <span>{t('pricing.moreFeatures', { count: plan.features.length - 4 })}</span>
                   </button>
                   
                   {showFoundersFeatures && (
@@ -219,7 +277,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                       {plan.features.slice(4).map((feature, index) => (
                         <div key={index + 4} className="flex items-start gap-3">
                           <Check className="w-4 h-4 text-white/80 mt-0.5 flex-shrink-0" />
-                          <span className="text-white/90 text-sm">{feature}</span>
+                          <span className="text-white/90 text-sm">{translateFeature(feature)}</span>
                         </div>
                       ))}
                     </div>
@@ -231,7 +289,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
             plan.features.map((feature, index) => (
               <div key={index} className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-white/80 mt-0.5 flex-shrink-0" />
-                <span className="text-white/90 text-sm">{feature}</span>
+                <span className="text-white/90 text-sm">{translateFeature(feature)}</span>
               </div>
             ))
           )}
@@ -244,10 +302,15 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               <div className="flex items-center justify-between text-white/80 text-sm">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
-                  <span>{plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount} of {plan.spotsLeft} spots taken</span>
+                  <span>{t('pricing.spotsTaken', { 
+                    taken: plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount,
+                    total: plan.spotsLeft
+                  })}</span>
                 </div>
                 <span className="text-white/60 text-xs">
-                  {plan.spotsLeft - (plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount)} left
+                  {t('pricing.spotsLeft', { 
+                    count: plan.spotsLeft - (plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount)
+                  })}
                 </span>
               </div>
               
@@ -264,7 +327,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               {/* Urgency Message */}
               {(plan.id === 'founders-circle' ? foundersCircleCount : earlyAdopterCount) > plan.spotsLeft * 0.8 && (
                 <div className="text-amber-300 text-xs text-center font-medium">
-                  🔥 Almost full! Don't miss out!
+                  {t('pricing.almostFull')}
                 </div>
               )}
             </div>
@@ -281,7 +344,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               : 'bg-white text-gray-900 hover:bg-white/90 transform hover:scale-105 shadow-xl hover:shadow-2xl'
           }`}
         >
-          {isCurrentPlan ? 'Current Plan' : plan.cta}
+          {isCurrentPlan ? t('pricing.currentPlan') : translations.cta}
         </button>
       </div>
     );
@@ -294,8 +357,12 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         <div className="sticky top-0 bg-gradient-to-r from-teal-900/90 to-gray-800 border-b border-teal-500/30 p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
           <div>
-              <h2 className="text-3xl font-bold text-white mb-2">Choose Your Plan</h2>
-              <p className="text-gray-300">{pricingPhaseInfo.message}</p>
+              <h2 className="text-3xl font-bold text-white mb-2">{t('pricing.chooseYourPlan')}</h2>
+              <p className="text-gray-300">
+                {pricingPhaseInfo.isFoundersPhase && t('pricing.phases.foundersMessage')}
+                {pricingPhaseInfo.isEarlyAdopterPhase && t('pricing.phases.earlyAdopterMessage')}
+                {pricingPhaseInfo.isRegularPhase && t('pricing.phases.regularMessage')}
+              </p>
           </div>
           <button
             onClick={onClose}
@@ -310,19 +377,19 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
             {pricingPhaseInfo.isFoundersPhase && (
               <div className="flex items-center gap-2 text-amber-400">
                 <Crown className="w-5 h-5" />
-                <span className="font-semibold">Founder's Circle Phase</span>
+                <span className="font-semibold">{t('pricing.foundersCirclePhase')}</span>
               </div>
             )}
             {pricingPhaseInfo.isEarlyAdopterPhase && (
               <div className="flex items-center gap-2 text-purple-400">
                 <Rocket className="w-5 h-5" />
-                <span className="font-semibold">Early Adopter Phase</span>
+                <span className="font-semibold">{t('pricing.earlyAdopterPhase')}</span>
               </div>
             )}
             {pricingPhaseInfo.isRegularPhase && (
               <div className="flex items-center gap-2 text-green-400">
                 <Target className="w-5 h-5" />
-                <span className="font-semibold">Regular Pricing</span>
+                <span className="font-semibold">{t('pricing.regularPricing')}</span>
               </div>
             )}
           </div>
@@ -333,25 +400,29 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
               <div className="flex items-center justify-center gap-2 text-amber-300 mb-2">
                 <Clock className="w-5 h-5" />
                 <span className="font-semibold">
-                  {pricingPhaseInfo.isFoundersPhase ? 'Founder\'s Circle' : 'Early Adopter'} Offer Ends In:
+                  {t('pricing.offerEndsIn', { 
+                    phase: pricingPhaseInfo.isFoundersPhase 
+                      ? t('pricing.plans.foundersCircle.name')
+                      : t('pricing.plans.earlyAdopter.name')
+                  })}
                 </span>
               </div>
               <div className="flex justify-center gap-4 text-white">
                 <div className="text-center">
                   <div className="text-2xl font-bold">{timeRemaining.days}</div>
-                  <div className="text-xs text-gray-300">Days</div>
+                  <div className="text-xs text-gray-300">{t('pricing.days')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">{timeRemaining.hours}</div>
-                  <div className="text-xs text-gray-300">Hours</div>
+                  <div className="text-xs text-gray-300">{t('pricing.hours')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">{timeRemaining.minutes}</div>
-                  <div className="text-xs text-gray-300">Minutes</div>
+                  <div className="text-xs text-gray-300">{t('pricing.minutes')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">{timeRemaining.seconds}</div>
-                  <div className="text-xs text-gray-300">Seconds</div>
+                  <div className="text-xs text-gray-300">{t('pricing.seconds')}</div>
                 </div>
               </div>
             </div>
@@ -368,7 +439,7 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
-                Monthly
+                {t('pricing.monthly')}
               </button>
               <button
                 onClick={() => setBillingCycle('yearly')}
@@ -378,9 +449,9 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
-                Annual
+                {t('pricing.annual')}
                 <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                  Save 17%
+                  {t('pricing.save17Percent')}
                 </span>
               </button>
             </div>
@@ -396,10 +467,9 @@ const PricingModal = ({ onClose, currentPlan = 'free', onUpgrade, highlightPlan 
         {/* Guarantee */}
           <div className="mt-8 text-center">
             <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-lg p-6 border border-green-500/30">
-              <h3 className="text-xl font-bold text-white mb-2">Mission Success Guarantee</h3>
+              <h3 className="text-xl font-bold text-white mb-2">{t('pricing.guarantee.title')}</h3>
               <p className="text-green-200">
-                Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, 
-                you get your money back. No hassle. No questions.
+                {t('pricing.guarantee.description')}
           </p>
         </div>
           </div>

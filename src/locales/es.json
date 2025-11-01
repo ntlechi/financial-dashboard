@@ -1539,5 +1539,94 @@
     "upgradeMessage": "Mejora para desbloquear esta función",
     "availableAtHigherRank": "Disponible en rango superior",
     "viewRequirements": "Ver Requisitos"
+  },
+  "pricing": {
+    "chooseYourPlan": "Elige Tu Plan",
+    "currentPlan": "Plan Actual",
+    "free": "GRATIS",
+    "monthly": "Mensual",
+    "annual": "Anual",
+    "save17Percent": "Ahorra 17%",
+    "month": "mes",
+    "year": "año",
+    "monthBilledAnnually": "{{price}}/mes facturado anualmente",
+    "spotsLeft": "{{count}} restantes",
+    "spotsTaken": "{{taken}} de {{total}} lugares ocupados",
+    "almostFull": "🔥 ¡Casi lleno! ¡No te lo pierdas!",
+    "moreFeatures": "+ {{count}} funciones más",
+    "foundersCirclePhase": "Fase Círculo de Fundadores",
+    "earlyAdopterPhase": "Fase Adoptadores Tempranos",
+    "regularPricing": "Precios Regulares",
+    "offerEndsIn": "La oferta de {{phase}} termina en:",
+    "days": "Días",
+    "hours": "Horas",
+    "minutes": "Minutos",
+    "seconds": "Segundos",
+    "guarantee": {
+      "title": "Garantía de Éxito de la Misión",
+      "description": "Pruébala durante 30 días. Si no te brinda más claridad y control que cualquier aplicación financiera que hayas usado antes, recuperas tu dinero. Sin complicaciones. Sin preguntas."
+    },
+    "phases": {
+      "foundersMessage": "Oferta limitada Círculo de Fundadores - Asegura acceso de por vida al precio de lanzamiento",
+      "earlyAdopterMessage": "Precios de Adoptadores Tempranos disponibles - Únete antes de que comiencen las tarifas regulares",
+      "regularMessage": "Selecciona el plan que se ajuste a tus objetivos financieros"
+    },
+    "plans": {
+      "foundersCircle": {
+        "name": "El Círculo de Fundadores",
+        "description": "Obtén acceso de por vida al Plan Operador por menos que el plan Escalador.",
+        "cta": "Reclama Tu Lugar de Fundador",
+        "badge": "Tiempo Limitado"
+      },
+      "earlyAdopter": {
+        "name": "Plan Adoptador Temprano",
+        "description": "Te perdiste el Círculo de Fundadores, pero aún puedes unirte a la expedición con la tarifa de Adoptador Temprano.",
+        "cta": "Únete a los Adoptadores Tempranos",
+        "badge": "Adoptador Temprano"
+      },
+      "recon": {
+        "name": "Kit de Reconocimiento",
+        "description": "Obtén tus puntos de referencia financieros. Gratis para siempre.",
+        "cta": "Comienza Tu Reconocimiento"
+      },
+      "climber": {
+        "name": "Plan Escalador",
+        "description": "El equipo esencial para el ascenso.",
+        "cta": "Comienza la Escalada"
+      },
+      "operator": {
+        "name": "Plan Operador",
+        "description": "El arsenal completo para construir tu imperio.",
+        "cta": "Conviértete en un Operador",
+        "badgeMostPopular": "Más Popular"
+      }
+    },
+    "features": {
+      "everythingInOperator": "Todo en el Plan Operador",
+      "everythingInRecon": "Todo en el Kit de Reconocimiento",
+      "everythingInClimber": "Todo en el Plan Escalador",
+      "sideHustleManagement": "Gestión de Negocio Secundario",
+      "investmentPortfolio": "Cartera de Inversiones",
+      "travelMode": "Modo de Viaje",
+      "freedomJournal": "Diario de Libertad",
+      "exportFreedomStory": "Exporta Tu Historia de Libertad",
+      "permanentPriceLock": "Bloqueo permanente de precio",
+      "founderBadge": "Insignia de Fundador Exclusiva",
+      "earlyAdopterBadge": "Insignia de Adoptador Temprano",
+      "earlyAccessFeatures": "Acceso anticipado a nuevas funciones",
+      "monthlyBillingOnly": "Solo facturación mensual - ¡menos fricción!",
+      "offRegularPrice": "43% de descuento sobre el precio regular",
+      "basicDashboardView": "Vista de Panel de Control Básica",
+      "fullBudgetCalculator": "Calculadora de Presupuesto Completa",
+      "fullTransactionLogging": "Registro Completo de Transacciones",
+      "basicFinancialTracking": "Seguimiento Financiero Básico",
+      "fullAdvancedDashboard": "Panel de Control Avanzado Completo",
+      "allFinancialCalculators": "Todas las Calculadoras Financieras",
+      "debtPayoffTracker": "Rastreador de Pago de Deudas",
+      "emergencyFundCalculator": "Calculadora de Fondo de Emergencia",
+      "goalTracking": "Seguimiento de Objetivos",
+      "advancedAnalytics": "Análisis Avanzados",
+      "prioritySupport": "Soporte Prioritario"
+    }
   }
 }

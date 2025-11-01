@@ -1403,5 +1403,94 @@
     "upgradeMessage": "Upgrade to unlock this feature",
     "availableAtHigherRank": "Available at higher rank",
     "viewRequirements": "View Requirements"
+  },
+  "pricing": {
+    "chooseYourPlan": "Choose Your Plan",
+    "currentPlan": "Current Plan",
+    "free": "FREE",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "save17Percent": "Save 17%",
+    "month": "month",
+    "year": "year",
+    "monthBilledAnnually": "{{price}}/month billed annually",
+    "spotsLeft": "{{count}} left",
+    "spotsTaken": "{{taken}} of {{total}} spots taken",
+    "almostFull": "🔥 Almost full! Don't miss out!",
+    "moreFeatures": "+ {{count}} more features",
+    "foundersCirclePhase": "Founder's Circle Phase",
+    "earlyAdopterPhase": "Early Adopter Phase",
+    "regularPricing": "Regular Pricing",
+    "offerEndsIn": "{{phase}} Offer Ends In:",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "guarantee": {
+      "title": "Mission Success Guarantee",
+      "description": "Try it for 30 days. If it doesn't give you more clarity and control than any finance app you've used before, you get your money back. No hassle. No questions."
+    },
+    "phases": {
+      "foundersMessage": "Limited-time Founder's Circle offer - Lock in lifetime access at launch pricing",
+      "earlyAdopterMessage": "Early Adopter pricing available - Join before regular rates begin",
+      "regularMessage": "Select the plan that fits your financial goals"
+    },
+    "plans": {
+      "foundersCircle": {
+        "name": "The Founder's Circle",
+        "description": "Get lifetime access to The Operator Plan for less than the Climber plan.",
+        "cta": "Claim Your Founder's Spot",
+        "badge": "Limited Time"
+      },
+      "earlyAdopter": {
+        "name": "Early Adopter Plan",
+        "description": "You missed the Founder's Circle, but you can still join the expedition at the Early Adopter rate.",
+        "cta": "Join Early Adopters",
+        "badge": "Early Adopter"
+      },
+      "recon": {
+        "name": "Recon Kit",
+        "description": "Get your financial bearings. Free forever.",
+        "cta": "Start Your Recon"
+      },
+      "climber": {
+        "name": "Climber Plan",
+        "description": "The essential gear for the ascent.",
+        "cta": "Begin the Climb"
+      },
+      "operator": {
+        "name": "Operator Plan",
+        "description": "The full arsenal for building your empire.",
+        "cta": "Become an Operator",
+        "badgeMostPopular": "Most Popular"
+      }
+    },
+    "features": {
+      "everythingInOperator": "Everything in The Operator Plan",
+      "everythingInRecon": "Everything in Recon Kit",
+      "everythingInClimber": "Everything in Climber",
+      "sideHustleManagement": "Side Hustle Management",
+      "investmentPortfolio": "Investment Portfolio",
+      "travelMode": "Travel Mode",
+      "freedomJournal": "Freedom Journal",
+      "exportFreedomStory": "Export Freedom Story",
+      "permanentPriceLock": "A permanent price lock",
+      "founderBadge": "Exclusive Founder badge",
+      "earlyAdopterBadge": "Early Adopter badge",
+      "earlyAccessFeatures": "Early access to new features",
+      "monthlyBillingOnly": "Monthly billing only - less friction!",
+      "offRegularPrice": "43% off regular price",
+      "basicDashboardView": "Basic Dashboard View",
+      "fullBudgetCalculator": "Full Budget Calculator",
+      "fullTransactionLogging": "Full Transaction Logging",
+      "basicFinancialTracking": "Basic Financial Tracking",
+      "fullAdvancedDashboard": "Full Advanced Dashboard",
+      "allFinancialCalculators": "All Financial Calculators",
+      "debtPayoffTracker": "Debt Payoff Tracker",
+      "emergencyFundCalculator": "Emergency Fund Calculator",
+      "goalTracking": "Goal Tracking",
+      "advancedAnalytics": "Advanced Analytics",
+      "prioritySupport": "Priority Support"
+    }
   }
 }
