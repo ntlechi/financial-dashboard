@@ -62,28 +62,28 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 6,
           question: t('faq.pricing.q1'),
           answer: t('faq.pricing.a1'),
-          tags: ['pricing', 'tiers', 'plans', 'features'],
+          tags: [t('faq.tags.pricing'), t('faq.tags.tiers'), t('faq.tags.plans'), t('faq.tags.features')],
           popular: true
         },
         {
           id: 7,
           question: t('faq.pricing.q2'),
           answer: t('faq.pricing.a2'),
-          tags: ['upgrade', 'downgrade', 'billing', 'flexibility', 'annual savings'],
+          tags: [t('faq.tags.upgrade'), t('faq.tags.downgrade'), t('faq.tags.billing'), t('faq.tags.flexibility'), t('faq.tags.annualSavings')],
           popular: true
         },
         {
           id: 8,
           question: t('faq.pricing.q3'),
           answer: t('faq.pricing.a3'),
-          tags: ['pricing strategy', 'value', 'comparison'],
+          tags: [t('faq.tags.pricingStrategy'), t('faq.tags.value'), t('faq.tags.comparison')],
           popular: false
         },
         {
           id: 9,
           question: t('faq.pricing.q4'),
           answer: t('faq.pricing.a4'),
-          tags: ['refund', 'guarantee', 'cancellation', '30-day'],
+          tags: [t('faq.tags.refund'), t('faq.tags.guarantee'), t('faq.tags.cancellation'), t('faq.tags.thirtyDay')],
           popular: false
         }
       ]
@@ -98,21 +98,21 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 10,
           question: t('faq.foundersCircle.q1'),
           answer: t('faq.foundersCircle.a1'),
-          tags: ['founders circle', 'exclusive', 'benefits', 'lifetime pricing'],
+          tags: [t('faq.tags.foundersCircle'), t('faq.tags.exclusive'), t('faq.tags.benefits'), t('faq.tags.lifetimePricing')],
           popular: true
         },
         {
           id: 11,
           question: t('faq.foundersCircle.q2'),
           answer: t('faq.foundersCircle.a2'),
-          tags: ['availability', 'limited', 'spots remaining', 'launch date'],
+          tags: [t('faq.tags.availability'), t('faq.tags.limited'), t('faq.tags.spotsRemaining'), t('faq.tags.launchDate')],
           popular: true
         },
         {
           id: 12,
           question: t('faq.foundersCircle.q3'),
           answer: t('faq.foundersCircle.a3'),
-          tags: ['cancellation', 'founder status', 'permanent'],
+          tags: [t('faq.tags.cancellation'), t('faq.tags.founderStatus'), t('faq.tags.permanent')],
           popular: false
         }
       ]
@@ -127,28 +127,28 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 13,
           question: t('faq.features.q1'),
           answer: t('faq.features.a1'),
-          tags: ['budget calculator', '50/30/20', '6 jars', 'savings rate'],
+          tags: [t('faq.tags.budgetCalculator'), t('faq.tags.fiftyThirtyTwenty'), t('faq.tags.sixJars'), t('faq.tags.savingsRate')],
           popular: true
         },
         {
           id: 14,
           question: t('faq.features.q2'),
           answer: t('faq.features.a2'),
-          tags: ['side hustle', 'business tracking', 'profit', 'taxes'],
+          tags: [t('faq.tags.sideHustle'), t('faq.tags.businessTracking'), t('faq.tags.profit'), t('faq.tags.taxes')],
           popular: true
         },
         {
           id: 15,
           question: t('faq.features.q3'),
           answer: t('faq.features.a3'),
-          tags: ['investments', 'portfolio', 'dividends', 'performance'],
+          tags: [t('faq.tags.investments'), t('faq.tags.portfolio'), t('faq.tags.dividends'), t('faq.tags.performance')],
           popular: false
         },
         {
           id: 16,
           question: t('faq.features.q4'),
           answer: t('faq.features.a4'),
-          tags: ['currency', 'international', 'multi-currency'],
+          tags: [t('faq.tags.currency'), t('faq.tags.international'), t('faq.tags.multiCurrency')],
           popular: false
         }
       ]
@@ -163,63 +163,63 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 24,
           question: t('faq.investing.q1'),
           answer: t('faq.investing.a1'),
-          tags: ['ticker', 'symbol', 'basics', 'stocks'],
+          tags: [t('faq.tags.ticker'), t('faq.tags.symbol'), t('faq.tags.basics'), t('faq.tags.stocks')],
           popular: true
         },
         {
           id: 25,
           question: t('faq.investing.q2'),
           answer: t('faq.investing.a2'),
-          tags: ['shares', 'how many', 'beginner', 'starting out'],
+          tags: [t('faq.tags.shares'), t('faq.tags.howMany'), t('faq.tags.beginner'), t('faq.tags.startingOut')],
           popular: true
         },
         {
           id: 26,
           question: t('faq.investing.q3'),
           answer: t('faq.investing.a3'),
-          tags: ['average cost', 'cost basis', 'calculation', 'profit'],
+          tags: [t('faq.tags.averageCost'), t('faq.tags.costBasis'), t('faq.tags.calculation'), t('faq.tags.profit')],
           popular: true
         },
         {
           id: 27,
           question: t('faq.investing.q4'),
           answer: t('faq.investing.a4'),
-          tags: ['drip', 'dividends', 'reinvestment', 'compounding', 'passive income'],
+          tags: [t('faq.tags.drip'), t('faq.tags.dividends'), t('faq.tags.reinvestment'), t('faq.tags.compounding'), t('faq.tags.passiveIncome')],
           popular: true
         },
         {
           id: 28,
           question: t('faq.investing.q5'),
           answer: t('faq.investing.a5'),
-          tags: ['dividends', 'passive income', 'yield', 'payments'],
+          tags: [t('faq.tags.dividends'), t('faq.tags.passiveIncome'), t('faq.tags.yield'), t('faq.tags.payments')],
           popular: true
         },
         {
           id: 29,
           question: t('faq.investing.q6'),
           answer: t('faq.investing.a6'),
-          tags: ['realized gains', 'unrealized gains', 'profit', 'taxes', 'selling'],
+          tags: [t('faq.tags.realizedGains'), t('faq.tags.unrealizedGains'), t('faq.tags.profit'), t('faq.tags.taxes'), t('faq.tags.selling')],
           popular: true
         },
         {
           id: 30,
           question: t('faq.investing.q7'),
           answer: t('faq.investing.a7'),
-          tags: ['tfsa', 'rrsp', 'account types', 'tax', 'canada'],
+          tags: [t('faq.tags.tfsa'), t('faq.tags.rrsp'), t('faq.tags.accountTypes'), t('faq.tags.tax'), t('faq.tags.canada')],
           popular: false
         },
         {
           id: 31,
           question: t('faq.investing.q8'),
           answer: t('faq.investing.a8'),
-          tags: ['stock price', 'current price', 'how to find', 'yahoo finance'],
+          tags: [t('faq.tags.stockPrice'), t('faq.tags.currentPrice'), t('faq.tags.howToFind'), t('faq.tags.yahooFinance')],
           popular: false
         },
         {
           id: 32,
           question: t('faq.investing.q9'),
           answer: t('faq.investing.a9'),
-          tags: ['beginner', 'getting started', 'first investment', 'how to start'],
+          tags: [t('faq.tags.beginner'), t('faq.tags.gettingStarted'), t('faq.tags.firstInvestment'), t('faq.tags.howToStart')],
           popular: true
         }
       ]
@@ -234,28 +234,28 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 17,
           question: t('faq.account.q1'),
           answer: t('faq.account.a1'),
-          tags: ['subscription', 'plan change', 'billing'],
+          tags: [t('faq.tags.subscription'), t('faq.tags.planChange'), t('faq.tags.billing')],
           popular: true
         },
         {
           id: 18,
           question: t('faq.account.q2'),
           answer: t('faq.account.a2'),
-          tags: ['export', 'data portability', 'CSV'],
+          tags: [t('faq.tags.export'), t('faq.tags.dataPortability'), t('faq.tags.csv')],
           popular: false
         },
         {
           id: 19,
           question: t('faq.account.q3'),
           answer: t('faq.account.a3'),
-          tags: ['account deletion', 'data removal', 'permanent'],
+          tags: [t('faq.tags.accountDeletion'), t('faq.tags.dataRemoval'), t('faq.tags.permanent')],
           popular: false
         },
         {
           id: 33,
           question: t('faq.account.q4'),
           answer: t('faq.account.a4'),
-          tags: ['subscription management', 'invoices', 'billing', 'customer portal', 'payment methods'],
+          tags: [t('faq.tags.subscriptionManagement'), t('faq.tags.invoices'), t('faq.tags.billing'), t('faq.tags.customerPortal'), t('faq.tags.paymentMethods')],
           popular: true
         }
       ]
@@ -270,28 +270,28 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 20,
           question: t('faq.troubleshooting.q1'),
           answer: t('faq.troubleshooting.a1'),
-          tags: ['calculations', 'refresh', 'data accuracy'],
+          tags: [t('faq.tags.calculations'), t('faq.tags.refresh'), t('faq.tags.dataAccuracy')],
           popular: true
         },
         {
           id: 21,
           question: t('faq.troubleshooting.q2'),
           answer: t('faq.troubleshooting.a2'),
-          tags: ['performance', 'slow', 'cache', 'browser'],
+          tags: [t('faq.tags.performance'), t('faq.tags.slow'), t('faq.tags.cache'), t('faq.tags.browser')],
           popular: false
         },
         {
           id: 22,
           question: t('faq.troubleshooting.q3'),
           answer: t('faq.troubleshooting.a3'),
-          tags: ['data missing', 'login', 'account', 'anonymous'],
+          tags: [t('faq.tags.dataMissing'), t('faq.tags.login'), t('faq.tags.account'), t('faq.tags.anonymous')],
           popular: true
         },
         {
           id: 23,
           question: t('faq.troubleshooting.q4'),
           answer: t('faq.troubleshooting.a4'),
-          tags: ['support', 'contact', 'help', 'response time'],
+          tags: [t('faq.tags.support'), t('faq.tags.contact'), t('faq.tags.help'), t('faq.tags.responseTime')],
           popular: true
         }
       ]
