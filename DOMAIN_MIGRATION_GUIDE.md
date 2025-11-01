@@ -96,6 +96,70 @@ Value: kompul.com
 
 ---
 
+## 🔧 **NAMECHEAP SPECIFIC INSTRUCTIONS**
+
+### **How to Add DNS Records in Namecheap:**
+
+1. **Log into Namecheap**
+   - Go to: https://www.namecheap.com/myaccount/login/
+   - Enter your credentials
+
+2. **Navigate to Domain List**
+   - Click **Domain List** in left sidebar
+   - Find `kompul.com`
+   - Click **Manage** button
+
+3. **Access DNS Settings**
+   - Click **Advanced DNS** tab
+   - You'll see existing DNS records
+
+4. **Add A Record for App Subdomain:**
+   - Click **Add New Record** button
+   - Select: **A Record** from dropdown
+   - Host: `app`
+   - Value: `76.76.21.21`
+   - TTL: **Automatic** or `3600`
+   - Click **Save All Changes** (green checkmark)
+
+5. **Alternative - CNAME Record (if Vercel tells you to use CNAME):**
+   - Click **Add New Record** button
+   - Select: **CNAME Record** from dropdown
+   - Host: `app`
+   - Value: `cname.vercel-dns.com.` (include the dot at the end!)
+   - TTL: **Automatic** or `3600`
+   - Click **Save All Changes**
+
+### **Namecheap DNS Screenshot Reference:**
+
+```
+┌─────────────────────────────────────────────┐
+│  Advanced DNS                               │
+├─────────────────────────────────────────────┤
+│  Type     Host    Value           TTL       │
+│  ────────────────────────────────────────   │
+│  A         app     76.76.21.21    Automatic │
+│  ────────────────────────────────────────   │
+│  [+ Add New Record]                         │
+└─────────────────────────────────────────────┘
+```
+
+### **Important Namecheap Notes:**
+
+- ⚠️ **Don't include the domain in Host field** - Just use `app`, NOT `app.kompul.com`
+- ⚠️ **CNAME values need trailing dot** - Use `cname.vercel-dns.com.` with the dot!
+- ⚠️ **Wait 5-10 minutes after saving** - Namecheap applies changes quickly
+- ⚠️ **Use "Save All Changes" button** - Green checkmark at the top
+- ✅ **Namecheap DNS is fast** - Usually propagates in 30 mins - 2 hours
+
+### **Verify DNS in Namecheap:**
+
+After adding records, you can verify:
+1. Scroll down to **Domain** section
+2. Look for **Nameservers** - Should show "Namecheap BasicDNS"
+3. If using custom nameservers, this guide won't work - contact support
+
+---
+
 ## 📋 **PHASE 2: VERCEL CONFIGURATION**
 
 ### **2.1 Add New Domain to Vercel**
