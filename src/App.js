@@ -8525,7 +8525,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 <div className="space-y-1 text-sm text-gray-300">
                   <div className="flex justify-between">
                     <span>{t('transactions.frequency')}</span>
-                    <span className="capitalize">{recurring.frequency}</span>
+                    <span className="capitalize">{t(`frequencies.${recurring.frequency}`)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>{t('transactions.nextDue')}</span>
@@ -8533,7 +8533,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   </div>
                   <div className="flex justify-between">
                     <span>{t('common.category')}:</span>
-                    <span className="capitalize">{recurring.subcategory}</span>
+                    <span className="capitalize">{t(`categories.${recurring.subcategory}`)}</span>
                   </div>
                 </div>
                 
@@ -8983,9 +8983,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                       {formatDateForUser(transaction.date)}
                       <span className="mx-2">•</span>
                       <span className={transaction.category === 'business' ? 'text-blue-400' : 'text-green-400'}>
-                        {transaction.category}
+                        {t(`categories.${transaction.category}`)}
                       </span>
-                      {transaction.subcategory && <><span className="mx-2">•</span>{transaction.subcategory}</>}
+                      {transaction.subcategory && <><span className="mx-2">•</span>{t(`categories.${transaction.subcategory}`)}</>}
                     </div>
                   </div>
                 </div>

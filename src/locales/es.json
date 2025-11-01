@@ -512,6 +512,16 @@
     "activities": "Actividades",
     "visa": "Visa"
   },
+  "frequencies": {
+    "daily": "Diario",
+    "weekly": "Semanal",
+    "bi-weekly": "Quincenal",
+    "biWeekly": "Quincenal",
+    "monthly": "Mensual",
+    "quarterly": "Trimestral",
+    "annually": "Anual",
+    "yearly": "Anual"
+  },
   "accounts": {
     "checking": "Cuenta Corriente",
     "savings": "Cuenta de Ahorros",

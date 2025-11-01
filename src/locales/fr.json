@@ -700,6 +700,16 @@
     "activities": "Activités",
     "visa": "Visa"
   },
+  "frequencies": {
+    "daily": "Quotidien",
+    "weekly": "Hebdomadaire",
+    "bi-weekly": "Bihebdomadaire",
+    "biWeekly": "Bihebdomadaire",
+    "monthly": "Mensuel",
+    "quarterly": "Trimestriel",
+    "annually": "Annuel",
+    "yearly": "Annuel"
+  },
   "accounts": {
     "cash": "Espèces",
     "checking": "Compte Chèque",

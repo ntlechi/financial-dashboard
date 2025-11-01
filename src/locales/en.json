@@ -1361,6 +1361,16 @@
     "subcategory": "Subcategory",
     "frequency": "Frequency"
   },
+  "frequencies": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "bi-weekly": "Bi-weekly",
+    "biWeekly": "Bi-weekly",
+    "monthly": "Monthly",
+    "quarterly": "Quarterly",
+    "annually": "Annually",
+    "yearly": "Yearly"
+  },
   "accounts": {
     "cash": "Cash",
     "checking": "Checking",
