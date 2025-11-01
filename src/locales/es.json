@@ -304,7 +304,8 @@
     "setPasswordPlaceholder": "Establece Tu Contraseña",
     "yearShort": "a",
     "monthShort": "m",
-    "interest": "interés"
+    "interest": "interés",
+    "new": "NUEVO"
   },
   "notifications": {
     "welcome": "¡Bienvenido! Tu panel está listo.",
@@ -617,6 +618,7 @@
     "missionComplete": "✓ Misión Completada",
     "markAsComplete": "Marcar como Completado (+25 XP)",
     "theTrail": "El Sendero",
+    "trailDescription": "Misiones guiadas que abarcan Libertad Financiera, Convertirse en Excelente, Emprendimiento, Supervivencia Esencial y Sabiduría del Viajero",
     "coreDescription": "Misiones esenciales que abarcan Libertad Financiera, Convertirse en Excelente, Emprendimiento, Supervivencia Esencial y Sabiduría del Viajero.",
     "progress": "Progreso:",
     "missions": "misiones",

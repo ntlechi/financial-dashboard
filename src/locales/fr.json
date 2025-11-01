@@ -303,7 +303,8 @@
     "setPasswordPlaceholder": "Définir Votre Mot de Passe",
     "yearShort": "a",
     "monthShort": "m",
-    "interest": "intérêt"
+    "interest": "intérêt",
+    "new": "NOUVEAU"
   },
   "dashboard": {
     "title": "Tableau de Bord",
@@ -804,6 +805,7 @@
     "missionComplete": "✓ Mission Terminée",
     "markAsComplete": "Marquer comme Terminé (+25 XP)",
     "theTrail": "La Piste",
+    "trailDescription": "Missions guidées couvrant la Liberté Financière, Devenir Excellent, l'Entrepreneuriat, la Survie Essentielle et la Sagesse du Voyageur",
     "coreDescription": "Missions essentielles couvrant la Liberté Financière, Devenir Excellent, l'Entrepreneuriat, la Survie Essentielle et la Sagesse du Voyageur.",
     "progress": "Progrès:",
     "missions": "missions",

@@ -272,7 +272,8 @@
     "setPasswordPlaceholder": "Set Your Password",
     "yearShort": "y",
     "monthShort": "m",
-    "interest": "interest"
+    "interest": "interest",
+    "new": "NEW"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -893,6 +894,7 @@
     "missionComplete": "✓ Mission Complete",
     "markAsComplete": "Mark as Complete (+25 XP)",
     "theTrail": "The Trail",
+    "trailDescription": "Guided missions spanning Financial Freedom, Becoming Great, Entrepreneurship, Essential Survival, and Traveler's Wisdom",
     "coreDescription": "Core missions spanning Financial Freedom, Becoming Great, Entrepreneurship, Essential Survival, and Traveler's Wisdom.",
     "progress": "Progress:",
     "missions": "missions",

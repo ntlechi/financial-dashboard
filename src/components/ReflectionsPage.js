@@ -97,7 +97,7 @@ export default function ReflectionsPage({
             }`}
           >
             <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
-            My Logbook
+            {t('logbook.missionLogbook')}
           </button>
           <button
             onClick={() => setActiveTab('trail')}
@@ -108,9 +108,9 @@ export default function ReflectionsPage({
             }`}
           >
             <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
-            The Trail
+            {t('trail.theTrail')}
             <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-xs rounded-full font-semibold border border-amber-500/30">
-              NEW
+              {t('common.new')}
             </span>
           </button>
         </div>
@@ -133,10 +133,10 @@ export default function ReflectionsPage({
             <div className="text-center">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3 flex items-center justify-center gap-2 sm:gap-3">
                 <Compass className="w-10 h-10 sm:w-12 sm:h-12 text-amber-400" />
-                The Trail
+                {t('trail.theTrail')}
               </h1>
               <p className="text-base sm:text-lg md:text-xl text-slate-300 font-medium px-4">
-                Guided missions spanning Financial Freedom, Becoming Great, Entrepreneurship, Essential Survival, and Traveler's Wisdom
+                {t('trail.trailDescription')}
               </p>
             </div>
           )}
