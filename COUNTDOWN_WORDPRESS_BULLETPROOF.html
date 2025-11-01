@@ -1,0 +1,122 @@
+<!-- 🔥 WORDPRESS BULLETPROOF COUNTDOWN TIMER -->
+<!-- This version handles all WordPress quirks and conflicts -->
+
+<script>
+// 🛡️ ULTRA-DEFENSIVE WORDPRESS-SAFE COUNTDOWN
+(function() {
+    'use strict';
+    
+    // Ultra-defensive: Check if already running
+    var elementId = 'early-adopter-countdown-timer';
+    var flagName = 'kompul_countdown_' + elementId;
+    
+    if (window[flagName]) {
+        console.log('Kompul: Countdown already running, skipping duplicate');
+        return;
+    }
+    window[flagName] = true;
+    
+    var countdownElement = document.getElementById(elementId);
+    if (!countdownElement) {
+        console.log('Kompul: Countdown element not found');
+        return;
+    }
+    
+    // Lock the element to prevent multiple updates
+    if (countdownElement.dataset.kompulLocked === 'true') {
+        console.log('Kompul: Element already locked');
+        return;
+    }
+    countdownElement.dataset.kompulLocked = 'true';
+    
+    // Target: Jan 2, 2026 midnight EST = 5am UTC
+    var endYear = 2026;
+    var endMonth = 0; // January (0-indexed)
+    var endDay = 2;
+    var endHour = 5; // 5am UTC = midnight EST
+    var endMinute = 0;
+    var endSecond = 0;
+    
+    // Create date using UTC to avoid timezone issues
+    var endDate = Date.UTC(endYear, endMonth, endDay, endHour, endMinute, endSecond);
+    
+    var lastDisplay = '';
+    var updateHandle = null;
+    
+    function updateDisplay() {
+        try {
+            // Get current time in UTC
+            var now = Date.now();
+            var remaining = endDate - now;
+            
+            // Check if expired
+            if (remaining <= 0) {
+                if (countdownElement.textContent !== 'Offer Ended') {
+                    countdownElement.textContent = 'Offer Ended';
+                }
+                return; // Stop updating
+            }
+            
+            // Convert to seconds (integer only - no decimals!)
+            var totalSec = Math.floor(remaining / 1000);
+            
+            // Break down into days, hours, minutes, seconds
+            // Using only integer math - NO floating point!
+            var days = Math.floor(totalSec / 86400);
+            var remainderAfterDays = totalSec - (days * 86400);
+            
+            var hours = Math.floor(remainderAfterDays / 3600);
+            var remainderAfterHours = remainderAfterDays - (hours * 3600);
+            
+            var minutes = Math.floor(remainderAfterHours / 60);
+            var seconds = remainderAfterHours - (minutes * 60);
+            
+            // Format with zero padding
+            var hh = hours < 10 ? '0' + hours : hours;
+            var mm = minutes < 10 ? '0' + minutes : minutes;
+            var ss = seconds < 10 ? '0' + seconds : seconds;
+            
+            // Create display string
+            var display = days + 'd ' + hh + 'h ' + mm + 'm ' + ss + 's';
+            
+            // Only update DOM if changed (prevents flickering)
+            if (display !== lastDisplay) {
+                countdownElement.textContent = display;
+                lastDisplay = display;
+            }
+        } catch (e) {
+            console.error('Kompul countdown error:', e);
+        }
+    }
+    
+    // Update immediately
+    updateDisplay();
+    
+    // Update every 500ms (twice per second for smoother display)
+    // Using setInterval with a short interval is more reliable in WordPress
+    updateHandle = setInterval(updateDisplay, 500);
+    
+    // Cleanup on page unload
+    if (window.addEventListener) {
+        window.addEventListener('beforeunload', function() {
+            if (updateHandle) {
+                clearInterval(updateHandle);
+                updateHandle = null;
+            }
+        });
+    }
+    
+    // Extra cleanup for WordPress page transitions
+    if (window.addEventListener) {
+        window.addEventListener('pagehide', function() {
+            if (updateHandle) {
+                clearInterval(updateHandle);
+                updateHandle = null;
+            }
+        });
+    }
+    
+    console.log('Kompul: Countdown initialized successfully');
+})();
+</script>
+

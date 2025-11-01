@@ -463,78 +463,36 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// ✅ FIXED COUNTDOWN TIMER - No more day glitches!
+// ✅ ULTRA-SIMPLE COUNTDOWN - WordPress Bulletproof!
 (function() {
-    'use strict';
+    var el = document.getElementById('early-adopter-countdown-timer');
+    if (!el || el.getAttribute('data-init')) return;
+    el.setAttribute('data-init', 'true');
     
-    // Prevent multiple instances
-    if (window.kompulCountdownInitialized) {
-        return;
-    }
-    window.kompulCountdownInitialized = true;
+    // Target: Jan 2, 2026 midnight EST = 5am UTC
+    var end = Date.UTC(2026, 0, 2, 5, 0, 0);
     
-    // Target date: January 2, 2026 at midnight EST (05:00 UTC)
-    const END_DATE_MS = new Date('2026-01-02T05:00:00.000Z').getTime();
-    
-    const countdownElement = document.getElementById('early-adopter-countdown-timer');
-    if (!countdownElement) {
-        return;
-    }
-
-    let animationFrameId = null;
-    let lastUpdateSecond = -1; // Track the last second we updated
-
-    function updateCountdown() {
-        const nowMs = Date.now();
-        const remainingMs = END_DATE_MS - nowMs;
-
-        if (remainingMs <= 0) {
-            countdownElement.textContent = 'Offer Ended';
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            }
-            return;
-        }
-
-        // Calculate time units using integer division (no floating point issues)
-        const totalSeconds = Math.floor(remainingMs / 1000);
-        
-        // Only update DOM if the second has actually changed
-        if (totalSeconds === lastUpdateSecond) {
-            animationFrameId = requestAnimationFrame(updateCountdown);
-            return;
+    function update() {
+        var ms = end - Date.now();
+        if (ms <= 0) { 
+            el.textContent = 'Offer Ended'; 
+            return; 
         }
         
-        lastUpdateSecond = totalSeconds;
-
-        // Calculate each unit separately using Math.floor for stability
-        const days = Math.floor(totalSeconds / 86400); // 86400 = 60*60*24
-        const hours = Math.floor((totalSeconds % 86400) / 3600); // 3600 = 60*60
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-
-        // Format with zero padding
-        const formattedHours = String(hours).padStart(2, '0');
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        const formattedSeconds = String(seconds).padStart(2, '0');
-
-        // Update display
-        countdownElement.textContent = `${days}d ${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
-
-        // Continue animation loop
-        animationFrameId = requestAnimationFrame(updateCountdown);
+        var s = Math.floor(ms / 1000);
+        var d = Math.floor(s / 86400);
+        var h = Math.floor((s % 86400) / 3600);
+        var m = Math.floor((s % 3600) / 60);
+        var sec = s % 60;
+        
+        el.textContent = d + 'd ' + 
+            (h < 10 ? '0' : '') + h + 'h ' + 
+            (m < 10 ? '0' : '') + m + 'm ' + 
+            (sec < 10 ? '0' : '') + sec + 's';
     }
-
-    // Start the countdown
-    updateCountdown();
     
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', function() {
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-        }
-    });
+    update();
+    setInterval(update, 1000);
 })();
 </script>
 
