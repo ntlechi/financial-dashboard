@@ -300,7 +300,10 @@
     "firstNamePlaceholder": "Prénom",
     "emailPlaceholder": "Adresse Email",
     "passwordPlaceholder": "Mot de Passe",
-    "setPasswordPlaceholder": "Définir Votre Mot de Passe"
+    "setPasswordPlaceholder": "Définir Votre Mot de Passe",
+    "yearShort": "a",
+    "monthShort": "m",
+    "interest": "intérêt"
   },
   "dashboard": {
     "title": "Tableau de Bord",

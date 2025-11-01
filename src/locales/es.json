@@ -301,7 +301,10 @@
     "firstNamePlaceholder": "Nombre",
     "emailPlaceholder": "Correo Electrónico",
     "passwordPlaceholder": "Contraseña",
-    "setPasswordPlaceholder": "Establece Tu Contraseña"
+    "setPasswordPlaceholder": "Establece Tu Contraseña",
+    "yearShort": "a",
+    "monthShort": "m",
+    "interest": "interés"
   },
   "notifications": {
     "welcome": "¡Bienvenido! Tu panel está listo.",

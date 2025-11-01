@@ -3362,7 +3362,7 @@ const DebtPayoffCalculator = () => {
                   <div>
                     <p className="text-gray-400">{t('debtPayoff.payoffTime')}</p>
                     <p className="text-emerald-400 font-bold">
-                      {currentResult.totalYears}y {currentResult.remainingMonths}m
+                      {currentResult.totalYears}{t('common.yearShort')} {currentResult.remainingMonths}{t('common.monthShort')}
                     </p>
                   </div>
                   <div>
@@ -3415,15 +3415,15 @@ const DebtPayoffCalculator = () => {
                   <div className="flex justify-between">
                     <span className="text-blue-400">🏔️ {t('debtPayoff.snowball')}:</span>
                     <span className="text-white">
-                      {snowballResult.totalYears}y {snowballResult.remainingMonths}m 
-                      (${Math.round(parseFloat(snowballResult.totalInterestPaid) || 0).toLocaleString()} interest)
+                      {snowballResult.totalYears}{t('common.yearShort')} {snowballResult.remainingMonths}{t('common.monthShort')} 
+                      (${Math.round(parseFloat(snowballResult.totalInterestPaid) || 0).toLocaleString()} {t('common.interest')})
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-purple-400">🔥 {t('debtPayoff.avalanche')}:</span>
                     <span className="text-white">
-                      {avalancheResult.totalYears}y {avalancheResult.remainingMonths}m 
-                      (${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()} interest)
+                      {avalancheResult.totalYears}{t('common.yearShort')} {avalancheResult.remainingMonths}{t('common.monthShort')} 
+                      (${Math.round(parseFloat(avalancheResult.totalInterestPaid) || 0).toLocaleString()} {t('common.interest')})
                     </span>
                   </div>
                   <div className="border-t border-gray-600 pt-2 mt-2">

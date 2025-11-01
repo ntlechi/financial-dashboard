@@ -269,7 +269,10 @@
     "firstNamePlaceholder": "First Name",
     "emailPlaceholder": "Email Address",
     "passwordPlaceholder": "Password",
-    "setPasswordPlaceholder": "Set Your Password"
+    "setPasswordPlaceholder": "Set Your Password",
+    "yearShort": "y",
+    "monthShort": "m",
+    "interest": "interest"
   },
   "dashboard": {
     "title": "Dashboard",
