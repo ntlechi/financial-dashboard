@@ -2,11 +2,16 @@
 
 ## 📋 **WHAT YOU GOT:**
 
-Three ready-to-use HTML sections showcasing your 3-language support - **NO country flags** (culturally neutral):
+Five ready-to-use HTML sections showcasing your 3-language support - **NO country flags** (culturally neutral):
 
-1. **`LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html`** - Full-featured with language code badges (EN/FR/ES)
-2. **`LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html`** - Full-featured with spinning globe emojis
-3. **`LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html`** - Minimal, clean, compact
+**DARK THEME (Matches Your Landing Page):**
+1. **`LANDING_PAGE_MULTILINGUAL_DARK_THEME.html`** ⭐ **RECOMMENDED** - Dark wilderness/expedition theme
+2. **`LANDING_PAGE_MULTILINGUAL_COMPACT_DARK.html`** - Compact dark version
+
+**LIGHT THEME (Alternative):**
+3. **`LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html`** - Full-featured with language code badges
+4. **`LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html`** - Full-featured with spinning globe emojis
+5. **`LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html`** - Minimal, clean, compact
 
 All are **100% self-contained** with CSS included. Just copy-paste into WordPress!
 
@@ -14,7 +19,58 @@ All are **100% self-contained** with CSS included. Just copy-paste into WordPres
 
 ---
 
-## 🎨 **VERSION 1: LANGUAGE CODE BADGES (RECOMMENDED)**
+## 🎨 **VERSION 1: DARK WILDERNESS THEME** ⭐ **RECOMMENDED**
+
+**File:** `LANDING_PAGE_MULTILINGUAL_DARK_THEME.html`
+
+### **Features:**
+- 🌲 **Dark wilderness/expedition aesthetic** - Matches your landing page perfectly!
+- 🎨 Dark background (#1a202c to #2d3748) with green accents (#48bb78)
+- 🎯 Language code badges (EN/FR/ES) in circular green icons
+- 📊 Impact statistics with green highlights
+- 🎴 Three detailed language cards with dark theme
+- 🎭 Hover animations
+- 📱 Fully responsive (mobile-friendly)
+- 🔘 Tactical-style CTA button (green, uppercase)
+- 🌊 Subtle topographic pattern animation
+- 🌍 **NO country flags** - culturally neutral!
+
+### **Perfect For:**
+- Main landing page (BEST MATCH for your site!)
+- Seamless integration with dark theme
+- Professional wilderness/expedition aesthetic
+- Matches "Recon Kit", "Climber", "Operator" branding
+
+### **Color Scheme:**
+- Background: `#1a202c` to `#2d3748` (dark grays)
+- Accent: `#48bb78` (green - your brand color)
+- Text: `#f7fafc` (light gray/white)
+- Secondary: `#cbd5e0` (muted gray)
+
+---
+
+## 🎨 **VERSION 2: COMPACT DARK THEME**
+
+**File:** `LANDING_PAGE_MULTILINGUAL_COMPACT_DARK.html`
+
+### **Features:**
+- 🌲 **Same dark wilderness aesthetic** as Version 1
+- 📏 Compact, minimal layout
+- 🎨 Green gradient badges (EN/FR/ES)
+- 🎭 Simple hover effect
+- 📱 Mobile responsive
+- ⚡ Fast loading
+- 🌍 **NO country flags** - culturally neutral!
+
+### **Perfect For:**
+- Quick mentions
+- Space-constrained areas
+- Secondary pages
+- Footer sections
+
+---
+
+## 🎨 **VERSION 3: LIGHT THEME (ALTERNATIVE)**
 
 **File:** `LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html`
 
@@ -69,7 +125,7 @@ Start Your Journey Today →
 
 ---
 
-## 🎨 **VERSION 2: GLOBE ICONS (ALTERNATIVE)**
+## 🎨 **VERSION 4: GLOBE ICONS (LIGHT THEME)**
 
 **File:** `LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html`
 
@@ -92,7 +148,7 @@ Start Your Journey Today →
 
 ---
 
-## 🎨 **VERSION 3: COMPACT**
+## 🎨 **VERSION 5: COMPACT LIGHT THEME**
 
 **File:** `LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html`
 
@@ -489,12 +545,20 @@ Gestisci le tue finanze in italiano con funzionalità complete e contenuti compl
 
 ## 📁 **FILES INCLUDED:**
 
-1. `LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html` - Full version with language codes
-2. `LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html` - Full version with globe emojis
-3. `LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html` - Compact version
-4. `LANDING_PAGE_MULTILINGUAL_GUIDE.md` - This guide
+**DARK THEME (Matches Your Landing Page):**
+1. `LANDING_PAGE_MULTILINGUAL_DARK_THEME.html` ⭐ **RECOMMENDED** - Full dark version
+2. `LANDING_PAGE_MULTILINGUAL_COMPACT_DARK.html` - Compact dark version
 
-**All versions are culturally neutral - NO country flags!** 🌍
+**LIGHT THEME (Alternative):**
+3. `LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html` - Full light version with language codes
+4. `LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html` - Full light version with globe emojis
+5. `LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html` - Compact light version
+
+**GUIDE:**
+6. `LANDING_PAGE_MULTILINGUAL_GUIDE.md` - This complete usage guide
+
+**All versions are culturally neutral - NO country flags!** 🌍  
+**Dark theme versions perfectly match your wilderness/expedition aesthetic!** 🌲
 
 ---
 

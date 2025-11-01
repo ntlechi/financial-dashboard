@@ -1,0 +1,114 @@
+<!-- 🌍 KOMPUL - MULTILINGUAL SUPPORT SECTION (COMPACT DARK THEME) -->
+<!-- Matches the Survive Backpacking / Kompul landing page aesthetic -->
+
+<style>
+  .kompul-lang-compact {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    padding: 60px 20px;
+    margin: 40px 0;
+    text-align: center;
+    border-top: 2px solid #48bb78;
+    border-bottom: 2px solid #48bb78;
+  }
+  
+  .kompul-lang-compact-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .kompul-lang-compact-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #f7fafc;
+    margin: 0 0 15px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .kompul-lang-compact-subtitle {
+    font-size: 18px;
+    color: #cbd5e0;
+    margin: 0 0 40px 0;
+  }
+  
+  .kompul-lang-list {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .kompul-lang-item {
+    text-align: center;
+  }
+  
+  .kompul-lang-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: #1a202c;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    border: 2px solid rgba(72, 187, 120, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .kompul-lang-item:hover .kompul-lang-badge {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(72, 187, 120, 0.5);
+  }
+  
+  .kompul-lang-native {
+    font-size: 14px;
+    color: #48bb78;
+    font-weight: 600;
+    margin: 5px 0 0 0;
+  }
+  
+  @media (max-width: 768px) {
+    .kompul-lang-compact-title {
+      font-size: 28px;
+    }
+    
+    .kompul-lang-list {
+      gap: 30px;
+    }
+    
+    .kompul-lang-badge {
+      font-size: 18px;
+      padding: 12px 25px;
+    }
+  }
+</style>
+
+<div class="kompul-lang-compact">
+  <div class="kompul-lang-compact-container">
+    <h2 class="kompul-lang-compact-title">Now Available in 3 Languages</h2>
+    <p class="kompul-lang-compact-subtitle">
+      Manage your finances in English, French, or Spanish
+    </p>
+    
+    <div class="kompul-lang-list">
+      <div class="kompul-lang-item">
+        <div class="kompul-lang-badge">EN</div>
+        <p class="kompul-lang-native">English</p>
+      </div>
+      
+      <div class="kompul-lang-item">
+        <div class="kompul-lang-badge">FR</div>
+        <p class="kompul-lang-native">Français</p>
+      </div>
+      
+      <div class="kompul-lang-item">
+        <div class="kompul-lang-badge">ES</div>
+        <p class="kompul-lang-native">Español</p>
+      </div>
+    </div>
+  </div>
+</div>
+

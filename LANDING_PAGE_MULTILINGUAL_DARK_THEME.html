@@ -1,0 +1,315 @@
+<!-- 🌍 KOMPUL - MULTILINGUAL SUPPORT SECTION (DARK WILDERNESS THEME) -->
+<!-- Matches the Survive Backpacking / Kompul landing page aesthetic -->
+
+<style>
+  /* 🎨 Dark expedition theme to match landing page */
+  .kompul-multilingual-section {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    padding: 80px 20px;
+    margin: 60px 0;
+    position: relative;
+    overflow: hidden;
+    border-top: 3px solid #48bb78;
+    border-bottom: 3px solid #48bb78;
+  }
+  
+  /* Subtle topographic pattern */
+  .kompul-multilingual-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(72, 187, 120, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(72, 187, 120, 0.05) 0%, transparent 50%);
+    animation: kompul-float 15s ease-in-out infinite;
+  }
+  
+  @keyframes kompul-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  .kompul-multilingual-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .kompul-multilingual-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  
+  .kompul-multilingual-badge {
+    display: inline-block;
+    background: rgba(72, 187, 120, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 8px 20px;
+    border-radius: 30px;
+    color: #48bb78;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    border: 2px solid rgba(72, 187, 120, 0.3);
+  }
+  
+  .kompul-multilingual-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: #f7fafc;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .kompul-multilingual-subtitle {
+    font-size: 20px;
+    color: #cbd5e0;
+    margin: 0;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  .kompul-languages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+  }
+  
+  .kompul-language-card {
+    background: rgba(45, 55, 72, 0.8);
+    backdrop-filter: blur(20px);
+    padding: 40px 30px;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(72, 187, 120, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .kompul-language-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(72, 187, 120, 0.2);
+    border-color: #48bb78;
+  }
+  
+  .kompul-language-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a202c;
+    box-shadow: 0 4px 20px rgba(72, 187, 120, 0.3);
+    border: 3px solid rgba(72, 187, 120, 0.5);
+  }
+  
+  .kompul-language-code {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  
+  .kompul-language-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f7fafc;
+    margin: 0 0 10px 0;
+  }
+  
+  .kompul-language-native {
+    font-size: 18px;
+    color: #48bb78;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+  }
+  
+  .kompul-language-description {
+    font-size: 15px;
+    color: #a0aec0;
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  .kompul-stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  
+  .kompul-stat {
+    text-align: center;
+  }
+  
+  .kompul-stat-number {
+    font-size: 48px;
+    font-weight: 800;
+    color: #48bb78;
+    margin: 0;
+    text-shadow: 0 2px 20px rgba(72, 187, 120, 0.4);
+  }
+  
+  .kompul-stat-label {
+    font-size: 16px;
+    color: #cbd5e0;
+    margin: 5px 0 0 0;
+    font-weight: 500;
+  }
+  
+  .kompul-cta-section {
+    text-align: center;
+    margin-top: 60px;
+  }
+  
+  .kompul-cta-button {
+    display: inline-block;
+    background: #48bb78;
+    color: #1a202c;
+    padding: 18px 50px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(72, 187, 120, 0.3);
+    border: 2px solid #48bb78;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .kompul-cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(72, 187, 120, 0.5);
+    background: #38a169;
+    border-color: #38a169;
+  }
+  
+  /* 📱 Mobile responsiveness */
+  @media (max-width: 768px) {
+    .kompul-multilingual-section {
+      padding: 60px 20px;
+    }
+    
+    .kompul-multilingual-title {
+      font-size: 32px;
+    }
+    
+    .kompul-multilingual-subtitle {
+      font-size: 18px;
+    }
+    
+    .kompul-languages-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .kompul-stats-row {
+      gap: 40px;
+    }
+    
+    .kompul-stat-number {
+      font-size: 36px;
+    }
+  }
+</style>
+
+<div class="kompul-multilingual-section">
+  <div class="kompul-multilingual-container">
+    
+    <!-- Header -->
+    <div class="kompul-multilingual-header">
+      <div class="kompul-multilingual-badge">🌍 Global Financial Empowerment</div>
+      <h2 class="kompul-multilingual-title">Your Financial Journey.<br>Your Language.</h2>
+      <p class="kompul-multilingual-subtitle">
+        Kompul speaks your language. Whether you're in Montréal, Madrid, or Melbourne, 
+        manage your finances in the language that feels like home.
+      </p>
+    </div>
+    
+    <!-- Language Cards -->
+    <div class="kompul-languages-grid">
+      
+      <!-- English Card -->
+      <div class="kompul-language-card">
+        <div class="kompul-language-icon">
+          <span class="kompul-language-code">EN</span>
+        </div>
+        <h3 class="kompul-language-name">English</h3>
+        <p class="kompul-language-native">English</p>
+        <p class="kompul-language-description">
+          Full access to all features, educational content, and mission guides in clear, 
+          actionable English.
+        </p>
+      </div>
+      
+      <!-- French Card -->
+      <div class="kompul-language-card">
+        <div class="kompul-language-icon">
+          <span class="kompul-language-code">FR</span>
+        </div>
+        <h3 class="kompul-language-name">French</h3>
+        <p class="kompul-language-native">Français</p>
+        <p class="kompul-language-description">
+          Gérez vos finances en français avec une interface complètement traduite et des 
+          contenus adaptés à votre culture.
+        </p>
+      </div>
+      
+      <!-- Spanish Card -->
+      <div class="kompul-language-card">
+        <div class="kompul-language-icon">
+          <span class="kompul-language-code">ES</span>
+        </div>
+        <h3 class="kompul-language-name">Spanish</h3>
+        <p class="kompul-language-native">Español</p>
+        <p class="kompul-language-description">
+          Administra tus finanzas en español con una plataforma completamente localizada 
+          para la comunidad hispana.
+        </p>
+      </div>
+      
+    </div>
+    
+    <!-- Stats Row -->
+    <div class="kompul-stats-row">
+      <div class="kompul-stat">
+        <p class="kompul-stat-number">1.5B+</p>
+        <p class="kompul-stat-label">People Reached</p>
+      </div>
+      <div class="kompul-stat">
+        <div class="kompul-stat-number">3</div>
+        <p class="kompul-stat-label">Languages Supported</p>
+      </div>
+      <div class="kompul-stat">
+        <p class="kompul-stat-number">100%</p>
+        <p class="kompul-stat-label">Fully Translated</p>
+      </div>
+    </div>
+    
+    <!-- CTA Button -->
+    <div class="kompul-cta-section">
+      <a href="#pricing" class="kompul-cta-button">
+        Start Your Journey Today →
+      </a>
+    </div>
+    
+  </div>
+</div>
+
+<!-- End of Multilingual Section -->
+
