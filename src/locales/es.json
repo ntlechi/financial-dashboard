@@ -522,7 +522,10 @@
     "taxFree": "Libre de Impuestos",
     "taxDeferred": "Impuesto Diferido",
     "pension": "Pensión",
-    "savingsAccount": "Ahorros"
+    "savingsAccount": "Ahorros",
+    "investmentCash": "Efectivo de Inversión",
+    "moneyMarket": "Mercado Monetario",
+    "cd": "Certificado de Depósito"
   },
   "editor": {
     "targetAmount": "Monto Objetivo",
@@ -575,7 +578,23 @@
     "currentDebt": "Deuda Actual",
     "totalPaid": "Total Pagado",
     "minPaymentLabel": "Pago Mínimo",
-    "avgApr": "TAE Promedio"
+    "avgApr": "TAE Promedio",
+    "totalCashOnHand": "Total de Efectivo Disponible",
+    "currentRateAutoCalculated": "Tasa Actual (Auto-calculada)",
+    "basedOnActualTransactions": "Basado en tus ingresos y gastos reales de las transacciones",
+    "commonTargets": "Objetivos comunes",
+    "savingsTarget20": "20% - Consejo tradicional",
+    "savingsTarget3040": "30-40% - Ahorro agresivo",
+    "savingsTarget50": "50%+ - FIRE/Jubilación anticipada",
+    "savingsTarget60": "60%+ - Estilo de vida nómada digital",
+    "assetsLiabilities": "Activos y Pasivos",
+    "assetName": "Nombre del Activo",
+    "liabilityName": "Nombre del Pasivo",
+    "assetPlaceholder": "ej: Casa, Auto, Ahorros",
+    "liabilityPlaceholder": "ej: Hipoteca, Tarjeta de Crédito, Préstamo",
+    "value": "Valor",
+    "assets": "Activos",
+    "liabilities": "Pasivos"
   },
   "trail": {
     "loadingTrail": "Cargando El Sendero...",

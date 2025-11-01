@@ -709,7 +709,10 @@
     "taxFree": "Libre d'Impôt",
     "taxDeferred": "Impôt Différé",
     "pension": "Pension",
-    "savingsAccount": "Épargne"
+    "savingsAccount": "Épargne",
+    "investmentCash": "Liquidités d'Investissement",
+    "moneyMarket": "Marché Monétaire",
+    "cd": "Certificat de Dépôt"
   },
   "editor": {
     "targetAmount": "Montant Cible",
@@ -762,7 +765,23 @@
     "currentDebt": "Dette Actuelle",
     "totalPaid": "Total Payé",
     "minPaymentLabel": "Paiement Min",
-    "avgApr": "TAP Moy"
+    "avgApr": "TAP Moy",
+    "totalCashOnHand": "Total des Liquidités Disponibles",
+    "currentRateAutoCalculated": "Taux Actuel (Auto-calculé)",
+    "basedOnActualTransactions": "Basé sur vos revenus et dépenses réels des transactions",
+    "commonTargets": "Objectifs courants",
+    "savingsTarget20": "20% - Conseil traditionnel",
+    "savingsTarget3040": "30-40% - Épargne agressive",
+    "savingsTarget50": "50%+ - FIRE/Retraite anticipée",
+    "savingsTarget60": "60%+ - Mode de vie nomade numérique",
+    "assetsLiabilities": "Actifs et Passifs",
+    "assetName": "Nom de l'Actif",
+    "liabilityName": "Nom du Passif",
+    "assetPlaceholder": "ex : Maison, Voiture, Épargne",
+    "liabilityPlaceholder": "ex : Hypothèque, Carte de Crédit, Prêt",
+    "value": "Valeur",
+    "assets": "Actifs",
+    "liabilities": "Passifs"
   },
   "trail": {
     "loadingTrail": "Chargement de La Piste...",

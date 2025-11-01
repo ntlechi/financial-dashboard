@@ -15503,11 +15503,11 @@ function App() {
                                 }}
                                 className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-teal-500 focus:outline-none"
                               >
-                                <option value="Checking">Checking</option>
-                                <option value="Savings">Savings</option>
-                                <option value="Investment Cash">Investment Cash</option>
-                                <option value="Money Market">Money Market</option>
-                                <option value="CD">CD</option>
+                                <option value="Checking">{t('accounts.checking')}</option>
+                                <option value="Savings">{t('accounts.savings')}</option>
+                                <option value="Investment Cash">{t('accounts.investmentCash')}</option>
+                                <option value="Money Market">{t('accounts.moneyMarket')}</option>
+                                <option value="CD">{t('accounts.cd')}</option>
                               </select>
                             </div>
                             <div className="col-span-4">
@@ -15543,7 +15543,7 @@ function App() {
                     
                     <div className="mt-3 p-3 bg-teal-900/20 rounded-lg border border-teal-600/30">
                       <div className="text-teal-400 font-semibold">
-                        Total Cash on Hand: ${((parseFloat(tempCardData.total) || 0)).toLocaleString()}
+                        {t('editor.totalCashOnHand')}: ${((parseFloat(tempCardData.total) || 0)).toLocaleString()}
                       </div>
                     </div>
                   </div>
@@ -15979,15 +15979,15 @@ function App() {
               {editingCard === 'savingsRateTarget' && (
                 <div>
                   <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
-                    <div className="text-blue-400 font-semibold text-sm mb-1">Current Rate (Auto-calculated)</div>
+                    <div className="text-blue-400 font-semibold text-sm mb-1">{t('editor.currentRateAutoCalculated')}</div>
                     <div className="text-2xl font-bold text-blue-400">{data.savingsRate.current}%</div>
                     <div className="text-xs text-gray-300 mt-1">
-                      Based on your actual income and expenses from transactions
+                      {t('editor.basedOnActualTransactions')}
                     </div>
                   </div>
                   
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Target Savings Rate %</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('editor.targetSavingsRate')}</label>
                     <input
                       type="number"
                       value={tempCardData.target || ''}
@@ -15999,11 +15999,11 @@ function App() {
                     />
                     <div className="mt-2 text-xs text-gray-400">
                       <div className="grid grid-cols-1 gap-1">
-                        <div>💡 <strong>Common targets:</strong></div>
-                        <div>?�� 20% - Traditional advice</div>
-                        <div>?�� 30-40% - Aggressive saving</div>
-                        <div>?�� 50%+ - FIRE/Early retirement</div>
-                        <div>?�� 60%+ - Digital nomad lifestyle</div>
+                        <div>💡 <strong>{t('editor.commonTargets')}:</strong></div>
+                        <div>📊 {t('editor.savingsTarget20')}</div>
+                        <div>🚀 {t('editor.savingsTarget3040')}</div>
+                        <div>🔥 {t('editor.savingsTarget50')}</div>
+                        <div>🌍 {t('editor.savingsTarget60')}</div>
                       </div>
                     </div>
                   </div>
@@ -16014,7 +16014,7 @@ function App() {
               {editingCard === 'rainyDayFund' && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Current Amount</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('editor.currentAmount')}</label>
                     <input
                       type="number"
                       value={tempCardData.total || ''}
@@ -16023,7 +16023,7 @@ function App() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-300 mb-1">Goal Amount</label>
+                    <label className="block text-sm text-gray-300 mb-1">{t('editor.goalAmount')}</label>
                     <input
                       type="number"
                       value={tempCardData.goal || ''}
@@ -16167,7 +16167,7 @@ function App() {
                 <>
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-lg font-semibold text-white">Assets & Liabilities</h4>
+                      <h4 className="text-lg font-semibold text-white">{t('editor.assetsLiabilities')}</h4>
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
@@ -16216,11 +16216,11 @@ function App() {
                           <div className="grid grid-cols-12 gap-2 items-center">
                             <div className="col-span-6">
                               <label className="block text-xs text-gray-400 mb-1">
-                                {item.type === 'asset' ? 'Asset Name' : 'Liability Name'}
+                                {item.type === 'asset' ? t('editor.assetName') : t('editor.liabilityName')}
                               </label>
                               <input
                                 type="text"
-                                placeholder={item.type === 'asset' ? 'e.g., House, Car, Savings' : 'e.g., Mortgage, Credit Card, Loan'}
+                                placeholder={item.type === 'asset' ? t('editor.assetPlaceholder') : t('editor.liabilityPlaceholder')}
                                 value={item.name}
                                 onChange={(e) => {
                                   const updatedBreakdown = [...tempCardData.breakdown];
@@ -16231,7 +16231,7 @@ function App() {
                               />
                             </div>
                             <div className="col-span-5">
-                              <label className="block text-xs text-gray-400 mb-1">Value</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.value')}</label>
                               <input
                                 type="number"
                                 placeholder={t('placeholders.enterAmount')}
@@ -16275,14 +16275,14 @@ function App() {
                     
                     <div className="mt-4 p-3 bg-emerald-900/20 rounded-lg border border-emerald-600/30">
                       <div className="flex justify-between items-center">
-                        <span className="text-emerald-400 font-semibold">Total Net Worth:</span>
+                        <span className="text-emerald-400 font-semibold">{t('editor.totalNetWorth')}</span>
                         <span className="text-2xl font-bold text-white">
                           ${((parseFloat(tempCardData.total) || 0)).toLocaleString()}
                         </span>
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        Assets: ${((tempCardData.breakdown || []).filter(item => item.type === "asset").reduce((sum, item) => sum + (parseFloat(item.value) || 0), 0)).toLocaleString()} 💰 
-                        Liabilities: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === "liability").reduce((sum, item) => sum + (parseFloat(item.value) || 0), 0)).toLocaleString()}
+                        {t('editor.assets')}: ${((tempCardData.breakdown || []).filter(item => item.type === "asset").reduce((sum, item) => sum + (parseFloat(item.value) || 0), 0)).toLocaleString()} 💰 
+                        {t('editor.liabilities')}: ${Math.abs((tempCardData.breakdown || []).filter(item => item.type === "liability").reduce((sum, item) => sum + (parseFloat(item.value) || 0), 0)).toLocaleString()}
                       </div>
                     </div>
                   </div>

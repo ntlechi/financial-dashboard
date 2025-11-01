@@ -1370,7 +1370,10 @@
     "taxFree": "Tax-Free",
     "taxDeferred": "Tax-Deferred",
     "pension": "Pension",
-    "savingsAccount": "Savings"
+    "savingsAccount": "Savings",
+    "investmentCash": "Investment Cash",
+    "moneyMarket": "Money Market",
+    "cd": "CD"
   },
   "editor": {
     "targetAmount": "Target Amount",
@@ -1423,7 +1426,23 @@
     "currentDebt": "Current Debt",
     "totalPaid": "Total Paid",
     "minPaymentLabel": "Min Payment",
-    "avgApr": "Avg APR"
+    "avgApr": "Avg APR",
+    "totalCashOnHand": "Total Cash on Hand",
+    "currentRateAutoCalculated": "Current Rate (Auto-calculated)",
+    "basedOnActualTransactions": "Based on your actual income and expenses from transactions",
+    "commonTargets": "Common targets",
+    "savingsTarget20": "20% - Traditional advice",
+    "savingsTarget3040": "30-40% - Aggressive saving",
+    "savingsTarget50": "50%+ - FIRE/Early retirement",
+    "savingsTarget60": "60%+ - Digital nomad lifestyle",
+    "assetsLiabilities": "Assets & Liabilities",
+    "assetName": "Asset Name",
+    "liabilityName": "Liability Name",
+    "assetPlaceholder": "e.g., House, Car, Savings",
+    "liabilityPlaceholder": "e.g., Mortgage, Credit Card, Loan",
+    "value": "Value",
+    "assets": "Assets",
+    "liabilities": "Liabilities"
   },
   "footer": {
     "tagline": "Dashboard for the modern hustler. Keep building.",
