@@ -3265,6 +3265,7 @@ const DebtPayoffCalculator = () => {
                         onChange={(e) => updateDebt(index, 'minPayment', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
                         placeholder={t('placeholders.numericExamples.zeroAmount')}
+                      />
                     </div>
                     <div className="flex justify-center">
                       {debts.length > 1 && (
