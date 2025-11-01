@@ -1,5 +1,5 @@
-<!-- 🌍 KOMPUL - MULTILINGUAL SUPPORT SECTION -->
-<!-- Copy this entire section into WordPress Custom HTML block -->
+<!-- 🌍 KOMPUL - MULTILINGUAL SUPPORT SECTION (GLOBE ICONS VERSION) -->
+<!-- Uses universal globe emoji - Copy into WordPress Custom HTML block -->
 
 <style>
   /* 🎨 Scoped styles - won't affect rest of page */
@@ -99,29 +99,28 @@
     border-color: white;
   }
   
-  .kompul-flag {
+  .kompul-globe {
     font-size: 64px;
     margin-bottom: 20px;
     display: block;
-    animation: kompul-wave 2s ease-in-out infinite;
+    animation: kompul-spin 20s linear infinite;
   }
   
-  @keyframes kompul-wave {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-10deg); }
-    75% { transform: rotate(10deg); }
+  @keyframes kompul-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   
-  .kompul-language-card:nth-child(1) .kompul-flag {
+  .kompul-language-card:nth-child(1) .kompul-globe {
     animation-delay: 0s;
   }
   
-  .kompul-language-card:nth-child(2) .kompul-flag {
-    animation-delay: 0.3s;
+  .kompul-language-card:nth-child(2) .kompul-globe {
+    animation-delay: 7s;
   }
   
-  .kompul-language-card:nth-child(3) .kompul-flag {
-    animation-delay: 0.6s;
+  .kompul-language-card:nth-child(3) .kompul-globe {
+    animation-delay: 14s;
   }
   
   .kompul-language-name {
@@ -224,6 +223,10 @@
     .kompul-stat-number {
       font-size: 36px;
     }
+    
+    .kompul-globe {
+      animation: none; /* Disable on mobile for performance */
+    }
   }
 </style>
 
@@ -232,10 +235,10 @@
     
     <!-- Header -->
     <div class="kompul-multilingual-header">
-      <div class="kompul-multilingual-badge">✨ Now Available in 3 Languages</div>
+      <div class="kompul-multilingual-badge">🌍 Global Financial Empowerment</div>
       <h2 class="kompul-multilingual-title">Your Financial Journey.<br>Your Language.</h2>
       <p class="kompul-multilingual-subtitle">
-        Kompul speaks your language. Whether you're in New York, Paris, or Barcelona, 
+        Kompul speaks your language. Whether you're in Montréal, Madrid, or Melbourne, 
         manage your finances in the language that feels like home.
       </p>
     </div>
@@ -245,7 +248,7 @@
       
       <!-- English Card -->
       <div class="kompul-language-card">
-        <span class="kompul-flag">🇺🇸</span>
+        <span class="kompul-globe">🌍</span>
         <h3 class="kompul-language-name">English</h3>
         <p class="kompul-language-native">English</p>
         <p class="kompul-language-description">
@@ -256,7 +259,7 @@
       
       <!-- French Card -->
       <div class="kompul-language-card">
-        <span class="kompul-flag">🇫🇷</span>
+        <span class="kompul-globe">🌎</span>
         <h3 class="kompul-language-name">French</h3>
         <p class="kompul-language-native">Français</p>
         <p class="kompul-language-description">
@@ -267,7 +270,7 @@
       
       <!-- Spanish Card -->
       <div class="kompul-language-card">
-        <span class="kompul-flag">🇪🇸</span>
+        <span class="kompul-globe">🌏</span>
         <h3 class="kompul-language-name">Spanish</h3>
         <p class="kompul-language-native">Español</p>
         <p class="kompul-language-description">

@@ -1,5 +1,5 @@
-<!-- 🌍 KOMPUL - MULTILINGUAL SUPPORT SECTION (COMPACT VERSION) -->
-<!-- Minimal, clean design - Copy into WordPress Custom HTML block -->
+<!-- 🌍 KOMPUL - MULTILINGUAL SUPPORT SECTION (COMPACT, NO FLAGS) -->
+<!-- Minimal, culturally neutral - Copy into WordPress Custom HTML block -->
 
 <style>
   .kompul-lang-compact {
@@ -27,10 +27,10 @@
     margin: 0 0 40px 0;
   }
   
-  .kompul-lang-flags {
+  .kompul-lang-list {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 50px;
     align-items: center;
     flex-wrap: wrap;
   }
@@ -39,22 +39,28 @@
     text-align: center;
   }
   
-  .kompul-lang-flag-large {
-    font-size: 80px;
-    display: block;
-    margin-bottom: 15px;
+  .kompul-lang-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
     transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
   }
   
-  .kompul-lang-item:hover .kompul-lang-flag-large {
-    transform: scale(1.1);
+  .kompul-lang-item:hover .kompul-lang-badge {
+    transform: scale(1.05);
   }
   
-  .kompul-lang-label {
-    font-size: 16px;
+  .kompul-lang-native {
+    font-size: 14px;
+    color: #667eea;
     font-weight: 600;
-    color: #4a5568;
-    margin: 0;
+    margin: 5px 0 0 0;
   }
   
   @media (max-width: 768px) {
@@ -62,12 +68,13 @@
       font-size: 28px;
     }
     
-    .kompul-lang-flags {
+    .kompul-lang-list {
       gap: 30px;
     }
     
-    .kompul-lang-flag-large {
-      font-size: 60px;
+    .kompul-lang-badge {
+      font-size: 18px;
+      padding: 12px 25px;
     }
   }
 </style>
@@ -79,20 +86,20 @@
       Manage your finances in English, French, or Spanish
     </p>
     
-    <div class="kompul-lang-flags">
+    <div class="kompul-lang-list">
       <div class="kompul-lang-item">
-        <span class="kompul-lang-flag-large">🇺🇸</span>
-        <p class="kompul-lang-label">English</p>
+        <div class="kompul-lang-badge">English</div>
+        <p class="kompul-lang-native">English</p>
       </div>
       
       <div class="kompul-lang-item">
-        <span class="kompul-lang-flag-large">🇫🇷</span>
-        <p class="kompul-lang-label">Français</p>
+        <div class="kompul-lang-badge">Français</div>
+        <p class="kompul-lang-native">French</p>
       </div>
       
       <div class="kompul-lang-item">
-        <span class="kompul-lang-flag-large">🇪🇸</span>
-        <p class="kompul-lang-label">Español</p>
+        <div class="kompul-lang-badge">Español</div>
+        <p class="kompul-lang-native">Spanish</p>
       </div>
     </div>
   </div>

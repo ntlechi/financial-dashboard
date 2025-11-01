@@ -2,28 +2,32 @@
 
 ## 📋 **WHAT YOU GOT:**
 
-Two ready-to-use HTML sections showcasing your 3-language support:
+Three ready-to-use HTML sections showcasing your 3-language support - **NO country flags** (culturally neutral):
 
-1. **`LANDING_PAGE_MULTILINGUAL_SECTION.html`** - Full-featured, animated, beautiful
-2. **`LANDING_PAGE_MULTILINGUAL_COMPACT.html`** - Minimal, clean, compact
+1. **`LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html`** - Full-featured with language code badges (EN/FR/ES)
+2. **`LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html`** - Full-featured with spinning globe emojis
+3. **`LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html`** - Minimal, clean, compact
 
-Both are **100% self-contained** with CSS included. Just copy-paste into WordPress!
+All are **100% self-contained** with CSS included. Just copy-paste into WordPress!
+
+**Why no flags?** Because language ≠ country. Quebec French, Mexican Spanish, and Canadian English deserve respect!
 
 ---
 
-## 🎨 **VERSION 1: FULL-FEATURED (RECOMMENDED)**
+## 🎨 **VERSION 1: LANGUAGE CODE BADGES (RECOMMENDED)**
 
-**File:** `LANDING_PAGE_MULTILINGUAL_SECTION.html`
+**File:** `LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html`
 
 ### **Features:**
 - ✨ Beautiful gradient background (purple to violet)
-- 🎯 Animated flag emojis (wave effect)
+- 🎯 Language code badges (EN/FR/ES) in circular icons
 - 📊 Impact statistics (1.5B+ people reached, 3 languages, 100% translated)
 - 🎴 Three detailed language cards with descriptions
 - 🎭 Hover animations
 - 📱 Fully responsive (mobile-friendly)
 - 🔘 CTA button (links to pricing section)
 - 🌊 Floating background animation
+- 🌍 **NO country flags** - culturally neutral!
 
 ### **Perfect For:**
 - Main landing page
@@ -65,17 +69,41 @@ Start Your Journey Today →
 
 ---
 
-## 🎨 **VERSION 2: COMPACT**
+## 🎨 **VERSION 2: GLOBE ICONS (ALTERNATIVE)**
 
-**File:** `LANDING_PAGE_MULTILINGUAL_COMPACT.html`
+**File:** `LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html`
+
+### **Features:**
+- ✨ Beautiful gradient background (purple to violet)
+- 🌍 Spinning globe emojis (🌍 🌎 🌏) - universal symbols
+- 📊 Impact statistics (1.5B+ people reached, 3 languages, 100% translated)
+- 🎴 Three detailed language cards with descriptions
+- 🎭 Smooth rotation animation (disabled on mobile)
+- 📱 Fully responsive (mobile-friendly)
+- 🔘 CTA button (links to pricing section)
+- 🌊 Floating background animation
+- 🌍 **NO country flags** - uses world globes instead!
+
+### **Perfect For:**
+- Main landing page
+- Global brand messaging
+- International focus
+- Playful, modern aesthetic
+
+---
+
+## 🎨 **VERSION 3: COMPACT**
+
+**File:** `LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html`
 
 ### **Features:**
 - 🎯 Minimal, clean design
-- 🏴 Large flag emojis
+- 🎨 Language badges with gradient background
 - 📏 Compact layout
 - 🎭 Simple hover effect (scale up)
 - 📱 Mobile responsive
 - ⚡ Fast loading
+- 🌍 **NO country flags** - just language names!
 
 ### **Perfect For:**
 - Footer section
@@ -186,20 +214,36 @@ background: #f7fafc;
 
 ## 🔧 **ADVANCED CUSTOMIZATIONS:**
 
-### **Change Flags:**
+### **Change Language Code Badges:**
 
-Don't like the flag emojis? Replace with your own:
+Want different language codes or styling? Find the `.kompul-language-code` sections:
 
 ```html
-<!-- Current flags -->
-<span class="kompul-flag">🇺🇸</span>  <!-- USA -->
-<span class="kompul-flag">🇫🇷</span>  <!-- France -->
-<span class="kompul-flag">🇪🇸</span>  <!-- Spain -->
+<!-- Version 1: Language codes -->
+<span class="kompul-language-code">EN</span>
+<span class="kompul-language-code">FR</span>
+<span class="kompul-language-code">ES</span>
 
-<!-- Alternative options -->
-<span class="kompul-flag">🇬🇧</span>  <!-- UK -->
-<span class="kompul-flag">🇨🇦</span>  <!-- Canada -->
-<span class="kompul-flag">🇲🇽</span>  <!-- Mexico -->
+<!-- Want to add more detail? -->
+<span class="kompul-language-code">EN-CA</span>  <!-- Canadian English -->
+<span class="kompul-language-code">FR-CA</span>  <!-- Quebec French -->
+<span class="kompul-language-code">ES-MX</span>  <!-- Mexican Spanish -->
+```
+
+### **Change Globe Emojis:**
+
+In the globe version, you can use different world symbols:
+
+```html
+<!-- Current globes -->
+<span class="kompul-globe">🌍</span>  <!-- Europe/Africa -->
+<span class="kompul-globe">🌎</span>  <!-- Americas -->
+<span class="kompul-globe">🌏</span>  <!-- Asia/Pacific -->
+
+<!-- Alternative universal symbols -->
+<span class="kompul-globe">🌐</span>  <!-- Globe with meridians -->
+<span class="kompul-globe">💬</span>  <!-- Speech bubble -->
+<span class="kompul-globe">🗣️</span>  <!-- Speaking head -->
 ```
 
 ### **Add More Languages:**
@@ -416,10 +460,12 @@ Gestisci le tue finanze in italiano con funzionalità complete e contenuti compl
 }
 ```
 
-### **Issue: Flags not showing**
-**Fix:** Some browsers block emoji fonts. Add image fallback:
+### **Issue: Language codes not showing**
+**Fix:** Ensure the icon div is properly formatted:
 ```html
-<img src="flag-usa.png" alt="USA Flag" style="width: 64px; height: 64px;">
+<div class="kompul-language-icon">
+  <span class="kompul-language-code">EN</span>
+</div>
 ```
 
 ### **Issue: Button not working**
@@ -433,7 +479,7 @@ Gestisci le tue finanze in italiano con funzionalità complete e contenuti compl
 **Fix:** Disable animations on mobile:
 ```css
 @media (max-width: 768px) {
-  .kompul-flag {
+  .kompul-globe {
     animation: none !important;
   }
 }
@@ -443,9 +489,12 @@ Gestisci le tue finanze in italiano con funzionalità complete e contenuti compl
 
 ## 📁 **FILES INCLUDED:**
 
-1. `LANDING_PAGE_MULTILINGUAL_SECTION.html` - Full version
-2. `LANDING_PAGE_MULTILINGUAL_COMPACT.html` - Compact version
-3. `LANDING_PAGE_MULTILINGUAL_GUIDE.md` - This guide
+1. `LANDING_PAGE_MULTILINGUAL_NO_FLAGS.html` - Full version with language codes
+2. `LANDING_PAGE_MULTILINGUAL_GLOBE_ICONS.html` - Full version with globe emojis
+3. `LANDING_PAGE_MULTILINGUAL_COMPACT_NO_FLAGS.html` - Compact version
+4. `LANDING_PAGE_MULTILINGUAL_GUIDE.md` - This guide
+
+**All versions are culturally neutral - NO country flags!** 🌍
 
 ---
 
