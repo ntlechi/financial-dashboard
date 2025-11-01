@@ -15591,7 +15591,7 @@ function App() {
                             {/* First Row: Name and Balance */}
                           <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-4">
-                              <label className="block text-xs text-gray-400 mb-1">Account Name</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.accountName')}</label>
                               <input
                                 type="text"
                                 placeholder={t('examples.creditCard')}
@@ -15607,9 +15607,9 @@ function App() {
                             </div>
                               <div className="col-span-4">
                                 <label className="block text-xs text-gray-400 mb-1">
-                                  Current Balance
+                                  {t('editor.currentBalance')}
                                   {account.balance === 0 && (
-                                    <span className="ml-2 text-green-400 font-bold">🎉 PAID OFF!</span>
+                                    <span className="ml-2 text-green-400 font-bold">🎉 {t('editor.paidOff')}!</span>
                                   )}
                                 </label>
                               <input
@@ -15655,7 +15655,7 @@ function App() {
                               />
                             </div>
                               <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">APR %</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.aprPercent')}</label>
                               <input
                                 type="number"
                                 step="0.1"
@@ -15687,7 +15687,7 @@ function App() {
                             {/* Second Row: Initial Debt and Min Payment */}
                             <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-3">
-                                <label className="block text-xs text-gray-400 mb-1">Initial Debt Amount</label>
+                                <label className="block text-xs text-gray-400 mb-1">{t('editor.initialDebtAmount')}</label>
                                 <input
                                   type="number"
                                   placeholder={t('placeholders.numericExamples.fifteenThousand')}
@@ -15705,14 +15705,14 @@ function App() {
                                 />
                               </div>
                               <div className="col-span-3">
-                                <label className="block text-xs text-gray-400 mb-1">Amount Paid (Auto-calculated)</label>
+                                <label className="block text-xs text-gray-400 mb-1">{t('editor.amountPaidAutoCalculated')}</label>
                                 <div className="w-full bg-gray-700 text-green-400 px-2 py-1 rounded text-sm border border-gray-500 flex items-center justify-between">
                                   <span>${((parseFloat(account.initialDebt) || 0) - (parseFloat(account.balance) || 0)).toLocaleString()}</span>
                                   <span className="text-xs text-gray-400">Auto</span>
                                 </div>
                               </div>
                             <div className="col-span-3">
-                              <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.minPayment')}</label>
                               <input
                                 type="number"
                                 placeholder={t('placeholders.numericExamples.twoHundred')}
@@ -15727,7 +15727,7 @@ function App() {
                               />
                             </div>
                               <div className="col-span-3">
-                                <label className="block text-xs text-gray-400 mb-1">Due Date</label>
+                                <label className="block text-xs text-gray-400 mb-1">{t('editor.dueDate')}</label>
                                 <div className="relative calendar-container">
                                   <input
                                     type="text"
@@ -15887,7 +15887,7 @@ function App() {
                             {/* Third Row: Notification Settings */}
                             <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-6">
-                                <label className="block text-xs text-gray-400 mb-1">Payment Reminders</label>
+                                <label className="block text-xs text-gray-400 mb-1">{t('editor.paymentReminders')}</label>
                                 <div className="flex items-center gap-3">
                                   <label className="flex items-center gap-2 text-sm text-gray-300">
                                     <input
@@ -15901,12 +15901,12 @@ function App() {
                                       }}
                                       className="w-4 h-4 text-red-600 bg-gray-600 border-gray-500 rounded focus:ring-red-500 focus:ring-2"
                                     />
-                                    Enable notifications
+                                    {t('editor.enableNotifications')}
                                   </label>
                                 </div>
                               </div>
                               <div className="col-span-6">
-                                <label className="block text-xs text-gray-400 mb-1">Remind me</label>
+                                <label className="block text-xs text-gray-400 mb-1">{t('editor.remindMe')}</label>
                                 <select
                                   value={account.notificationDays || 3}
                                   onChange={(e) => {
@@ -15918,9 +15918,9 @@ function App() {
                                   disabled={account.notificationsEnabled === false}
                                   className="w-full bg-gray-600 text-white px-2 py-1 rounded text-sm border border-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  <option value={1}>1 day before</option>
-                                  <option value={3}>3 days before</option>
-                                  <option value={7}>1 week before</option>
+                                  <option value={1}>{t('editor.oneDayBefore')}</option>
+                                  <option value={3}>{t('editor.threeDaysBefore')}</option>
+                                  <option value={7}>{t('editor.oneWeekBefore')}</option>
                                 </select>
                               </div>
                             </div>
@@ -15929,7 +15929,7 @@ function App() {
                             {(account.initialDebt || 0) > 0 && (
                               <div className="mt-2">
                                 <div className="flex justify-between text-xs text-gray-400 mb-1">
-                                  <span>Progress: ${((parseFloat(account.amountPaid) || 0)).toLocaleString()} paid of ${((parseFloat(account.initialDebt) || 0)).toLocaleString()}</span>
+                                  <span>{t('editor.progress')}: ${((parseFloat(account.amountPaid) || 0)).toLocaleString()} {t('editor.paidOf')} ${((parseFloat(account.initialDebt) || 0)).toLocaleString()}</span>
                                   <span>{Math.round(((account.amountPaid || 0) / (account.initialDebt || 1)) * 100)}%</span>
                                 </div>
                                 <div className="w-full bg-gray-700 rounded-full h-2">
@@ -15949,22 +15949,22 @@ function App() {
                       <div className="grid grid-cols-2 gap-4 text-sm mb-3">
                         <div>
                           <div className="text-red-400 font-semibold">
-                            Current Debt: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0).toLocaleString()}
+                            {t('editor.currentDebt')}: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0).toLocaleString()}
                           </div>
                         </div>
                         <div>
                           <div className="text-green-400 font-semibold">
-                            Total Paid: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.amountPaid) || 0), 0).toLocaleString()}
+                            {t('editor.totalPaid')}: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.amountPaid) || 0), 0).toLocaleString()}
                           </div>
                         </div>
                         <div>
                           <div className="text-orange-400 font-semibold">
-                            Min Payment: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.minPayment) || 0), 0).toLocaleString()}/mo
+                            {t('editor.minPaymentLabel')}: ${((tempCardData && tempCardData.accounts) || []).reduce((sum, acc) => sum + (parseFloat(acc.minPayment) || 0), 0).toLocaleString()}/mo
                           </div>
                         </div>
                         <div>
                           <div className="text-yellow-400 font-semibold">
-                            Avg APR: {(tempCardData && tempCardData.accounts && tempCardData.accounts.length > 0) ? 
+                            {t('editor.avgApr')}: {(tempCardData && tempCardData.accounts && tempCardData.accounts.length > 0) ? 
                               (tempCardData.accounts.reduce((sum, acc) => sum + (acc.interestRate || 0), 0) / tempCardData.accounts.length).toFixed(1) : 0}%
                           </div>
                         </div>
@@ -16039,15 +16039,15 @@ function App() {
                 <div>
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-lg font-semibold text-white">{t('dashboard.addTransaction')} New Credit Score</h4>
+                      <h4 className="text-lg font-semibold text-white">{t('dashboard.addTransaction')} {t('editor.newCreditScore')}</h4>
                       <div className="text-sm text-indigo-400">
-                        Current: {tempCardData.current || 0}
+                        {t('editor.current')}: {tempCardData.current || 0}
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className="block text-sm text-gray-300 mb-1">New Credit Score</label>
+                        <label className="block text-sm text-gray-300 mb-1">{t('editor.newCreditScore')}</label>
                         <input
                           type="number"
                           min="300"
@@ -16057,11 +16057,11 @@ function App() {
                           className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
                           placeholder={t('placeholders.numericExamples.sevenFifty')}
                         />
-                        <div className="text-xs text-gray-400 mt-1">Range: 300-850</div>
+                        <div className="text-xs text-gray-400 mt-1">{t('editor.range')}: 300-850</div>
                       </div>
                       
                       <div>
-                        <label className="block text-sm text-gray-300 mb-1">Date</label>
+                        <label className="block text-sm text-gray-300 mb-1">{t('common.date')}</label>
                         <input
                           type="date"
                           value={tempCardData.newDate || new Date().toISOString().split('T')[0]}
@@ -16072,7 +16072,7 @@ function App() {
                           className="w-full max-w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
                           style={{ maxWidth: '100%' }}
                         />
-                        <div className="text-xs text-gray-400 mt-1">When was this score checked?</div>
+                        <div className="text-xs text-gray-400 mt-1">{t('editor.whenScoreChecked')}</div>
                       </div>
                     </div>
                     
@@ -16110,9 +16110,9 @@ function App() {
                   {tempCardData.history && tempCardData.history.length > 0 && (
                     <div className="bg-indigo-900/20 rounded-lg p-3 border border-indigo-600/30">
                       <div className="flex justify-between items-center mb-3">
-                        <h5 className="text-indigo-200 font-semibold">📈 Score History</h5>
+                        <h5 className="text-indigo-200 font-semibold">📈 {t('editor.scoreHistory')}</h5>
                         <div className="text-xs text-indigo-300">
-                          {tempCardData.history.length} entries
+                          {tempCardData.history.length} {t('editor.entries')}
                         </div>
                       </div>
                       
@@ -16367,7 +16367,7 @@ function App() {
                           <div key={account.id} className="bg-slate-800/50 rounded-lg p-4 border-2 border-slate-700/50 hover:border-amber-500/40 transition-all relative">
                             <div className="flex justify-between items-start mb-3">
                               <div className="flex-1">
-                                <label className="block text-xs text-amber-400/70 mb-1">Account Name (Click to edit)</label>
+                                <label className="block text-xs text-amber-400/70 mb-1">{t('editor.accountNameClickToEdit')}</label>
                                 <input
                                   type="text"
                                   value={account.name}
@@ -16394,7 +16394,7 @@ function App() {
 
                             <div className="space-y-3">
                               <div>
-                                <label className="block text-sm text-gray-300 mb-1">Current Balance</label>
+                                <label className="block text-sm text-gray-300 mb-1">{t('editor.currentBalance')}</label>
                                 <input
                                   type="number"
                                   value={account.contributed === 0 ? '0' : (account.contributed || '')}
@@ -16408,7 +16408,7 @@ function App() {
                               </div>
 
                               <div>
-                                <label className="block text-sm text-gray-300 mb-1">Contribution Limit</label>
+                                <label className="block text-sm text-gray-300 mb-1">{t('editor.contributionLimit')}</label>
                                 <input
                                   type="number"
                                   value={account.limit === 0 ? '0' : (account.limit || '')}
@@ -16422,7 +16422,7 @@ function App() {
                               </div>
 
                               <div>
-                                <label className="block text-sm text-gray-300 mb-1">Annual Goal (Optional)</label>
+                                <label className="block text-sm text-gray-300 mb-1">{t('editor.annualGoalOptional')}</label>
                                 <input
                                   type="number"
                                   value={account.goal === 0 ? '0' : (account.goal || '')}
@@ -16437,7 +16437,7 @@ function App() {
                               </div>
 
                               <div>
-                                <label className="block text-sm text-gray-300 mb-1">Account Type</label>
+                                <label className="block text-sm text-gray-300 mb-1">{t('editor.accountType')}</label>
                                 <select
                                   value={account.type}
                                   onChange={(e) => {
@@ -16447,15 +16447,15 @@ function App() {
                                   }}
                                   className="w-full bg-slate-900/50 text-white px-3 py-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none transition-all"
                                 >
-                                  <option value="tax-free">Tax-Free</option>
-                                  <option value="tax-deferred">Tax-Deferred</option>
-                                  <option value="pension">Pension</option>
-                                  <option value="savings">Savings</option>
+                                  <option value="tax-free">{t('accounts.taxFree')}</option>
+                                  <option value="tax-deferred">{t('accounts.taxDeferred')}</option>
+                                  <option value="pension">{t('accounts.pension')}</option>
+                                  <option value="savings">{t('accounts.savingsAccount')}</option>
                                 </select>
                               </div>
 
                               <div>
-                                <label className="block text-sm text-gray-300 mb-1">Description</label>
+                                <label className="block text-sm text-gray-300 mb-1">{t('editor.description')}</label>
                                 <input
                                   type="text"
                                   value={account.description}
@@ -16472,7 +16472,7 @@ function App() {
                               {/* Progress Bar */}
                               <div>
                                 <div className="flex justify-between text-sm text-gray-400 mb-1">
-                                  <span>Contribution Room Used</span>
+                                  <span>{t('editor.contributionRoomUsed')}</span>
                                   <span>{Math.round((account.contributed / account.limit) * 100) || 0}%</span>
                                 </div>
                                 <div className="w-full bg-slate-700 rounded-full h-2">
@@ -16486,10 +16486,10 @@ function App() {
                               {/* Account Type Badge */}
                               <div className="flex justify-center">
                                 <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-600/30 font-semibold">
-                                  {account.type === 'tax-free' && '💰 Tax-Free'}
-                                  {account.type === 'tax-deferred' && '📊 Tax-Deferred'}
-                                  {account.type === 'pension' && '🏛️ Pension'}
-                                  {account.type === 'savings' && '💵 Savings'}
+                                  {account.type === 'tax-free' && `💰 ${t('accounts.taxFree')}`}
+                                  {account.type === 'tax-deferred' && `📊 ${t('accounts.taxDeferred')}`}
+                                  {account.type === 'pension' && `🏛️ ${t('accounts.pension')}`}
+                                  {account.type === 'savings' && `💵 ${t('accounts.savingsAccount')}`}
                                 </span>
                               </div>
                             </div>
@@ -16506,7 +16506,7 @@ function App() {
                 <div>
                   <div className="flex justify-between items-center mb-4">
                     <h4 className="text-lg font-semibold text-white">
-                      Financial Goals
+                      {t('dashboard.financialGoals')}
                     </h4>
                     <button
                       onClick={() => {
@@ -16537,7 +16537,7 @@ function App() {
                       (tempCardData || []).map((goal, index) => (
                         <div key={goal.id} className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
                           <div className="flex justify-between items-start mb-3">
-                            <h5 className="text-white font-medium">Goal #{index + 1}</h5>
+                            <h5 className="text-white font-medium">{t('editor.goal')} #{index + 1}</h5>
                             <button
                               onClick={() => {
                                 const updatedGoals = tempCardData.filter((_, i) => i !== index);
@@ -16551,7 +16551,7 @@ function App() {
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-xs text-gray-400 mb-1">Goal Name</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.goalName')}</label>
                               <input
                                 type="text"
                                 placeholder={t('examples.goalExample')}
@@ -16566,7 +16566,7 @@ function App() {
                             </div>
                             
                             <div>
-                              <label className="block text-xs text-gray-400 mb-1">Target Amount</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.targetAmount')}</label>
                               <input
                                 type="number"
                                 placeholder={t('placeholders.numericExamples.zero')}
@@ -16581,7 +16581,7 @@ function App() {
                             </div>
                             
                             <div>
-                              <label className="block text-xs text-gray-400 mb-1">Current Progress</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.currentProgress')}</label>
                               <input
                                 type="number"
                                 placeholder={t('placeholders.numericExamples.zero')}
@@ -16596,7 +16596,7 @@ function App() {
                             </div>
                             
                             <div>
-                              <label className="block text-xs text-gray-400 mb-1">Target Date</label>
+                              <label className="block text-xs text-gray-400 mb-1">{t('editor.targetDate')}</label>
                               <input
                                 type="date"
                                 value={goal.targetDate}
@@ -16614,7 +16614,7 @@ function App() {
                           {goal.targetAmount > 0 && (
                             <div className="mt-3">
                               <div className="flex justify-between text-xs text-gray-400 mb-1">
-                                <span>Progress</span>
+                                <span>{t('editor.progress')}</span>
                                 <span>{Math.round((goal.currentAmount / goal.targetAmount) * 100)}%</span>
                               </div>
                               <div className="w-full bg-gray-700 rounded-full h-2">
@@ -16637,8 +16637,7 @@ function App() {
                   {(tempCardData || []).length > 0 && (
                     <div className="mt-4 p-3 bg-amber-900/20 rounded-lg border border-amber-600/30">
                       <div className="text-sm text-amber-200">
-                        <strong>💡 Pro Tip:</strong> Set realistic deadlines and track progress regularly. 
-                        Breaking big goals into smaller milestones helps maintain motivation!
+                        <strong>💡 {t('editor.proTip')}:</strong> {t('editor.proTipGoals')}
                       </div>
                     </div>
                   )}
@@ -16656,13 +16655,13 @@ function App() {
                 }}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={saveCardData}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                Save Changes
+                {t('common.saveChanges')}
               </button>
             </div>
         </FixedModal>
