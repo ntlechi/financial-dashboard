@@ -965,6 +965,28 @@
     "itemName": "Nom de l'élément",
     "amount": "Montant"
   },
+  "freedomMilestones": {
+    "title": "Jalons de Liberté",
+    "subtitle": "Votre voyage vers la liberté financière",
+    "freedomProgress": "Progrès de Liberté",
+    "basecamp": "Camp de Base",
+    "summit": "Sommet",
+    "basecampSecured": "Camp de Base Sécurisé",
+    "reach10": "Atteignez un ratio de liberté de 10 %",
+    "firstTrailOpened": "Première Piste Ouverte",
+    "reach25": "Atteignez un ratio de liberté de 25 %",
+    "halfwayToSummit": "À Mi-Chemin du Sommet",
+    "reach50": "Atteignez un ratio de liberté de 50 %",
+    "summitInSight": "Sommet en Vue",
+    "reach75": "Atteignez un ratio de liberté de 75 %",
+    "operatorElite": "Opérateur Élite",
+    "reach100": "Atteignez un ratio de liberté de 100 % +",
+    "unlocked": "Déverrouillé",
+    "milestonesUnlocked": "Jalons Déverrouillés",
+    "nextMilestone": "Prochain Jalon",
+    "allComplete": "Tout Complété !",
+    "milestoneUnlockedToast": "Jalon Déverrouillé !"
+  },
   "travel": {
     "operatorsWorldMap": "Carte du Monde de l'Opérateur",
     "questToPaintMap": "Votre quête pour peindre la carte - suivez chaque expédition",

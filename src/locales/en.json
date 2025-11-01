@@ -1056,6 +1056,28 @@
     "itemName": "Item Name",
     "amount": "Amount"
   },
+  "freedomMilestones": {
+    "title": "Freedom Milestones",
+    "subtitle": "Your journey to financial freedom",
+    "freedomProgress": "Freedom Progress",
+    "basecamp": "Basecamp",
+    "summit": "Summit",
+    "basecampSecured": "Basecamp Secured",
+    "reach10": "Reach a 10% Freedom Ratio",
+    "firstTrailOpened": "First Trail Opened",
+    "reach25": "Reach a 25% Freedom Ratio",
+    "halfwayToSummit": "Halfway to Summit",
+    "reach50": "Reach a 50% Freedom Ratio",
+    "summitInSight": "Summit in Sight",
+    "reach75": "Reach a 75% Freedom Ratio",
+    "operatorElite": "Operator Elite",
+    "reach100": "Reach a 100%+ Freedom Ratio",
+    "unlocked": "Unlocked",
+    "milestonesUnlocked": "Milestones Unlocked",
+    "nextMilestone": "Next Milestone",
+    "allComplete": "All Complete!",
+    "milestoneUnlockedToast": "Milestone Unlocked!"
+  },
   "faq": {
     "title": "Help & FAQ",
     "searchPlaceholder": "Search FAQs...",

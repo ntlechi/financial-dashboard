@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Lock, Star, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [], onMilestoneUnlock }) {
+  const { t } = useTranslation();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratingMilestone, setCelebratingMilestone] = useState(null);
 
   // Milestone definitions
   const milestones = [
-    { id: 'MILESTONE_10', threshold: 10, title: 'Basecamp Secured', icon: '🏕️', description: 'Reach a 10% Freedom Ratio' },
-    { id: 'MILESTONE_25', threshold: 25, title: 'First Trail Opened', icon: '🗺️', description: 'Reach a 25% Freedom Ratio' },
-    { id: 'MILESTONE_50', threshold: 50, title: 'Halfway to Summit', icon: '🏔️', description: 'Reach a 50% Freedom Ratio' },
-    { id: 'MILESTONE_75', threshold: 75, title: 'Summit in Sight', icon: '🔭', description: 'Reach a 75% Freedom Ratio' },
-    { id: 'MILESTONE_100', threshold: 100, title: 'Operator Elite', icon: '👑', description: 'Reach a 100%+ Freedom Ratio' }
+    { id: 'MILESTONE_10', threshold: 10, titleKey: 'freedomMilestones.basecampSecured', icon: '🏕️', descriptionKey: 'freedomMilestones.reach10' },
+    { id: 'MILESTONE_25', threshold: 25, titleKey: 'freedomMilestones.firstTrailOpened', icon: '🗺️', descriptionKey: 'freedomMilestones.reach25' },
+    { id: 'MILESTONE_50', threshold: 50, titleKey: 'freedomMilestones.halfwayToSummit', icon: '🏔️', descriptionKey: 'freedomMilestones.reach50' },
+    { id: 'MILESTONE_75', threshold: 75, titleKey: 'freedomMilestones.summitInSight', icon: '🔭', descriptionKey: 'freedomMilestones.reach75' },
+    { id: 'MILESTONE_100', threshold: 100, titleKey: 'freedomMilestones.operatorElite', icon: '👑', descriptionKey: 'freedomMilestones.reach100' }
   ];
 
   // Check for new milestone unlocks
@@ -78,15 +80,15 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
             <Trophy className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Freedom Milestones</h3>
-            <p className="text-gray-400 text-sm">Your journey to financial freedom</p>
+            <h3 className="text-lg font-bold text-white">{t('freedomMilestones.title')}</h3>
+            <p className="text-gray-400 text-sm">{t('freedomMilestones.subtitle')}</p>
           </div>
         </div>
 
         {/* Milestone Progress */}
         <div className="mb-6">
           <div className="flex justify-between text-sm text-gray-300 mb-2">
-            <span>Freedom Progress</span>
+            <span>{t('freedomMilestones.freedomProgress')}</span>
             <span>{Math.round(freedomRatio)}%</span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">
@@ -96,8 +98,8 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
             ></div>
           </div>
           <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>Basecamp</span>
-            <span>Summit</span>
+            <span>{t('freedomMilestones.basecamp')}</span>
+            <span>{t('freedomMilestones.summit')}</span>
           </div>
         </div>
 
@@ -118,7 +120,7 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
                       ? 'animate-pulse' 
                       : 'opacity-50'
                 }`}
-                title={`${milestone.title} - ${milestone.description}`}
+                title={`${t(milestone.titleKey)} - ${t(milestone.descriptionKey)}`}
               >
                 {/* Badge Container */}
                 <div className={`
@@ -151,7 +153,7 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
                   <div className={`text-xs font-semibold ${
                     isUnlocked ? 'text-amber-400' : isAchieved ? 'text-green-400' : 'text-gray-500'
                   }`}>
-                    {milestone.title}
+                    {t(milestone.titleKey)}
                   </div>
                   <div className="text-xs text-gray-500">
                     {milestone.threshold}%
@@ -161,10 +163,10 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
                 {/* Tooltip */}
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
                   <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg border border-amber-500/50 whitespace-nowrap">
-                    <div className="font-semibold text-amber-300">{milestone.title}</div>
-                    <div className="text-gray-400">{milestone.description}</div>
+                    <div className="font-semibold text-amber-300">{t(milestone.titleKey)}</div>
+                    <div className="text-gray-400">{t(milestone.descriptionKey)}</div>
                     {isUnlocked && (
-                      <div className="text-green-400 text-xs mt-1">✓ Unlocked</div>
+                      <div className="text-green-400 text-xs mt-1">✓ {t('freedomMilestones.unlocked')}</div>
                     )}
                   </div>
                 </div>
@@ -177,15 +179,15 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
         <div className="mt-6 bg-gray-800/50 rounded-lg p-4 border border-gray-600">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-gray-300">Milestones Unlocked</div>
+              <div className="text-sm text-gray-300">{t('freedomMilestones.milestonesUnlocked')}</div>
               <div className="text-lg font-bold text-amber-400">
                 {unlockedMilestones.length} / {milestones.length}
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm text-gray-300">Next Milestone</div>
+              <div className="text-sm text-gray-300">{t('freedomMilestones.nextMilestone')}</div>
               <div className="text-sm font-semibold text-white">
-                {milestones.find(m => !unlockedMilestones.includes(m.id))?.title || 'All Complete!'}
+                {t(milestones.find(m => !unlockedMilestones.includes(m.id))?.titleKey || 'freedomMilestones.allComplete')}
               </div>
             </div>
           </div>
@@ -196,10 +198,10 @@ export default function FreedomMilestones({ freedomRatio, unlockedMilestones = [
           <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4" />
-              <span className="font-semibold">Milestone Unlocked!</span>
+              <span className="font-semibold">{t('freedomMilestones.milestoneUnlockedToast')}</span>
             </div>
             <div className="text-sm opacity-90">
-              {celebratingMilestone.title} {celebratingMilestone.icon}
+              {t(celebratingMilestone.titleKey)} {celebratingMilestone.icon}
             </div>
           </div>
         )}

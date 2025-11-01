@@ -936,6 +936,28 @@
     "itemName": "Nombre del Elemento",
     "amount": "Cantidad"
   },
+  "freedomMilestones": {
+    "title": "Hitos de Libertad",
+    "subtitle": "Tu viaje hacia la libertad financiera",
+    "freedomProgress": "Progreso de Libertad",
+    "basecamp": "Campamento Base",
+    "summit": "Cumbre",
+    "basecampSecured": "Campamento Base Asegurado",
+    "reach10": "Alcanza un Ratio de Libertad del 10 %",
+    "firstTrailOpened": "Primer Sendero Abierto",
+    "reach25": "Alcanza un Ratio de Libertad del 25 %",
+    "halfwayToSummit": "A Medio Camino de la Cumbre",
+    "reach50": "Alcanza un Ratio de Libertad del 50 %",
+    "summitInSight": "Cumbre a la Vista",
+    "reach75": "Alcanza un Ratio de Libertad del 75 %",
+    "operatorElite": "Operador Élite",
+    "reach100": "Alcanza un Ratio de Libertad del 100 % +",
+    "unlocked": "Desbloqueado",
+    "milestonesUnlocked": "Hitos Desbloqueados",
+    "nextMilestone": "Próximo Hito",
+    "allComplete": "¡Todo Completado!",
+    "milestoneUnlockedToast": "¡Hito Desbloqueado!"
+  },
   "travel": {
     "title": "Viaje",
     "operatorsWorldMap": "Mapa del Mundo del Operador",
