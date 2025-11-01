@@ -184,7 +184,31 @@
     "balance": "Saldo",
     "enterAmount": "Ingresa el monto",
     "selectDueDate": "Seleccionar fecha de vencimiento",
-    "emailAddress": "tu@email.com"
+    "emailAddress": "tu@email.com",
+    "numericExamples": {
+      "zero": "0",
+      "zeroDecimal": "0.0",
+      "zeroAmount": "$0",
+      "zeroCurrency": "0.00",
+      "fifty": "50",
+      "twoHundred": "200",
+      "fiveHundred": "500",
+      "sevenFifty": "750",
+      "tenThousand": "10000",
+      "fifteenThousand": "15000",
+      "fortyFiveThousand": "45000",
+      "fiftyThousand": "50000",
+      "interestRate": "19.9",
+      "daysShort": "15",
+      "daysModerate": "30",
+      "daysLong": "90"
+    }
+  },
+  "languageSwitcher": {
+    "switchTo": "Cambiar a {{language}}",
+    "english": "Inglés",
+    "french": "Francés",
+    "spanish": "Español"
   },
   "examples": {
     "netflixSubscription": "ej: Suscripción Netflix",

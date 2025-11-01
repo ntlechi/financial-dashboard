@@ -3245,7 +3245,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.balance === 0 ? '0' : (debt.balance || '')}
                         onChange={(e) => updateDebt(index, 'balance', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="$0"
+                        placeholder={t('placeholders.numericExamples.zeroAmount')}
                       />
                     </div>
                     <div>
@@ -3255,7 +3255,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.interestRate === 0 ? '0' : (debt.interestRate || '')}
                         onChange={(e) => updateDebt(index, 'interestRate', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="0.0"
+                        placeholder={t('placeholders.numericExamples.zeroDecimal')}
                       />
                     </div>
                     <div>
@@ -3264,8 +3264,7 @@ const DebtPayoffCalculator = () => {
                         value={debt.minPayment === 0 ? '0' : (debt.minPayment || '')}
                         onChange={(e) => updateDebt(index, 'minPayment', e.target.value)}
                         className="w-full bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 focus:border-red-500 focus:outline-none"
-                        placeholder="$0"
-                      />
+                        placeholder={t('placeholders.numericExamples.zeroAmount')}
                     </div>
                     <div className="flex justify-center">
                       {debts.length > 1 && (
@@ -5782,7 +5781,7 @@ const SideHustleTab = ({ data, setData, userId, setRankUpData, setShowRankUpModa
                   </label>
                   <input
                     type="number"
-                    placeholder="500"
+                    placeholder={t('placeholders.numericExamples.fiveHundred')}
                     value={newRecurringItem.amount === 0 ? '0' : (newRecurringItem.amount || '')}
                     onChange={(e) => setNewRecurringItem({...newRecurringItem, amount: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
@@ -8655,7 +8654,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   </label>
                   <input
                     type="number"
-                    placeholder="50"
+                    placeholder={t('placeholders.numericExamples.fifty')}
                     value={editingRecurring.amount === 0 ? '0' : (editingRecurring.amount || '')}
                     onChange={(e) => setEditingRecurring({...editingRecurring, amount: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
@@ -10579,7 +10578,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <label className="block text-sm text-gray-300 mb-1">{t('travel.targetBudget')}</label>
                   <input
                     type="number"
-                    placeholder="45000"
+                    placeholder={t('placeholders.numericExamples.fortyFiveThousand')}
                     value={newTrip.targetBudget === 0 ? '0' : (newTrip.targetBudget || '')}
                     onChange={(e) => setNewTrip({...newTrip, targetBudget: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10623,7 +10622,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <label className="block text-sm text-gray-300 mb-1">{t('travel.dailyBudget')}</label>
                   <input
                     type="number"
-                    placeholder="500"
+                    placeholder={t('placeholders.numericExamples.fiveHundred')}
                     value={newTrip.estimatedDailySpend === 0 ? '0' : (newTrip.estimatedDailySpend || '')}
                     onChange={(e) => setNewTrip({...newTrip, estimatedDailySpend: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10745,7 +10744,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <label className="block text-sm text-gray-300 mb-1">{t('travel.amount')}</label>
                   <input
                     type="number"
-                    placeholder="0.00"
+                    placeholder={t('placeholders.numericExamples.zeroCurrency')}
                     step="0.01"
                     value={newExpense.amount === 0 ? '0' : (newExpense.amount || '')}
                     onChange={(e) => setNewExpense({...newExpense, amount: e.target.value})}
@@ -10935,7 +10934,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <label className="block text-sm text-gray-300 mb-1">{t('travel.targetBudget')}</label>
                   <input
                     type="number"
-                    placeholder="45000"
+                    placeholder={t('placeholders.numericExamples.fortyFiveThousand')}
                     value={editingTrip.targetBudget === 0 ? '0' : (editingTrip.targetBudget || '')}
                     onChange={(e) => setEditingTrip({...editingTrip, targetBudget: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10979,7 +10978,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   <label className="block text-sm text-gray-300 mb-1">{t('travel.dailyBudget')}</label>
                   <input
                     type="number"
-                    placeholder="500"
+                    placeholder={t('placeholders.numericExamples.fiveHundred')}
                     value={editingTrip.estimatedDailySpend === 0 ? '0' : (editingTrip.estimatedDailySpend || '')}
                     onChange={(e) => setEditingTrip({...editingTrip, estimatedDailySpend: e.target.value})}
                     className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -10991,7 +10990,7 @@ const TravelTab = ({ data, setData, userId }) => {
                <label className="block text-sm text-gray-300 mb-1">{t('travel.currentSavings')}</label>
                 <input
                   type="number"
-                  placeholder="0"
+                  placeholder={t('placeholders.numericExamples.zero')}
                   value={editingTrip.currentSavings === 0 ? '0' : (editingTrip.currentSavings || '')}
                   onChange={(e) => setEditingTrip({...editingTrip, currentSavings: e.target.value})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
@@ -11185,7 +11184,7 @@ const TravelTab = ({ data, setData, userId }) => {
                    <label className="block text-sm text-gray-300 mb-1">{t('travel.totalTravelSavings')}</label>
                    <input
                      type="number"
-                     placeholder="50000"
+                     placeholder={t('placeholders.numericExamples.fiftyThousand')}
                      value={runwaySettings.totalSavings === 0 ? '0' : (runwaySettings.totalSavings || '')}
                      onChange={(e) => setRunwaySettings({
                        ...runwaySettings, 
@@ -11229,20 +11228,20 @@ const TravelTab = ({ data, setData, userId }) => {
                        <span className="text-green-400 font-semibold text-sm">🟢 Cheap ($40/day)</span>
                        <span className="text-green-300 text-xs sm:hidden">SE Asia, E.Europe</span>
                      </div>
-                     <input
-                       type="number"
-                       placeholder="90"
-                       value={runwaySettings.tripPlan.cheap === 0 ? '0' : (runwaySettings.tripPlan.cheap || '')}
-                       onChange={(e) => setRunwaySettings({
-                         ...runwaySettings,
-                         tripPlan: {
-                           ...runwaySettings.tripPlan,
-                           cheap: e.target.value
-                         }
-                       })}
-                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none text-base"
-                       style={{ fontSize: '16px' }}
-                     />
+                    <input
+                      type="number"
+                      placeholder={t('placeholders.numericExamples.daysLong')}
+                      value={runwaySettings.tripPlan.cheap === 0 ? '0' : (runwaySettings.tripPlan.cheap || '')}
+                      onChange={(e) => setRunwaySettings({
+                        ...runwaySettings,
+                        tripPlan: {
+                          ...runwaySettings.tripPlan,
+                          cheap: e.target.value
+                        }
+                      })}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-green-400 focus:outline-none text-base"
+                      style={{ fontSize: '16px' }}
+                    />
                      <p className="text-xs text-green-300 mt-1 hidden sm:block">{t('travel.daysInCheapDestinations')}</p>
                    </div>
 
@@ -11251,20 +11250,20 @@ const TravelTab = ({ data, setData, userId }) => {
                        <span className="text-yellow-400 font-semibold text-sm">🟡 Moderate ($90/day)</span>
                        <span className="text-yellow-300 text-xs sm:hidden">S.America, S.Europe</span>
                      </div>
-                     <input
-                       type="number"
-                       placeholder="30"
-                       value={runwaySettings.tripPlan.moderate === 0 ? '0' : (runwaySettings.tripPlan.moderate || '')}
-                       onChange={(e) => setRunwaySettings({
-                         ...runwaySettings,
-                         tripPlan: {
-                           ...runwaySettings.tripPlan,
-                           moderate: e.target.value
-                         }
-                       })}
-                       className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-yellow-400 focus:outline-none text-base"
-                       style={{ fontSize: '16px' }}
-                     />
+                    <input
+                      type="number"
+                      placeholder={t('placeholders.numericExamples.daysModerate')}
+                      value={runwaySettings.tripPlan.moderate === 0 ? '0' : (runwaySettings.tripPlan.moderate || '')}
+                      onChange={(e) => setRunwaySettings({
+                        ...runwaySettings,
+                        tripPlan: {
+                          ...runwaySettings.tripPlan,
+                          moderate: e.target.value
+                        }
+                      })}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-yellow-400 focus:outline-none text-base"
+                      style={{ fontSize: '16px' }}
+                    />
                      <p className="text-xs text-yellow-300 mt-1 hidden sm:block">{t('travel.daysInModerateDestinations')}</p>
                    </div>
 
@@ -11273,14 +11272,14 @@ const TravelTab = ({ data, setData, userId }) => {
                        <span className="text-red-400 font-semibold text-sm">🔴 Expensive ($160/day)</span>
                        <span className="text-red-300 text-xs sm:hidden">W.Europe, Japan</span>
                      </div>
-                     <input
-                       type="number"
-                       placeholder="15"
-                       value={runwaySettings.tripPlan.expensive === 0 ? '0' : (runwaySettings.tripPlan.expensive || '')}
-                       onChange={(e) => setRunwaySettings({
-                         ...runwaySettings,
-                         tripPlan: {
-                           ...runwaySettings.tripPlan,
+                    <input
+                      type="number"
+                      placeholder={t('placeholders.numericExamples.daysShort')}
+                      value={runwaySettings.tripPlan.expensive === 0 ? '0' : (runwaySettings.tripPlan.expensive || '')}
+                      onChange={(e) => setRunwaySettings({
+                        ...runwaySettings,
+                        tripPlan: {
+                          ...runwaySettings.tripPlan,
                            expensive: e.target.value
                          }
                        })}
@@ -15600,7 +15599,7 @@ function App() {
                                 </label>
                               <input
                                 type="number"
-                                placeholder="10000"
+                                placeholder={t('placeholders.numericExamples.tenThousand')}
                                 value={account.balance === 0 ? '0' : (account.balance || '')}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
@@ -15645,7 +15644,7 @@ function App() {
                               <input
                                 type="number"
                                 step="0.1"
-                                placeholder="19.9"
+                                placeholder={t('placeholders.numericExamples.interestRate')}
                                 value={account.interestRate === 0 ? '0' : (account.interestRate || '')}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
@@ -15676,7 +15675,7 @@ function App() {
                                 <label className="block text-xs text-gray-400 mb-1">Initial Debt Amount</label>
                                 <input
                                   type="number"
-                                  placeholder="15000"
+                                  placeholder={t('placeholders.numericExamples.fifteenThousand')}
                                   value={account.initialDebt === 0 ? '0' : (account.initialDebt || '')}
                                   onChange={(e) => {
                                     const currentData = tempCardData || {};
@@ -15701,7 +15700,7 @@ function App() {
                               <label className="block text-xs text-gray-400 mb-1">Min Payment</label>
                               <input
                                 type="number"
-                                placeholder="200"
+                                placeholder={t('placeholders.numericExamples.twoHundred')}
                                 value={account.minPayment === 0 ? '0' : (account.minPayment || '')}
                                 onChange={(e) => {
                                   const currentData = tempCardData || {};
@@ -16041,7 +16040,7 @@ function App() {
                           value={tempCardData.newScore || ''}
                           onChange={(e) => setTempCardData({...tempCardData, newScore: e.target.value})}
                           className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-indigo-500 focus:outline-none"
-                          placeholder="750"
+                          placeholder={t('placeholders.numericExamples.sevenFifty')}
                         />
                         <div className="text-xs text-gray-400 mt-1">Range: 300-850</div>
                       </div>
@@ -16555,7 +16554,7 @@ function App() {
                               <label className="block text-xs text-gray-400 mb-1">Target Amount</label>
                               <input
                                 type="number"
-                                placeholder="0"
+                                placeholder={t('placeholders.numericExamples.zero')}
                                 value={goal.targetAmount === 0 ? '0' : (goal.targetAmount || '')}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
@@ -16570,7 +16569,7 @@ function App() {
                               <label className="block text-xs text-gray-400 mb-1">Current Progress</label>
                               <input
                                 type="number"
-                                placeholder="0"
+                                placeholder={t('placeholders.numericExamples.zero')}
                                 value={goal.currentAmount === 0 ? '0' : (goal.currentAmount || '')}
                                 onChange={(e) => {
                                   const updatedGoals = [...tempCardData];
