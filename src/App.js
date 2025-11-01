@@ -11160,7 +11160,7 @@ const TravelTab = ({ data, setData, userId }) => {
         >
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-3 sm:mb-4">
-                 <h3 className="text-lg sm:text-xl font-bold text-white">🌍 Travel Runway Settings</h3>
+                 <h3 className="text-lg sm:text-xl font-bold text-white">🌍 {t('travel.runwaySettings')}</h3>
                <button
                  onClick={() => {
                    setShowRunwayModal(false);
@@ -11219,16 +11219,16 @@ const TravelTab = ({ data, setData, userId }) => {
                  </div>
                </div>
 
-               {/* Trip Planning by Destination Tiers */}
-               <div className="bg-blue-900/20 rounded-lg p-3 sm:p-4 border border-blue-600/30">
-                 <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🎯 Plan Your Travel by Destination Type</h4>
+              {/* Trip Planning by Destination Tiers */}
+              <div className="bg-blue-900/20 rounded-lg p-3 sm:p-4 border border-blue-600/30">
+                <h4 className="text-blue-200 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🎯 {t('travel.planByDestinationType')}</h4>
                  
-                 <div className="space-y-2 sm:space-y-3">
-                   <div className="bg-green-900/30 rounded-lg p-2 sm:p-3 border border-green-600/30">
-                     <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-green-400 font-semibold text-sm">🟢 Cheap ($40/day)</span>
-                       <span className="text-green-300 text-xs sm:hidden">SE Asia, E.Europe</span>
-                     </div>
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="bg-green-900/30 rounded-lg p-2 sm:p-3 border border-green-600/30">
+                    <div className="flex justify-between items-center mb-1 sm:mb-2">
+                      <span className="text-green-400 font-semibold text-sm">🟢 {t('travel.cheapPerDay')}</span>
+                      <span className="text-green-300 text-xs sm:hidden">{t('travel.cheapRegions')}</span>
+                    </div>
                     <input
                       type="number"
                       placeholder={t('placeholders.numericExamples.daysLong')}
@@ -11246,11 +11246,11 @@ const TravelTab = ({ data, setData, userId }) => {
                      <p className="text-xs text-green-300 mt-1 hidden sm:block">{t('travel.daysInCheapDestinations')}</p>
                    </div>
 
-                   <div className="bg-yellow-900/30 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
-                     <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-yellow-400 font-semibold text-sm">🟡 Moderate ($90/day)</span>
-                       <span className="text-yellow-300 text-xs sm:hidden">S.America, S.Europe</span>
-                     </div>
+                  <div className="bg-yellow-900/30 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
+                    <div className="flex justify-between items-center mb-1 sm:mb-2">
+                      <span className="text-yellow-400 font-semibold text-sm">🟡 {t('travel.moderatePerDay')}</span>
+                      <span className="text-yellow-300 text-xs sm:hidden">{t('travel.moderateRegions')}</span>
+                    </div>
                     <input
                       type="number"
                       placeholder={t('placeholders.numericExamples.daysModerate')}
@@ -11268,11 +11268,11 @@ const TravelTab = ({ data, setData, userId }) => {
                      <p className="text-xs text-yellow-300 mt-1 hidden sm:block">{t('travel.daysInModerateDestinations')}</p>
                    </div>
 
-                   <div className="bg-red-900/30 rounded-lg p-2 sm:p-3 border border-red-600/30">
-                     <div className="flex justify-between items-center mb-1 sm:mb-2">
-                       <span className="text-red-400 font-semibold text-sm">🔴 Expensive ($160/day)</span>
-                       <span className="text-red-300 text-xs sm:hidden">W.Europe, Japan</span>
-                     </div>
+                  <div className="bg-red-900/30 rounded-lg p-2 sm:p-3 border border-red-600/30">
+                    <div className="flex justify-between items-center mb-1 sm:mb-2">
+                      <span className="text-red-400 font-semibold text-sm">🔴 {t('travel.expensivePerDay')}</span>
+                      <span className="text-red-300 text-xs sm:hidden">{t('travel.expensiveRegions')}</span>
+                    </div>
                     <input
                       type="number"
                       placeholder={t('placeholders.numericExamples.daysShort')}
@@ -11292,56 +11292,56 @@ const TravelTab = ({ data, setData, userId }) => {
                  </div>
                </div>
 
-               {/* Enhanced Preview */}
-               <div className="bg-blue-900/20 rounded-lg p-2 sm:p-3 border border-blue-600/30">
-                 <div className="text-blue-200 text-sm font-semibold mb-2">📊 Preview</div>
-                 <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs">
-                   <div className="text-center">
-                     <div className="text-blue-300 font-bold text-sm">
-                       {(runwaySettings.tripPlan.cheap || 0) + (runwaySettings.tripPlan.moderate || 0) + (runwaySettings.tripPlan.expensive || 0)}
-                     </div>
-                     <div className="text-blue-200 text-xs">Days</div>
-                   </div>
-                   <div className="text-center">
-                     <div className="text-blue-300 font-bold text-sm">
-                       ${Math.round(((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160) / 1000)}k
-                     </div>
-                     <div className="text-blue-200 text-xs">Cost</div>
-                   </div>
-                   <div className="text-center">
-                     <div className="text-green-300 font-bold text-sm">
-                       ${Math.round(Math.max(0, (runwaySettings.totalSavings || 0) - ((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160)) / 1000)}k
-                     </div>
-                     <div className="text-green-200 text-xs">Left</div>
-                   </div>
-                 </div>
-               </div>
+              {/* Enhanced Preview */}
+              <div className="bg-blue-900/20 rounded-lg p-2 sm:p-3 border border-blue-600/30">
+                <div className="text-blue-200 text-sm font-semibold mb-2">📊 {t('travel.preview')}</div>
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs">
+                  <div className="text-center">
+                    <div className="text-blue-300 font-bold text-sm">
+                      {(runwaySettings.tripPlan.cheap || 0) + (runwaySettings.tripPlan.moderate || 0) + (runwaySettings.tripPlan.expensive || 0)}
+                    </div>
+                    <div className="text-blue-200 text-xs">{t('travel.days')}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-blue-300 font-bold text-sm">
+                      ${Math.round(((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160) / 1000)}k
+                    </div>
+                    <div className="text-blue-200 text-xs">{t('travel.cost')}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-green-300 font-bold text-sm">
+                      ${Math.round(Math.max(0, (runwaySettings.totalSavings || 0) - ((runwaySettings.tripPlan.cheap || 0) * 40 + (runwaySettings.tripPlan.moderate || 0) * 90 + (runwaySettings.tripPlan.expensive || 0) * 160)) / 1000)}k
+                    </div>
+                    <div className="text-green-200 text-xs">{t('travel.left')}</div>
+                  </div>
+                </div>
+              </div>
              </div>
              
-             <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-               <button
-                 onClick={() => {
-                   setShowRunwayModal(false);
-                   // Force viewport cleanup after modal close
-                   setTimeout(() => {
-                     window.scrollTo(0, 0);
-                     document.body.style.overflow = '';
-                     document.body.style.position = '';
-                     document.body.style.height = '';
-                   }, 100);
-                 }}
-                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 sm:py-2 rounded-lg transition-colors text-base font-medium"
-               >
-                 Cancel
-               </button>
-               <button
-                 onClick={handleSaveRunwaySettings}
-                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 sm:py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-base font-medium"
-               >
-                 <Save className="w-4 h-4" />
-                 Save Settings
-               </button>
-             </div>
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+              <button
+                onClick={() => {
+                  setShowRunwayModal(false);
+                  // Force viewport cleanup after modal close
+                  setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.height = '';
+                  }, 100);
+                }}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 sm:py-2 rounded-lg transition-colors text-base font-medium"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={handleSaveRunwaySettings}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 sm:py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-base font-medium"
+              >
+                <Save className="w-4 h-4" />
+                {t('travel.saveSettings')}
+              </button>
+            </div>
            </div>
         </FixedModal>
        )}

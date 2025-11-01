@@ -1081,7 +1081,19 @@
     "startPlanningAdventure": "Commencez à planifier votre prochaine aventure ! Suivez les budgets, les dépenses et les devises pour tous vos voyages.",
     "savingsProgress": "Progrès de l'Épargne",
     "dailyBudgetLabel": "Budget Quotidien",
-    "remainingLabel": "Restant"
+    "remainingLabel": "Restant",
+    "runwaySettings": "Paramètres de Réserve de Voyage",
+    "planByDestinationType": "Planifiez Votre Voyage par Type de Destination",
+    "cheapPerDay": "Économique (40 $/jour)",
+    "cheapRegions": "Asie du S-E, Europe de l'Est, Inde",
+    "moderatePerDay": "Modéré (90 $/jour)",
+    "moderateRegions": "Amérique du Sud, Europe du Sud",
+    "expensivePerDay": "Coûteux (160 $/jour)",
+    "expensiveRegions": "Europe de l'Ouest, Scandinavie, Japon",
+    "preview": "Aperçu",
+    "cost": "Coût",
+    "left": "Restant",
+    "saveSettings": "Enregistrer les Paramètres"
   },
   "banner": {
     "status": "Statut",

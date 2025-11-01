@@ -576,7 +576,19 @@
     "startPlanningAdventure": "Start planning your next adventure! Track budgets, expenses, and currencies for all your travels.",
     "savingsProgress": "Savings Progress",
     "dailyBudgetLabel": "Daily Budget",
-    "remainingLabel": "Remaining"
+    "remainingLabel": "Remaining",
+    "runwaySettings": "Travel Runway Settings",
+    "planByDestinationType": "Plan Your Travel by Destination Type",
+    "cheapPerDay": "Cheap ($40/day)",
+    "cheapRegions": "SE Asia, E.Europe, India",
+    "moderatePerDay": "Moderate ($90/day)",
+    "moderateRegions": "S.America, S.Europe",
+    "expensivePerDay": "Expensive ($160/day)",
+    "expensiveRegions": "W.Europe, Scandinavia, Japan",
+    "preview": "Preview",
+    "cost": "Cost",
+    "left": "Left",
+    "saveSettings": "Save Settings"
   },
   "banner": {
     "status": "Status",

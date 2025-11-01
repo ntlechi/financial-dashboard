@@ -1053,7 +1053,19 @@
     "startPlanningAdventure": "¡Comienza a planificar tu próxima aventura! Rastrea presupuestos, gastos y monedas para todos tus viajes.",
     "savingsProgress": "Progreso de Ahorros",
     "dailyBudgetLabel": "Presupuesto Diario",
-    "remainingLabel": "Restante"
+    "remainingLabel": "Restante",
+    "runwaySettings": "Configuración de Reserva de Viaje",
+    "planByDestinationType": "Planifica Tu Viaje por Tipo de Destino",
+    "cheapPerDay": "Económico ($40/día)",
+    "cheapRegions": "SE Asia, E.Europa, India",
+    "moderatePerDay": "Moderado ($90/día)",
+    "moderateRegions": "S.América, S.Europa",
+    "expensivePerDay": "Costoso ($160/día)",
+    "expensiveRegions": "O.Europa, Escandinavia, Japón",
+    "preview": "Vista Previa",
+    "cost": "Costo",
+    "left": "Restante",
+    "saveSettings": "Guardar Configuración"
   },
   "banner": {
     "status": "Estado",
