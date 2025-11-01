@@ -309,19 +309,19 @@ export const getAvailablePlanIds = (foundersCount = 0, earlyAdopterCount = 0) =>
   return Object.keys(currentPlans);
 };
 
-// Stripe Price IDs - Special phases configured ✅
+// Stripe Price IDs - Uses environment variables
 export const STRIPE_PRICE_IDS = {
   // Founder's Circle Phase - Monthly Only (Less Friction!)
-  'founders-circle-monthly': 'price_1SEtrg82nQ0x7qb2NBJr0IVU', // $7.49/month ✅ CONFIGURED
+  'founders-circle-monthly': process.env.REACT_APP_STRIPE_FOUNDERS_CIRCLE_MONTHLY,
   
   // Early Adopter Phase - Monthly Only (Less Friction!)
-  'early-adopter-monthly': 'price_1SH2rg82nQ0x7qb2wte7rkSV', // $8.49/month - Product: prod_TDTpoRdW2RGmxZ
+  'early-adopter-monthly': process.env.REACT_APP_STRIPE_EARLY_ADOPTER_MONTHLY,
   
-  // Regular Phase - Updated with correct Stripe price IDs ✅ (Deploy Fix)
-  'climber-monthly': 'price_1SEtk682nQ0x7qb2d80smPaj', // $7.99/month ✅ CONFIGURED
-  'climber-yearly': 'price_1SEtk682nQ0x7qb2C1q8yAni', // $79/year ✅ CONFIGURED
-  'operator-monthly': 'price_1SEtq282nQ0x7qb2iDCgzcpj', // $14.99/month ✅ CONFIGURED
-  'operator-yearly': 'price_1SEtq282nQ0x7qb2IEqw3DZ4' // $149/year ✅ CONFIGURED
+  // Regular Phase - Monthly and Yearly options
+  'climber-monthly': process.env.REACT_APP_STRIPE_CLIMBER_MONTHLY,
+  'climber-yearly': process.env.REACT_APP_STRIPE_CLIMBER_ANNUAL,
+  'operator-monthly': process.env.REACT_APP_STRIPE_OPERATOR_MONTHLY,
+  'operator-yearly': process.env.REACT_APP_STRIPE_OPERATOR_ANNUAL
 };
 
 /**
