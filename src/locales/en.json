@@ -1540,6 +1540,22 @@
       "goalTracking": "Goal Tracking",
       "advancedAnalytics": "Advanced Analytics",
       "prioritySupport": "Priority Support"
+    },
+    "quickActions": {
+      "quickExpense": "Quick Expense",
+      "quickExpenseDescription": "Log a quick expense to your personal cash expenses",
+      "whatDidYouSpendOn": "What did you spend on?",
+      "expensePlaceholder": "e.g., Coffee, Lunch, Gas, Groceries...",
+      "quickTip": "Quick Tip:",
+      "expenseTip": "This logs to your personal cash expenses. For business expenses or other categories, use the full Transaction tab.",
+      "logExpense": "Log Expense",
+      "quickJournal": "Quick Journal",
+      "quickJournalDescription": "Capture your thoughts instantly!",
+      "whatsOnYourMind": "What's on your mind?",
+      "journalPlaceholder": "Ideas, reflections, goals, insights...",
+      "captureNowOrganizeLater": "Capture Now, Organize Later:",
+      "journalTip": "Your note will appear in My Logbook where you can add a title, tags, and edit it anytime!",
+      "saveNote": "Save Note"
     }
   }
 }

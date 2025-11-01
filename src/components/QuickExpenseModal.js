@@ -1,6 +1,7 @@
 // 🛠️ QUICK EXPENSE MODAL - Fixed version that prevents all modal bugs
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import FixedModal, { FixedInput, FixedButton } from './FixedModal';
 
 // Helper function to get local date in YYYY-MM-DD format (fixes "tomorrow" bug)
@@ -13,6 +14,7 @@ const getTodayLocalDate = () => {
 };
 
 const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
+  const { t } = useTranslation();
   const [expense, setExpense] = useState({
     description: '',
     amount: '',
@@ -55,19 +57,19 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
     <FixedModal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Quick Expense"
-      description="Log a quick expense to your personal cash expenses"
+      title={t('quickActions.quickExpense')}
+      description={t('quickActions.quickExpenseDescription')}
       size="md"
       headerClassName="bg-gradient-to-r from-red-900/30 to-pink-900/30 border-b border-red-700/30"
     >
       <div className="space-y-4 bg-gradient-to-br from-red-900/10 to-pink-900/10 rounded-lg p-4 border border-red-500/20">
         <div>
           <label className="block text-sm text-gray-300 mb-2">
-            What did you spend on?
+            {t('quickActions.whatDidYouSpendOn')}
           </label>
           <FixedInput
             type="text"
-            placeholder="e.g., Coffee, Lunch, Gas, Groceries..."
+            placeholder={t('quickActions.expensePlaceholder')}
             value={expense.description}
             onChange={(e) => setExpense({...expense, description: e.target.value})}
             autoFocus
@@ -76,10 +78,10 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
         
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Amount</label>
+            <label className="block text-sm text-gray-300 mb-2">{t('common.amount')}</label>
             <FixedInput
               type="number"
-              placeholder="0.00"
+              placeholder={t('placeholders.numericExamples.zeroDecimal')}
               step="0.01"
               value={expense.amount}
               onChange={(e) => setExpense({...expense, amount: e.target.value})}
@@ -87,7 +89,7 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
           </div>
           
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Date</label>
+            <label className="block text-sm text-gray-300 mb-2">{t('common.date')}</label>
             <FixedInput
               type="date"
               value={expense.date}
@@ -98,8 +100,7 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
 
         <div className="bg-red-900/20 rounded-lg p-3 border border-red-600/30">
           <div className="text-xs text-red-200">
-            💡 <strong>Quick Tip:</strong> This logs to your personal cash expenses. 
-            For business expenses or other categories, use the full Transaction tab.
+            💡 <strong>{t('quickActions.quickTip')}</strong> {t('quickActions.expenseTip')}
           </div>
         </div>
       </div>
@@ -109,7 +110,7 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
           onClick={handleClose}
           variant="secondary"
         >
-          Cancel
+          {t('common.cancel')}
         </FixedButton>
         <FixedButton
           onClick={handleSave}
@@ -117,7 +118,7 @@ const QuickExpenseModal = ({ isOpen, onClose, onSave }) => {
           variant="danger"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Log Expense
+          {t('quickActions.logExpense')}
         </FixedButton>
       </div>
     </FixedModal>

@@ -2,9 +2,11 @@
 // 🎯 REDESIGNED: Simplified for "Capture Now, Organize Later" workflow
 import React, { useState } from 'react';
 import { Edit3 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import FixedModal, { FixedTextarea, FixedButton } from './FixedModal';
 
 const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
+  const { t } = useTranslation();
   const [note, setNote] = useState('');
 
   const handleSave = () => {
@@ -29,18 +31,18 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
     <FixedModal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Quick Journal"
-      description="Capture your thoughts instantly!"
+      title={t('quickActions.quickJournal')}
+      description={t('quickActions.quickJournalDescription')}
       size="md"
       headerClassName="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border-b border-blue-700/30"
     >
       <div className="space-y-4 bg-gradient-to-br from-blue-900/10 to-cyan-900/10 rounded-lg p-4 border border-blue-500/20">
         <div>
           <label className="block text-sm text-gray-300 mb-2">
-            What's on your mind?
+            {t('quickActions.whatsOnYourMind')}
           </label>
           <FixedTextarea
-            placeholder="Ideas, reflections, goals, insights..."
+            placeholder={t('quickActions.journalPlaceholder')}
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={4}
@@ -50,7 +52,7 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
 
         <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-600/30">
           <div className="text-xs text-blue-200">
-            💡 <strong>Capture Now, Organize Later:</strong> Your note will appear in My Logbook where you can add a title, tags, and edit it anytime!
+            💡 <strong>{t('quickActions.captureNowOrganizeLater')}</strong> {t('quickActions.journalTip')}
           </div>
         </div>
       </div>
@@ -60,7 +62,7 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
           onClick={handleClose}
           variant="secondary"
         >
-          Cancel
+          {t('common.cancel')}
         </FixedButton>
         <FixedButton
           onClick={handleSave}
@@ -68,7 +70,7 @@ const QuickJournalModal = ({ isOpen, onClose, onSave }) => {
           variant="primary"
         >
           <Edit3 className="w-4 h-4 mr-2" />
-          Save Note
+          {t('quickActions.saveNote')}
         </FixedButton>
       </div>
     </FixedModal>

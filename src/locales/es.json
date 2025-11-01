@@ -1656,6 +1656,22 @@
       "goalTracking": "Seguimiento de Objetivos",
       "advancedAnalytics": "Análisis Avanzados",
       "prioritySupport": "Soporte Prioritario"
+    },
+    "quickActions": {
+      "quickExpense": "Gasto Rápido",
+      "quickExpenseDescription": "Registra un gasto rápido en tus gastos personales en efectivo",
+      "whatDidYouSpendOn": "¿En qué gastaste?",
+      "expensePlaceholder": "ej: Café, Almuerzo, Gasolina, Comestibles...",
+      "quickTip": "Consejo Rápido:",
+      "expenseTip": "Esto registra en tus gastos personales en efectivo. Para gastos comerciales u otras categorías, usa la pestaña de Transacciones completa.",
+      "logExpense": "Registrar Gasto",
+      "quickJournal": "Diario Rápido",
+      "quickJournalDescription": "¡Captura tus pensamientos al instante!",
+      "whatsOnYourMind": "¿Qué tienes en mente?",
+      "journalPlaceholder": "Ideas, reflexiones, objetivos, insights...",
+      "captureNowOrganizeLater": "Captura Ahora, Organiza Después:",
+      "journalTip": "Tu nota aparecerá en Mi Diario donde puedes agregar un título, etiquetas y editarla en cualquier momento!",
+      "saveNote": "Guardar Nota"
     }
   }
 }

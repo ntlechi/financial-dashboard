@@ -19,35 +19,35 @@ const HelpFAQ = ({ onClose, onOpenQuickStart }) => {
           id: 1,
           question: t('faq.gettingStarted.q1'),
           answer: t('faq.gettingStarted.a1'),
-          tags: ['overview', 'purpose', 'financial freedom'],
+          tags: [t('faq.tags.overview'), t('faq.tags.purpose'), t('faq.tags.financialFreedom')],
           popular: true
         },
         {
           id: 2,
           question: t('faq.gettingStarted.q2'),
           answer: t('faq.gettingStarted.a2'),
-          tags: ['manual entry', 'privacy', 'security', 'awareness'],
+          tags: [t('faq.tags.manualEntry'), t('faq.tags.privacy'), t('faq.tags.security'), t('faq.tags.awareness')],
           popular: true
         },
         {
           id: 3,
           question: t('faq.gettingStarted.q3'),
           answer: t('faq.gettingStarted.a3'),
-          tags: ['recon kit', 'getting started', 'setup'],
+          tags: [t('faq.tags.reconKit'), t('faq.tags.gettingStarted'), t('faq.tags.setup')],
           popular: false
         },
         {
           id: 4,
           question: t('faq.gettingStarted.q4'),
           answer: t('faq.gettingStarted.a4'),
-          tags: ['security', 'privacy', 'encryption', 'data protection'],
+          tags: [t('faq.tags.security'), t('faq.tags.privacy'), t('faq.tags.encryption'), t('faq.tags.dataProtection')],
           popular: true
         },
         {
           id: 5,
           question: t('faq.gettingStarted.q5'),
           answer: t('faq.gettingStarted.a5'),
-          tags: ['ease of use', 'beginner friendly', 'support'],
+          tags: [t('faq.tags.easeOfUse'), t('faq.tags.beginnerFriendly'), t('faq.tags.support')],
           popular: false
         }
       ]

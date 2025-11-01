@@ -1727,6 +1727,22 @@
       "goalTracking": "Suivi des Objectifs",
       "advancedAnalytics": "Analyses Avancées",
       "prioritySupport": "Support Prioritaire"
+    },
+    "quickActions": {
+      "quickExpense": "Dépense Rapide",
+      "quickExpenseDescription": "Enregistrez une dépense rapide dans vos dépenses personnelles en espèces",
+      "whatDidYouSpendOn": "Sur quoi avez-vous dépensé ?",
+      "expensePlaceholder": "ex: Café, Déjeuner, Essence, Épicerie...",
+      "quickTip": "Astuce Rapide :",
+      "expenseTip": "Ceci enregistre dans vos dépenses personnelles en espèces. Pour les dépenses professionnelles ou d'autres catégories, utilisez l'onglet Transaction complet.",
+      "logExpense": "Enregistrer Dépense",
+      "quickJournal": "Journal Rapide",
+      "quickJournalDescription": "Capturez vos pensées instantanément !",
+      "whatsOnYourMind": "À quoi pensez-vous ?",
+      "journalPlaceholder": "Idées, réflexions, objectifs, insights...",
+      "captureNowOrganizeLater": "Capturez Maintenant, Organisez Plus Tard :",
+      "journalTip": "Votre note apparaîtra dans Mon Carnet où vous pourrez ajouter un titre, des étiquettes et la modifier à tout moment !",
+      "saveNote": "Enregistrer Note"
     }
   }
 }
