@@ -695,7 +695,10 @@
     "other": "Autre",
     "shopping": "Shopping",
     "insurance": "Assurance",
-    "education": "Éducation"
+    "education": "Éducation",
+    "accommodation": "Hébergement",
+    "activities": "Activités",
+    "visa": "Visa"
   },
   "accounts": {
     "cash": "Espèces",

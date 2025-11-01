@@ -8265,8 +8265,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value, subcategory: ''})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="expense">💸 Expense</option>
-                <option value="income">💰 Income</option>
+                <option value="expense">💸 {t('dashboard.expense')}</option>
+                <option value="income">💰 {t('dashboard.income')}</option>
               </select>
               
               <select
@@ -8274,8 +8274,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value, subcategory: ''})}
                 className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="personal">👤 Personal</option>
-                <option value="business">🏢 Business</option>
+                <option value="personal">👤 {t('categories.personal')}</option>
+                <option value="business">🏢 {t('categories.business')}</option>
               </select>
               
               <select
@@ -8285,7 +8285,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
               >
                 <option value="">🤖 {t('transactions.autoCategorize')}</option>
                 {subcategoryOptions[newTransaction.category]?.[newTransaction.type]?.map(sub => (
-                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                  <option key={sub} value={sub}>{t(`categories.${sub}`)}</option>
                 ))}
               </select>
               
@@ -8743,7 +8743,7 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   >
                     <option value="">🤖 {t('transactions.autoCategorize')}</option>
                     {subcategoryOptions[editingRecurring.category || 'personal']?.[editingRecurring.type || 'expense']?.map(sub => (
-                      <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                      <option key={sub} value={sub}>{t(`categories.${sub}`)}</option>
                     ))}
                   </select>
                   <p className="text-xs text-gray-400 mt-1">
@@ -9054,8 +9054,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingTransaction({...editingTransaction, type: e.target.value, subcategory: ''})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
                 >
-                  <option value="expense">💸 Expense</option>
-                  <option value="income">💰 Income</option>
+                  <option value="expense">💸 {t('dashboard.expense')}</option>
+                  <option value="income">💰 {t('dashboard.income')}</option>
                 </select>
                 
                 <select
@@ -9063,8 +9063,8 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                   onChange={(e) => setEditingTransaction({...editingTransaction, category: e.target.value, subcategory: ''})}
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
                 >
-                  <option value="personal">👤 Personal</option>
-                  <option value="business">🏢 Business</option>
+                  <option value="personal">👤 {t('categories.personal')}</option>
+                  <option value="business">🏢 {t('categories.business')}</option>
                 </select>
               </div>
               
@@ -9073,9 +9073,9 @@ const TransactionsTab = ({ data, setData, userId, setRankUpData, setShowRankUpMo
                 onChange={(e) => setEditingTransaction({...editingTransaction, subcategory: e.target.value})}
                 className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600"
               >
-                <option value="">🤖 Auto-categorize</option>
+                <option value="">🤖 {t('transactions.autoCategorize')}</option>
                 {subcategoryOptions[editingTransaction.category]?.[editingTransaction.type]?.map(sub => (
-                  <option key={sub} value={sub}>{sub.charAt(0).toUpperCase() + sub.slice(1)}</option>
+                  <option key={sub} value={sub}>{t(`categories.${sub}`)}</option>
                 ))}
               </select>
               
@@ -10781,7 +10781,7 @@ const TravelTab = ({ data, setData, userId }) => {
                   >
                     {(data.travel?.expenseCategories || []).map(cat => (
                       <option key={cat.name} value={cat.name}>
-                        {cat.icon} {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
+                        {cat.icon} {t(`categories.${cat.name}`)}
                       </option>
                     ))}
                   </select>
@@ -13917,19 +13917,33 @@ function App() {
     });
 
     // Convert to array format
-    const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => ({
-      id: index + 1,
-      name: name.charAt(0).toUpperCase() + name.slice(1),
-      amount,
-      type: 'active'
-    }));
+    const incomeSources = Object.entries(incomeByCategory).map(([name, amount], index) => {
+      // Try to translate known categories, otherwise just capitalize (for business names, etc.)
+      const translatedName = name.toLowerCase() in {salary: 1, bonus: 1, investment: 1, consulting: 1, trading: 1, services: 1, products: 1, housing: 1, food: 1, transport: 1, entertainment: 1, healthcare: 1, utilities: 1, software: 1, equipment: 1, meals: 1, travel: 1, marketing: 1, other: 1, shopping: 1, insurance: 1, education: 1}
+        ? t(`categories.${name.toLowerCase()}`)
+        : name.charAt(0).toUpperCase() + name.slice(1);
+      
+      return {
+        id: index + 1,
+        name: translatedName,
+        amount,
+        type: 'active'
+      };
+    });
 
-    const expenseCategories = Object.entries(expensesByCategory).map(([name, amount], index) => ({
-      id: index + 1,
-      name: name.charAt(0).toUpperCase() + name.slice(1),
-      amount,
-      color: `bg-red-${500 + (index % 3) * 100}`
-    }));
+    const expenseCategories = Object.entries(expensesByCategory).map(([name, amount], index) => {
+      // Try to translate known categories, otherwise just capitalize (for business names, etc.)
+      const translatedName = name.toLowerCase() in {salary: 1, bonus: 1, investment: 1, consulting: 1, trading: 1, services: 1, products: 1, housing: 1, food: 1, transport: 1, entertainment: 1, healthcare: 1, utilities: 1, software: 1, equipment: 1, meals: 1, travel: 1, marketing: 1, other: 1, shopping: 1, insurance: 1, education: 1}
+        ? t(`categories.${name.toLowerCase()}`)
+        : name.charAt(0).toUpperCase() + name.slice(1);
+      
+      return {
+        id: index + 1,
+        name: translatedName,
+        amount,
+        color: `bg-red-${500 + (index % 3) * 100}`
+      };
+    });
 
     return {
       income: {
