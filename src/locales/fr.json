@@ -625,6 +625,8 @@
     "categorizeForTracking": "Catégorisez pour un meilleur suivi",
     "subcategory": "Sous-catégorie",
     "frequency": "Fréquence",
+    "makeRecurringIncome": "Rendre ce revenu récurrent",
+    "makeRecurringExpense": "Rendre cette dépense récurrente",
     "income": "Revenu",
     "expenses": "Dépenses",
     "netLabel": "Net :",

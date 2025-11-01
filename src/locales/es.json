@@ -724,6 +724,8 @@
     "categorizeForTracking": "Categoriza para un mejor seguimiento",
     "subcategory": "Subcategoría",
     "frequency": "Frecuencia",
+    "makeRecurringIncome": "Hacer este ingreso recurrente",
+    "makeRecurringExpense": "Hacer este gasto recurrente",
     "dayOfMonth": "Día del Mes",
     "startDate": "Fecha de Inicio",
     "endDate": "Fecha de Finalización",

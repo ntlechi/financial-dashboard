@@ -1386,7 +1386,9 @@
     "autoCategorize": "Auto-categorize",
     "categorizeForTracking": "Categorize for better tracking",
     "subcategory": "Subcategory",
-    "frequency": "Frequency"
+    "frequency": "Frequency",
+    "makeRecurringIncome": "Make this recurring income",
+    "makeRecurringExpense": "Make this recurring expense"
   },
   "frequencies": {
     "daily": "Daily",
